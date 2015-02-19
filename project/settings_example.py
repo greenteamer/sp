@@ -14,7 +14,6 @@ DATABASES = {
 ADMIN_EMAIL = 'greenteamer@bk.ru'
 ACCOUNT_ACTIVATION_DAYS = 2
 
-
 # # CKEDITOR_MEDIA_PREFIX  = "/media/ckeditor/"
 # CKEDITOR_UPLOAD_PATH = "/Users/greenteamer/Desktop/Django/applications/tai/webshop/static/uploads"
 # CKEDITOR_UPLOAD_PREFIX = "/static/uploads"
