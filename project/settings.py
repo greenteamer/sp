@@ -219,7 +219,7 @@ INSTALLED_APPS = (
     # 'captcha',
     'south',
     # 'sitetree',
-    'flatblocks',
+    # 'flatblocks',
     # 'robokassa',
     # Custom modules
     # 'main',
@@ -232,6 +232,8 @@ INSTALLED_APPS = (
     'tinymce',
     # 'djcelery',
     'djkombu',
+    'mptt',
+    'project.core',
 )
 
 FILEBROWSER_MEDIA_ROOT = MEDIA_ROOT
