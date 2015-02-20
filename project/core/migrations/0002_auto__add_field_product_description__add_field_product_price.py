@@ -8,20 +8,24 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Adding field 'Product.description'
+        db.add_column(u'core_product', 'description',
+                      self.gf('django.db.models.fields.TextField')(default=''),
+                      keep_default=False)
 
-        # Changing field 'Properties.product'
-        db.alter_column(u'core_properties', 'product_id', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['core.Product'], unique=True))
-        # Adding unique constraint on 'Properties', fields ['product']
-        db.create_unique(u'core_properties', ['product_id'])
+        # Adding field 'Product.price'
+        db.add_column(u'core_product', 'price',
+                      self.gf('django.db.models.fields.FloatField')(default=0.0),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # Removing unique constraint on 'Properties', fields ['product']
-        db.delete_unique(u'core_properties', ['product_id'])
+        # Deleting field 'Product.description'
+        db.delete_column(u'core_product', 'description')
 
+        # Deleting field 'Product.price'
+        db.delete_column(u'core_product', 'price')
 
-        # Changing field 'Properties.product'
-        db.alter_column(u'core_properties', 'product_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.Product']))
 
     models = {
         u'core.catalog': {
@@ -51,15 +55,17 @@ class Migration(SchemaMigration):
         u'core.product': {
             'Meta': {'object_name': 'Product'},
             'catalog': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['core.Catalog']"}),
+            'description': ('django.db.models.fields.TextField', [], {}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'price': ('django.db.models.fields.FloatField', [], {})
         },
         u'core.properties': {
             'Meta': {'object_name': 'Properties'},
             'catalogProductProperties': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['core.CatalogProductProperties']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'product': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['core.Product']", 'unique': 'True'})
+            'product': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['core.Product']"})
         },
         u'core.purchase': {
             'Meta': {'object_name': 'Purchase'},

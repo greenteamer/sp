@@ -16,10 +16,10 @@ atlassian-ide-plugin.xml
 
 # Project
 settings_local.py
-static/*
-media/*
 logs/
 pids/
 save_2gis_data.py
 get_2gis_data.py
 get_2gis_filials.py
+
+*migrations/*
