@@ -1,4 +1,4 @@
 /**
  * Created by forward on 20.02.15.
  */
-alert('!!!');
+alert('Статика работает');
