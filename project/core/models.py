@@ -29,6 +29,8 @@ class Catalog(models.Model):
 # Товары
 class Product(models.Model):
     name = models.CharField(max_length=100, verbose_name=u'Название товара')
+    description = models.TextField(verbose_name=u'Описание товара')
+    price = models.FloatField(verbose_name=u'Цена')
     catalog = models.ForeignKey(Catalog, verbose_name=u'Выбрать каталог')
 
     def __unicode__(self):
