@@ -2,11 +2,11 @@
 #!/usr/bin/env python
 from django.conf.urls import patterns, url
 
-urlpatterns = patterns('main.views',
+urlpatterns = patterns('project.core.views',
     # Главная страница
-    url(r'^$', 'home_view',
-        {'template_name':'main/home.html'},
-        name='home'),
+    url(r'^$', 'index_view',
+		{'template_name':'core/index.html'},
+		name='catalog_home'),
     # Страницы сайта
     # url(r'^(?P<slug>[-\w]+)/$', 'page_view',
     #     {'template_name':'main/page.html'},
