@@ -148,6 +148,7 @@ TEMPLATE_DIRS = (
 	os.path.join(PROJECT_PATH, 'templates').replace('\\', '/'),
 )
 
+
 # List of processors used by RequestContext to populate the context.
 # Each one should be a callable that takes the request object as its
 # only parameter and returns a dictionary to add to the context.
@@ -219,7 +220,7 @@ INSTALLED_APPS = (
     # 'captcha',
     'south',
     # 'sitetree',
-    'flatblocks',
+    # 'flatblocks',
     # 'robokassa',
     # Custom modules
     # 'main',
@@ -232,6 +233,8 @@ INSTALLED_APPS = (
     'tinymce',
     # 'djcelery',
     'djkombu',
+    'mptt',
+    'project.core',
 )
 
 FILEBROWSER_MEDIA_ROOT = MEDIA_ROOT
