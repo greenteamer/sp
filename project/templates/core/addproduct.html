@@ -1,0 +1,11 @@
+<div style="background: #eee;padding: 10px;">{{ message }}</div>
+<form action="" method="post">
+    {{ form2 }}
+    <hr/>
+    {% csrf_token %}
+    {{ product_form }}
+    <br/>
+    {{ property_form }}
+    <br/>
+    <input type="submit" class="button" value="Добавить">
+</form>
