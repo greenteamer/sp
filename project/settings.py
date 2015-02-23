@@ -235,6 +235,8 @@ INSTALLED_APPS = (
     'djkombu',
     'mptt',
     'project.core',
+    'project.accounts',
+
 )
 
 FILEBROWSER_MEDIA_ROOT = MEDIA_ROOT
