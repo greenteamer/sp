@@ -12,6 +12,16 @@ urlpatterns = patterns('project.core.views',
 		{'template_name':'core/viewproduct.html'},
 		name='viewproduct'),
 
+
+# url(r'^addlike/(?P<article_id>\d+)/(?P<page_number>\d+)$', 'article.views.addLike'),
+    url(r'^profile/(?P<purchase>\d+)/$', 'viewProduct',
+		{'template_name':'core/viewproduct.html'},
+		name='viewproduct'),
+
+
+
+
+
     # Главная страница
     url(r'^$', 'index_view',
 		{'template_name':'core/index.html'},

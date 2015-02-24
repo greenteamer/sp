@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
 from django import forms
-from project.accounts.models import OrganizerProfile
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext, ugettext_lazy as _
 from captcha.fields import CaptchaField
+from project.accounts.models import OrganizerProfile, getOrganizerProfile
+from project.core.models import Purchase
+from django.forms import ModelForm, Form
 
 class OrganizerProfileForm(forms.ModelForm):
     class Meta:
@@ -64,3 +66,15 @@ class UserRegistrationForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+
+class purchaseForm(ModelForm):
+    class Meta:
+        model = Purchase
+        exclude = ('organizerProfile',)
+
+    def save(self, user):
+        obj = super(purchaseForm, self).save(commit=False)
+        obj.organizerProfile = getOrganizerProfile(user)
+        return obj.save()
+
