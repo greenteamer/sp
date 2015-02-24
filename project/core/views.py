@@ -45,7 +45,11 @@ def addProduct(request, template_name="core/addproduct.html"):
             message = u"Ошибка при добавлении товара"
 
     # else:
-    product = Product.objects.get(pk=2)
+    # try:
+    #     product = Product.objects.get(pk=2)
+    # except:
+    #     None
+
     product_form = ProductForm#(instance=product)
     property_form = PropertiesForm
     # args['article'] = Article.objects.get(id=article_id)
