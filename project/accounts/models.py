@@ -32,7 +32,7 @@ class OrganizerProfile(BaseUserInfo):
 
 
 """проверка есть ли профиль у пользователя и получение его"""
-def getOrganizerProfile(request, user):
+def getOrganizerProfile(user):
     try:
         profile = OrganizerProfile.objects.get(user=user)
     except:
