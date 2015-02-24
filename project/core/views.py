@@ -2,11 +2,14 @@
 #!/usr/bin/env python
 from django.shortcuts import render
 from django.template import RequestContext
+from django.core import urlresolvers
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from forms import ProductForm, PropertiesForm, ProductFormCustom
 from django.core.context_processors import csrf
 from project.core.models import *
 from project.core.functions import *
+from project.accounts.models import getOrganizerProfile
 
 def index_view(request, template_name="catalog/index.html"):
 
@@ -16,6 +19,14 @@ def index_view(request, template_name="catalog/index.html"):
 
 def addProduct(request, template_name="core/addproduct.html"):
     message = ''
+    user = request.user
+
+    """ проверяем пользователя и его профайл организатора"""
+    if user.is_authenticated():
+        profile = getOrganizerProfile(request, user)
+    else:
+        return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
+
     if request.POST:
         form = ProductForm(request.POST)
         if form.is_valid():

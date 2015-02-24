@@ -19,7 +19,7 @@ class BaseUserInfo(models.Model):
     zipCode = models.CharField(max_length=10, verbose_name=(u'Почтовый индекс'))
 
 
-class UserProfile(BaseUserInfo):
+class OrganizerProfile(BaseUserInfo):
     """Профиль пользователя"""
     user = models.OneToOneField(User, unique=True)
     icon = models.FileField(_(u'Image'), upload_to='accounts/images/',
@@ -28,4 +28,13 @@ class UserProfile(BaseUserInfo):
     def __unicode__(self):
         return _(u'Профиль: ') + self.user.username
     class Meta:
-        verbose_name_plural = _(u'Профили пользователей')
+        verbose_name_plural = _(u'Профили организаторов')
+
+
+"""проверка есть ли профиль у пользователя и получение его"""
+def getOrganizerProfile(request, user):
+    try:
+        profile = OrganizerProfile.objects.get(user=user)
+    except:
+        profile = None
+    return profile
