@@ -1,0 +1,9 @@
+<a href="/profile/organizer/purchases/">Просмотр всех закупок</a>
+
+<div style="background: #eee;padding: 10px;">{{ message }}</div>
+<form action="" method="post">
+    {% csrf_token %}
+    {{ purchase_form }}
+    <br/>
+    <input type="submit" class="button" value="Сохранить">
+</form>
