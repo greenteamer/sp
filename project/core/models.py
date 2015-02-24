@@ -30,15 +30,14 @@ class Catalog(models.Model):
 
 # Товары
 class Product(models.Model):
-    name = models.CharField(max_length=100, verbose_name=u'Название товара')
+    product_name = models.CharField(max_length=100, verbose_name=u'Название товара')
     description = models.TextField(verbose_name=u'Описание товара')
     price = models.FloatField(verbose_name=u'Цена')
     sku = models.IntegerField(verbose_name=u'Артикул',null=True,blank=True)
     catalog = models.ForeignKey(Catalog, verbose_name=u'Выбрать каталог')
 
-
     def __unicode__(self):
-        return self.name
+        return self.product_name
 
 class CatalogProductProperties(models.Model):
     name = models.CharField(max_length=100, verbose_name=u'Свойства товара в каталоге')
@@ -50,10 +49,9 @@ class CatalogProductProperties(models.Model):
         return self.name
 
 class Properties(models.Model):
-    name = models.CharField(max_length=100, verbose_name=u'Свойства товара')
+    properties_name = models.CharField(max_length=100, verbose_name=u'Свойства товара')
     product = models.ForeignKey(Product)
     catalogProductProperties = models.ForeignKey(CatalogProductProperties)
-
 
     def __unicode__(self):
         return self.name
