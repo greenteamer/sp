@@ -1,0 +1,13 @@
+<h1>Все товары:</h1>
+
+<div class="products">
+    {% for product in products %}
+        <div class="product">
+            <h5>{{ product.product_name }}</h5>
+            {{ product.description }}<br/>
+            {{ product.price }}
+            <hr/>
+        </div>
+    {% endfor %}
+</div>
+
