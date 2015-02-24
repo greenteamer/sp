@@ -7,6 +7,7 @@ from forms import ProductForm, PropertiesForm, ProductFormCustom
 from django.core.context_processors import csrf
 from project.core.models import *
 from project.core.functions import *
+from project.accounts.profiles import retrieve
 
 def index_view(request, template_name="catalog/index.html"):
 
@@ -19,6 +20,8 @@ def addProduct(request, template_name="core/addproduct.html"):
     if request.POST:
         form = ProductForm(request.POST)
         if form.is_valid():
+
+
             form.save()
             message = u"Новый товар %s успешно добавлен" % request.POST['name']
 

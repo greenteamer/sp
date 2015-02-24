@@ -3,7 +3,7 @@
 
 from django.contrib import admin
 from django.contrib.auth.models import User
-from project.accounts.models import BaseUserInfo, UserProfile
+from project.accounts.models import BaseUserInfo, OrganizerProfile
 # Register your models here.
 
 # class UserInline(admin.StackedInline):
@@ -15,5 +15,5 @@ from project.accounts.models import BaseUserInfo, UserProfile
 #     model = UserProfile
 #     inlines = [UserInline]
 
-admin.site.register(UserProfile)
+admin.site.register(OrganizerProfile)
 
