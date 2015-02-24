@@ -31,6 +31,7 @@ class OrganizerProfile(BaseUserInfo):
         verbose_name_plural = _(u'Профили организаторов')
 
 
+"""проверка есть ли профиль у пользователя и получение его"""
 def getOrganizerProfile(request, user):
     try:
         profile = OrganizerProfile.objects.get(user=user)
