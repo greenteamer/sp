@@ -8,6 +8,10 @@ urlpatterns = patterns('project.core.views',
 		{'template_name':'core/addproduct.html'},
 		name='add_product'),
 
+    url(r'^viewproduct/$', 'viewProduct',
+		{'template_name':'core/viewproduct.html'},
+		name='viewproduct'),
+
     # Главная страница
     url(r'^$', 'index_view',
 		{'template_name':'core/index.html'},
