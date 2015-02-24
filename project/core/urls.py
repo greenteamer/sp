@@ -2,18 +2,21 @@
 #!/usr/bin/env python
 from django.conf.urls import patterns, url
 
-# urlpatterns = patterns('main.views',
-#     # Главная страница
-#     url(r'^$', 'home_view',
-#         {'template_name':'main/home.html'},
-#         name='home'),
-#     # Страницы сайта
-#     # url(r'^(?P<slug>[-\w]+)/$', 'page_view',
-#     #     {'template_name':'main/page.html'},
-#     #     name='page_view'),
-# )
+urlpatterns = patterns('project.core.views',
+
+    url(r'^addproduct/$', 'addProduct',
+		{'template_name':'core/addproduct.html'},
+		name='add_product'),
+
+    # Главная страница
+    url(r'^$', 'index_view',
+		{'template_name':'core/index.html'},
+		name='catalog_home'),
 
 
-urlpatterns = patterns('',
-    url(r'^$', 'project.core.views.homePage'),
+
+    # Страницы сайта
+    # url(r'^(?P<slug>[-\w]+)/$', 'page_view',
+    #     {'template_name':'main/page.html'},
+    #     name='page_view'),
 )

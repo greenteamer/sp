@@ -148,6 +148,7 @@ TEMPLATE_DIRS = (
 	os.path.join(PROJECT_PATH, 'templates').replace('\\', '/'),
 )
 
+
 # List of processors used by RequestContext to populate the context.
 # Each one should be a callable that takes the request object as its
 # only parameter and returns a dictionary to add to the context.
