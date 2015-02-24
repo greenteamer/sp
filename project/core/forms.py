@@ -18,3 +18,5 @@ class PropertiesForm(ModelForm):
 class ProductFormCustom(forms.Form):
     field1 = forms.CharField()
     field2 = forms.IntegerField()
+
+
