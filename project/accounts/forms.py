@@ -19,7 +19,6 @@ class OrganizerProfileForm(forms.ModelForm):
         obj.user = user
         return obj.save()
 
-<<<<<<< HEAD
 class UserRegistrationForm(forms.ModelForm):
 
     error_messages = {
