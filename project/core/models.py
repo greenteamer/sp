@@ -2,6 +2,7 @@
 #!/usr/bin/env python
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
+from project.accounts.models import OrganizerProfile
 
 # Категории
 class Category(MPTTModel):
@@ -15,6 +16,7 @@ class Category(MPTTModel):
 
 class Purchase(models.Model):
     name = models.CharField(max_length=100, verbose_name=u'Название закупки')
+    organizerProfile = models.ForeignKey(OrganizerProfile, verbose_name=u'Профиль организатора')
 
     def __unicode__(self):
         return self.name
