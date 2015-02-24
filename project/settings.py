@@ -219,6 +219,7 @@ INSTALLED_APPS = (
     # 'dajax',
     # 'captcha',
     'south',
+    'captcha',
     # 'sitetree',
     # 'flatblocks',
     # 'robokassa',
