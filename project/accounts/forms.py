@@ -6,4 +6,10 @@ from project.accounts.models import OrganizerProfile
 class OrganizerProfileForm(forms.ModelForm):
     class Meta:
         model = OrganizerProfile
-        # exclude = ('user',)
+        # widgets = {'user': forms.HiddenInput()}
+        exclude = ('user',)
+
+    def save(self, user):
+        obj = super(OrganizerProfileForm, self).save(commit=False)
+        obj.user = user
+        return obj.save()

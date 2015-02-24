@@ -18,12 +18,8 @@ def profileView(request, template_name):
         return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
     if request.method == "POST":
         form = OrganizerProfileForm(request.POST)
-        if form.is_valid:
-            form.user = user
-            form.save()
-            # profile = OrganizerProfile(form)
-            # profile.user = user
-            # profile.save()
+        if form.is_valid():
+            form.save(request.user)
 
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
