@@ -41,34 +41,15 @@ def addProduct(request, template_name="core/addproduct.html"):
         if form.is_valid():
             form.save()
             message = u"Новый товар %s успешно добавлен" % request.POST['product_name']
-
-        # product = Product()
-        # product.name = '111' #request.POST['name']
-        # product.description = '11'
-        # product.price = 11
-        # product.sku = 11
-        # product.catalog = Catalog.objects.get(pk=1)
-        # product.save()
-
         else:
             message = u"Ошибка при добавлении товара"
-
-    # form2 = ProductFormCustom
 
     # else:
     product = Product.objects.get(pk=2)
     product_form = ProductForm#(instance=product)
     property_form = PropertiesForm
-    args = {}
-    args.update(csrf(request))
     # args['article'] = Article.objects.get(id=article_id)
     # args['comments'] = Comments.objects.filter(comments_article_id=article_id)
-    # args['message'] = message
-    # args['form2'] = form2
-    args['product_form'] = product_form
-    args['property_form'] = property_form
     products = viewProduct(request, 0)
-    # args['username'] = auth.get_user(request).username
-    return render_to_response(template_name, args)
-    # return render_to_response(template_name, locals(),
-    #                           context_instance=RequestContext(request))
+    return render_to_response(template_name, locals(),
+                              context_instance=RequestContext(request))
