@@ -5,18 +5,23 @@
 <b>Description: </b>{{ product.description }}
 <br/>
 {#<a href="/profile/organizer/purchase-{{ purchase.id }}catalog-{{ catalog.id }}-edit">Изменить каталог</a>#}
-<b>properties: </b>
+
+{#<b>properties: </b>#}
+{#<ul>#}
+{#    {% for catalog_product_propertie in catalog_product_properties %}#}
+{#        <li> {{ catalog_product_propertie.cpp_name }}</li>#}
+{#    {% endfor %}#}
+{#</ul>#}
+{#<br/>#}
+
+<b>all_properties: </b>
 <ul>
-    {% for propertie in properties %}
-        <li> {{ propertie.properties_name }}</li>
+    {% for name_value,value in all_properties.items %}
+        <li> {{ name_value }} : {{ value }}</li>
     {% endfor %}
 </ul>
 <br/>
 
-<b>properties_names: </b>
-<ul>
-    {% for propertie in all_properties %}
-        <li> {{ propertie.properties_name }}</li>
-    {% endfor %}
-</ul>
-<br/>
+
+{#for key,value in a.items():#}
+{#... print "%s = %s" % (key,value)#}

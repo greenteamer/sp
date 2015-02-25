@@ -40,16 +40,16 @@ class Product(models.Model):
         return self.product_name
 
 class CatalogProductProperties(models.Model):
-    cpp_name = models.CharField(max_length=100, verbose_name=u'Свойства товара в каталоге')
+    cpp_name = models.CharField(max_length=100, verbose_name=u'Свойство товара в каталоге')
     cpp_values = models.CharField(max_length=255, verbose_name=u'Возможные значения')
     cpp_catalog = models.ForeignKey(Catalog)
-    cpp_purchase = models.ForeignKey(Purchase)
+    cpp_purchase = models.ForeignKey(Purchase)  # зачем привязка к закупке если есть привязка к каталогу?..
 
     def __unicode__(self):
         return self.cpp_name
 
 class Properties(models.Model):
-    properties_name = models.CharField(max_length=100, verbose_name=u'Свойства товара')
+    properties_name = models.CharField(max_length=100, verbose_name=u'Значения свойства товара')
     properties_product = models.ForeignKey(Product)
     properties_catalogProductProperties = models.ForeignKey(CatalogProductProperties)
 

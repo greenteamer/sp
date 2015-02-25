@@ -218,11 +218,14 @@ def product(request, purchase_id, catalog_id, product_id, template_name):
 
         catalog_product_properties = CatalogProductProperties.objects.filter(cpp_catalog=catalog_id)
 
+        # all_properties = {1: "one", 2: "two", 3: "three"}
         all_properties = {}
         i = 0
         for catalog_product_propertie in catalog_product_properties:
-            all_properties[i] = Properties.objects.filter(properties_catalogProductProperties=catalog_product_propertie)
-            i = i+1
+            i += 1
+            properties = Properties.objects.filter(properties_product=product_id)
+            for propertie in properties:
+                all_properties.update({catalog_product_propertie.cpp_name: propertie.properties_name})
 
         return render_to_response(template_name, locals(),
                                   context_instance=RequestContext(request))
