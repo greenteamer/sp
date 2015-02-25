@@ -5,5 +5,18 @@
 <b>Description: </b>{{ product.description }}
 <br/>
 {#<a href="/profile/organizer/purchase-{{ purchase.id }}catalog-{{ catalog.id }}-edit">Изменить каталог</a>#}
+<b>properties: </b>
+<ul>
+    {% for propertie in properties %}
+        <li> {{ propertie.properties_name }}</li>
+    {% endfor %}
+</ul>
 <br/>
 
+<b>properties_names: </b>
+<ul>
+    {% for propertie in all_properties %}
+        <li> {{ propertie.properties_name }}</li>
+    {% endfor %}
+</ul>
+<br/>

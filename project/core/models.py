@@ -22,11 +22,11 @@ class Purchase(models.Model):
         return self.name
 
 class Catalog(models.Model):
-    name = models.CharField(max_length=100, verbose_name=u'Название каталога')
-    purchase = models.ForeignKey(Purchase)
+    catalog_name = models.CharField(max_length=100, verbose_name=u'Название каталога')
+    catalog_purchase = models.ForeignKey(Purchase)
 
     def __unicode__(self):
-        return self.name
+        return self.catalog_name
 
 # Товары
 class Product(models.Model):
@@ -40,21 +40,21 @@ class Product(models.Model):
         return self.product_name
 
 class CatalogProductProperties(models.Model):
-    name = models.CharField(max_length=100, verbose_name=u'Свойства товара в каталоге')
-    values = models.CharField(max_length=255, verbose_name=u'Возможные значения')
-    catalog = models.ForeignKey(Catalog)
-    purchase = models.ForeignKey(Purchase)
+    cpp_name = models.CharField(max_length=100, verbose_name=u'Свойства товара в каталоге')
+    cpp_values = models.CharField(max_length=255, verbose_name=u'Возможные значения')
+    cpp_catalog = models.ForeignKey(Catalog)
+    cpp_purchase = models.ForeignKey(Purchase)
 
     def __unicode__(self):
-        return self.name
+        return self.cpp_name
 
 class Properties(models.Model):
     properties_name = models.CharField(max_length=100, verbose_name=u'Свойства товара')
-    product = models.ForeignKey(Product)
-    catalogProductProperties = models.ForeignKey(CatalogProductProperties)
+    properties_product = models.ForeignKey(Product)
+    properties_catalogProductProperties = models.ForeignKey(CatalogProductProperties)
 
     def __unicode__(self):
-        return self.name
+        return self.properties_name
 
 
 

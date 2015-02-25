@@ -2,7 +2,7 @@
 #!/usr/bin/env python
 from django import forms
 from project.accounts.models import OrganizerProfile, getOrganizerProfile
-from project.core.models import Purchase
+from project.core.models import Purchase, Catalog, CatalogProductProperties
 from django.forms import ModelForm, Form
 
 class OrganizerProfileForm(forms.ModelForm):
@@ -25,4 +25,24 @@ class purchaseForm(ModelForm):
     def save(self, user):
         obj = super(purchaseForm, self).save(commit=False)
         obj.organizerProfile = getOrganizerProfile(user)
-        return obj.save()
+        obj.save()
+        # assert isinstance(obj, object) #pycharm сам влепил
+        return obj
+
+
+class catalogForm(ModelForm):
+    class Meta:
+        model = Catalog
+        exclude = ('catalog_purchase',)
+    def save(self, purchase_id):
+        # TODO: сделать валидацию на существование закупки (purchase_id)
+        obj = super(catalogForm, self).save(commit=False)
+        obj.catalog_purchase = Purchase.objects.get(id=purchase_id)
+        obj.save()
+        return obj
+
+
+class catalogProductPropertiesForm(ModelForm):
+    class Meta:
+        model = CatalogProductProperties
+        fields = ["cpp_name", "cpp_values"]
