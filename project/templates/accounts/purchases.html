@@ -1,0 +1,6 @@
+<h1>Все закупки:</h1>
+<ul>
+    {% for purchase in purchases%}
+        <li><a href="/profile/organizer/purchase-{{ purchase.id }}">{{ purchase.name }}</a></li>
+    {% endfor %}
+</ul>

@@ -2,6 +2,7 @@
 #!/usr/bin/env python
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
+from project.accounts.models import OrganizerProfile
 
 # Категории
 class Category(MPTTModel):
@@ -15,46 +16,45 @@ class Category(MPTTModel):
 
 class Purchase(models.Model):
     name = models.CharField(max_length=100, verbose_name=u'Название закупки')
+    organizerProfile = models.ForeignKey(OrganizerProfile, verbose_name=u'Профиль организатора')
 
     def __unicode__(self):
         return self.name
 
 class Catalog(models.Model):
-    name = models.CharField(max_length=100, verbose_name=u'Название каталога')
-    purchase = models.ForeignKey(Purchase)
+    catalog_name = models.CharField(max_length=100, verbose_name=u'Название каталога')
+    catalog_purchase = models.ForeignKey(Purchase)
 
     def __unicode__(self):
-        return self.name
+        return self.catalog_name
 
 # Товары
 class Product(models.Model):
-    name = models.CharField(max_length=100, verbose_name=u'Название товара')
+    product_name = models.CharField(max_length=100, verbose_name=u'Название товара')
     description = models.TextField(verbose_name=u'Описание товара')
     price = models.FloatField(verbose_name=u'Цена')
     sku = models.IntegerField(verbose_name=u'Артикул',null=True,blank=True)
     catalog = models.ForeignKey(Catalog, verbose_name=u'Выбрать каталог')
 
-
     def __unicode__(self):
-        return self.name
+        return self.product_name
 
 class CatalogProductProperties(models.Model):
-    name = models.CharField(max_length=100, verbose_name=u'Свойства товара в каталоге')
-    values = models.CharField(max_length=255, verbose_name=u'Возможные значения')
-    catalog = models.ForeignKey(Catalog)
-    purchase = models.ForeignKey(Purchase)
+    cpp_name = models.CharField(max_length=100, verbose_name=u'Свойство товара в каталоге')
+    cpp_values = models.CharField(max_length=255, verbose_name=u'Возможные значения')
+    cpp_catalog = models.ForeignKey(Catalog)
+    cpp_purchase = models.ForeignKey(Purchase)  # зачем привязка к закупке если есть привязка к каталогу?..
 
     def __unicode__(self):
-        return self.name
+        return self.cpp_name
 
 class Properties(models.Model):
-    name = models.CharField(max_length=100, verbose_name=u'Свойства товара')
-    product = models.ForeignKey(Product)
-    catalogProductProperties = models.ForeignKey(CatalogProductProperties)
-
+    properties_name = models.CharField(max_length=100, verbose_name=u'Значения свойства товара')
+    properties_product = models.ForeignKey(Product)
+    properties_catalogProductProperties = models.ForeignKey(CatalogProductProperties)
 
     def __unicode__(self):
-        return self.name
+        return self.properties_name
 
 
 

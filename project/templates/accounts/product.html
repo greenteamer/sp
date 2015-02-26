@@ -1,0 +1,27 @@
+<b>ID: </b>{{ product.id }}
+<br/>
+<b>Name: </b>{{ product.product_name }}
+<br/>
+<b>Description: </b>{{ product.description }}
+<br/>
+{#<a href="/profile/organizer/purchase-{{ purchase.id }}catalog-{{ catalog.id }}-edit">Изменить каталог</a>#}
+
+{#<b>properties: </b>#}
+{#<ul>#}
+{#    {% for catalog_product_propertie in catalog_product_properties %}#}
+{#        <li> {{ catalog_product_propertie.cpp_name }}</li>#}
+{#    {% endfor %}#}
+{#</ul>#}
+{#<br/>#}
+
+<b>all_properties: </b>
+<ul>
+    {% for name_value,value in all_properties.items %}
+        <li> {{ name_value }} : {{ value }}</li>
+    {% endfor %}
+</ul>
+<br/>
+
+
+{#for key,value in a.items():#}
+{#... print "%s = %s" % (key,value)#}
