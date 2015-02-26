@@ -125,30 +125,6 @@ def catalogs(request, purchase_id, template_name):
             raise Http404
 
 
-        # # Добавление каталога
-        # def catalogAdd(request, purchase_id, template_name):
-        #
-        #     user = request.user
-        #
-        #     """ проверяем пользователя и его профайл организатора"""
-        #     if user.is_authenticated():
-        #         profile = getOrganizerProfile(user)
-        #     else:
-        #         return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
-        #
-        #     message = ''
-        #     if request.POST:
-        #         form = catalogForm(request.POST)
-        #         if form.is_valid():
-        #             form.save(purchase_id)  # каталог сохраняется для нужной закупки - переопределена ф-я save
-        #             message = u"Новый каталог «%s» успешно добавлен. <br/> Добавить еще: " % request.POST['name']
-        #         else:
-        #             message = u"Ошибка при добавлении каталога"
-        #
-        #     purchase_form = catalogForm()
-        #
-        #     return render_to_response(template_name, locals(),
-        #                               context_instance=RequestContext(request))
 
 # Добавление каталога
 def catalogAdd(request, purchase_id, template_name):
@@ -215,17 +191,11 @@ def product(request, purchase_id, catalog_id, product_id, template_name):
         purchase = Purchase.objects.get(id=purchase_id)
         catalog = Catalog.objects.get(id=catalog_id)
         product = Product.objects.get(id=product_id)
-
-        catalog_product_properties = CatalogProductProperties.objects.filter(cpp_catalog=catalog_id)
-
-        # all_properties = {1: "one", 2: "two", 3: "three"}
+        properties = Properties.objects.filter(properties_product=product_id)  # получим все свойства для этого товара
         all_properties = {}
-        i = 0
-        for catalog_product_propertie in catalog_product_properties:
-            i += 1
-            properties = Properties.objects.filter(properties_product=product_id)
-            for propertie in properties:
-                all_properties.update({catalog_product_propertie.cpp_name: propertie.properties_name})
+        for property in properties:
+            current_catalog_product_properties = CatalogProductProperties.objects.get(id=property.properties_catalogProductProperties_id)
+            all_properties.update({current_catalog_product_properties.cpp_name: property.properties_name.split(";")})  # формируется словарь вида {имя_свойства: значения_распарсенные_в_список}
 
         return render_to_response(template_name, locals(),
                                   context_instance=RequestContext(request))

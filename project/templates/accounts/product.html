@@ -14,10 +14,21 @@
 {#</ul>#}
 {#<br/>#}
 
+{#<b>all_properties: </b>#}
+{#<ul>#}
+{#    {% for name_value,value in all_properties.items %}#}
+{#        <li> {{ name_value }} : {{ value }}</li>#}
+{#    {% endfor %}#}
+{#</ul>#}
+{#<br/>#}
 <b>all_properties: </b>
 <ul>
-    {% for name_value,value in all_properties.items %}
-        <li> {{ name_value }} : {{ value }}</li>
+    {% for name_value, values in all_properties.items %}
+        <li> {{ name_value }} :
+            {% for value in values %}
+                 {{ value }} <input type="radio" name="{{ name_value }}" value="{{ value }}"> ;
+            {% endfor %}
+        </li>
     {% endfor %}
 </ul>
 <br/>
