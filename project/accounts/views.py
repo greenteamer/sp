@@ -4,8 +4,8 @@ from django.http.response import HttpResponse
 from django.shortcuts import render
 from project.accounts.profiles import retrieve
 from project.accounts.models import OrganizerProfile, getOrganizerProfile
-from project.accounts.forms import OrganizerProfileForm, purchaseForm, catalogForm, catalogProductPropertiesForm
-from project.core.forms import productForm
+from project.accounts.forms import OrganizerProfileForm, purchaseForm, catalogForm, \
+                                    catalogProductPropertiesForm, productForm, get_dinamic_form
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core import urlresolvers
@@ -224,6 +224,13 @@ def productAdd(request, catalog_id, template_name):
                 message = u"Ошибка при добавлении товара"
 
         product_form = productForm
+
+        properties = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
+
+        property_for_form = {}
+        for property in properties:
+            property_for_form.update({property.cpp_name: property.cpp_values.split(";")})
+
         return render_to_response(template_name, locals(),
                                   context_instance=RequestContext(request))
     except ObjectDoesNotExist:
