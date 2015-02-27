@@ -8,7 +8,6 @@ from project.accounts.profiles import retrieve
 from project.accounts.models import OrganizerProfile, getOrganizerProfile
 from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, purchaseForm, UserLoginForm
 from django.contrib import auth
-from project.core.forms import productForm
 from django.contrib.auth import login, authenticate
 from django.template import RequestContext
 from django.core import urlresolvers
