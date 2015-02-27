@@ -5,5 +5,19 @@
 <b>Description: </b>{{ product.description }}
 <br/>
 {#<a href="/profile/organizer/purchase-{{ purchase.id }}catalog-{{ catalog.id }}-edit">Изменить каталог</a>#}
+
+<b>all_properties: </b>
+<ul>
+    {% for name_value, values in all_properties.items %}
+        <li> {{ name_value }} :
+            {% for value in values %}
+                 {{ value }} <input type="radio" name="{{ name_value }}" value="{{ value }}"> ;
+            {% endfor %}
+        </li>
+    {% endfor %}
+</ul>
 <br/>
 
+
+{#for key,value in a.items():#}
+{#... print "%s = %s" % (key,value)#}
