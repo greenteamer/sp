@@ -54,16 +54,63 @@ class productForm(ModelForm):
         # fields = ['comments_text']
 
 
+
+# class productForm(forms.Form):
+    # flieds, sdfdf, sdfd  = [forms.CharField(),forms.CharField(),forms.CharField()]
+    #
+    # flied = forms.CharField()
+    # sdfdf = forms.CharField()
+    # sdfd = forms.CharField()
+    #
+    # choice_field = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
+
+
+    #
+    # def _init_(self, *args, **kwargs):
+    #     super(productForm, self)._init_(args, kwargs)
+    #
+    #     # args should be a list with the single QueryDict (GET or POST dict)
+    #     # that you passed it
+    #     for k,v in args[0].items():
+    #         if k.startswith('Q') and k not in self.fields.keys():
+    #             self.fields[k] = TestCharField(initial=v, required=True)
+    #
+    #
+
 #///////////////////////////////////////////////////////////////////////////////////////////
 def get_dinamic_form(catalog_id):
     cpp_obj = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
-    class testForm(forms.Form):
-        # fields = CatalogProductProperties.all_field()
-        # for cpp_object in cpp_obj:
-        #     cpp_object.cpp_name = forms.CharField()
-        field1 = forms.CharField()
-        # field2 = forms.IntegerField()
-    return testForm()
+
+    list = []
+    CHOISES = {}
+
+    for cpp_object in cpp_obj:
+        values = cpp_object.cpp_values.split(";")
+        local_dict = {}
+        for value in values:
+            local_dict.update({value: value})
+        list.append(local_dict)
+
+    class ProductForm(forms.Form):
+        # for list_item in list:
+        #       choise = forms.CharField()
+        a = [12, 34]
+        b = [44, 66]
+        c = [24, 34]
+        CHOICES = [a, b, c]
+        choice_field = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
+
+    return ProductForm
+
+
+
+
+
+
+
+
+
+
 
 
 def get_user_form_for_user(user):

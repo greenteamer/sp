@@ -11,9 +11,10 @@ from django.template import RequestContext
 from django.core import urlresolvers
 from django.http import HttpResponseRedirect
 from project.core.models import Purchase, Catalog, Product, CatalogProductProperties, Properties
-
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import Http404
+from project.core.functions import *
+
 
 
 def profileView(request, template_name):
@@ -223,12 +224,13 @@ def productAdd(request, catalog_id, template_name):
             else:
                 message = u"Ошибка при добавлении товара"
 
-        product_form = productForm
+        product_form = productForm#get_dinamic_form(catalog_id)#
 
         properties = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
 
         property_for_form = {}
         for property in properties:
+            # name = [property.cpp_name, translit(property.cpp_name)]
             property_for_form.update({property.cpp_name: property.cpp_values.split(";")})
 
         return render_to_response(template_name, locals(),

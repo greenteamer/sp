@@ -8,9 +8,9 @@
 
     <ul>
         {% for name_value, values in property_for_form.items %}
-            <li> {{ name_value }} :
+            <li> <b>{{ name_value }}</b>  :
                 {% for value in values %}
-                     {{ value }} <input type="radio" name="{{ name_value }}" value="{{ value }}"> ;
+                    <label for="">{{ value }} <input type="radio" name="{{ name_value }}" value="{{ value }}"></label> ;
                 {% endfor %}
             </li>
         {% endfor %}
