@@ -5,5 +5,16 @@
     {% csrf_token %}
     {{ product_form }}
     <br/>
+
+    <ul>
+        {% for name_value, values in property_for_form.items %}
+            <li> {{ name_value }} :
+                {% for value in values %}
+                     {{ value }} <input type="radio" name="{{ name_value }}" value="{{ value }}"> ;
+                {% endfor %}
+            </li>
+        {% endfor %}
+    </ul>
+
     <input type="submit" class="button" value="Добавить">
 </form>

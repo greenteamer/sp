@@ -3,19 +3,14 @@ from django import forms
 from django.forms import ModelForm, Form
 from models import *
 
-class purchaseForm(ModelForm):
-    class Meta:
-        model = Purchase
+# class purchaseForm(ModelForm):
+#     class Meta:
+#         model = Purchase
 
-class productForm(ModelForm):
-    class Meta:
-        model = Product
-        # fields = ['comments_text']
-
-class propertiesForm(ModelForm):
-    class Meta:
-        model = Properties
-        # fields = ['name', 'catalogProductProperties']
+# class propertiesForm(ModelForm):
+#     class Meta:
+#         model = Properties
+#         # fields = ['name', 'catalogProductProperties']
 
 
 # class ProductFormCustom(forms.Form):
