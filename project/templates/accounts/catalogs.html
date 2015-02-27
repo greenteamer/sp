@@ -1,6 +1,6 @@
 <h1>Все каталоги для закупки «{{ purchase }}»:</h1>
 <ul>
     {% for catalog in catalogs %}
-        <li><a href="/profile/organizer/purchase-{{ purchase.id }}/catalog-{{ catalog.id }}">{{ catalog.name }}</a></li>
+        <li><a href="/profile/organizer/purchase-{{ purchase.id }}/catalog-{{ catalog.id }}">{{ catalog.catalog_name }}</a></li>
     {% endfor %}
 </ul>

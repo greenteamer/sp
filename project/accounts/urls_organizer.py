@@ -22,9 +22,14 @@ urlpatterns = patterns('project.accounts.views',
          'edit' : True},
 		name='purchaseEdit'),
 
+
     url(r'^purchase-(?P<purchase_id>\d+)/catalogs$', 'catalogs',
 		{'template_name': 'accounts/catalogs.html'},
 		name='catalogs'),
+
+    url(r'^purchase-(?P<purchase_id>\d+)/catalog-add/$', 'catalogAdd',
+		{'template_name': 'accounts/catalog_add.html'},
+		name='catalogAdd'),
 
     url(r'^purchase-(?P<purchase_id>\d+)/catalog-(?P<catalog_id>\d+)/$', 'catalog',
 		{'template_name': 'accounts/catalog.html'},
