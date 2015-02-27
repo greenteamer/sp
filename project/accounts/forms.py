@@ -77,4 +77,3 @@ class purchaseForm(ModelForm):
         obj = super(purchaseForm, self).save(commit=False)
         obj.organizerProfile = getOrganizerProfile(user)
         return obj.save()
-
