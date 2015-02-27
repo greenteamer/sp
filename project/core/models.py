@@ -3,6 +3,9 @@
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 from project.accounts.models import OrganizerProfile
+from django.utils.text import slugify
+from project.core.functions import *
+from autoslug import AutoSlugField
 
 # Категории
 class Category(MPTTModel):
@@ -40,7 +43,12 @@ class Product(models.Model):
         return self.product_name
 
 class CatalogProductProperties(models.Model):
-    cpp_name = models.CharField(max_length=100, verbose_name=u'Свойство товара в каталоге')
+    cpp_name = models.CharField(max_length=100, verbose_name=u'Свойство товара в каталоге', unique=True)
+    # cpp_slug = models.SlugField((u'Slug'), max_length=50, unique=True,
+    #                         help_text=(u'Slug for product url created from name.'))
+    # cpp_slug = models.SlugField(null=True, blank=True) # Allow blank submission in admin
+    # cpp_slug = AutoSlugField(populate_from='cpp_name', unique=True)
+    cpp_slug = models.CharField(null=True, max_length=255, blank=True)
     cpp_values = models.CharField(max_length=255, verbose_name=u'Возможные значения')
     cpp_catalog = models.ForeignKey(Catalog)
     cpp_purchase = models.ForeignKey(Purchase)  # зачем привязка к закупке если есть привязка к каталогу?..
@@ -48,17 +56,19 @@ class CatalogProductProperties(models.Model):
     def __unicode__(self):
         return self.cpp_name
 
+    def save(self):
+        # if not self.id:
+        self.cpp_slug = translit(self.cpp_name).lower()
+        super(CatalogProductProperties, self).save()
+
+
 class Properties(models.Model):
-    properties_name = models.CharField(max_length=100, verbose_name=u'Значения свойства товара')
+    properties_value = models.CharField(max_length=100, verbose_name=u'Значения свойства товара')
     properties_product = models.ForeignKey(Product)
     properties_catalogProductProperties = models.ForeignKey(CatalogProductProperties)
 
     def __unicode__(self):
-        return self.properties_name
-
-
-
-
+        return self.properties_value
 
 
 

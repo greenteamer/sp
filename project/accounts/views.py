@@ -5,7 +5,7 @@ from django.shortcuts import render
 from project.accounts.profiles import retrieve
 from project.accounts.models import OrganizerProfile, getOrganizerProfile
 from project.accounts.forms import OrganizerProfileForm, purchaseForm, catalogForm, \
-                                    catalogProductPropertiesForm, productForm, get_dinamic_form
+                                    catalogProductPropertiesForm, ProductForm, propertyForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core import urlresolvers
@@ -13,8 +13,6 @@ from django.http import HttpResponseRedirect
 from project.core.models import Purchase, Catalog, Product, CatalogProductProperties, Properties
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import Http404
-from project.core.functions import *
-
 
 
 def profileView(request, template_name):
@@ -146,6 +144,7 @@ def catalogAdd(request, purchase_id, template_name):
             new_catalogProductProperties = catalogProductProperties_form.save(commit=False)
             new_catalogProductProperties.cpp_catalog = catalog_form.save(purchase_id)  # каталог сохраняется для нужной закупки - переопределена ф-я save, возвращает созданный объект каталога
             new_catalogProductProperties.cpp_purchase = Purchase.objects.get(id=purchase_id)
+            new_catalogProductProperties.cpp_slug = slugify(new_catalogProductProperties.cpp_name)
             new_catalogProductProperties.save()
             message = u"Новый каталог «%s» успешно добавлен. <br/> Добавить еще: " % request.POST['catalog_name']
         else:
@@ -196,7 +195,7 @@ def product(request, purchase_id, catalog_id, product_id, template_name):
         all_properties = {}
         for property in properties:
             current_catalog_product_properties = CatalogProductProperties.objects.get(id=property.properties_catalogProductProperties_id)
-            all_properties.update({current_catalog_product_properties.cpp_name: property.properties_name.split(";")})  # формируется словарь вида {имя_свойства: значения_распарсенные_в_список}
+            all_properties.update({current_catalog_product_properties.cpp_name: property.properties_value.split(";")})  # формируется словарь вида {имя_свойства: значения_распарсенные_в_список}
 
         return render_to_response(template_name, locals(),
                                   context_instance=RequestContext(request))
@@ -216,25 +215,39 @@ def productAdd(request, catalog_id, template_name):
         else:
             return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
 
+
         if request.POST:
-            form = productForm(request.POST)
+            form = ProductForm(request.POST)
             if form.is_valid():
-                form.save()
-                message = u"Новый товар %s успешно добавлен" % request.POST['product_name']
+                new_product = form.save(catalog_id)
+
+                properties = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
+                for property in properties:
+                    try:
+                        if request.POST[property.cpp_slug] is not None:
+                            new_properties = Properties()
+                            new_properties.properties_value = request.POST[property.cpp_slug]  #request.POST['tsvet']
+                            new_properties.properties_product = new_product
+                            new_properties.properties_catalogProductProperties = CatalogProductProperties.objects.get(cpp_slug=property.cpp_slug)
+                            new_properties.save()
+                    except:
+                        continue
+
+                message = u"Новый товар %s успешно добавлен." % request.POST['product_name']
             else:
                 message = u"Ошибка при добавлении товара"
 
-        product_form = productForm#get_dinamic_form(catalog_id)#
+        product_form = ProductForm
+        property_form = propertyForm(catalog_id)
 
-        properties = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
-
-        property_for_form = {}
-        for property in properties:
-            # name = [property.cpp_name, translit(property.cpp_name)]
-            property_for_form.update({property.cpp_name: property.cpp_values.split(";")})
+        # properties = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
+        # property_for_form = {}
+        # for property in properties:
+        #     property_for_form.update({property.cpp_name: property.cpp_values.split(";")})
 
         return render_to_response(template_name, locals(),
                                   context_instance=RequestContext(request))
     except ObjectDoesNotExist:
             raise Http404
+
 
