@@ -1,11 +1,11 @@
 <b>ID: </b>{{ catalog.id }}
 <br/>
-<b>Name: </b>{{ catalog.name }}
+<b>Name: </b>{{ catalog.catalog_name }}
 <br/>
 {#<a href="/profile/organizer/purchase-{{ purchase.id }}catalog-{{ catalog.id }}-edit">Изменить каталог</a>#}
 <br/>
 <ul>
     {% for catalog_product_property in catalog_product_properties %}
-        <li>{{ catalog_product_property.name }}: {{ catalog_product_property.values }}</li>
+        <li>{{ catalog_product_property.cpp_name }}: {{ catalog_product_property.cpp_values }}</li>
     {% endfor %}
 </ul>
