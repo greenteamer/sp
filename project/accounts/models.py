@@ -3,7 +3,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
-
+# from project.accounts.profiles import getOrganizerPurchases
+from project.core.models import Purchase
 class BaseUserInfo(models.Model):
     """Абстрактный класс для заказов"""
     class Meta:
@@ -30,14 +31,22 @@ class OrganizerProfile(BaseUserInfo):
     class Meta:
         verbose_name_plural = _(u'Профили организаторов')
 
+    # def getPurchases(self):
+    #     return getOrganizerPurchases(self)
 
-"""проверка есть ли профиль у пользователя и получение его"""
+    def getOrganizerPurchases(self):
+        try:
+            return Purchase.objects.filter(organizerProfile=self)
+        except:
+            return None
+
+
 def getOrganizerProfile(user):
     try:
-        profile = OrganizerProfile.objects.get(user=user)
+        return OrganizerProfile.objects.get(user=user)
     except:
-        profile = None
-    return profile
+        return None
+
 
 def handle_uploaded_file(f):
     destination = open('some/file/name.txt', 'wb+')
