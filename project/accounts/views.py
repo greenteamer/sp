@@ -5,7 +5,7 @@ from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, p
 from project.core.models import Purchase, Catalog, Product, CatalogProductProperties, Properties
 from django.shortcuts import render, render_to_response
 from project.accounts.profiles import retrieve
-from project.accounts.models import OrganizerProfile, getOrganizerProfile
+from project.accounts.models import OrganizerProfile, getOrganizerProfile, repopulateOrganizerProfile
 from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, purchaseForm, UserLoginForm
 from django.contrib import auth
 from django.contrib.auth import login, authenticate
@@ -35,12 +35,18 @@ def populateProfileView(request, template_name):
         """проверка есть ли профиль у пользователя и получение его файл accounts.models"""
         profile = getOrganizerProfile(user)
         form = OrganizerProfileForm(instance=profile)
+        if request.method == "POST":
+            form = OrganizerProfileForm(request.POST, request.FILES)
+            if form.is_valid() and getOrganizerProfile(user): #если профиль уже существует то только обновляем (не возвращает None)
+                current_profile = getOrganizerProfile(user)
+                current_profile = repopulateOrganizerProfile(current_profile, request)
+                current_profile.save()
+            elif form.is_valid():
+                form.save(request.user)
+            else: #должна быть обработка ошибок
+                return HttpResponseRedirect(urlresolvers.reverse('populateProfileView'))
     else:
         return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
-    if request.method == "POST":
-        form = OrganizerProfileForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save(request.user)
 
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
