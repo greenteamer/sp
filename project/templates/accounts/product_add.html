@@ -3,18 +3,19 @@
     {{ form2 }}
     <hr/>
     {% csrf_token %}
-    {{ product_form }}
+    {{ product_form.as_p }}
     <br/>
-
-    <ul>
-        {% for name_value, values in property_for_form.items %}
-            <li> {{ name_value }} :
-                {% for value in values %}
-                     {{ value }} <input type="radio" name="{{ name_value }}" value="{{ value }}"> ;
-                {% endfor %}
-            </li>
-        {% endfor %}
-    </ul>
+    {{ property_form }}
+    <br/>
+{#    <ul>#}
+{#        {% for name_value, values in property_for_form.items %}#}
+{#            <li> <b>{{ name_value }}</b>  :#}
+{#                {% for value in values %}#}
+{#                    <label for="">{{ value }} <input type="radio" name="{{ name_value }}" value="{{ value }}"></label> ;#}
+{#                {% endfor %}#}
+{#            </li>#}
+{#        {% endfor %}#}
+{#    </ul>#}
 
     <input type="submit" class="button" value="Добавить">
 </form>

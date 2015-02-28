@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
 from django import forms
+from django.contrib.auth.models import User
+from django.contrib import auth
+from django.utils.translation import ugettext, ugettext_lazy as _
+from captcha.fields import CaptchaField
 from project.accounts.models import OrganizerProfile, getOrganizerProfile
 from project.core.models import Purchase, Catalog, CatalogProductProperties, Product
 from django.forms import ModelForm, Form
+from project.core.functions import *
+
 
 class OrganizerProfileForm(forms.ModelForm):
     class Meta:
@@ -15,6 +21,78 @@ class OrganizerProfileForm(forms.ModelForm):
         obj = super(OrganizerProfileForm, self).save(commit=False)
         obj.user = user
         return obj.save()
+
+class UserRegistrationForm(forms.ModelForm):
+    error_messages = {
+        'duplicate_username': _("A user with that username already exists."),
+        'password_mismatch': _("The two password fields didn't match."),
+    }
+    username = forms.RegexField(label=_("Username"), max_length=100,
+        regex=r'^[\w.@+-]+$',
+        error_messages = {'invalid': "Это значение может состоять из латинских букв, цифр и знаков @/./+/-/_."},
+        widget=forms.TextInput(attrs={'placeholder': 'Ваше Имя', 'class': 'form-control'}),
+    )
+    email = forms.EmailField(
+        label=_("Email"),
+        error_messages = {'invalid': "Введите корректный e-mail адрес"},
+        widget=forms.TextInput(attrs={'placeholder': 'Ваш e-mail', 'class': 'form-control'}),
+    )
+    password1 = forms.CharField(label=_("Password"),
+        widget=forms.PasswordInput(attrs={'placeholder': 'Введите пароль', 'class': 'form-control'})
+    )
+
+    class Meta:
+        model = User
+        fields = ("username",)
+
+    def clean_username(self):
+        username = self.cleaned_data["username"]
+        try:
+            User.objects.get(username=username)
+        except User.DoesNotExist:
+            return username
+        raise forms.ValidationError(self.error_messages['duplicate_username'])
+
+    def save(self, commit=True):
+        user = super(UserRegistrationForm, self).save(commit=False)
+        user.set_password(self.cleaned_data["password1"])
+        if commit:
+            user.save()
+        return user
+
+class UserLoginForm(forms.ModelForm):
+    error_messages = {
+        'wrong': ("Имя пользователя или пароль введены неверно"),
+    }
+    username = forms.RegexField(label=_("Username"), max_length=100,
+        regex=r'^[\w.@+-]+$',
+        error_messages = {'invalid': "Это значение может состоять из латинских букв, цифр и знаков @/./+/-/_."},
+        widget=forms.TextInput(attrs={'placeholder': 'Ваше Имя', 'class': 'form-control'}),
+    )
+    password = forms.CharField(label=_("Password"),
+        widget=forms.PasswordInput(attrs={'placeholder': 'Введите пароль', 'class': 'form-control'})
+    )
+    class Meta:
+        model = User
+        fields = ("username",)
+
+    # def clean_username(self):
+    #     username = self.cleaned_data["username"]
+    #     try:
+    #         User.objects.get(username=username)
+    #     except User.DoesNotExist:
+    #         return username
+    #     raise forms.ValidationError(self.error_messages['duplicate_username'])
+
+    # def auth_user(self):
+    #     username = self.cleaned_data["username"]
+    #     password = self.cleaned_data["password"]
+    #     try:
+    #         User.objects.get(username=username)
+    #         user = auth.authenticate(username=username, password=password)
+    #         return user
+    #     except User.DoesNotExist:
+    #         return forms.ValidationError(self.error_messages['wrong'])
 
 
 class purchaseForm(ModelForm):
@@ -48,31 +126,67 @@ class catalogProductPropertiesForm(ModelForm):
         fields = ["cpp_name", "cpp_values"]
 
 
-class productForm(ModelForm):
+class ProductForm(ModelForm):
     class Meta:
         model = Product
-        # fields = ['comments_text']
+        exclude = ('catalog',)
+    def save(self, catalog_id):
+        # TODO: сделать валидацию на существование каталога (catalog_id)
+        obj = super(ProductForm, self).save(commit=False)
+        obj.catalog = Catalog.objects.get(id=catalog_id)
+        obj.save()
+        return obj
 
 
-#///////////////////////////////////////////////////////////////////////////////////////////
-def get_dinamic_form(catalog_id):
+
+def propertyForm(catalog_id):
+
     cpp_obj = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
-    class testForm(forms.Form):
-        # fields = CatalogProductProperties.all_field()
-        # for cpp_object in cpp_obj:
-        #     cpp_object.cpp_name = forms.CharField()
-        field1 = forms.CharField()
-        # field2 = forms.IntegerField()
-    return testForm()
+    list = []
+    for cpp_object in cpp_obj:
+        values = cpp_object.cpp_values.split(";")
+        local_dict = {}
+        for value in values:
+            local_dict.update({value: cpp_object.cpp_name})
+        list.append(local_dict)
+
+    #return list
+    class DynamicPropertyForm(forms.Form):
+
+        def __init__(self, *args, **kwargs):
+            super(DynamicPropertyForm, self).__init__(*args, **kwargs)
+
+            for dict_item in list:
+                list_choices = []
+                for key, value in dict_item.items():
+                    list_choices.append([key, key])
+                    name = value
+                slug = translit(name).lower()
+                self.fields['%s' % slug] = forms.ChoiceField(widget=forms.RadioSelect, label=name, choices=list_choices)
+
+    return DynamicPropertyForm()
 
 
-def get_user_form_for_user(user):
-    class UserForm(forms.Form):
-        username = forms.CharField()
-        fields = user.get_profile().all_field()
-        #Use field to find what to show.
-#
-# all_properties = {}
-#         for property in properties:
-#             current_catalog_product_properties = CatalogProductProperties.objects.get(id=property.properties_catalogProductProperties_id)
-#             all_properties.update({current_catalog_product_properties.cpp_name: property.properties_name.split(";")})  # формируется словарь вида {имя_свойства: значения_распарсенные_в_список}
+
+
+# class testFrom(forms.Form):
+    # flieds, sdfdf, sdfd  = [forms.CharField(),forms.CharField(),forms.CharField()]
+    #
+    # flied = forms.CharField()
+    # sdfdf = forms.CharField()
+    # sdfd = forms.CharField()
+    #
+    # choice_field = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
+
+
+
+
+
+
+
+
+
+
+
+
+
