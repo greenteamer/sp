@@ -1,6 +1,17 @@
-<h1>Все закупки:</h1>
-<ul>
-    {% for purchase in purchases%}
-        <li><a href="/profile/organizer/purchase-{{ purchase.id }}">{{ purchase.name }}</a></li>
-    {% endfor %}
-</ul>
+{% extends "accounts/_accounts_pages.html" %}
+
+
+{% block inner_content %}
+    <div class="row">
+        <div class="col-xs-12">
+
+            <h1>Все закупки:</h1>
+            <ul>
+                {% for purchase in purchases%}
+                    <li><a href="/profile/organizer/purchase-{{ purchase.id }}">{{ purchase.name }}</a></li>
+                {% endfor %}
+            </ul>
+
+        </div><!-- /.col -->
+    </div>
+{% endblock %}
