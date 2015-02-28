@@ -1,7 +1,17 @@
-<b>ID: </b>{{ purchase.id }}
-<br/>
-<b>Name: </b>{{ purchase.name }}
-<br/>
-<a href="/profile/organizer/purchase-{{ purchase.id }}-edit">Изменить закупку</a>
-<br/>
+{% extends "accounts/_accounts_pages.html" %}
 
+
+{% block inner_content %}
+    <div class="row">
+        <div class="col-xs-12">
+
+            <b>ID: </b>{{ purchase.id }}
+            <br/>
+            <b>Name: </b>{{ purchase.name }}
+            <br/>
+            <a href="/profile/organizer/purchase-{{ purchase.id }}-edit">Изменить закупку</a>
+            <br/>
+
+        </div><!-- /.col -->
+    </div>
+{% endblock %}

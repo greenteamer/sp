@@ -144,6 +144,15 @@ def logoutView(request, template_name):
 
 # Просмотр всех закупок
 def purchases(request, template_name):
+
+    user = request.user
+
+    """ проверяем пользователя и его профайл организатора"""
+    if user.is_authenticated():
+        profile = getOrganizerProfile(user)
+    else:
+        return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
+
     purchases = Purchase.objects.all()
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
@@ -220,6 +229,14 @@ def purchase(request, purchase_id, template_name, edit=False):
 # Просмотр всех каталогов для текущей закупки
 def catalogs(request, purchase_id, template_name):
     try:
+        user = request.user
+
+        """ проверяем пользователя и его профайл организатора"""
+        if user.is_authenticated():
+            profile = getOrganizerProfile(user)
+        else:
+            return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
+
         purchase = Purchase.objects.get(id=purchase_id)
         catalogs = Catalog.objects.filter(catalog_purchase=purchase_id)
         # catalogs = Catalog.objects.all()
@@ -282,6 +299,14 @@ def catalog(request, purchase_id, catalog_id, template_name):
 # Просмотр всех товаров для текущего каталога
 def products(request, purchase_id, catalog_id, template_name):
     try:
+        user = request.user
+
+        """ проверяем пользователя и его профайл организатора"""
+        if user.is_authenticated():
+            profile = getOrganizerProfile(user)
+        else:
+            return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
+
         purchase = Purchase.objects.get(id=purchase_id)
         catalog = Catalog.objects.get(id=catalog_id)
         products = Product.objects.filter(catalog=catalog_id)
@@ -293,6 +318,14 @@ def products(request, purchase_id, catalog_id, template_name):
 # Просмотр товара
 def product(request, purchase_id, catalog_id, product_id, template_name):
     try:
+        user = request.user
+
+        """ проверяем пользователя и его профайл организатора"""
+        if user.is_authenticated():
+            profile = getOrganizerProfile(user)
+        else:
+            return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
+
         purchase = Purchase.objects.get(id=purchase_id)
         catalog = Catalog.objects.get(id=catalog_id)
         product = Product.objects.get(id=product_id)
