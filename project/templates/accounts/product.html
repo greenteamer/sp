@@ -1,23 +1,34 @@
-<b>ID: </b>{{ product.id }}
-<br/>
-<b>Name: </b>{{ product.product_name }}
-<br/>
-<b>Description: </b>{{ product.description }}
-<br/>
-{#<a href="/profile/organizer/purchase-{{ purchase.id }}catalog-{{ catalog.id }}-edit">Изменить каталог</a>#}
-
-<b>all_properties: </b>
-<ul>
-    {% for name_value, values in all_properties.items %}
-        <li> {{ name_value }} :
-            {% for value in values %}
-                 {{ value }} <input type="radio" name="{{ name_value }}" value="{{ value }}"> ;
-            {% endfor %}
-        </li>
-    {% endfor %}
-</ul>
-<br/>
+{% extends "accounts/_accounts_pages.html" %}
 
 
-{#for key,value in a.items():#}
-{#... print "%s = %s" % (key,value)#}
+{% block inner_content %}
+    <div class="row">
+        <div class="col-xs-12">
+
+            <b>ID: </b>{{ product.id }}
+            <br/>
+            <b>Name: </b>{{ product.product_name }}
+            <br/>
+            <b>Description: </b>{{ product.description }}
+            <br/>
+            {#<a href="/profile/organizer/purchase-{{ purchase.id }}catalog-{{ catalog.id }}-edit">Изменить каталог</a>#}
+
+            <b>all_properties: </b>
+            <ul>
+                {% for name_value, values in all_properties.items %}
+                    <li> {{ name_value }} :
+                        {% for value in values %}
+                             {{ value }} <input type="radio" name="{{ name_value }}" value="{{ value }}"> ;
+                        {% endfor %}
+                    </li>
+                {% endfor %}
+            </ul>
+            <br/>
+
+            {#for key,value in a.items():#}
+            {#... print "%s = %s" % (key,value)#}
+
+        </div><!-- /.col -->
+    </div>
+{% endblock %}
+
