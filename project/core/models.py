@@ -19,10 +19,16 @@ class Category(MPTTModel):
 
 class Purchase(models.Model):
     name = models.CharField(max_length=100, verbose_name=u'Название закупки')
+    description = models.TextField(verbose_name=u'Описание закупки')
     organizerProfile = models.ForeignKey('accounts.OrganizerProfile', verbose_name=u'Профиль организатора')
+    date = models.DateField(auto_now_add=True)
 
     def __unicode__(self):
         return self.name
+
+    def url(self):
+        return '/profile/organizer/purchase-%s' % self.id
+
 
 class Catalog(models.Model):
     catalog_name = models.CharField(max_length=100, verbose_name=u'Название каталога')

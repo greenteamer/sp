@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
 from django.db import models
+import random
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 # from project.accounts.profiles import getOrganizerPurchases
@@ -36,7 +37,10 @@ class OrganizerProfile(BaseUserInfo):
 
     def getOrganizerPurchases(self):
         try:
-            return Purchase.objects.filter(organizerProfile=self)
+            profiles = Purchase.objects.filter(organizerProfile=self)
+            for profile in profiles: #используется для вывода статуса закупки (демо режим)
+                profile.bar = random.randrange(20,90,1)
+            return profiles
         except:
             return None
 
