@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 # from project.accounts.profiles import getOrganizerPurchases
 from project.core.models import Purchase
+
+
 class BaseUserInfo(models.Model):
     """Абстрактный класс для заказов"""
     class Meta:
@@ -27,13 +29,12 @@ class OrganizerProfile(BaseUserInfo):
     icon = models.FileField(_(u'Image'), upload_to='accounts/images/',
                              help_text=u'Фото', blank=True)
 
+
     def __unicode__(self):
         return _(u'Профиль: ') + self.user.username
+
     class Meta:
         verbose_name_plural = _(u'Профили организаторов')
-
-    # def getPurchases(self):
-    #     return getOrganizerPurchases(self)
 
     def getOrganizerPurchases(self):
         try:
@@ -50,6 +51,18 @@ def getOrganizerProfile(user):
         return OrganizerProfile.objects.get(user=user)
     except:
         return None
+
+def repopulateOrganizerProfile(profile, request):
+    profile.firstName = request.POST['firstName']
+    profile.lastName = request.POST['lastName']
+    profile.email = request.POST['email']
+    profile.phone = request.POST['phone']
+    profile.address = request.POST['address']
+    profile.city = request.POST['city']
+    profile.zipCode = request.POST['zipCode']
+
+    return profile
+
 
 
 def handle_uploaded_file(f):
