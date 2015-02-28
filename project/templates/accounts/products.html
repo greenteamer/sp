@@ -1,15 +1,25 @@
-<h1>Все товары для закупки «{{ purchase }}», каталога «{{ catalog }}»:</h1>
+{% extends "accounts/_accounts_pages.html" %}
 
-<div class="products">
-    {% for product in products %}
-        <div class="product">
-            <h5>{{ product.product_name }}</h5>
-            {{ product.description }}<br/>
-            {{ product.price }}
-            <hr/>
-        </div>
-    {% endfor %}
-</div>
 
+{% block inner_content %}
+    <div class="row">
+        <div class="col-xs-12">
+
+            <h1>Все товары для закупки «{{ purchase }}», каталога «{{ catalog }}»:</h1>
+
+            <div class="products">
+                {% for product in products %}
+                    <div class="product">
+                        <h5>{{ product.product_name }}</h5>
+                        {{ product.description }}<br/>
+                        {{ product.price }}
+                        <hr/>
+                    </div>
+                {% endfor %}
+            </div>
+
+        </div><!-- /.col -->
+    </div>
+{% endblock %}
 
 

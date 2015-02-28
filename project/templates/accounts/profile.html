@@ -1,6 +1,7 @@
 {% extends "sub_main.html" %}
 
-{% block page_css %}
+{% block head %}
+    <title>Профиль пользователя {{ user }}</title>
     <!-- Theme style -->
     <link href="{{ STATIC_URL }}AdminLte/dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
     <link href="{{ STATIC_URL }}AdminLte/dist/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css" />

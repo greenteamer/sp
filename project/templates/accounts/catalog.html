@@ -1,11 +1,20 @@
-<b>ID: </b>{{ catalog.id }}
-<br/>
-<b>Name: </b>{{ catalog.catalog_name }}
-<br/>
-{#<a href="/profile/organizer/purchase-{{ purchase.id }}catalog-{{ catalog.id }}-edit">Изменить каталог</a>#}
-<br/>
-<ul>
-    {% for catalog_product_property in catalog_product_properties %}
-        <li>{{ catalog_product_property.cpp_name }}: {{ catalog_product_property.cpp_values }}</li>
-    {% endfor %}
-</ul>
+{% extends "accounts/_accounts_pages.html" %}
+
+
+{% block inner_content %}
+    <div class="row">
+        <div class="col-xs-12">
+            <b>ID: </b>{{ catalog.id }}
+            <br/>
+            <b>Name: </b>{{ catalog.catalog_name }}
+            <br/>
+            {#<a href="/profile/organizer/purchase-{{ purchase.id }}catalog-{{ catalog.id }}-edit">Изменить каталог</a>#}
+            <br/>
+            <ul>
+                {% for catalog_product_property in catalog_product_properties %}
+                    <li>{{ catalog_product_property.cpp_name }}: {{ catalog_product_property.cpp_values }}</li>
+                {% endfor %}
+            </ul>
+        </div><!-- /.col -->
+    </div>
+{% endblock %}
