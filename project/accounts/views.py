@@ -22,6 +22,7 @@ def profileView(request, template_name):
     user = request.user
     form = OrganizerProfileForm()
     if user.is_authenticated():
+        """проверка есть ли профиль у пользователя и получение его файл accounts.models"""
         profile = getOrganizerProfile(user)
     else:
         return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
