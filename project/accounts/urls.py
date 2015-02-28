@@ -19,6 +19,9 @@ urlpatterns = patterns('project.accounts.views',
     url(r'^logout/$', 'logoutView',
 		{'template_name':'accounts/logout.html'},
 		name='logoutView'),
+    url(r'^populate-profile/$', 'populateProfileView',
+		{'template_name':'accounts/populate_profile.html'},
+		name='populateProfileView'),
 
 
     url(r'^organizer/', include('project.accounts.urls_organizer')),

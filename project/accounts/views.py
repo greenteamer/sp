@@ -20,10 +20,21 @@ from django.http.response import Http404
 
 def profileView(request, template_name):
     user = request.user
+    if user.is_authenticated():
+        """проверка есть ли профиль у пользователя и получение его файл accounts.models"""
+        profile = getOrganizerProfile(user)
+    else:
+        return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
+    return render_to_response(template_name, locals(),
+                              context_instance=RequestContext(request))
+
+def populateProfileView(request, template_name):
+    user = request.user
     form = OrganizerProfileForm()
     if user.is_authenticated():
         """проверка есть ли профиль у пользователя и получение его файл accounts.models"""
         profile = getOrganizerProfile(user)
+        form = OrganizerProfileForm(instance=profile)
     else:
         return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
     if request.method == "POST":
@@ -33,6 +44,7 @@ def profileView(request, template_name):
 
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
+
 #регистрация пользователя
 def registrationView(request, template_name):
     if request.method == 'POST':
