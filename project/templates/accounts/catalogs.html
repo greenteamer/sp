@@ -1,6 +1,16 @@
-<h1>Все каталоги для закупки «{{ purchase }}»:</h1>
-<ul>
-    {% for catalog in catalogs %}
-        <li><a href="/profile/organizer/purchase-{{ purchase.id }}/catalog-{{ catalog.id }}">{{ catalog.catalog_name }}</a></li>
-    {% endfor %}
-</ul>
+{% extends "accounts/_accounts_pages.html" %}
+
+
+{% block inner_content %}
+    <div class="row">
+        <div class="col-xs-12">
+            <h1>Все каталоги для закупки «{{ purchase }}»:</h1>
+            <ul>
+                {% for catalog in catalogs %}
+                    <li><a href="/profile/organizer/purchase-{{ purchase.id }}/catalog-{{ catalog.id }}">{{ catalog.catalog_name }}</a></li>
+                {% endfor %}
+            </ul>
+
+        </div><!-- /.col -->
+    </div>
+{% endblock %}
