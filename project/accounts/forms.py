@@ -111,11 +111,15 @@ class purchaseForm(ModelForm):
         model = Purchase
         exclude = ('organizerProfile',)
 
+    def __init__(self, *args, **kwargs):
+        super(purchaseForm, self).__init__(*args, **kwargs)
+        self.fields['name'].widget.attrs = {'placeholder': 'Введите название закупки', 'class': 'form-control'}
+        self.fields['description'].widget.attrs = {'placeholder': 'Введите описание закупки', 'class': 'form-control'}
+
     def save(self, user):
         obj = super(purchaseForm, self).save(commit=False)
         obj.organizerProfile = getOrganizerProfile(user)
         obj.save()
-        # assert isinstance(obj, object) #pycharm сам влепил
         return obj
 
 
@@ -123,6 +127,9 @@ class catalogForm(ModelForm):
     class Meta:
         model = Catalog
         exclude = ('catalog_purchase',)
+    def __init__(self, *args, **kwargs):
+        super(catalogForm, self).__init__(*args, **kwargs)
+        self.fields['catalog_name'].widget.attrs = {'placeholder': 'Введите название каталога', 'class': 'form-control'}
     def save(self, purchase_id):
         # TODO: сделать валидацию на существование закупки (purchase_id)
         obj = super(catalogForm, self).save(commit=False)
@@ -135,12 +142,22 @@ class catalogProductPropertiesForm(ModelForm):
     class Meta:
         model = CatalogProductProperties
         fields = ["cpp_name", "cpp_values"]
+    def __init__(self, *args, **kwargs):
+        super(catalogProductPropertiesForm, self).__init__(*args, **kwargs)
+        self.fields['cpp_name'].widget.attrs = {'placeholder': 'Введите свойство для товаров в этом каталоге', 'class': 'form-control'}
+        self.fields['cpp_values'].widget.attrs = {'placeholder': 'Введите возможные значения для свойства через символ ";"', 'class': 'form-control'}
 
 
 class ProductForm(ModelForm):
     class Meta:
         model = Product
         exclude = ('catalog',)
+    def __init__(self, *args, **kwargs):
+        super(ProductForm, self).__init__(*args, **kwargs)
+        self.fields['product_name'].widget.attrs = {'class': 'form-control'}
+        self.fields['description'].widget.attrs = {'class': 'form-control'}
+        self.fields['price'].widget.attrs = {'class': 'form-control'}
+        self.fields['sku'].widget.attrs = {'class': 'form-control'}
     def save(self, catalog_id):
         # TODO: сделать валидацию на существование каталога (catalog_id)
         obj = super(ProductForm, self).save(commit=False)

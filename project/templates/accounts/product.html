@@ -1,34 +1,70 @@
-{% extends "accounts/_accounts_pages.html" %}
+{% extends "sub_main.html" %}
 
+{% block content %}
+      <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>Просмотр товара</h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
+                <li class="active">Посмотреть товар</li>
+            </ol>
+        </section>
 
-{% block inner_content %}
-    <div class="row">
-        <div class="col-xs-12">
+        {% if not profile %}
+            <div class="pad margin no-print">
+                <div class="callout callout-info" style="margin-bottom: 0!important;">
+                    <h4><i class="fa fa-info"></i> Записочка</h4>
+                    Для того что бы работать организатором в SP Mooscow, вам необходимо заполнить личные данные, после этого Ваша учетная запись будет рассмотренна админимтратором и ей будет присвоен соответствующий статус
+                </div>
+            </div>
+        {% endif %}
 
-            <b>ID: </b>{{ product.id }}
-            <br/>
-            <b>Name: </b>{{ product.product_name }}
-            <br/>
-            <b>Description: </b>{{ product.description }}
-            <br/>
-            {#<a href="/profile/organizer/purchase-{{ purchase.id }}catalog-{{ catalog.id }}-edit">Изменить каталог</a>#}
+        {% if message %}
+            <div class="pad margin no-print">
+                <div class="callout callout-info" style="margin-bottom: 0!important;">
+                    <h4><i class="fa fa-info"></i> Поздравляем</h4>
+                    {{ message }}
+                </div>
+            </div>
+        {% endif %}
 
-            <b>all_properties: </b>
-            <ul>
-                {% for name_value, values in all_properties.items %}
-                    <li> {{ name_value }} :
-                        {% for value in values %}
-                             {{ value }} <input type="radio" name="{{ name_value }}" value="{{ value }}"> ;
+        <!-- Main content -->
+        <section class="invoice">
+            <!-- Table row -->
+            <div class="row">
+
+                <div class="col-xs-6">
+
+                    <b>ID: </b>{{ product.id }}
+                    <br/>
+                    <b>Name: </b>{{ product.product_name }}
+                    <br/>
+                    <b>Description: </b>{{ product.description }}
+                    <br/>
+                    {#<a href="/profile/organizer/purchase-{{ purchase.id }}catalog-{{ catalog.id }}-edit">Изменить каталог</a>#}
+
+                    <b>all_properties: </b>
+                    <ul>
+                        {% for name_value, values in all_properties.items %}
+                            <li> {{ name_value }} :
+                                {% for value in values %}
+                                     {{ value }} <input type="radio" name="{{ name_value }}" value="{{ value }}"> ;
+                                {% endfor %}
+                            </li>
                         {% endfor %}
-                    </li>
-                {% endfor %}
-            </ul>
-            <br/>
+                    </ul>
+                    <br/>
 
-            {#for key,value in a.items():#}
-            {#... print "%s = %s" % (key,value)#}
+                </div><!-- /.col -->
+            </div><!-- /.row -->
 
-        </div><!-- /.col -->
-    </div>
+        </section><!-- /.content -->
+        <div class="clearfix"></div>
+    </div><!-- /.content-wrapper -->
+
 {% endblock %}
+
+
 

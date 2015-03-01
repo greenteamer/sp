@@ -266,7 +266,6 @@ def catalogAdd(request, purchase_id, template_name):
             new_catalogProductProperties = catalogProductProperties_form.save(commit=False)
             new_catalogProductProperties.cpp_catalog = catalog_form.save(purchase_id)  # каталог сохраняется для нужной закупки - переопределена ф-я save, возвращает созданный объект каталога
             new_catalogProductProperties.cpp_purchase = Purchase.objects.get(id=purchase_id)
-            new_catalogProductProperties.cpp_slug = slugify(new_catalogProductProperties.cpp_name)
             new_catalogProductProperties.save()
             message = u"Новый каталог «%s» успешно добавлен. <br/> Добавить еще: " % request.POST['catalog_name']
         else:
