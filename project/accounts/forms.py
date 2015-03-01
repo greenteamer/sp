@@ -6,7 +6,7 @@ from django.contrib import auth
 from django.utils.translation import ugettext, ugettext_lazy as _
 from captcha.fields import CaptchaField
 from project.accounts.models import OrganizerProfile, getOrganizerProfile
-from project.core.models import Purchase, Catalog, CatalogProductProperties, Product
+from project.core.models import Purchase, Catalog, CatalogProductProperties, Product, ProductImages
 from django.forms import ModelForm, Form
 from project.core.functions import *
 
@@ -165,6 +165,19 @@ class ProductForm(ModelForm):
         obj.save()
         return obj
 
+
+class ProductImagesForm(ModelForm):
+    class Meta:
+        model = ProductImages
+        exclude = ('p_image_product',)
+    def __init__(self, *args, **kwargs):
+        super(ProductImagesForm, self).__init__(*args, **kwargs)
+        self.fields['image'].widget.attrs = {'class': 'btn btn-block btn-default btn-sm'}
+    def save(self, product_id):
+        obj = super(ProductImagesForm, self).save(commit=False)
+        obj.p_image_product = Product.objects.get(id=product_id)
+        obj.save()
+        return obj
 
 
 def propertyForm(catalog_id):
