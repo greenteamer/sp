@@ -7,6 +7,9 @@ class PropertiesInline(admin.StackedInline):
     model = Properties
     extra = 1
 
+class ProductImagesInline(admin.StackedInline):
+    model = ProductImages
+    extra = 1
 
 class ProductAdmin(admin.ModelAdmin):
     model = Product
@@ -14,10 +17,11 @@ class ProductAdmin(admin.ModelAdmin):
     #     (u'Основная информация', {'fields':['name','slug','body']}),
     #     (u'Специальная информация', {'fields': ['special_image','special_body']}),
     # ]
-    inlines = [PropertiesInline]
+    inlines = [PropertiesInline, ProductImagesInline]
     # prepopulated_fields = {'slug':('name',)}
 
 admin.site.register(Product, ProductAdmin)
+admin.site.register(ProductImages)
 admin.site.register(Properties)
 admin.site.register(Catalog)
 admin.site.register(CatalogProductProperties)
