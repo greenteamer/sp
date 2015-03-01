@@ -1,24 +1,157 @@
-{% extends "main.html" %}
+{% extends "sub_main.html" %}
+
+{% block head %}
+    <title>Профиль пользователя {{ user }}</title>
+    <!-- Theme style -->
+    <link href="{{ STATIC_URL }}AdminLte/dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{ STATIC_URL }}AdminLte/dist/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block body %}
+    <body class="skin-blue">
+{% endblock %}
+
+{% block template_name %}
+{% endblock %}
 
 {% block content %}
 
-    {% if profile %}
-        <h2>Аккаунт {{ user }}</h2>
-        <img src="{{ MEDIA_URL }}{{ profile.icon }}" width="100" height="100" alt=""/>
-        <p>{{ profile.firstName }}</p>
-        <p>{{ profile.lastName }}</p>
-        <p>{{ profile.phone }}</p>
-        <p>{{ profile.email }}</p>
-        <p>{{ profile.address }}</p>
-        <p>{{ profile.zipCode }}</p>
-    {% elif profile == None %}
-        <h2>Пожалуйста заполните ваш профиль</h2>
-        <form action="." method="post" enctype="multipart/form-data">{% csrf_token %}
-			{{ form.as_p }}
-            <input type="submit" value="Отправить"/>
-        </form>
-    {% else %}
-        <h2>Пожалуйста зарегистрируйтесь</h2>
-    {% endif %}
+      <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
 
+
+            <h1>Добро пожаловать, {{ profile.firstName }} {{ profile.LastName }}<small>{{ user }}</small></h1>
+
+          <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
+            <li class="active">Личный кабинет</li>
+          </ol>
+        </section>
+
+        {% if not profile %}
+            <div class="pad margin no-print">
+                <div class="callout callout-info" style="margin-bottom: 0!important;">
+                    <h4><i class="fa fa-info"></i> Записочка:</h4>
+                    Для того что бы работать организатором в SP Mooscow, вам необходимо заполнить личные данные, после этого Ваша учетная запись будет рассмотренна админимтратором и ей будет присвоен соответствующий статус
+                </div>
+            </div>
+        {% endif %}
+
+
+
+        <!-- Main content -->
+        <section class="invoice">
+          <!-- Table row -->
+            <div class="row">
+
+                <div class="col-xs-12 table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>№</th>
+                                <th>Закупка</th>
+                                <th>Дата открытия</th>
+                                <th>Описание</th>
+                                <th>Завершенность</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for purchase in profile.getOrganizerPurchases %}
+                                <tr>
+{#                                    <td>{{ forloop.counter }}</td>#}
+                                    <td>{{ purchase.id }}</td>
+                                    <td><a href="{{ purchase.url }}">{{ purchase.name }}</a></td>
+                                    <td>{{ purchase.date|date:"d M Y" }}</td>
+                                    <td>{{ purchase.description|truncatewords:10|safe }}</td>
+                                    <td>
+{#                                        <div class="progress">#}
+{#                                          <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ purchase.bar }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ purchase.bar }}%;">#}
+{#                                            <span class="">{{ purchase.bar }}% Complete</span>#}
+{#                                          </div>#}
+{#                                        </div>#}
+                                        <div class="progress progress-xxs">
+                                            <div class="progress-bar progress-bar-danger progress-bar-striped" role="progressbar" aria-valuenow="{{ purchase.bar }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ purchase.bar }}%;">
+                                              <span class="">{{ purchase.bar }}% Complete (warning)</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div><!-- /.col -->
+
+            <div class="col-xs-6">
+                <div class="box box-primary">
+                    <div class="box-header">
+                      <i class="ion ion-clipboard"></i>
+                      <h3 class="box-title">6 шагов для начала работы</h3>
+                    </div><!-- /.box-header -->
+                    <div class="box-body">
+                      <ul class="todo-list ui-sortable">
+                        <li class="">
+                          <!-- checkbox -->
+                          <div class="icheckbox_flat-blue" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="checkbox" value="" name="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background-color: rgb(255, 255, 255); border: 0px; opacity: 0; background-position: initial initial; background-repeat: initial initial;"></ins></div>
+                          <!-- todo text -->
+                          <span class="text">Заполните Ваш профиль</span>
+                          <!-- Emphasis label -->
+                          <small class="label label-danger"><i class="fa fa-clock-o"></i> 1 шаг</small>
+                          <!-- General tools such as edit or delete-->
+                        </li>
+                        <li>
+                          <div class="icheckbox_flat-blue" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="checkbox" value="" name="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background-color: rgb(255, 255, 255); border: 0px; opacity: 0; background-position: initial initial; background-repeat: initial initial;"></ins></div>
+                          <span class="text">Заполните способы оплаты</span>
+                          <small class="label label-info"><i class="fa fa-clock-o"></i> 2 шаг</small>
+                        </li>
+                        <li>
+                          <div class="icheckbox_flat-blue" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="checkbox" value="" name="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background-color: rgb(255, 255, 255); border: 0px; opacity: 0; background-position: initial initial; background-repeat: initial initial;"></ins></div>
+                          <span class="text">Добавьте каталог товаров для закупки</span>
+                          <small class="label label-warning"><i class="fa fa-clock-o"></i> 3 шаг</small>
+                        </li>
+                        <li>
+                          <div class="icheckbox_flat-blue" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="checkbox" value="" name="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background-color: rgb(255, 255, 255); border: 0px; opacity: 0; background-position: initial initial; background-repeat: initial initial;"></ins></div>
+                          <span class="text">Закройте закупку и объявите прием средств</span>
+                          <small class="label label-success"><i class="fa fa-clock-o"></i> 4 шаг</small>
+                        </li>
+                        <li>
+                          <div class="icheckbox_flat-blue" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="checkbox" value="" name="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background-color: rgb(255, 255, 255); border: 0px; opacity: 0; background-position: initial initial; background-repeat: initial initial;"></ins></div>
+                          <span class="text">Доставьте товары в пункт распределения</span>
+                          <small class="label label-primary"><i class="fa fa-clock-o"></i> 5 шаг</small>
+                        </li>
+                        <li>                          
+                          <div class="icheckbox_flat-blue" aria-checked="" aria-disabled="false" style="position: relative;"><input type="checkbox" value="" name="" style="position: absolute; opacity: 0;"></div>
+                          <span class="text">Наслаждайтесь результатом и повторите его</span>
+                          <small class="label label-default"><i class="fa fa-clock-o"></i> 6 шаг</small>
+                        </li>
+                      </ul>
+                    </div><!-- /.box-body -->
+                  </div>
+
+            </div><!-- /.row -->
+        </div>
+
+
+
+        </section><!-- /.content -->
+        <div class="clearfix"></div>
+      </div><!-- /.content-wrapper -->
+    
+{% endblock %}
+
+{% block page_js %}
+    <script src='{{ STATIC_URL }}AdminLte/plugins/fastclick/fastclick.min.js'></script>
+    <script src="{{ STATIC_URL }}AdminLte/dist/js/app.min.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}AdminLte/plugins/iCheck/icheck.min.js" type="text/javascript"></script>
+    <script>
+      $(function () {
+        $('input').iCheck({
+          checkboxClass: 'icheckbox_square-blue',
+          radioClass: 'iradio_square-blue',
+          increaseArea: '20%' // optional
+        });
+      });
+    </script>
+{#    <script src="{{ STATIC_URL }}AdminLte/dist/js/demo.js" type="text/javascript"></script>#}
 {% endblock %}

@@ -1,6 +1,51 @@
-<h1>Все каталоги для закупки «{{ purchase }}»:</h1>
-<ul>
-    {% for catalog in catalogs %}
-        <li><a href="/profile/organizer/purchase-{{ purchase.id }}/catalog-{{ catalog.id }}">{{ catalog.catalog_name }}</a></li>
-    {% endfor %}
-</ul>
+{% extends "sub_main.html" %}
+
+{% block content %}
+      <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>Все каталоги для закупки «{{ purchase }}»</h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
+                <li class="active">Просмотр каталогов</li>
+            </ol>
+        </section>
+
+        {% if not profile %}
+            <div class="pad margin no-print">
+                <div class="callout callout-info" style="margin-bottom: 0!important;">
+                    <h4><i class="fa fa-info"></i> Записочка</h4>
+                    Для того что бы работать организатором в SP Mooscow, вам необходимо заполнить личные данные, после этого Ваша учетная запись будет рассмотренна админимтратором и ей будет присвоен соответствующий статус
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Main content -->
+        <section class="invoice">
+            <!-- Table row -->
+            <div class="row">
+
+                <div class="col-xs-6">
+                    {% if not catalogs %}
+                        <div>
+                            <p>Нет доступных каталогов</p>
+                            <p><a href="/profile/organizer/purchase-{{ purchase.id }}/catalog-add">Создать новый каталог</a></p>
+                        </div>
+                    {% else %}
+                        <ul>
+                            {% for catalog in catalogs %}
+                                <li><a href="/profile/organizer/purchase-{{ purchase.id }}/catalog-{{ catalog.id }}">{{ catalog.catalog_name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+
+        </section><!-- /.content -->
+        <div class="clearfix"></div>
+    </div><!-- /.content-wrapper -->
+
+{% endblock %}
+
