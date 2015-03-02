@@ -1,4 +1,4 @@
-{% extends "sub_main.html" %}
+{% extends "core_main.html" %}
 
 {% block content %}
       <!-- Content Wrapper. Contains page content -->
@@ -31,9 +31,11 @@
                     <b>ID: </b>{{ purchase.id }}
                     <br/>
                     <b>Name: </b>{{ purchase.name }}
-                    <br/>
-                    <a href="/profile/organizer/purchase-{{ purchase.id }}-edit">Изменить закупку</a>
-                    <br/>
+                    <br/><br/>
+
+                    <a class="btn btn-success" href="{{ purchase.url }}-edit">Изменить закупку</a>
+                    <br/><br/>
+                    <a class="btn btn-primary" href="catalogs">Каталоги закупки</a>
 
                 </div><!-- /.col -->
             </div><!-- /.row -->

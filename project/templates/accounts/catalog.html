@@ -1,4 +1,4 @@
-{% extends "sub_main.html" %}
+{% extends "core_main.html" %}
 
 {% block content %}
       <!-- Content Wrapper. Contains page content -->
@@ -40,6 +40,12 @@
                             <li>{{ catalog_product_property.cpp_name }}: {{ catalog_product_property.cpp_values }}</li>
                         {% endfor %}
                     </ul>
+
+                    <br/><br/>
+{#                    <a class="btn btn-success" href="{{ catalog.url_account }}-edit">Изменить каталог</a>#}
+                    <br/><br/>
+                    <a class="btn btn-primary" href="{{ catalog.url }}/products">Посмотреть товары</a>
+                    <a class="btn btn-primary" href="{{ purchase.url }}/catalogs">Все каталоги</a>
 
                 </div><!-- /.col -->
             </div><!-- /.row -->

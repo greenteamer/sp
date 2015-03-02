@@ -45,26 +45,33 @@
         <section class="invoice">
             <!-- Table row -->
             <div class="row">
-
-                <div class="col-xs-6">
-
+                    <div class="col-sm-12">
+                        <a class="btn btn-default" href="/profile/organizer/purchase-{{ purchase_id }}/catalog-{{ catalog_id }}/product-{{ product.id }}">Вернуться в просмотр товара</a>
+                    </div>
                     <!-- form start -->
                     <form action="" method="post" enctype="multipart/form-data" >
-                        {% csrf_token %}
-                        <hr/>
-                        {{ product_form.as_p }}
+                        <div class="col-xs-6">
+                            {% csrf_token %}
+                            <hr/>
+                            {{ product_form.as_p }}
+                            <br/>
+                            {{ property_form }}
+                            <br/>
+                        </div><!-- /.col -->
+                        <div class="col-xs-6">
+                            <b>Image:</b>
+                            <br/>
+                            <img src="{{ MEDIA_URL }}{{ product_image }}" width="100%" height="auto" alt=""/>
+                            <br/>
+                            {{ product_image_form.as_p }}
+                        </div>
                         <br/>
-                        {{ property_form }}
-                        <br/>
-                        <b>Image:</b> <img src="{{ MEDIA_URL }}{{ product_image }}" width="100" height="100" alt=""/>
-                        {{ product_image_form.as_p }}
-                        <br/>
-                        <div class="box-footer">
-                            <button type="submit" class="btn btn-primary">Отправить</button>
+                        <div class="box-footer col-xs-12">
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
                         </div>
                     </form>
 
-                </div><!-- /.col -->
+
             </div><!-- /.row -->
 
         </section><!-- /.content -->
