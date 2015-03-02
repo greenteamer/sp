@@ -12,7 +12,6 @@
             </ol>
         </section>
 
-
         <!-- Main content -->
         <section class="invoice">
             <!-- Table row -->
@@ -22,13 +21,22 @@
 
                     <b>ID: </b>{{ purchase.id }}
                     <br/>
+                    ссылка: {{ purchase.url }}
+                    <br/>
                     <b>Название закупки: </b>{{ purchase.name }}
                     <br/>
                     <b>Описание:</b>{{ purchase.description }}
+                    <br/>
 
-                    {% for catalog in purchase.get_catalogs %}
-                        {{ catalog.name }}
-                    {% endfor %}
+                    <b>Каталоги:</b>
+                    {% if purchase.get_catalogs %}
+
+                        {% for catalog in purchase.get_catalogs %}
+                            <br/>
+                            {{ catalog.catalog_name }} - {{ catalog.url }}
+                        {% endfor %}
+                    {% endif %}
+
 
 
                 </div><!-- /.col -->
