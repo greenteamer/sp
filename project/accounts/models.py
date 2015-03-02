@@ -8,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from project.core.models import Purchase
 
 
+
 class BaseUserInfo(models.Model):
     """Абстрактный класс для заказов"""
     class Meta:

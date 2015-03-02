@@ -23,6 +23,7 @@ def profileView(request, template_name):
     if user.is_authenticated():
         """проверка есть ли профиль у пользователя и получение его файл accounts.models"""
         profile = getOrganizerProfile(user)
+
     else:
         return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
     return render_to_response(template_name, locals(),
@@ -155,7 +156,7 @@ def purchases(request, template_name):
     else:
         return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
 
-    purchases = Purchase.objects.all()
+    purchases = Purchase.objects.filter(organizerProfile=profile)
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
 
