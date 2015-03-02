@@ -64,10 +64,13 @@
                     <div class="box box-primary">
                         <div class="box-header">
                           <h3 class="box-title">Основные данные</h3>
+                            {% if form.error %}
+                                <p>{{ form.error }}</p>
+                            {% endif %}
                         </div><!-- /.box-header -->
                         <!-- form start -->
 {#                        <form role="form">#}
-                        <form action="." method="post">{% csrf_token %}
+                        <form action="." method="post" enctype="multipart/form-data">{% csrf_token %}
                           <div class="box-body">
                             <div class="form-group">
                               <label for="exampleInputEmail1">Как к Вам обращаться</label>
