@@ -37,6 +37,8 @@
 
                 <div class="col-xs-6">
 
+                    <a href="/profile/organizer/purchase-{{ purchase.id }}/catalog-{{ catalog.id }}/product-{{ product.id }}-edit">Изменить товар</a>
+                    <br/>
                     <b>ID: </b>{{ product.id }}
                     <br/>
                     <b>Name: </b>{{ product.product_name }}
@@ -52,7 +54,8 @@
                         {% for name_value, values in all_properties.items %}
                             <li> {{ name_value }} :
                                 {% for value in values %}
-                                     {{ value }} <input type="radio" name="{{ name_value }}" value="{{ value }}"> ;
+                                    {{ value }}
+{#                                  <input type="radio" name="{{ name_value }}" value="{{ value }}"> ;#}
                                 {% endfor %}
                             </li>
                         {% endfor %}
