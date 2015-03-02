@@ -5,11 +5,11 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>Просмотр данных закупки</h1>
-            <ol class="breadcrumb">
+           <ol class="breadcrumb" style="display: block">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
                 <li class="active">Просмотреть закупку</li>
             </ol>
+            <h1>Закупка "{{ purchase.name }}"</h1>
         </section>
 
         <!-- Main content -->
@@ -21,19 +21,15 @@
 
                     <b>ID: </b>{{ purchase.id }}
                     <br/>
-                    ссылка: {{ purchase.url }}
-                    <br/>
                     <b>Название закупки: </b>{{ purchase.name }}
                     <br/>
                     <b>Описание:</b>{{ purchase.description }}
                     <br/>
-
-                    <b>Каталоги:</b>
                     {% if purchase.get_catalogs %}
-
+                        <b>Каталоги:</b>
                         {% for catalog in purchase.get_catalogs %}
                             <br/>
-                            {{ catalog.catalog_name }} - {{ catalog.url }}
+                            <a href="{{ catalog.url_core }}">{{ catalog.catalog_name }}</a>
                         {% endfor %}
                     {% endif %}
 
