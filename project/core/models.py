@@ -33,6 +33,8 @@ class Purchase(models.Model):
 
     def url(self):
         return '/profile/organizer/purchase-%s' % self.id
+    def url_core(self):
+        return '/purchase-%s' % self.id
 
 
 class Catalog(models.Model):
@@ -42,6 +44,16 @@ class Catalog(models.Model):
     def __unicode__(self):
         return self.catalog_name
 
+    def url(self):
+        return '%s/catalog-%s' % (self.catalog_purchase.url() , self.id)
+    def url_core(self):
+        return '%s/catalog-%s' % (self.catalog_purchase.url_core() , self.id)
+
+    def get_products(self):
+        products = Product.objects.filter(catalog=self.id)
+        for product in products:
+            product.img = ProductImages.objects.filter(p_image_product=product.id)[0].url()
+        return products
 
 
 # Товары
@@ -60,6 +72,9 @@ class ProductImages(models.Model):
     image = models.FileField(_(u'Image'), upload_to='product/',
                              help_text=u'Изображение', blank=True)
     p_image_product = models.ForeignKey(Product, verbose_name=u'Выбрать товар')
+
+    def url(self):
+        return "/media/%s" % self.image
 
 
 class CatalogProductProperties(models.Model):

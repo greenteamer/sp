@@ -6,7 +6,7 @@ from django.core import urlresolvers
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.core.context_processors import csrf
-from project.core.models import Purchase, Product, Catalog
+from project.core.models import Purchase, Product, Catalog, CatalogProductProperties
 from project.core.functions import *
 from project.accounts.models import getOrganizerProfile
 from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, purchaseForm, catalogForm, catalogProductPropertiesForm, ProductForm, propertyForm
@@ -49,3 +49,17 @@ def corePurchase(request, purchase_id, template_name):
 
     return render_to_response(template_name, locals(),
                                   context_instance=RequestContext(request))
+
+
+# Просмотр каталога
+def coreCatalog(request, purchase_id, catalog_id, template_name):
+    try:
+        purchase = Purchase.objects.get(id=purchase_id)
+        catalog = Catalog.objects.get(id=catalog_id)
+
+        # catalog_product_properties = CatalogProductProperties.objects.filter(cpp_catalog=catalog_id)
+        # catalogs = Catalog.objects.all()
+        return render_to_response(template_name, locals(),
+                                  context_instance=RequestContext(request))
+    except ObjectDoesNotExist:
+            raise Http404

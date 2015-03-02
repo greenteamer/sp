@@ -18,7 +18,6 @@ def coreLeftMenu(context, request):
         return {
             'user': user,
         }
-
 # Register the custom tag as an inclusion tag with takes_context=True.
 register.inclusion_tag('core/tags/core_left_menu.html', takes_context=True)(coreLeftMenu)
 
