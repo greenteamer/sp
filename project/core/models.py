@@ -49,6 +49,12 @@ class Catalog(models.Model):
     def url_core(self):
         return '%s/catalog-%s' % (self.catalog_purchase.url_core() , self.id)
 
+    def get_products(self):
+        products = Product.objects.filter(catalog=self.id)
+        for product in products:
+            product.img = ProductImages.objects.filter(p_image_product=product.id)[0].url()
+        return products
+
 
 # Товары
 class Product(models.Model):
@@ -67,13 +73,12 @@ class ProductImages(models.Model):
                              help_text=u'Изображение', blank=True)
     p_image_product = models.ForeignKey(Product, verbose_name=u'Выбрать товар')
 
+    def url(self):
+        return "/media/%s" % self.image
+
 
 class CatalogProductProperties(models.Model):
     cpp_name = models.CharField(max_length=100, verbose_name=u'Свойство товара в каталоге', unique=True)
-    # cpp_slug = models.SlugField((u'Slug'), max_length=50, unique=True,
-    #                         help_text=(u'Slug for product url created from name.'))
-    # cpp_slug = models.SlugField(null=True, blank=True) # Allow blank submission in admin
-    # cpp_slug = AutoSlugField(populate_from='cpp_name', unique=True)
     cpp_slug = models.CharField(null=True, max_length=255, blank=True)
     cpp_values = models.CharField(max_length=255, verbose_name=u'Возможные значения')
     cpp_catalog = models.ForeignKey(Catalog)

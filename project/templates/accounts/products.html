@@ -35,21 +35,32 @@
             <!-- Table row -->
             <div class="row">
 
-                <div class="col-xs-6">
+                <div class="col-xs-12">
 
                     {% if not products %}
                         <div>
                             <p>Нет созданных товаров</p>
-                            <p><a href="/profile/organizer/purchase-{{ purchase.id }}/catalog-{{ catalog.id }}/product-add">Создать новый каталог</a></p>
+                            <p><a href="/profile/organizer/purchase-{{ purchase.id }}/catalog-{{ catalog.id }}/product-add">Создать новый товар</a></p>
                         </div>
                     {% else %}
-                        <div class="products">
+                        <div class="products row">
                             {% for product in products %}
-                                <div class="product" >
-                                    <h3><a href="/profile/organizer/purchase-{{ purchase.id }}/catalog-{{ catalog.id }}/product-{{ product.id }}">{{ product.product_name }}</a></h3>
-                                    {{ product.description }}<br/>
-                                    {{ product.price }}
-                                    <hr/>
+
+                                <div class="product col-sm-4" >
+                                    <div class="bg-primary" style="padding:10px;margin-bottom: 20px;">
+                                        <h3><a style="color:white;" href="/profile/organizer/purchase-{{ purchase.id }}/catalog-{{ catalog.id }}/product-{{ product.id }}">{{ product.product_name }}</a></h3>
+                                        <b>Описание: </b>{{ product.description }}<br/>
+                                        <b>Цена: </b>{{ product.price }}
+                                        <div class="center-block" >
+                                            {% if product.product_image %}
+                                                <img class="img-thumbnail center-block" src="{{ MEDIA_URL }}{{ product.product_image }}" width="auto" style="height: 70px;" alt=""/>
+                                            {% else %}
+                                                <img class="img-thumbnail center-block" src="{{ MEDIA_URL }}accounts/images/no_image-128.png" width="auto" style="height: 70px;" alt=""/>
+                                            {% endif %}
+                                        </div>
+
+                                        <hr/>
+                                    </div>
                                 </div>
                             {% endfor %}
                         </div>
