@@ -41,7 +41,8 @@ class Catalog(models.Model):
 
     def __unicode__(self):
         return self.catalog_name
-
+    def url_account(self):
+        return '/profile/organizer/purchase-%s/catalog-%s' % (self.id, self.catalog_purchase.id)
 
 
 # Товары
@@ -64,10 +65,6 @@ class ProductImages(models.Model):
 
 class CatalogProductProperties(models.Model):
     cpp_name = models.CharField(max_length=100, verbose_name=u'Свойство товара в каталоге', unique=True)
-    # cpp_slug = models.SlugField((u'Slug'), max_length=50, unique=True,
-    #                         help_text=(u'Slug for product url created from name.'))
-    # cpp_slug = models.SlugField(null=True, blank=True) # Allow blank submission in admin
-    # cpp_slug = AutoSlugField(populate_from='cpp_name', unique=True)
     cpp_slug = models.CharField(null=True, max_length=255, blank=True)
     cpp_values = models.CharField(max_length=255, verbose_name=u'Возможные значения')
     cpp_catalog = models.ForeignKey(Catalog)

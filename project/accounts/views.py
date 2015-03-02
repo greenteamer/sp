@@ -312,6 +312,12 @@ def products(request, purchase_id, catalog_id, template_name):
         purchase = Purchase.objects.get(id=purchase_id)
         catalog = Catalog.objects.get(id=catalog_id)
         products = Product.objects.filter(catalog=catalog_id)
+
+        for product in products:
+            try:
+                product.product_image = ProductImages.objects.get(p_image_product_id=product.id).image
+            except:
+                continue
         return render_to_response(template_name, locals(),
                                   context_instance=RequestContext(request))
     except ObjectDoesNotExist:
