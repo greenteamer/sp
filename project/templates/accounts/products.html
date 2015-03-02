@@ -1,25 +1,67 @@
-{% extends "accounts/_accounts_pages.html" %}
+{% extends "sub_main.html" %}
 
+{% block content %}
+      <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>Просмотр товаров для закупки «{{ purchase }}», каталога «{{ catalog }}»</h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
+                <li class="active">Просмотр товаров</li>
+            </ol>
+        </section>
 
-{% block inner_content %}
-    <div class="row">
-        <div class="col-xs-12">
-
-            <h1>Все товары для закупки «{{ purchase }}», каталога «{{ catalog }}»:</h1>
-
-            <div class="products">
-                {% for product in products %}
-                    <div class="product">
-                        <h5>{{ product.product_name }}</h5>
-                        {{ product.description }}<br/>
-                        {{ product.price }}
-                        <hr/>
-                    </div>
-                {% endfor %}
+        {% if not profile %}
+            <div class="pad margin no-print">
+                <div class="callout callout-info" style="margin-bottom: 0!important;">
+                    <h4><i class="fa fa-info"></i> Записочка</h4>
+                    Для того что бы работать организатором в SP Mooscow, вам необходимо заполнить личные данные, после этого Ваша учетная запись будет рассмотренна админимтратором и ей будет присвоен соответствующий статус
+                </div>
             </div>
+        {% endif %}
 
-        </div><!-- /.col -->
-    </div>
+        {% if message %}
+            <div class="pad margin no-print">
+                <div class="callout callout-info" style="margin-bottom: 0!important;">
+                    <h4><i class="fa fa-info"></i> Поздравляем</h4>
+                    {{ message }}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Main content -->
+        <section class="invoice">
+            <!-- Table row -->
+            <div class="row">
+
+                <div class="col-xs-6">
+
+                    {% if not products %}
+                        <div>
+                            <p>Нет созданных товаров</p>
+                            <p><a href="/profile/organizer/purchase-{{ purchase.id }}/catalog-{{ catalog.id }}/product-add">Создать новый каталог</a></p>
+                        </div>
+                    {% else %}
+                        <div class="products">
+                            {% for product in products %}
+                                <div class="product" >
+                                    <h3><a href="/profile/organizer/purchase-{{ purchase.id }}/catalog-{{ catalog.id }}/product-{{ product.id }}">{{ product.product_name }}</a></h3>
+                                    {{ product.description }}<br/>
+                                    {{ product.price }}
+                                    <hr/>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+
+        </section><!-- /.content -->
+        <div class="clearfix"></div>
+    </div><!-- /.content-wrapper -->
+
 {% endblock %}
 
 
