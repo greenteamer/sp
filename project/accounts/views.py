@@ -15,7 +15,7 @@ from django.http import HttpResponseRedirect
 from project.settings import ADMIN_EMAIL
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.core.exceptions import ObjectDoesNotExist
-from django.http.response import Http404
+from django.http.response import Http404, HttpResponse
 
 
 def profileView(request, template_name):
@@ -264,21 +264,55 @@ def catalogAdd(request, purchase_id, template_name):
     message = ''
     if request.POST:
         catalog_form = catalogForm(request.POST)
-        catalogProductProperties_form = catalogProductPropertiesForm(request.POST)
-        if catalog_form.is_valid() and catalogProductProperties_form.is_valid():
-            new_catalogProductProperties = catalogProductProperties_form.save(commit=False)
-            new_catalogProductProperties.cpp_catalog = catalog_form.save(purchase_id)  # каталог сохраняется для нужной закупки - переопределена ф-я save, возвращает созданный объект каталога
-            new_catalogProductProperties.cpp_purchase = Purchase.objects.get(id=purchase_id)
-            new_catalogProductProperties.save()
+        # catalogProductProperties_form = catalogProductPropertiesForm(request.POST)
+
+        if catalog_form.is_valid():
+            new_catalog = catalog_form.save(purchase_id)  # каталог сохраняется для нужной закупки - переопределена ф-я save, возвращает созданный объект каталога
+
+            cpp_names = request.POST.getlist('cpp_name')
+            cpp_values = request.POST.getlist('cpp_values')
+
+            cpp_purchase = Purchase.objects.get(id=purchase_id)
+
+            for cpp_name in cpp_names:
+                if cpp_name != '' and cpp_name != None:
+                    new_catalogProductProperties = CatalogProductProperties()
+                    new_catalogProductProperties.cpp_name = cpp_name
+                    new_catalogProductProperties.cpp_values = cpp_values[cpp_names.index(cpp_name)]
+                    new_catalogProductProperties.cpp_catalog = new_catalog
+                    new_catalogProductProperties.cpp_purchase = cpp_purchase
+                    new_catalogProductProperties.save()
+
             message = u"Новый каталог «%s» успешно добавлен. <br/> Добавить еще: " % request.POST['catalog_name']
         else:
             message = u"Ошибка при добавлении каталога"
+        #
+        # if catalog_form.is_valid() and catalogProductProperties_form.is_valid():
+        #     new_catalogProductProperties = catalogProductProperties_form.save(commit=False)
+        #     new_catalogProductProperties.cpp_catalog = catalog_form.save(purchase_id)  # каталог сохраняется для нужной закупки - переопределена ф-я save, возвращает созданный объект каталога
+        #     new_catalogProductProperties.cpp_purchase = Purchase.objects.get(id=purchase_id)
+        #     new_catalogProductProperties.save()
+        #     message = u"Новый каталог «%s» успешно добавлен. <br/> Добавить еще: " % request.POST['catalog_name']
+        # else:
+        #     message = u"Ошибка при добавлении каталога"
 
     catalog_form = catalogForm()
     catalogProductProperties_form = catalogProductPropertiesForm()
 
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
+
+
+# страница для ajax запроса получения полей ввода свойств,при добавлении каталога
+def getNewCatalogProductPropertiesFormBlock(request):
+    content = '<label>Свойство товара в каталоге:</label> \
+        <input class="form-control" name="cpp_name" placeholder="Введите свойство для товаров в этом каталоге" type="text"> \
+	    <label>Возможные значения:</label> \
+	    <input class="form-control" name="cpp_values" placeholder="Введите возможные значения для свойства через символ &quot;;&quot;" type="text"> \
+        <hr/>'
+    return HttpResponse(content)
+
+
 
 
 # Просмотр каталога
