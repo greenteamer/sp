@@ -19,7 +19,7 @@ urlpatterns = patterns('project.accounts.views',
 
     url(r'^purchase-(\d+)-edit$', 'purchase',
 		{'template_name': 'accounts/purchase_edit.html',
-         'edit' : True},
+         'edit': True},
 		name='purchaseEdit'),
 
 
@@ -40,12 +40,20 @@ urlpatterns = patterns('project.accounts.views',
 		{'template_name': 'accounts/products.html'},
 		name='products'),
 
+    url(r'^purchase-(\d+)/catalog-(?P<catalog_id>\d+)/product-add$', 'productAdd',
+		{'template_name': 'accounts/product_add.html'},
+		name='productAdd'),
+
     url(r'^purchase-(?P<purchase_id>\d+)/catalog-(?P<catalog_id>\d+)/product-(?P<product_id>\d+)$', 'product',
 		{'template_name': 'accounts/product.html'},
 		name='product'),
 
-    url(r'^purchase-(\d+)/catalog-(?P<catalog_id>\d+)/product-add$', 'productAdd',
-		{'template_name': 'accounts/product_add.html'},
-		name='productAdd'),
+    url(r'^purchase-(?P<purchase_id>\d+)/catalog-(?P<catalog_id>\d+)/product-(?P<product_id>\d+)-edit$', 'product',
+		{'template_name': 'accounts/product_edit.html',
+         'edit': True},
+		name='product'),
+
+
+
 
 )
