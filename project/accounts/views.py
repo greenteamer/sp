@@ -2,11 +2,11 @@
 #!/usr/bin/env python
 from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, purchaseForm, catalogForm, \
                                     catalogProductPropertiesForm, ProductForm, propertyForm
-from project.core.models import Purchase, Catalog, Product, CatalogProductProperties, Properties
+from project.core.models import Purchase, Catalog, Product, CatalogProductProperties, Properties, ProductImages
 from django.shortcuts import render, render_to_response
 from project.accounts.profiles import retrieve
 from project.accounts.models import OrganizerProfile, getOrganizerProfile, repopulateOrganizerProfile
-from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, purchaseForm, UserLoginForm
+from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, purchaseForm, UserLoginForm, ProductImagesForm
 from django.contrib import auth
 from django.contrib.auth import login, authenticate
 from django.template import RequestContext
@@ -268,7 +268,6 @@ def catalogAdd(request, purchase_id, template_name):
             new_catalogProductProperties = catalogProductProperties_form.save(commit=False)
             new_catalogProductProperties.cpp_catalog = catalog_form.save(purchase_id)  # каталог сохраняется для нужной закупки - переопределена ф-я save, возвращает созданный объект каталога
             new_catalogProductProperties.cpp_purchase = Purchase.objects.get(id=purchase_id)
-            new_catalogProductProperties.cpp_slug = slugify(new_catalogProductProperties.cpp_name)
             new_catalogProductProperties.save()
             message = u"Новый каталог «%s» успешно добавлен. <br/> Добавить еще: " % request.POST['catalog_name']
         else:
@@ -331,6 +330,7 @@ def product(request, purchase_id, catalog_id, product_id, template_name):
         purchase = Purchase.objects.get(id=purchase_id)
         catalog = Catalog.objects.get(id=catalog_id)
         product = Product.objects.get(id=product_id)
+        product_image = ProductImages.objects.get(p_image_product_id=product_id).image
         properties = Properties.objects.filter(properties_product=product_id)  # получим все свойства для этого товара
         all_properties = {}
         for property in properties:
@@ -338,7 +338,7 @@ def product(request, purchase_id, catalog_id, product_id, template_name):
             all_properties.update({current_catalog_product_properties.cpp_name: property.properties_value.split(";")})  # формируется словарь вида {имя_свойства: значения_распарсенные_в_список}
 
         return render_to_response(template_name, locals(),
-                                  context_instance=RequestContext(request))
+                                      context_instance=RequestContext(request))
     except ObjectDoesNotExist:
             raise Http404
 
@@ -357,9 +357,11 @@ def productAdd(request, catalog_id, template_name):
 
 
         if request.POST:
-            form = ProductForm(request.POST)
-            if form.is_valid():
-                new_product = form.save(catalog_id)
+            product_form = ProductForm(request.POST)
+            product_image_form = ProductImagesForm(request.POST, request.FILES)
+            if product_form.is_valid() and product_image_form.is_valid():
+                new_product = product_form.save(catalog_id)
+                product_image_form.save(new_product.id)
 
                 properties = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
                 for property in properties:
@@ -379,6 +381,7 @@ def productAdd(request, catalog_id, template_name):
 
         product_form = ProductForm
         property_form = propertyForm(catalog_id)
+        product_image_form = ProductImagesForm()
 
         # properties = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
         # property_for_form = {}

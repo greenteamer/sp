@@ -60,7 +60,6 @@ def repopulateOrganizerProfile(profile, request):
     profile.address = request.POST['address']
     profile.city = request.POST['city']
     profile.zipCode = request.POST['zipCode']
-    # handle_uploaded_file(request.FILES['icon'])
     if request.FILES:
         profile.icon = request.FILES['icon']
     return profile
