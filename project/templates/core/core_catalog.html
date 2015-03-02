@@ -2,14 +2,15 @@
 
 {% block content %}
       <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
+    <div id="core_product" class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>Просмотр каталога</h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
-                <li class="active">Создать закупку</li>
+                <li class="active">{{ purchase.name }}</li>
+                <li>{{ catalog.catalog_name }}</li>
             </ol>
+            <h1>Просмотр каталога "{{ catalog.catalog_name }}" закупки - {{ purchase.name }}</h1>
         </section>
 
         {% if not profile %}
@@ -37,17 +38,29 @@
                     <br/>
                     <ul>
                         {% for catalog_product_property in catalog_product_properties %}
-                            <li><b>{{ catalog_product_property.cpp_name }}</b>: {{ catalog_product_property.cpp_values }}</li>
+                            <li>{{ catalog_product_property.cpp_name }}: {{ catalog_product_property.cpp_values }}</li>
                         {% endfor %}
                     </ul>
 
-                    <br/><br/>
-{#                    <a class="btn btn-success" href="{{ catalog.url_account }}-edit">Изменить каталог</a>#}
-                    <br/><br/>
-                    <a class="btn btn-primary" href="{{ catalog.url }}/products">Посмотреть товары</a>
-                    <a class="btn btn-primary" href="{{ purchase.url }}/catalogs">Все каталоги</a>
-
                 </div><!-- /.col -->
+                <div class="col-xs-12">
+                    <div class="row">
+                        {% for product in catalog.get_products %}
+                            <div class="col-xs-12 col-md-4 item">
+                                <img src="{{ product.img }}" alt=""/>
+                                {{ product.product_name }}
+                                <br/>
+                                {{ product.description|truncatewords:15|safe }}
+                                <br/>
+                                {{ product.price }} руб.
+                                <br/>
+                                {% if product.sku %}
+                                    {{ product.sku }}
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div><!-- /.row -->
 
         </section><!-- /.content -->
