@@ -23,6 +23,7 @@ def profileView(request, template_name):
     if user.is_authenticated():
         """проверка есть ли профиль у пользователя и получение его файл accounts.models"""
         profile = getOrganizerProfile(user)
+
     else:
         return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
     return render_to_response(template_name, locals(),
@@ -41,10 +42,16 @@ def populateProfileView(request, template_name):
                 current_profile = getOrganizerProfile(user)
                 current_profile = repopulateOrganizerProfile(current_profile, request)
                 current_profile.save()
+                return HttpResponseRedirect(urlresolvers.reverse('populateProfileView'))
             elif form.is_valid():
                 form.save(request.user)
-            else: #должна быть обработка ошибок
                 return HttpResponseRedirect(urlresolvers.reverse('populateProfileView'))
+            else: #должна быть обработка ошибок
+                form = UserRegistrationForm(request.POST, request.FILES)
+                return render(request, 'accounts/populate_profile.html', {
+                    'form': form,
+                    'error': form.errors,
+                })
     else:
         return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
 
@@ -84,10 +91,6 @@ def registrationView(request, template_name):
             })
         else:
             form = UserRegistrationForm(postdata)
-            # form.fields['password1'].widget.attrs.update({
-            #         'placeholder': 'Пароль',
-            #         'class':'form-control',
-            #     })
             return render(request, 'accounts/registration.html', {
                 'form': form,
                 'error': form.errors,
@@ -153,7 +156,7 @@ def purchases(request, template_name):
     else:
         return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
 
-    purchases = Purchase.objects.all()
+    purchases = Purchase.objects.filter(organizerProfile=profile)
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
 
