@@ -6,6 +6,8 @@ from mptt.models import MPTTModel, TreeForeignKey
 from django.utils.text import slugify
 from project.core.functions import *
 from autoslug import AutoSlugField
+from django.utils.translation import ugettext_lazy as _
+
 
 # Категории
 class Category(MPTTModel):
@@ -26,6 +28,9 @@ class Purchase(models.Model):
     def __unicode__(self):
         return self.name
 
+    def get_catalogs(self):
+        return Catalog.objects.filter(catalog_purchase=self.id)
+
     def url(self):
         return '/profile/organizer/purchase-%s' % self.id
 
@@ -37,6 +42,8 @@ class Catalog(models.Model):
     def __unicode__(self):
         return self.catalog_name
 
+
+
 # Товары
 class Product(models.Model):
     product_name = models.CharField(max_length=100, verbose_name=u'Название товара')
@@ -47,6 +54,13 @@ class Product(models.Model):
 
     def __unicode__(self):
         return self.product_name
+
+
+class ProductImages(models.Model):
+    image = models.FileField(_(u'Image'), upload_to='product/',
+                             help_text=u'Изображение', blank=True)
+    p_image_product = models.ForeignKey(Product, verbose_name=u'Выбрать товар')
+
 
 class CatalogProductProperties(models.Model):
     cpp_name = models.CharField(max_length=100, verbose_name=u'Свойство товара в каталоге', unique=True)
