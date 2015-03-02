@@ -312,36 +312,97 @@ def products(request, purchase_id, catalog_id, template_name):
         purchase = Purchase.objects.get(id=purchase_id)
         catalog = Catalog.objects.get(id=catalog_id)
         products = Product.objects.filter(catalog=catalog_id)
+
+        for product in products:
+            try:
+                product.product_image = ProductImages.objects.get(p_image_product_id=product.id).image
+            except:
+                continue
         return render_to_response(template_name, locals(),
                                   context_instance=RequestContext(request))
     except ObjectDoesNotExist:
             raise Http404
 
-# Просмотр товара
-def product(request, purchase_id, catalog_id, product_id, template_name):
-    try:
-        user = request.user
+# Просмотр и Редактирование товара
+def product(request, purchase_id, catalog_id, product_id, template_name, edit=False):
 
-        """ проверяем пользователя и его профайл организатора"""
-        if user.is_authenticated():
-            profile = getOrganizerProfile(user)
-        else:
-            return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
+    user = request.user
 
-        purchase = Purchase.objects.get(id=purchase_id)
-        catalog = Catalog.objects.get(id=catalog_id)
-        product = Product.objects.get(id=product_id)
-        product_image = ProductImages.objects.get(p_image_product_id=product_id).image
-        properties = Properties.objects.filter(properties_product=product_id)  # получим все свойства для этого товара
-        all_properties = {}
-        for property in properties:
-            current_catalog_product_properties = CatalogProductProperties.objects.get(id=property.properties_catalogProductProperties_id)
-            all_properties.update({current_catalog_product_properties.cpp_name: property.properties_value.split(";")})  # формируется словарь вида {имя_свойства: значения_распарсенные_в_список}
+    """ проверяем пользователя и его профайл организатора"""
+    if user.is_authenticated():
+        profile = getOrganizerProfile(user)
+    else:
+        return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
 
-        return render_to_response(template_name, locals(),
-                                      context_instance=RequestContext(request))
-    except ObjectDoesNotExist:
+    message = ''
+
+    if edit == True:  # если передан парамерт edit равный True, то редактируем товар
+        try:
+            product = Product.objects.get(id=product_id)  # получаем экземпляр товара по id
+
+            if request.POST:
+                product_form = ProductForm(request.POST)
+                product_image_form = ProductImagesForm(request.POST, request.FILES)
+                if product_form.is_valid() and product_image_form.is_valid():
+
+                    product.product_name = request.POST['product_name']
+                    product.description = request.POST['description']
+                    product.price = request.POST['price']
+                    product.sku = request.POST['sku']
+                    product.save()
+
+                    if request.FILES:
+                        ProductImages.objects.get(p_image_product_id=product_id).delete()
+                        product_image_form.save(product_id)
+
+
+                    Properties.objects.filter(properties_product_id=product_id).delete()
+
+                    properties = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
+                    for property in properties:
+                        try:
+                            if request.POST[property.cpp_slug] is not None:
+                                new_properties = Properties()
+                                new_properties.properties_value = request.POST[property.cpp_slug]  #request.POST['tsvet']
+                                new_properties.properties_product = product
+                                new_properties.properties_catalogProductProperties = CatalogProductProperties.objects.get(cpp_slug=property.cpp_slug)
+                                new_properties.save()
+                        except:
+                            continue
+
+                    message = u"Новый товар %s успешно отредактирован." % request.POST['product_name']
+                else:
+                    message = u"Ошибка при изменении товара"
+
+            product = Product.objects.get(id=product_id)
+            product_image_Obj = ProductImages(p_image_product_id=product_id)
+            product_image = ProductImages.objects.get(p_image_product_id=product_id).image
+            product_image_form = ProductImagesForm(instance=product_image_Obj)
+            product_form = ProductForm(instance=product)                    # заполненная форма текущей товара
+            property_form = propertyForm(catalog_id, product_id)
+
+
+            return render_to_response(template_name, locals(),
+                                  context_instance=RequestContext(request))
+        except ObjectDoesNotExist:
             raise Http404
+
+    else:           # если параметр edit равный True не передан, но выводим товар
+        try:
+            purchase = Purchase.objects.get(id=purchase_id)
+            catalog = Catalog.objects.get(id=catalog_id)
+            product = Product.objects.get(id=product_id)
+            product_image = ProductImages.objects.get(p_image_product_id=product_id).image
+            properties = Properties.objects.filter(properties_product=product_id)  # получим все свойства для этого товара
+            all_properties = {}
+            for property in properties:
+                current_catalog_product_properties = CatalogProductProperties.objects.get(id=property.properties_catalogProductProperties_id)
+                all_properties.update({current_catalog_product_properties.cpp_name: property.properties_value.split(";")})  # формируется словарь вида {имя_свойства: значения_распарсенные_в_список}
+
+            return render_to_response(template_name, locals(),
+                                          context_instance=RequestContext(request))
+        except ObjectDoesNotExist:
+                raise Http404
 
 
 # Добавление товара
@@ -355,7 +416,6 @@ def productAdd(request, catalog_id, template_name):
             profile = getOrganizerProfile(user)
         else:
             return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
-
 
         if request.POST:
             product_form = ProductForm(request.POST)
@@ -383,11 +443,6 @@ def productAdd(request, catalog_id, template_name):
         product_form = ProductForm
         property_form = propertyForm(catalog_id)
         product_image_form = ProductImagesForm()
-
-        # properties = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
-        # property_for_form = {}
-        # for property in properties:
-        #     property_for_form.update({property.cpp_name: property.cpp_values.split(";")})
 
         return render_to_response(template_name, locals(),
                                   context_instance=RequestContext(request))

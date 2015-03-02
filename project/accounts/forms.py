@@ -6,7 +6,7 @@ from django.contrib import auth
 from django.utils.translation import ugettext, ugettext_lazy as _
 from captcha.fields import CaptchaField
 from project.accounts.models import OrganizerProfile, getOrganizerProfile
-from project.core.models import Purchase, Catalog, CatalogProductProperties, Product, ProductImages
+from project.core.models import Purchase, Catalog, CatalogProductProperties, Product, ProductImages, Properties
 from django.forms import ModelForm, Form
 from project.core.functions import *
 
@@ -180,7 +180,7 @@ class ProductImagesForm(ModelForm):
         return obj
 
 
-def propertyForm(catalog_id):
+def propertyForm(catalog_id, product_id=False):
 
     cpp_obj = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
     list = []
@@ -191,7 +191,7 @@ def propertyForm(catalog_id):
             local_dict.update({value: cpp_object.cpp_name})
         list.append(local_dict)
 
-    #return list
+    # return list
     class DynamicPropertyForm(forms.Form):
 
         def __init__(self, *args, **kwargs):
@@ -203,10 +203,18 @@ def propertyForm(catalog_id):
                     list_choices.append([key, key])
                     name = value
                 slug = translit(name).lower()
-                self.fields['%s' % slug] = forms.ChoiceField(widget=forms.RadioSelect, label=name, choices=list_choices)
+
+                if product_id != False:
+                    cpp_id = CatalogProductProperties.objects.get(cpp_slug=slug)
+                    property_value = Properties.objects.get(properties_catalogProductProperties_id=cpp_id,
+                                                            properties_product_id=product_id)
+                    self.fields[slug] = forms.ChoiceField(widget=forms.RadioSelect, label=name,
+                            choices=list_choices, initial=property_value)
+                else:
+                    self.fields[slug] = forms.ChoiceField(widget=forms.RadioSelect, label=name,
+                            choices=list_choices)
 
     return DynamicPropertyForm()
-
 
 
 
