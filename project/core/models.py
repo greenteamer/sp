@@ -33,6 +33,8 @@ class Purchase(models.Model):
 
     def url(self):
         return '/profile/organizer/purchase-%s' % self.id
+    def url_core(self):
+        return '/purchase-%s' % self.id
 
 
 class Catalog(models.Model):
@@ -42,6 +44,10 @@ class Catalog(models.Model):
     def __unicode__(self):
         return self.catalog_name
 
+    def url(self):
+        return '%s/catalog-%s' % (self.catalog_purchase.url() , self.id)
+    def url_core(self):
+        return '%s/catalog-%s' % (self.catalog_purchase.url_core() , self.id)
 
 
 # Товары
