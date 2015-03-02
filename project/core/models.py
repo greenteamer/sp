@@ -28,6 +28,9 @@ class Purchase(models.Model):
     def __unicode__(self):
         return self.name
 
+    def get_catalogs(self):
+        return Catalog.objects.filter(catalog_purchase=self.id)
+
     def url(self):
         return '/profile/organizer/purchase-%s' % self.id
 
@@ -38,6 +41,8 @@ class Catalog(models.Model):
 
     def __unicode__(self):
         return self.catalog_name
+
+
 
 # Товары
 class Product(models.Model):
