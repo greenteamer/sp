@@ -51,7 +51,7 @@
 
                                 <div class="product col-sm-4" >
                                     <div class="bg-primary img-rounded" style="padding:10px;margin-bottom: 20px;">
-                                        <h3><a style="color:white;" href="/profile/organizer/purchase-{{ purchase.id }}/catalog-{{ catalog.id }}/product-{{ product.id }}">{{ product.product_name }}</a></h3>
+                                        <h3><a style="color:white;" href="{{ product.url }}">{{ product.product_name }}</a></h3>
                                         <b>Описание: </b>{{ product.description }}<br/>
                                         <b>Цена: </b>{{ product.price }}
                                         <div class="center-block" >
