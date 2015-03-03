@@ -1,4 +1,4 @@
-{% extends "core_main.html" %}
+{% extends "sub_main.html" %}
 
 {% block page_css %}
     <!-- Theme style -->
@@ -11,16 +11,15 @@
     <body class="skin-blue">
 {% endblock %}
 
-
 {% block content %}
       <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>Создание товара</h1>
+            <h1>Редактирование товара</h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
-                <li class="active">Создать товар</li>
+                <li class="active">Отредактировать товар</li>
             </ol>
         </section>
 
@@ -46,26 +45,33 @@
         <section class="invoice">
             <!-- Table row -->
             <div class="row">
-
-                <div class="col-xs-6">
-
+                    <div class="col-sm-12">
+                        <a class="btn btn-default" href="/profile/organizer/purchase-{{ purchase_id }}/catalog-{{ catalog_id }}/product-{{ product.id }}">Вернуться в просмотр товара</a>
+                    </div>
                     <!-- form start -->
                     <form action="" method="post" enctype="multipart/form-data" >
-                        {% csrf_token %}
-                        {{ form2 }}
-                        <hr/>
-                        {{ product_form }}
+                        <div class="col-xs-6">
+                            {% csrf_token %}
+                            <hr/>
+                            {{ product_form.as_p }}
+                            <br/>
+                            {{ property_form }}
+                            <br/>
+                        </div><!-- /.col -->
+                        <div class="col-xs-6">
+                            <b>Image:</b>
+                            <br/>
+                            <img src="{{ MEDIA_URL }}{{ product_image }}" width="100%" height="auto" alt=""/>
+                            <br/>
+                            {{ product_image_form.as_p }}
+                        </div>
                         <br/>
-                        {{ property_form }}
-                        <br/>
-                        {{ product_image_form }}
-                        <br/>
-                        <div class="box-footer">
-                            <button type="submit" class="btn btn-primary">Отправить</button>
+                        <div class="box-footer col-xs-12">
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
                         </div>
                     </form>
 
-                </div><!-- /.col -->
+
             </div><!-- /.row -->
 
         </section><!-- /.content -->
@@ -73,6 +79,9 @@
     </div><!-- /.content-wrapper -->
 
 {% endblock %}
+
+
+
 
 {% block page_js %}
     <script src='{{ STATIC_URL }}AdminLte/plugins/fastclick/fastclick.min.js'></script>
@@ -88,3 +97,5 @@
       });
     </script>
 {% endblock %}
+
+

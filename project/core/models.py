@@ -6,6 +6,8 @@ from mptt.models import MPTTModel, TreeForeignKey
 from django.utils.text import slugify
 from project.core.functions import *
 from autoslug import AutoSlugField
+from django.utils.translation import ugettext_lazy as _
+
 
 # Категории
 class Category(MPTTModel):
@@ -26,8 +28,13 @@ class Purchase(models.Model):
     def __unicode__(self):
         return self.name
 
+    def get_catalogs(self):
+        return Catalog.objects.filter(catalog_purchase=self.id)
+
     def url(self):
         return '/profile/organizer/purchase-%s' % self.id
+    def url_core(self):
+        return '/purchase-%s' % self.id
 
 
 class Catalog(models.Model):
@@ -36,6 +43,18 @@ class Catalog(models.Model):
 
     def __unicode__(self):
         return self.catalog_name
+
+    def url(self):
+        return '%s/catalog-%s' % (self.catalog_purchase.url() , self.id)
+    def url_core(self):
+        return '%s/catalog-%s' % (self.catalog_purchase.url_core() , self.id)
+
+    def get_products(self):
+        products = Product.objects.filter(catalog=self.id)
+        for product in products:
+            product.img = ProductImages.objects.filter(p_image_product=product.id)[0].url()
+        return products
+
 
 # Товары
 class Product(models.Model):
@@ -48,12 +67,18 @@ class Product(models.Model):
     def __unicode__(self):
         return self.product_name
 
+
+class ProductImages(models.Model):
+    image = models.FileField(_(u'Image'), upload_to='product/',
+                             help_text=u'Изображение', blank=True)
+    p_image_product = models.ForeignKey(Product, verbose_name=u'Выбрать товар')
+
+    def url(self):
+        return "/media/%s" % self.image
+
+
 class CatalogProductProperties(models.Model):
     cpp_name = models.CharField(max_length=100, verbose_name=u'Свойство товара в каталоге', unique=True)
-    # cpp_slug = models.SlugField((u'Slug'), max_length=50, unique=True,
-    #                         help_text=(u'Slug for product url created from name.'))
-    # cpp_slug = models.SlugField(null=True, blank=True) # Allow blank submission in admin
-    # cpp_slug = AutoSlugField(populate_from='cpp_name', unique=True)
     cpp_slug = models.CharField(null=True, max_length=255, blank=True)
     cpp_values = models.CharField(max_length=255, verbose_name=u'Возможные значения')
     cpp_catalog = models.ForeignKey(Catalog)

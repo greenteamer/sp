@@ -6,7 +6,7 @@ from django.contrib import auth
 from django.utils.translation import ugettext, ugettext_lazy as _
 from captcha.fields import CaptchaField
 from project.accounts.models import OrganizerProfile, getOrganizerProfile
-from project.core.models import Purchase, Catalog, CatalogProductProperties, Product
+from project.core.models import Purchase, Catalog, CatalogProductProperties, Product, ProductImages, Properties
 from django.forms import ModelForm, Form
 from project.core.functions import *
 
@@ -111,11 +111,15 @@ class purchaseForm(ModelForm):
         model = Purchase
         exclude = ('organizerProfile',)
 
+    def __init__(self, *args, **kwargs):
+        super(purchaseForm, self).__init__(*args, **kwargs)
+        self.fields['name'].widget.attrs = {'placeholder': 'Введите название закупки', 'class': 'form-control'}
+        self.fields['description'].widget.attrs = {'placeholder': 'Введите описание закупки', 'class': 'form-control'}
+
     def save(self, user):
         obj = super(purchaseForm, self).save(commit=False)
         obj.organizerProfile = getOrganizerProfile(user)
         obj.save()
-        # assert isinstance(obj, object) #pycharm сам влепил
         return obj
 
 
@@ -123,6 +127,9 @@ class catalogForm(ModelForm):
     class Meta:
         model = Catalog
         exclude = ('catalog_purchase',)
+    def __init__(self, *args, **kwargs):
+        super(catalogForm, self).__init__(*args, **kwargs)
+        self.fields['catalog_name'].widget.attrs = {'placeholder': 'Введите название каталога', 'class': 'form-control'}
     def save(self, purchase_id):
         # TODO: сделать валидацию на существование закупки (purchase_id)
         obj = super(catalogForm, self).save(commit=False)
@@ -135,12 +142,22 @@ class catalogProductPropertiesForm(ModelForm):
     class Meta:
         model = CatalogProductProperties
         fields = ["cpp_name", "cpp_values"]
+    def __init__(self, *args, **kwargs):
+        super(catalogProductPropertiesForm, self).__init__(*args, **kwargs)
+        self.fields['cpp_name'].widget.attrs = {'placeholder': 'Введите свойство для товаров в этом каталоге', 'class': 'form-control'}
+        self.fields['cpp_values'].widget.attrs = {'placeholder': 'Введите возможные значения для свойства через символ ";"', 'class': 'form-control'}
 
 
 class ProductForm(ModelForm):
     class Meta:
         model = Product
         exclude = ('catalog',)
+    def __init__(self, *args, **kwargs):
+        super(ProductForm, self).__init__(*args, **kwargs)
+        self.fields['product_name'].widget.attrs = {'class': 'form-control'}
+        self.fields['description'].widget.attrs = {'class': 'form-control'}
+        self.fields['price'].widget.attrs = {'class': 'form-control'}
+        self.fields['sku'].widget.attrs = {'class': 'form-control'}
     def save(self, catalog_id):
         # TODO: сделать валидацию на существование каталога (catalog_id)
         obj = super(ProductForm, self).save(commit=False)
@@ -149,8 +166,21 @@ class ProductForm(ModelForm):
         return obj
 
 
+class ProductImagesForm(ModelForm):
+    class Meta:
+        model = ProductImages
+        exclude = ('p_image_product',)
+    def __init__(self, *args, **kwargs):
+        super(ProductImagesForm, self).__init__(*args, **kwargs)
+        self.fields['image'].widget.attrs = {'class': 'btn btn-block btn-default btn-sm'}
+    def save(self, product_id):
+        obj = super(ProductImagesForm, self).save(commit=False)
+        obj.p_image_product = Product.objects.get(id=product_id)
+        obj.save()
+        return obj
 
-def propertyForm(catalog_id):
+
+def propertyForm(catalog_id, product_id=False):
 
     cpp_obj = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
     list = []
@@ -161,7 +191,7 @@ def propertyForm(catalog_id):
             local_dict.update({value: cpp_object.cpp_name})
         list.append(local_dict)
 
-    #return list
+    # return list
     class DynamicPropertyForm(forms.Form):
 
         def __init__(self, *args, **kwargs):
@@ -173,10 +203,18 @@ def propertyForm(catalog_id):
                     list_choices.append([key, key])
                     name = value
                 slug = translit(name).lower()
-                self.fields['%s' % slug] = forms.ChoiceField(widget=forms.RadioSelect, label=name, choices=list_choices)
+
+                if product_id != False:
+                    cpp_id = CatalogProductProperties.objects.get(cpp_slug=slug)
+                    property_value = Properties.objects.get(properties_catalogProductProperties_id=cpp_id,
+                                                            properties_product_id=product_id)
+                    self.fields[slug] = forms.ChoiceField(widget=forms.RadioSelect, label=name,
+                            choices=list_choices, initial=property_value)
+                else:
+                    self.fields[slug] = forms.ChoiceField(widget=forms.RadioSelect, label=name,
+                            choices=list_choices)
 
     return DynamicPropertyForm()
-
 
 
 
