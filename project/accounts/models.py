@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
 from django.db import models
+import random
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
+# from project.accounts.profiles import getOrganizerPurchases
+from project.core.models import Purchase
+
+
 
 class BaseUserInfo(models.Model):
     """Абстрактный класс для заказов"""
@@ -25,16 +30,37 @@ class OrganizerProfile(BaseUserInfo):
     icon = models.FileField(_(u'Image'), upload_to='accounts/images/',
                              help_text=u'Фото', blank=True)
 
+
     def __unicode__(self):
         return _(u'Профиль: ') + self.user.username
+
     class Meta:
         verbose_name_plural = _(u'Профили организаторов')
 
+    def getOrganizerPurchases(self):
+        try:
+            profiles = Purchase.objects.filter(organizerProfile=self)
+            for profile in profiles: #используется для вывода статуса закупки (демо режим)
+                profile.bar = random.randrange(20,90,1)
+            return profiles
+        except:
+            return None
 
-"""проверка есть ли профиль у пользователя и получение его"""
+
 def getOrganizerProfile(user):
     try:
-        profile = OrganizerProfile.objects.get(user=user)
+        return OrganizerProfile.objects.get(user=user)
     except:
-        profile = None
+        return None
+
+def repopulateOrganizerProfile(profile, request):
+    profile.firstName = request.POST['firstName']
+    profile.lastName = request.POST['lastName']
+    profile.email = request.POST['email']
+    profile.phone = request.POST['phone']
+    profile.address = request.POST['address']
+    profile.city = request.POST['city']
+    profile.zipCode = request.POST['zipCode']
+    if request.FILES:
+        profile.icon = request.FILES['icon']
     return profile

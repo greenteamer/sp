@@ -1,15 +1,81 @@
-<h1>Все товары для закупки «{{ purchase }}», каталога «{{ catalog }}»:</h1>
+{% extends "core_main.html" %}
 
-<div class="products">
-    {% for product in products %}
-        <div class="product">
-            <h5>{{ product.product_name }}</h5>
-            {{ product.description }}<br/>
-            {{ product.price }}
-            <hr/>
-        </div>
-    {% endfor %}
-</div>
+{% block content %}
+      <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Просмотр товаров для закупки «<a href="{{ purchase.url }}">{{ purchase }}</a>», каталога
+                «<a href="{{ catalog.url }}">{{ catalog }}»</a>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
+                <li class="active">Просмотр товаров</li>
+            </ol>
+        </section>
 
+        {% if not profile %}
+            <div class="pad margin no-print">
+                <div class="callout callout-info" style="margin-bottom: 0!important;">
+                    <h4><i class="fa fa-info"></i> Записочка</h4>
+                    Для того что бы работать организатором в SP Mooscow, вам необходимо заполнить личные данные, после этого Ваша учетная запись будет рассмотренна админимтратором и ей будет присвоен соответствующий статус
+                </div>
+            </div>
+        {% endif %}
+
+        {% if message %}
+            <div class="pad margin no-print">
+                <div class="callout callout-info" style="margin-bottom: 0!important;">
+                    <h4><i class="fa fa-info"></i> Поздравляем</h4>
+                    {{ message }}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Main content -->
+        <section class="invoice">
+            <!-- Table row -->
+            <div class="row">
+
+                <div class="col-xs-12">
+
+                    {% if not products %}
+                        <div>
+                            <p>Нет созданных товаров</p>
+                            <p><a href="/profile/organizer/purchase-{{ purchase.id }}/catalog-{{ catalog.id }}/product-add">Создать новый товар</a></p>
+                        </div>
+                    {% else %}
+                        <div class="products row">
+                            {% for product in products %}
+
+                                <div class="product col-sm-4" >
+                                    <div class="bg-primary img-rounded" style="padding:10px;margin-bottom: 20px;">
+                                        <h3><a style="color:white;" href="{{ product.url }}">{{ product.product_name }}</a></h3>
+                                        <b>Описание: </b>{{ product.description }}<br/>
+                                        <b>Цена: </b>{{ product.price }}
+                                        <div class="center-block" >
+                                            {% if product.product_image %}
+                                                <img class="img-thumbnail center-block" src="{{ MEDIA_URL }}{{ product.product_image }}" width="auto" style="height: 70px;" alt=""/>
+                                            {% else %}
+                                                <img class="img-thumbnail center-block" src="{{ MEDIA_URL }}accounts/images/no_image-128.png" width="auto" style="height: 70px;" alt=""/>
+                                            {% endif %}
+                                        </div>
+
+                                        <hr/>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+
+        </section><!-- /.content -->
+        <div class="clearfix"></div>
+    </div><!-- /.content-wrapper -->
+
+{% endblock %}
 
 

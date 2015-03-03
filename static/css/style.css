@@ -1,0 +1,9 @@
+.content-header>ol.breadcrumb {
+    position: relative;
+    float: none;
+    top: 0;
+    left: 0;
+}
+#core_product .item img{
+    width: 100%;
+}

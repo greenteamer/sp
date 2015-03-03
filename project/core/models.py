@@ -2,7 +2,12 @@
 #!/usr/bin/env python
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
-from project.accounts.models import OrganizerProfile
+# from project.accounts.models import OrganizerProfile
+from django.utils.text import slugify
+from project.core.functions import *
+from autoslug import AutoSlugField
+from django.utils.translation import ugettext_lazy as _
+
 
 # Категории
 class Category(MPTTModel):
@@ -16,10 +21,21 @@ class Category(MPTTModel):
 
 class Purchase(models.Model):
     name = models.CharField(max_length=100, verbose_name=u'Название закупки')
-    organizerProfile = models.ForeignKey(OrganizerProfile, verbose_name=u'Профиль организатора')
+    description = models.TextField(verbose_name=u'Описание закупки')
+    organizerProfile = models.ForeignKey('accounts.OrganizerProfile', verbose_name=u'Профиль организатора')
+    date = models.DateField(auto_now_add=True)
 
     def __unicode__(self):
         return self.name
+
+    def get_catalogs(self):
+        return Catalog.objects.filter(catalog_purchase=self.id)
+
+    def url(self):
+        return '/profile/organizer/purchase-%s' % self.id
+    def url_core(self):
+        return '/purchase-%s' % self.id
+
 
 class Catalog(models.Model):
     catalog_name = models.CharField(max_length=100, verbose_name=u'Название каталога')
@@ -27,6 +43,18 @@ class Catalog(models.Model):
 
     def __unicode__(self):
         return self.catalog_name
+
+    def url(self):
+        return '%s/catalog-%s' % (self.catalog_purchase.url(), self.id)
+    def url_core(self):
+        return '%s/catalog-%s' % (self.catalog_purchase.url_core(), self.id)
+
+    def get_products(self):
+        products = Product.objects.filter(catalog=self.id)
+        for product in products:
+            product.img = ProductImages.objects.filter(p_image_product=product.id)[0].url()
+        return products
+
 
 # Товары
 class Product(models.Model):
@@ -36,11 +64,28 @@ class Product(models.Model):
     sku = models.IntegerField(verbose_name=u'Артикул',null=True,blank=True)
     catalog = models.ForeignKey(Catalog, verbose_name=u'Выбрать каталог')
 
+    def url(self):
+        return '%s/product-%s' % (self.catalog.url(), self.id)
+
+    def url_core(self):
+        return '%s/product-%s' % (self.catalog.url_core(), self.id)
+
     def __unicode__(self):
         return self.product_name
 
+
+class ProductImages(models.Model):
+    image = models.FileField(_(u'Image'), upload_to='product/',
+                             help_text=u'Изображение', blank=True)
+    p_image_product = models.ForeignKey(Product, verbose_name=u'Выбрать товар')
+
+    def url(self):
+        return "/media/%s" % self.image
+
+
 class CatalogProductProperties(models.Model):
-    cpp_name = models.CharField(max_length=100, verbose_name=u'Свойство товара в каталоге')
+    cpp_name = models.CharField(max_length=100, verbose_name=u'Свойство товара в каталоге', unique=True)
+    cpp_slug = models.CharField(null=True, max_length=255, blank=True)
     cpp_values = models.CharField(max_length=255, verbose_name=u'Возможные значения')
     cpp_catalog = models.ForeignKey(Catalog)
     cpp_purchase = models.ForeignKey(Purchase)  # зачем привязка к закупке если есть привязка к каталогу?..
@@ -48,17 +93,19 @@ class CatalogProductProperties(models.Model):
     def __unicode__(self):
         return self.cpp_name
 
+    def save(self):
+        # if not self.id:
+        self.cpp_slug = translit(self.cpp_name).lower()
+        super(CatalogProductProperties, self).save()
+
+
 class Properties(models.Model):
-    properties_name = models.CharField(max_length=100, verbose_name=u'Значения свойства товара')
+    properties_value = models.CharField(max_length=100, verbose_name=u'Значения свойства товара')
     properties_product = models.ForeignKey(Product)
     properties_catalogProductProperties = models.ForeignKey(CatalogProductProperties)
 
     def __unicode__(self):
-        return self.properties_name
-
-
-
-
+        return self.properties_value
 
 
 

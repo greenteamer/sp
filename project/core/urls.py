@@ -4,21 +4,9 @@ from django.conf.urls import patterns, url
 
 urlpatterns = patterns('project.core.views',
 
-    url(r'^addproduct/$', 'addProduct',
-		{'template_name':'core/addproduct.html'},
-		name='add_product'),
-
     url(r'^viewproduct/$', 'viewProduct',
 		{'template_name':'core/viewproduct.html'},
 		name='viewproduct'),
-
-
-# url(r'^addlike/(?P<article_id>\d+)/(?P<page_number>\d+)$', 'article.views.addLike'),
-    url(r'^profile/(?P<purchase>\d+)/$', 'viewProduct',
-		{'template_name':'core/viewproduct.html'},
-		name='viewproduct'),
-
-
 
 
 
@@ -26,6 +14,12 @@ urlpatterns = patterns('project.core.views',
     url(r'^$', 'index_view',
 		{'template_name':'core/index.html'},
 		name='catalog_home'),
+    url(r'^purchase-(\d+)/$', 'corePurchase',
+		{'template_name': 'core/core_purchase.html'},
+		name='corePurchase'),
+    url(r'^purchase-(?P<purchase_id>\d+)/catalog-(?P<catalog_id>\d+)/$', 'coreCatalog',
+		{'template_name': 'core/core_catalog.html'},
+		name='coreCatalog'),
 
 
 

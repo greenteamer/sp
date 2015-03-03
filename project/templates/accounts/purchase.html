@@ -1,7 +1,47 @@
-<b>ID: </b>{{ purchase.id }}
-<br/>
-<b>Name: </b>{{ purchase.name }}
-<br/>
-<a href="/profile/organizer/purchase-{{ purchase.id }}-edit">Изменить закупку</a>
-<br/>
+{% extends "core_main.html" %}
 
+{% block content %}
+      <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>Просмотр данных закупки</h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
+                <li class="active">Просмотреть закупку</li>
+            </ol>
+        </section>
+
+        {% if not profile %}
+            <div class="pad margin no-print">
+                <div class="callout callout-info" style="margin-bottom: 0!important;">
+                    <h4><i class="fa fa-info"></i> Записочка</h4>
+                    Для того что бы работать организатором в SP Mooscow, вам необходимо заполнить личные данные, после этого Ваша учетная запись будет рассмотренна админимтратором и ей будет присвоен соответствующий статус
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Main content -->
+        <section class="invoice">
+            <!-- Table row -->
+            <div class="row">
+
+                <div class="col-xs-6">
+
+                    <b>ID: </b>{{ purchase.id }}
+                    <br/>
+                    <b>Name: </b>{{ purchase.name }}
+                    <br/><br/>
+
+                    <a class="btn btn-success" href="{{ purchase.url }}-edit">Изменить закупку</a>
+                    <br/><br/>
+                    <a class="btn btn-primary" href="catalogs">Каталоги закупки</a>
+
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+
+        </section><!-- /.content -->
+        <div class="clearfix"></div>
+    </div><!-- /.content-wrapper -->
+
+{% endblock %}

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
 from project.accounts.models import OrganizerProfile
+# from project.core.models import Purchase
 # from webshop.accounts.forms import UserProfileForm
 
 
@@ -19,3 +20,4 @@ def set(request):
     profile = retrieve(request)
     profile_form = OrganizerProfile(request.POST, instance=profile)
     profile_form.save()
+
