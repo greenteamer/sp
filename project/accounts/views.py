@@ -304,13 +304,16 @@ def catalogAdd(request, purchase_id, template_name):
 
 
 # страница для ajax запроса получения полей ввода свойств,при добавлении каталога
-def getNewCatalogProductPropertiesFormBlock(request):
-    content = '<label>Свойство товара в каталоге:</label> \
-        <input class="form-control" name="cpp_name" placeholder="Введите свойство для товаров в этом каталоге" type="text"> \
-	    <label>Возможные значения:</label> \
-	    <input class="form-control" name="cpp_values" placeholder="Введите возможные значения для свойства через символ &quot;;&quot;" type="text"> \
-        <hr/>'
-    return HttpResponse(content)
+def getNewCatalogProductPropertiesFormBlock(request, template_name):
+    # content = '<label>Свойство товара в каталоге:</label> \
+    #     <input class="form-control" name="cpp_name" placeholder="Введите свойство для товаров в этом каталоге" type="text"> \
+	 #    <label>Возможные значения:</label> \
+	 #    <input class="form-control" name="cpp_values" placeholder="Введите возможные значения для свойства через символ &quot;;&quot;" type="text"> \
+    #     <hr/>'
+    catalogProductProperties_form = catalogProductPropertiesForm()
+    # return HttpResponse(content)
+    return render_to_response(template_name, locals(),
+                              context_instance=RequestContext(request))
 
 
 

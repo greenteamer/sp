@@ -51,7 +51,7 @@
                             <hr/>
 
                         </div>
-                        <div id="clickbutton" class="btn btn-info">Добавить поля</div
+                        <div id="clickbutton" class="btn btn-info">Добавить поля</div>
                         <div class="box-footer">
                             <button type="submit" class="btn btn-primary">Отправить</button>
                         </div>
@@ -77,12 +77,11 @@
         (function($) {
             $(document).ready(function() {
 
-                $('#clickbutton').click(function creenCardBlockShow(event) {
+                $('#clickbutton').click(function (){
                     csrftoken = $.cookie('csrftoken');
                     $.post(
                       "/profile/organizer/getnewcatalogproductpropertiesformblock",
                       {
-                        action: 'get_greenCardForm',
                         csrfmiddlewaretoken: csrftoken
                       },
                       onAjaxSuccess
@@ -99,3 +98,5 @@
     </script>
 
 {% endblock %}
+
+POST['csrfmiddlewaretoken']
