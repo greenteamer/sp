@@ -53,7 +53,7 @@ urlpatterns = patterns('project.accounts.views',
          'edit': True},
 		name='product'),
 
-
+    url(r'^getnewcatalogproductpropertiesformblock$', 'getNewCatalogProductPropertiesFormBlock'),
 
 
 )

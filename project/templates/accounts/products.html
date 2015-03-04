@@ -5,7 +5,10 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>Просмотр товаров для закупки «{{ purchase }}», каталога «{{ catalog }}»</h1>
+            <h1>
+                Просмотр товаров для закупки «<a href="{{ purchase.url }}">{{ purchase }}</a>», каталога
+                «<a href="{{ catalog.url }}">{{ catalog }}»</a>
+            </h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
                 <li class="active">Просмотр товаров</li>
@@ -47,8 +50,8 @@
                             {% for product in products %}
 
                                 <div class="product col-sm-4" >
-                                    <div class="bg-primary" style="padding:10px;margin-bottom: 20px;">
-                                        <h3><a style="color:white;" href="/profile/organizer/purchase-{{ purchase.id }}/catalog-{{ catalog.id }}/product-{{ product.id }}">{{ product.product_name }}</a></h3>
+                                    <div class="bg-primary img-rounded" style="padding:10px;margin-bottom: 20px;">
+                                        <h3><a style="color:white;" href="{{ product.url }}">{{ product.product_name }}</a></h3>
                                         <b>Описание: </b>{{ product.description }}<br/>
                                         <b>Цена: </b>{{ product.price }}
                                         <div class="center-block" >
