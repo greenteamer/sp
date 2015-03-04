@@ -14,9 +14,13 @@ django-filebrowser==3.5.7
 django-flatblocks==0.9
 django-grappelli==2.6.3
 django-kombu==0.9.4
+django-mptt==0.6.1
+django-mptt-tree-editor==0.1.2
+django-simple-captcha==0.4.4
 django-tinymce==1.5.3
 easy-thumbnails==2.2
 gunicorn==19.2.1
 kombu==3.0.24
 pytz==2014.10
+six==1.9.0
 wsgiref==0.1.2

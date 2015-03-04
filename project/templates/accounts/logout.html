@@ -1,0 +1,55 @@
+{% extends "main.html" %}
+
+{% block page_css %}
+    <link href="{{ STATIC_URL }}AdminLte/dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
+    <!-- iCheck -->
+    <link href="{{ STATIC_URL }}AdminLte/plugins/iCheck/square/blue.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block body %}
+    <body class="lockscreen">
+{% endblock %}
+
+{% block content %}
+
+    <!-- Automatic element centering -->
+    <div class="lockscreen-wrapper">
+      <div class="lockscreen-logo">
+        <a href="/profile"><b>Кабинет</b> SP Moscow</a>
+      </div>
+      <!-- User name -->
+      <div class="lockscreen-name">{{ profile.firstName }} {{ profile.lastName }}</div>
+
+      <!-- START LOCK SCREEN ITEM -->
+      <div class="lockscreen-item">
+        <!-- lockscreen image -->
+        <div class="lockscreen-image">
+          <img src="{{ MEDIA_URL }}{{ profile.icon }}" alt="user image"/>
+        </div>
+        <!-- /.lockscreen-image -->
+
+        <!-- lockscreen credentials (contains the form) -->
+        <form class="lockscreen-credentials" method="POST" action=".">{% csrf_token %}
+            <div class="input-group">
+                <input type="hidden" name="username" value="{{ user.username }}"/>
+                <input type="password" class="form-control" name="password" placeholder="password" />
+                <div class="input-group-btn">
+                    <button type="submit" class="btn"><i class="fa fa-arrow-right text-muted"></i></button>
+                </div>
+            </div>
+        </form><!-- /.lockscreen credentials -->
+
+      </div><!-- /.lockscreen-item -->
+      <div class="help-block text-center">
+        Введите свой пароль что бы возобновить вашу сессию
+      </div>
+      <div class='text-center'>
+        <a href="/profile/registration/">Или зарегистрируйтесь</a>
+      </div>
+      <div class='lockscreen-footer text-center'>
+        Copyright &copy; 2015 <b><a href="http://forward70.ru" class='text-black'>Forward Studio</a></b><br>
+        All rights reserved
+      </div>
+    </div><!-- /.center -->
+
+{% endblock %}
