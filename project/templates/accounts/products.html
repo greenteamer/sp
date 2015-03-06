@@ -1,4 +1,5 @@
 {% extends "core_main.html" %}
+{% load thumbnail %}
 
 {% block content %}
       <!-- Content Wrapper. Contains page content -->
@@ -66,14 +67,17 @@
                                                 <b>Описание: </b>{{ product.description }}<br/>
                                                 <b>Цена: </b>{{ product.price }}
                                             </div>
-
                                             <div class="col-xs-3 product_image_wrap" >
-        {#                                    center-block #}
-                                                {% if product.product_image %}
-                                                    <img class="img-thumbnail center-block" src="{{ MEDIA_URL }}{{ product.product_image }}" width="auto" style="height: 70px;float: right; margin-top: 20px;margin-bottom: 10px;" alt=""/>
-                                                {% else %}
+                                                {% thumbnail product.product_image "90x70" crop="60% top" as im %}
+                                                   <img class="img-thumbnail center-block" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" style="float:right;margin-top:20px;margin-bottom:10px;">
+                                                {% empty %}
                                                     <img class="img-thumbnail center-block" src="{{ MEDIA_URL }}accounts/images/no_image-128.png" width="auto" style="height: 70px;float: right; margin-top: 20px;margin-bottom: 10px;" alt=""/>
-                                                {% endif %}
+                                                {% endthumbnail %}
+{#                                                {% if product.product_image %}#}
+{#                                                    <img class="img-thumbnail center-block" src="{{ MEDIA_URL }}{{ product.product_image }}" width="auto" style="height: 70px;float: right; margin-top: 20px;margin-bottom: 10px;" alt=""/>#}
+{#                                                {% else %}#}
+{#                                                    <img class="img-thumbnail center-block" src="{{ MEDIA_URL }}accounts/images/no_image-128.png" width="auto" style="height: 70px;float: right; margin-top: 20px;margin-bottom: 10px;" alt=""/>#}
+{#                                                {% endif %}#}
                                             </div>
                                         </div>
                                     </div>

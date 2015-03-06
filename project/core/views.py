@@ -6,10 +6,9 @@ from django.core import urlresolvers
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.core.context_processors import csrf
-from project.core.models import Purchase, Product, Catalog, CatalogProductProperties
+from project.core.models import Purchase, Product, Catalog, ProductImages
 from project.core.functions import *
 from project.accounts.models import getOrganizerProfile
-from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, purchaseForm, catalogForm, catalogProductPropertiesForm, ProductForm, propertyForm
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import Http404
 
@@ -35,6 +34,8 @@ def viewProduct(request, template_name="core/viewproduct.html"):
     products = Product.objects.raw('select core_product.id, core_product.product_name, core_productimages.image '
                                    'from core_product, core_productimages '
                                    'where core_product.id = core_productimages.p_image_product_id')
+
+    product_images = ProductImages.objects.all()
 
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
