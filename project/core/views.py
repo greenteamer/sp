@@ -27,12 +27,20 @@ def index_view(request, template_name="catalog/index.html"):
 
 
 def viewProduct(request, template_name="core/viewproduct.html"):
-    products = Product.objects.all()
-    if template_name == 0:
-        return products
-    else:
-        return render_to_response(template_name, locals(),
+    # products = Product.objects.all()
+
+    # products = Product.objects.raw('SELECT * FROM core_product')
+
+    # пример прямого sql запроса для выборки из двух таблиц за один раз
+    products = Product.objects.raw('select core_product.id, core_product.product_name, core_productimages.image '
+                                   'from core_product, core_productimages '
+                                   'where core_product.id = core_productimages.p_image_product_id')
+
+    return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
+
+
+
 
 
 # Просмотр или редактирование одной конкретной закупки (по id)

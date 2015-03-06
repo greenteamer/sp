@@ -4,6 +4,7 @@
     {% for product in products %}
         <div class="product">
             <h5>{{ product.product_name }}</h5>
+            <img src="{{ MEDIA_URL }}{{ product.image }}" width="150px;" alt=""/><br/>
             {{ product.description }}<br/>
             {{ product.price }}
             <hr/>
