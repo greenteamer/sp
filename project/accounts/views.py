@@ -16,7 +16,7 @@ from project.settings import ADMIN_EMAIL
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import Http404, HttpResponse
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def profileView(request, template_name):
     user = request.user
@@ -311,7 +311,11 @@ def getNewCatalogProductPropertiesFormBlock(request, template_name):
 	 #    <input class="form-control" name="cpp_values" placeholder="Введите возможные значения для свойства через символ &quot;;&quot;" type="text"> \
     #     <hr/>'
     catalogProductProperties_form = catalogProductPropertiesForm()
-    # return HttpResponse(content)
+
+
+
+    #
+    return HttpResponse()
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
 
@@ -355,6 +359,19 @@ def products(request, purchase_id, catalog_id, template_name):
                 product.product_image = ProductImages.objects.get(p_image_product_id=product.id).image
             except:
                 continue
+
+        paginator = Paginator(products, 3)
+        page = request.GET.get('page')
+
+        try:
+            page_products = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            page_products = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            page_products = paginator.page(paginator.num_pages)
+
         return render_to_response(template_name, locals(),
                                   context_instance=RequestContext(request))
     except ObjectDoesNotExist:

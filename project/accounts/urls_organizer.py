@@ -54,7 +54,7 @@ urlpatterns = patterns('project.accounts.views',
 		name='product'),
 
     url(r'^getnewcatalogproductpropertiesformblock$', 'getNewCatalogProductPropertiesFormBlock',
-        {'template_name': 'accounts/test.html'},
+        {'template_name': 'accounts/getNewCatalogProductPropertiesFormBlock.html'},
         ),
 
 

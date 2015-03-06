@@ -27,12 +27,15 @@ def index_view(request, template_name="catalog/index.html"):
 
 
 def viewProduct(request, template_name="core/viewproduct.html"):
-    products = Product.objects.all()
-    if template_name == 0:
-        return products
-    else:
-        return render_to_response(template_name, locals(),
+    # products = Product.objects.all()
+
+    products = Product.objects.raw('SELECT * FROM core_product')
+
+    return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
+
+
+
 
 
 # Просмотр или редактирование одной конкретной закупки (по id)
