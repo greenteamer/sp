@@ -108,8 +108,8 @@ STATICFILES_DIRS = (
 	# Put strings here, like "/home/html/static" or "C:/www/django/static".
 	# Always use forward slashes, even on Windows.
 	# Don't forget to use absolute paths, not relative paths.
-	os.path.join(CURRPATH, '../project/core/static').replace('\\', '/'),
-	os.path.join(CURRPATH, '../project/core/static/media').replace('\\', '/'),
+	os.path.join(CURRPATH, 'static').replace('\\', '/'),
+	os.path.join(CURRPATH, 'static/media').replace('\\', '/'),
 )
 
 # List of finder classes that know how to find static files in
@@ -209,15 +209,12 @@ INSTALLED_APPS = (
     # 'grappelli',
     'filebrowser',
 	'django.contrib.admin',
-    # 'south',
 	# Uncomment the next line to enable admin documentation:
 	# 'django.contrib.admindocs',
-    # 'mptt',
     'bootstrap3',
-    # 'sorl.thumbnail',
+    'sorl.thumbnail',
     # 'dajaxice',
     # 'dajax',
-    # 'captcha',
     'south',
     'captcha',
     # 'sitetree',

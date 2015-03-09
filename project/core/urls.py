@@ -14,6 +14,12 @@ urlpatterns = patterns('project.core.views',
     url(r'^$', 'index_view',
 		{'template_name':'core/index.html'},
 		name='catalog_home'),
+    url(r'^purchase-(\d+)/$', 'corePurchase',
+		{'template_name': 'core/core_purchase.html'},
+		name='corePurchase'),
+    url(r'^purchase-(?P<purchase_id>\d+)/catalog-(?P<catalog_id>\d+)/$', 'coreCatalog',
+		{'template_name': 'core/core_catalog.html'},
+		name='coreCatalog'),
 
 
 

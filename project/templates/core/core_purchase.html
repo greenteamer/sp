@@ -1,0 +1,45 @@
+{% extends "core_main.html" %}
+
+{% block content %}
+      <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+           <ol class="breadcrumb" style="display: block">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
+                <li class="active">Просмотреть закупку</li>
+            </ol>
+            <h1>Закупка "{{ purchase.name }}"</h1>
+        </section>
+
+        <!-- Main content -->
+        <section class="invoice">
+            <!-- Table row -->
+            <div class="row">
+
+                <div class="col-xs-6">
+
+                    <b>ID: </b>{{ purchase.id }}
+                    <br/>
+                    <b>Название закупки: </b>{{ purchase.name }}
+                    <br/>
+                    <b>Описание:</b>{{ purchase.description }}
+                    <br/>
+                    {% if purchase.get_catalogs %}
+                        <b>Каталоги:</b>
+                        {% for catalog in purchase.get_catalogs %}
+                            <br/>
+                            <a href="{{ catalog.url_core }}">{{ catalog.catalog_name }}</a>
+                        {% endfor %}
+                    {% endif %}
+
+
+
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+
+        </section><!-- /.content -->
+        <div class="clearfix"></div>
+    </div><!-- /.content-wrapper -->
+
+{% endblock %}
