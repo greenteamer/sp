@@ -45,9 +45,9 @@ class Catalog(models.Model):
         return self.catalog_name
 
     def url(self):
-        return '%s/catalog-%s' % (self.catalog_purchase.url() , self.id)
+        return '%s/catalog-%s' % (self.catalog_purchase.url(), self.id)
     def url_core(self):
-        return '%s/catalog-%s' % (self.catalog_purchase.url_core() , self.id)
+        return '%s/catalog-%s' % (self.catalog_purchase.url_core(), self.id)
 
     def get_products(self):
         products = Product.objects.filter(catalog=self.id)
@@ -63,6 +63,12 @@ class Product(models.Model):
     price = models.FloatField(verbose_name=u'Цена')
     sku = models.IntegerField(verbose_name=u'Артикул',null=True,blank=True)
     catalog = models.ForeignKey(Catalog, verbose_name=u'Выбрать каталог')
+
+    def url(self):
+        return '%s/product-%s' % (self.catalog.url(), self.id)
+
+    def url_core(self):
+        return '%s/product-%s' % (self.catalog.url_core(), self.id)
 
     def __unicode__(self):
         return self.product_name

@@ -15,7 +15,7 @@ from django.http import HttpResponseRedirect
 from project.settings import ADMIN_EMAIL
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.core.exceptions import ObjectDoesNotExist
-from django.http.response import Http404
+from django.http.response import Http404, HttpResponse
 
 
 def profileView(request, template_name):
@@ -264,21 +264,55 @@ def catalogAdd(request, purchase_id, template_name):
     message = ''
     if request.POST:
         catalog_form = catalogForm(request.POST)
-        catalogProductProperties_form = catalogProductPropertiesForm(request.POST)
-        if catalog_form.is_valid() and catalogProductProperties_form.is_valid():
-            new_catalogProductProperties = catalogProductProperties_form.save(commit=False)
-            new_catalogProductProperties.cpp_catalog = catalog_form.save(purchase_id)  # каталог сохраняется для нужной закупки - переопределена ф-я save, возвращает созданный объект каталога
-            new_catalogProductProperties.cpp_purchase = Purchase.objects.get(id=purchase_id)
-            new_catalogProductProperties.save()
+        # catalogProductProperties_form = catalogProductPropertiesForm(request.POST)
+
+        if catalog_form.is_valid():
+            new_catalog = catalog_form.save(purchase_id)  # каталог сохраняется для нужной закупки - переопределена ф-я save, возвращает созданный объект каталога
+
+            cpp_names = request.POST.getlist('cpp_name')
+            cpp_values = request.POST.getlist('cpp_values')
+
+            cpp_purchase = Purchase.objects.get(id=purchase_id)
+
+            for cpp_name in cpp_names:
+                if cpp_name != '' and cpp_name != None:
+                    new_catalogProductProperties = CatalogProductProperties()
+                    new_catalogProductProperties.cpp_name = cpp_name
+                    new_catalogProductProperties.cpp_values = cpp_values[cpp_names.index(cpp_name)]
+                    new_catalogProductProperties.cpp_catalog = new_catalog
+                    new_catalogProductProperties.cpp_purchase = cpp_purchase
+                    new_catalogProductProperties.save()
+
             message = u"Новый каталог «%s» успешно добавлен. <br/> Добавить еще: " % request.POST['catalog_name']
         else:
             message = u"Ошибка при добавлении каталога"
+        #
+        # if catalog_form.is_valid() and catalogProductProperties_form.is_valid():
+        #     new_catalogProductProperties = catalogProductProperties_form.save(commit=False)
+        #     new_catalogProductProperties.cpp_catalog = catalog_form.save(purchase_id)  # каталог сохраняется для нужной закупки - переопределена ф-я save, возвращает созданный объект каталога
+        #     new_catalogProductProperties.cpp_purchase = Purchase.objects.get(id=purchase_id)
+        #     new_catalogProductProperties.save()
+        #     message = u"Новый каталог «%s» успешно добавлен. <br/> Добавить еще: " % request.POST['catalog_name']
+        # else:
+        #     message = u"Ошибка при добавлении каталога"
 
     catalog_form = catalogForm()
     catalogProductProperties_form = catalogProductPropertiesForm()
 
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
+
+
+# страница для ajax запроса получения полей ввода свойств,при добавлении каталога
+def getNewCatalogProductPropertiesFormBlock(request):
+    content = '<label>Свойство товара в каталоге:</label> \
+        <input class="form-control" name="cpp_name" placeholder="Введите свойство для товаров в этом каталоге" type="text"> \
+	    <label>Возможные значения:</label> \
+	    <input class="form-control" name="cpp_values" placeholder="Введите возможные значения для свойства через символ &quot;;&quot;" type="text"> \
+        <hr/>'
+    return HttpResponse(content)
+
+
 
 
 # Просмотр каталога
@@ -337,55 +371,58 @@ def product(request, purchase_id, catalog_id, product_id, template_name, edit=Fa
     message = ''
 
     if edit == True:  # если передан парамерт edit равный True, то редактируем товар
+        # try:
+        product = Product.objects.get(id=product_id)  # получаем экземпляр товара по id
+
+        if request.POST:
+            product_form = ProductForm(request.POST)
+            product_image_form = ProductImagesForm(request.POST, request.FILES)
+            if product_form.is_valid() and product_image_form.is_valid():
+
+                product.product_name = request.POST['product_name']
+                product.description = request.POST['description']
+                product.price = request.POST['price']
+                product.sku = request.POST['sku']
+                product.save()
+
+                if request.FILES:
+                    ProductImages.objects.get(p_image_product_id=product_id).delete()
+                    product_image_form.save(product_id)
+
+
+                Properties.objects.filter(properties_product_id=product_id).delete()
+
+                properties = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
+                for property in properties:
+                    try:
+                        if request.POST[property.cpp_slug] is not None:
+                            new_properties = Properties()
+                            new_properties.properties_value = request.POST[property.cpp_slug]  #request.POST['tsvet']
+                            new_properties.properties_product = product
+                            new_properties.properties_catalogProductProperties = CatalogProductProperties.objects.get(cpp_slug=property.cpp_slug)
+                            new_properties.save()
+                    except:
+                        continue
+
+                message = u"Новый товар %s успешно отредактирован." % request.POST['product_name']
+            else:
+                message = u"Ошибка при изменении товара"
+
+        product = Product.objects.get(id=product_id)
+        product_image_Obj = ProductImages(p_image_product_id=product_id)
         try:
-            product = Product.objects.get(id=product_id)  # получаем экземпляр товара по id
-
-            if request.POST:
-                product_form = ProductForm(request.POST)
-                product_image_form = ProductImagesForm(request.POST, request.FILES)
-                if product_form.is_valid() and product_image_form.is_valid():
-
-                    product.product_name = request.POST['product_name']
-                    product.description = request.POST['description']
-                    product.price = request.POST['price']
-                    product.sku = request.POST['sku']
-                    product.save()
-
-                    if request.FILES:
-                        ProductImages.objects.get(p_image_product_id=product_id).delete()
-                        product_image_form.save(product_id)
-
-
-                    Properties.objects.filter(properties_product_id=product_id).delete()
-
-                    properties = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
-                    for property in properties:
-                        try:
-                            if request.POST[property.cpp_slug] is not None:
-                                new_properties = Properties()
-                                new_properties.properties_value = request.POST[property.cpp_slug]  #request.POST['tsvet']
-                                new_properties.properties_product = product
-                                new_properties.properties_catalogProductProperties = CatalogProductProperties.objects.get(cpp_slug=property.cpp_slug)
-                                new_properties.save()
-                        except:
-                            continue
-
-                    message = u"Новый товар %s успешно отредактирован." % request.POST['product_name']
-                else:
-                    message = u"Ошибка при изменении товара"
-
-            product = Product.objects.get(id=product_id)
-            product_image_Obj = ProductImages(p_image_product_id=product_id)
             product_image = ProductImages.objects.get(p_image_product_id=product_id).image
-            product_image_form = ProductImagesForm(instance=product_image_Obj)
-            product_form = ProductForm(instance=product)                    # заполненная форма текущей товара
-            property_form = propertyForm(catalog_id, product_id)
+        except:
+            product_image = False
+        product_image_form = ProductImagesForm(instance=product_image_Obj)
+        product_form = ProductForm(instance=product)                    # заполненная форма текущей товара
+        property_form = propertyForm(catalog_id, product_id)
 
 
-            return render_to_response(template_name, locals(),
-                                  context_instance=RequestContext(request))
-        except ObjectDoesNotExist:
-            raise Http404
+        return render_to_response(template_name, locals(),
+                              context_instance=RequestContext(request))
+        # except ObjectDoesNotExist:
+        #     raise Http404
 
     else:           # если параметр edit равный True не передан, но выводим товар
         try:
