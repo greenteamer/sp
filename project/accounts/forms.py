@@ -206,13 +206,13 @@ def propertyForm(catalog_id, product_id=False):
 
                 if product_id != False:
                     cpp_id = CatalogProductProperties.objects.get(cpp_slug=slug)
-                    property_value = Properties.objects.get(properties_catalogProductProperties_id=cpp_id,
-                                                            properties_product_id=product_id)
-                    self.fields[slug] = forms.ChoiceField(widget=forms.RadioSelect, label=name,
-                            choices=list_choices, initial=property_value)
+                    try:
+                        property_value = Properties.objects.get(properties_catalogProductProperties_id=cpp_id, properties_product_id=product_id)
+                        self.fields[slug] = forms.ChoiceField(widget=forms.RadioSelect, label=name, choices=list_choices, initial=property_value.properties_value)
+                    except:
+                        self.fields[slug] = forms.ChoiceField(widget=forms.RadioSelect, label=name, choices=list_choices)
                 else:
-                    self.fields[slug] = forms.ChoiceField(widget=forms.RadioSelect, label=name,
-                            choices=list_choices)
+                    self.fields[slug] = forms.ChoiceField(widget=forms.RadioSelect, label=name, choices=list_choices)
 
     return DynamicPropertyForm()
 
