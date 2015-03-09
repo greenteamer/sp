@@ -1,4 +1,20 @@
+{% load thumbnail %}
+
+{{ 'sfsdf'|markdown_thumbnails }}
+
+{% for product_image in product_images %}
+    {% thumbnail product_image.image "1000" as big %}
+        {% thumbnail product_image.image "50x50" crop="center" as small %}
+            <a href="{{ big.url}}" title="look ma!"><img src="{{ small.url }}"></a>
+        {% endthumbnail %}
+    {% endthumbnail %}
+{% endfor %}
+
+
+<hr/>
 <h1>Все товары:</h1>
+
+
 
 <div class="products">
     {% for product in products %}
@@ -11,4 +27,3 @@
         </div>
     {% endfor %}
 </div>
-
