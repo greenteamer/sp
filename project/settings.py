@@ -234,7 +234,7 @@ INSTALLED_APPS = (
     'mptt',
     'project.core',
     'project.accounts',
-
+    'mptt_tree_editor',
 )
 
 FILEBROWSER_MEDIA_ROOT = MEDIA_ROOT

@@ -7,17 +7,67 @@ from django.utils.text import slugify
 from project.core.functions import *
 from autoslug import AutoSlugField
 from django.utils.translation import ugettext_lazy as _
+from django.db.models import permalink
 
 
 # Категории
+# class Category(MPTTModel):
+#     name = models.CharField(verbose_name=u'Name', max_length=50, unique=True)
+#     parent = TreeForeignKey('self', verbose_name=u'Родительская категория',
+#                             related_name='children', blank=True,
+#                             help_text=u'Родительская категория для текущей категоири', null=True)
+#
+#     def __unicode__(self):
+#         return self.name
+
+class CommonActiveManager(models.Manager):
+    """Класс менеджер для фильтрации активных объектов"""
+    def get_query_set(self):
+        return super(CommonActiveManager, self).get_query_set().filter(is_active=True)
+
 class Category(MPTTModel):
-    name = models.CharField(verbose_name=u'Name', max_length=50, unique=True)
-    parent = TreeForeignKey('self', verbose_name=u'Родительская категория',
+    """Класс для категорий товаров"""
+    name = models.CharField(_(u'Name'), max_length=50, unique=True)
+    slug = models.SlugField(_(u'Slug'), max_length=50, unique=True,
+                            help_text=_(u'Slug for product url created from name.'))
+    # "Чистые" ссылки для продуктов формирующиеся из названия
+
+    description = models.TextField(_(u'Description'), blank=True)
+    is_active = models.BooleanField(_(u'Active'), default=True)
+    meta_keywords = models.CharField(_(u'Meta keywords'), max_length=255,
+                                     help_text=_(u'Comma-delimited set of SEO keywords for meta tag'),blank=True)
+    # Разделенные запятыми теги для SEO оптимизации
+
+    meta_description = models.CharField(_(u'Meta description'), max_length=255,
+                                        help_text=_(u'Content for description meta tags'), blank=True)
+    created_at = models.DateTimeField(_(u'Created at'), auto_now_add=True)
+    updated_at = models.DateTimeField(_(u'Updated at'), auto_now=True)
+    parent = TreeForeignKey('self', verbose_name=_(u'Parent category'),
                             related_name='children', blank=True,
-                            help_text=u'Родительская категория для текущей категоири', null=True)
+                            help_text=_(u'Parent-category for current category'), null=True)
+    active = CommonActiveManager()
+
+    class Meta:
+        db_table = 'categories'
+        ordering = ['-created_at']
+        verbose_name_plural = _(u'Категории')
+
+    # It is required to rebuild tree after save, when using order for mptt-tree
+    # def save(self, *args, **kwargs):
+    #     super(Category, self).save(*args, **kwargs)
+    #     Category.objects.rebuild()
 
     def __unicode__(self):
-        return self.name
+        # return self.name
+        return '%s%s' % ('--' * self.level, self.name)
+
+    # не работает с этим:
+    # @permalink
+    # def get_absolute_url(self):
+    #      #Генерация постоянных ссылок на категории
+    #     return ('catalog_category', (), {'category_slug': self.slug})
+
+
 
 class Purchase(models.Model):
     name = models.CharField(max_length=100, verbose_name=u'Название закупки')
@@ -25,6 +75,8 @@ class Purchase(models.Model):
     organizerProfile = models.ForeignKey('accounts.OrganizerProfile', verbose_name=u'Профиль организатора')
     date = models.DateField(auto_now_add=True)
 
+    categories = models.ManyToManyField(Category, verbose_name=_(u'Categories'),
+                                        help_text=_(u'Categories for product'))
     def __unicode__(self):
         return self.name
 
