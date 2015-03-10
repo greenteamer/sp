@@ -1,6 +1,6 @@
 {% load thumbnail %}
 
-{{ 'sfsdf'|markdown_thumbnails }}
+
 
 {% for product_image in product_images %}
     {% thumbnail product_image.image "1000" as big %}
@@ -23,6 +23,9 @@
             <img src="{{ MEDIA_URL }}{{ product.image }}" width="150px;" alt=""/><br/>
             {{ product.description }}<br/>
             {{ product.price }}
+            {% for image in product.get_all_image  %}
+                <img src="{{ image.url }}" alt=""/>
+            {% endfor %}
             <hr/>
         </div>
     {% endfor %}

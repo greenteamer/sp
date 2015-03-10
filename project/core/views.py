@@ -37,6 +37,8 @@ def viewProduct(request, template_name="core/viewproduct.html"):
 
     product_images = ProductImages.objects.all()
 
+
+
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
 
