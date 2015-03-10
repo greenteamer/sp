@@ -62,10 +62,11 @@ class Category(MPTTModel):
         return '%s%s' % ('--' * self.level, self.name)
 
     # не работает с этим:
-    # @permalink
-    # def get_absolute_url(self):
-    #      #Генерация постоянных ссылок на категории
-    #     return ('catalog_category', (), {'category_slug': self.slug})
+    @permalink
+    def get_absolute_url(self):
+         #Генерация постоянных ссылок на категории
+        return('category', (), {'category_slug': self.slug})
+
 
 
 
