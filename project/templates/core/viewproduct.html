@@ -23,6 +23,9 @@
             <img src="{{ MEDIA_URL }}{{ product.image }}" width="150px;" alt=""/><br/>
             {{ product.description }}<br/>
             {{ product.price }}
+            {% for image in product.get_all_image  %}
+                <img src="{{ image.url }}" alt=""/>
+            {% endfor %}
             <hr/>
         </div>
     {% endfor %}

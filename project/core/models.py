@@ -73,6 +73,9 @@ class Product(models.Model):
     def __unicode__(self):
         return self.product_name
 
+    def get_all_image(self):
+        return ProductImages.objects.filter(p_image_product=self.id)
+
 
 class ProductImages(models.Model):
     image = models.FileField(_(u'Image'), upload_to='product/',
