@@ -1,4 +1,20 @@
+{% load thumbnail %}
+
+{{ 'sfsdf'|markdown_thumbnails }}
+
+{% for product_image in product_images %}
+    {% thumbnail product_image.image "1000" as big %}
+        {% thumbnail product_image.image "50x50" crop="center" as small %}
+            <a href="{{ big.url}}" title="look ma!"><img src="{{ small.url }}"></a>
+        {% endthumbnail %}
+    {% endthumbnail %}
+{% endfor %}
+
+
+<hr/>
 <h1>Все товары:</h1>
+
+
 
 <div class="products">
     {% for product in products %}
@@ -7,8 +23,10 @@
             <img src="{{ MEDIA_URL }}{{ product.image }}" width="150px;" alt=""/><br/>
             {{ product.description }}<br/>
             {{ product.price }}
+            {% for image in product.get_all_image  %}
+                <img src="{{ image.url }}" alt=""/>
+            {% endfor %}
             <hr/>
         </div>
     {% endfor %}
 </div>
-

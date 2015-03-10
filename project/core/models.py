@@ -73,12 +73,15 @@ class Product(models.Model):
     def __unicode__(self):
         return self.product_name
 
+    def get_all_image(self):
+        return ProductImages.objects.filter(p_image_product=self.id)
+
 
 class ProductImages(models.Model):
     image = models.FileField(_(u'Image'), upload_to='product/',
                              help_text=u'Изображение', blank=True)
     p_image_product = models.ForeignKey(Product, verbose_name=u'Выбрать товар')
-
+    # p_image_title = models.CharField(u'Название', blank=True, null=True, max_length=255)
     def url(self):
         return "/media/%s" % self.image
 
