@@ -5,14 +5,22 @@ from django.conf.urls import patterns, url
 urlpatterns = patterns('project.core.views',
 
     url(r'^viewproduct/$', 'viewProduct',
-		{'template_name':'core/viewproduct.html'},
+		{'template_name': 'core/viewproduct.html'},
 		name='viewproduct'),
 
+    # страница категорий
+    url(r'^categories/$', 'categories',
+		{'template_name': 'core/core_categories.html'},
+		name='categories'),
 
+    # страница одной категории
+    url(r'^category-(?P<category_slug>[-\w]+)/$', 'coreCategory',
+		{'template_name': 'core/core_category.html'},
+		name='category'),
 
     # Главная страница
     url(r'^$', 'index_view',
-		{'template_name':'core/index.html'},
+		{'template_name': 'core/index.html'},
 		name='catalog_home'),
     url(r'^purchase-(\d+)/$', 'corePurchase',
 		{'template_name': 'core/core_purchase.html'},
