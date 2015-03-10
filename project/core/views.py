@@ -50,12 +50,15 @@ def categories(request, template_name):
                             context_instance=RequestContext(request))
 
 
-def category(request, category_slug, template_name):
+# Страница категории
+def coreCategory(request, category_slug, template_name):
 
     try:
-        Category.objects.get(slug=category_slug)
+        category_id = Category.objects.get(slug=category_slug)
     except ObjectDoesNotExist:
             raise Http404
+
+    purchases = Purchase.objects.filter(categories=category_id)
 
     return render_to_response(template_name, locals(),
                             context_instance=RequestContext(request))

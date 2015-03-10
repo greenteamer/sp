@@ -14,7 +14,7 @@ urlpatterns = patterns('project.core.views',
 		name='categories'),
 
     # страница одной категории
-    url(r'^category-(?P<category_slug>[-\w]+)/$', 'category',
+    url(r'^category-(?P<category_slug>[-\w]+)/$', 'coreCategory',
 		{'template_name': 'core/core_category.html'},
 		name='category'),
 
