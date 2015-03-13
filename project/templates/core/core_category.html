@@ -1,0 +1,50 @@
+{% extends "core_main.html" %}
+{% load category_tags %}
+
+{% block content %}
+      <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+           <ol class="breadcrumb" style="display: block">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
+                <li class="active">Просмотреть категорию</li>
+            </ol>
+            <h1>Категория "{{ category_slug }}"</h1>
+        </section>
+
+        <!-- Main content -->
+        <section class="invoice">
+            <!-- Table row -->
+            <div class="row">
+
+                <div class="col-xs-12">
+                    {% if purchases %}
+                        <ul>
+                            {% for purchase in purchases %}
+                                <li><a href="{{ purchase.url_core }}">{{ purchase.name }}</a> | <b>{{ purchase.organizerProfile.user }}</b> | Дата обновления: {{ purchase.updated_at }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        Добавьте закупки в данную категорию
+                    {% endif %}
+                    <hr/>
+                    {% categories_tree request %}
+
+
+
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+
+        </section><!-- /.content -->
+        <div class="clearfix"></div>
+    </div><!-- /.content-wrapper -->
+
+{% endblock %}
+
+
+
+
+
+
+

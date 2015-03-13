@@ -209,15 +209,12 @@ INSTALLED_APPS = (
     # 'grappelli',
     'filebrowser',
 	'django.contrib.admin',
-    # 'south',
 	# Uncomment the next line to enable admin documentation:
 	# 'django.contrib.admindocs',
-    # 'mptt',
     'bootstrap3',
-    # 'sorl.thumbnail',
+    'sorl.thumbnail',
     # 'dajaxice',
     # 'dajax',
-    # 'captcha',
     'south',
     'captcha',
     # 'sitetree',
@@ -237,7 +234,7 @@ INSTALLED_APPS = (
     'mptt',
     'project.core',
     'project.accounts',
-
+    'mptt_tree_editor',
 )
 
 FILEBROWSER_MEDIA_ROOT = MEDIA_ROOT
