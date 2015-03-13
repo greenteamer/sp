@@ -50,7 +50,7 @@ class Category(MPTTModel):
     active = CommonActiveManager()
 
     class Meta:
-        db_table = 'categories'
+        # db_table = 'categories'
         ordering = ['-created_at']
         verbose_name_plural = _(u'Категории')
 
