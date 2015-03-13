@@ -1,0 +1,30 @@
+{% load i18n %}
+{% load mptt_tags %}
+
+{% if nodes %}
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-default">
+            {% recursetree nodes %}
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a href="{{ node.get_absolute_url }}" data-slug="{{ node.slug }}">{{ node.name }}</a>
+                        <a class="accordion_button" data-toggle="collapse" data-parent="#accordion" href="#collapse{{ node.id }}">{% if not node.is_leaf_node %} <i class="fa fa-caret-down"></i>{% endif %}</a>
+                    </h4>
+                </div>
+                {% if not node.is_leaf_node %}
+                    <div id="collapse{{ node.id }}" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            {{ children }}<br/>
+    {#                        {% for foo in children %}#}
+    {#                            <i class="fa fa-angle-right"></i>#}
+    {#                        {% endfor %}#}
+
+                        </div>
+                    </div>
+                {% endif %}
+            {% endrecursetree %}
+        </div>
+    </div>
+{% else %}
+    У вас нет ни одной категории. Создайте категории в административной панеле.
+{% endif %}
