@@ -40,12 +40,23 @@
                     <!-- form start -->
                     <form action="" method="post">
                         {% csrf_token %}
-                        {{ catalog_form.as_p }}
-                        {{ catalogProductProperties_form.as_p }}
+                        {{ catalog_form }}
+                        <div id="insertfields">
+{#                            {{ catalogProductProperties_form }}#}
+
+                            <label>Свойство товара в каталоге:</label>
+                            <input class="form-control" name="cpp_name" placeholder="Введите свойство для товаров в этом каталоге" type="text">
+                            <label>Возможные значения:</label>
+                            <input class="form-control" name="cpp_values" placeholder="Введите возможные значения для свойства через символ &quot;;&quot;" type="text">
+                            <hr/>
+
+                        </div>
+                        <div id="clickbutton" class="btn btn-info">Добавить поля</div>
                         <div class="box-footer">
                             <button type="submit" class="btn btn-primary">Отправить</button>
                         </div>
                     </form>
+
 
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -53,5 +64,37 @@
         </section><!-- /.content -->
         <div class="clearfix"></div>
     </div><!-- /.content-wrapper -->
+
+{% endblock %}
+
+{% block page_js %}
+    <script src='{{ STATIC_URL }}AdminLte/plugins/fastclick/fastclick.min.js'></script>
+    <script src="{{ STATIC_URL }}AdminLte/dist/js/app.min.js" type="text/javascript"></script>
+{#    <script src="{{ STATIC_URL }}AdminLte/dist/js/demo.js" type="text/javascript"></script>#}
+<script src='{{ STATIC_URL }}js/jquery.cookie.js'></script>
+
+    <script>
+        (function($) {
+            $(document).ready(function() {
+
+                $('#clickbutton').click(function (){
+                    csrftoken = $.cookie('csrftoken');
+                    $.post(
+                      "/profile/organizer/getnewcatalogproductpropertiesformblock",
+                      {
+                        csrfmiddlewaretoken: csrftoken
+                      },
+                      onAjaxSuccess
+                    );
+                    function onAjaxSuccess(data){
+                        // Здесь мы получаем данные, отправленные сервером и выводим их на экран.
+                        $("#insertfields").append(data);
+{#                        $('#insertdata').html(data);#}
+                    }
+                });
+
+            });
+        })(jQuery);
+    </script>
 
 {% endblock %}
