@@ -1,4 +1,5 @@
 {% extends "core_main.html" %}
+{% load category_tags %}
 
 {% block content %}
       <!-- Content Wrapper. Contains page content -->
@@ -27,13 +28,13 @@
             <!-- Table row -->
             <div class="row">
 
-                <div class="col-xs-6">
-
-                    <ul>
-                        {% for purchase in purchases%}
-                            <li><a href="/purchase-{{ purchase.id }}">{{ purchase.name }}</a></li>
-                        {% endfor %}
-                    </ul>
+                <div class="col-xs-12">
+                     {% categories_tree request %}
+{#                    <ul>#}
+{#                        {% for purchase in purchases%}#}
+{#                            <li><a href="/purchase-{{ purchase.id }}">{{ purchase.name }}</a></li>#}
+{#                        {% endfor %}#}
+{#                    </ul>#}
 
                 </div><!-- /.col -->
             </div><!-- /.row -->

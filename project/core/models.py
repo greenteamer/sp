@@ -20,10 +20,12 @@ from django.db.models import permalink
 #     def __unicode__(self):
 #         return self.name
 
+
 class CommonActiveManager(models.Manager):
     """Класс менеджер для фильтрации активных объектов"""
     def get_query_set(self):
         return super(CommonActiveManager, self).get_query_set().filter(is_active=True)
+
 
 class Category(MPTTModel):
     """Класс для категорий товаров"""
@@ -40,8 +42,8 @@ class Category(MPTTModel):
 
     meta_description = models.CharField(_(u'Meta description'), max_length=255,
                                         help_text=_(u'Content for description meta tags'), blank=True)
-    created_at = models.DateTimeField(_(u'Created at'), auto_now_add=True)
-    updated_at = models.DateTimeField(_(u'Updated at'), auto_now=True)
+    created_at = models.DateTimeField(_(u'Created at'), null=True, auto_now_add=True)
+    updated_at = models.DateTimeField(_(u'Updated at'), null=True, auto_now=True)
     parent = TreeForeignKey('self', verbose_name=_(u'Parent category'),
                             related_name='children', blank=True,
                             help_text=_(u'Parent-category for current category'), null=True)
@@ -61,19 +63,18 @@ class Category(MPTTModel):
         # return self.name
         return '%s%s' % ('--' * self.level, self.name)
 
-    # не работает с этим:
-    # @permalink
-    # def get_absolute_url(self):
-    #      #Генерация постоянных ссылок на категории
-    #     return ('catalog_category', (), {'category_slug': self.slug})
-
+    @permalink
+    def get_absolute_url(self):
+         #Генерация постоянных ссылок на категории
+        return('category', (), {'category_slug': self.slug})
 
 
 class Purchase(models.Model):
     name = models.CharField(max_length=100, verbose_name=u'Название закупки')
     description = models.TextField(verbose_name=u'Описание закупки')
     organizerProfile = models.ForeignKey('accounts.OrganizerProfile', verbose_name=u'Профиль организатора')
-    date = models.DateField(auto_now_add=True)
+    created_at = models.DateTimeField(_(u'Created at'), null=True, auto_now_add=True)
+    updated_at = models.DateTimeField(_(u'Updated at'), null=True, auto_now=True)
 
     categories = models.ManyToManyField(Category, verbose_name=_(u'Categories'),
                                         help_text=_(u'Categories for product'))
@@ -92,6 +93,8 @@ class Purchase(models.Model):
 class Catalog(models.Model):
     catalog_name = models.CharField(max_length=100, verbose_name=u'Название каталога')
     catalog_purchase = models.ForeignKey(Purchase)
+    created_at = models.DateTimeField(_(u'Created at'), null=True, auto_now_add=True)
+    updated_at = models.DateTimeField(_(u'Updated at'), null=True, auto_now=True)
 
     def __unicode__(self):
         return self.catalog_name
@@ -115,6 +118,8 @@ class Product(models.Model):
     price = models.FloatField(verbose_name=u'Цена')
     sku = models.IntegerField(verbose_name=u'Артикул',null=True,blank=True)
     catalog = models.ForeignKey(Catalog, verbose_name=u'Выбрать каталог')
+    created_at = models.DateTimeField(_(u'Created at'), null=True, auto_now_add=True)
+    updated_at = models.DateTimeField(_(u'Updated at'), null=True, auto_now=True)
 
     def url(self):
         return '%s/product-%s' % (self.catalog.url(), self.id)
