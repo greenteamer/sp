@@ -98,7 +98,9 @@ class Purchase(models.Model):
     updated_at = models.DateTimeField(_(u'Updated at'), null=True, auto_now=True)
     # purchase_status = models.ForeignKey(PurchaseStatus, verbose_name=u'Статус закупки', default=PurchaseStatus.objects.get(id=6) )
     purchase_status = models.ForeignKey(PurchaseStatus, verbose_name=u'Статус закупки', default=PurchaseStatus.objects.order_by('-status_priority')[0] )
-
+    prepay = models.IntegerField(verbose_name=u'Предоплата', help_text=u'Отмечается в процентах', default=100)
+    percentage = models.IntegerField(verbose_name=u'Процент организатора', help_text=u'Отмечается в процентах', default=15)
+    paymethods = models.TextField(u'Способы оплаты', default=u'Не указано')  # TODO: ? Тип поля? тупо пусть пишут текстом, или сделать выбор селект. тогда отдельно надо типы оплаты вносить..
     categories = models.ManyToManyField(Category, verbose_name=_(u'Categories'),
                                         help_text=_(u'Categories for product'))
     def __unicode__(self):
