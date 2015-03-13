@@ -24,7 +24,7 @@ def index_view(request, template_name="catalog/index.html"):
                               context_instance=RequestContext(request))
 
 
-
+#  страница для тестов
 def viewProduct(request, template_name="core/viewproduct.html"):
     # products = Product.objects.all()
 

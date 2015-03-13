@@ -98,7 +98,9 @@ class Purchase(models.Model):
     updated_at = models.DateTimeField(_(u'Updated at'), null=True, auto_now=True)
     # purchase_status = models.ForeignKey(PurchaseStatus, verbose_name=u'Статус закупки', default=PurchaseStatus.objects.get(id=6) )
     purchase_status = models.ForeignKey(PurchaseStatus, verbose_name=u'Статус закупки', default=PurchaseStatus.objects.order_by('-status_priority')[0] )
-
+    prepay = models.IntegerField(verbose_name=u'Предоплата', help_text=u'Отмечается в процентах', default=100)
+    percentage = models.IntegerField(verbose_name=u'Процент организатора', help_text=u'Отмечается в процентах', default=15)
+    paymethods = models.TextField(u'Способы оплаты', default=u'Не указано')  # TODO: ? Тип поля? тупо пусть пишут текстом, или сделать выбор селект. тогда отдельно надо типы оплаты вносить..
     categories = models.ManyToManyField(Category, verbose_name=_(u'Categories'),
                                         help_text=_(u'Categories for product'))
     def __unicode__(self):
@@ -130,7 +132,10 @@ class Catalog(models.Model):
     def get_products(self):
         products = Product.objects.filter(catalog=self.id)
         for product in products:
-            product.img = ProductImages.objects.filter(p_image_product=product.id)[0].url()
+            try:
+                product.image = ProductImages.objects.filter(p_image_product=product.id)[0].url()
+            except:
+                product.image = '/static/images/none_image.png'
         return products
 
 
@@ -163,7 +168,10 @@ class ProductImages(models.Model):
     p_image_product = models.ForeignKey(Product, verbose_name=u'Выбрать товар')
     # p_image_title = models.CharField(u'Название', blank=True, null=True, max_length=255)
     def url(self):
-        return "/media/%s" % self.image
+        if self.image and self.image != '':
+            return "/media/%s" % self.image
+        else:
+            return '/static/images/none_image.png'
 
 
 class CatalogProductProperties(models.Model):
@@ -177,7 +185,6 @@ class CatalogProductProperties(models.Model):
         return self.cpp_name
 
     def save(self):
-        # if not self.id:
         self.cpp_slug = translit(self.cpp_name).lower()
         super(CatalogProductProperties, self).save()
 
