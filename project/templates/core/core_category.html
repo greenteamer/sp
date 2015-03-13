@@ -1,0 +1,75 @@
+{% extends "core_main.html" %}
+{% load category_tags %}
+
+{% block content %}
+      <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+           <ol class="breadcrumb" style="display: block">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
+                <li class="active">Просмотреть категорию</li>
+            </ol>
+            <h1>Категория "{{ category_slug }}"</h1>
+        </section>
+
+        <!-- Main content -->
+        <section class="invoice">
+            <!-- Table row -->
+            <div class="row">
+
+                <div class="col-xs-2">
+                    {% categories_tree request %}
+                </div><!-- /.col -->
+
+
+                <div class="col-xs-10">
+                    {% if purchases %}
+                        <table class="table">
+                            <tr>
+                                <th>№</th>
+                                <th>Название совместной закупки</th>
+                                <th>Статус</th>
+                                <th>Организатор</th>
+                                <th>Участников</th>
+                                <th>Заказано</th>
+                            </tr>
+                            {% for purchase in purchases %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>
+                                        <div>
+                                            <a href="{{ purchase.url_core }}">{{ purchase.name }}</a>
+                                        </div>
+                                        <div style="font-size: 10px;">Дата обновления: {{ purchase.updated_at }}</div>
+                                    </td>
+                                    <td>{{ purchase.purchase_status }}</td>
+                                    <td><b>{{ purchase.organizerProfile.user }}</b></td>
+                                    <td></td>
+                                    <td></td>
+
+                                </tr>
+                            {% endfor %}
+                        </table>
+
+                    {% else %}
+                        Добавьте закупки в данную категорию
+                    {% endif %}
+
+                </div><!-- /.col -->
+
+
+            </div><!-- /.row -->
+
+        </section><!-- /.content -->
+        <div class="clearfix"></div>
+    </div><!-- /.content-wrapper -->
+
+{% endblock %}
+
+
+
+
+
+
+
