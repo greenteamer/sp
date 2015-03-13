@@ -18,22 +18,47 @@
             <!-- Table row -->
             <div class="row">
 
-                <div class="col-xs-12">
+                <div class="col-xs-2">
+                    {% categories_tree request %}
+                </div><!-- /.col -->
+
+
+                <div class="col-xs-10">
                     {% if purchases %}
-                        <ul>
+                        <table class="table">
+                            <tr>
+                                <th>№</th>
+                                <th>Название совместной закупки</th>
+                                <th>Статус</th>
+                                <th>Организатор</th>
+                                <th>Участников</th>
+                                <th>Заказано</th>
+                            </tr>
                             {% for purchase in purchases %}
-                                <li><a href="{{ purchase.url_core }}">{{ purchase.name }}</a> | <b>{{ purchase.organizerProfile.user }}</b> | Дата обновления: {{ purchase.updated_at }}</li>
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>
+                                        <div>
+                                            <a href="{{ purchase.url_core }}">{{ purchase.name }}</a>
+                                        </div>
+                                        <div style="font-size: 10px;">Дата обновления: {{ purchase.updated_at }}</div>
+                                    </td>
+                                    <td>{{ purchase.purchase_status }}</td>
+                                    <td><b>{{ purchase.organizerProfile.user }}</b></td>
+                                    <td></td>
+                                    <td></td>
+
+                                </tr>
                             {% endfor %}
-                        </ul>
+                        </table>
+
                     {% else %}
                         Добавьте закупки в данную категорию
                     {% endif %}
-                    <hr/>
-                    {% categories_tree request %}
-
-
 
                 </div><!-- /.col -->
+
+
             </div><!-- /.row -->
 
         </section><!-- /.content -->
