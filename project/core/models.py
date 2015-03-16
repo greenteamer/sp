@@ -10,17 +10,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models import permalink
 
 
-# Категории
-# class Category(MPTTModel):
-#     name = models.CharField(verbose_name=u'Name', max_length=50, unique=True)
-#     parent = TreeForeignKey('self', verbose_name=u'Родительская категория',
-#                             related_name='children', blank=True,
-#                             help_text=u'Родительская категория для текущей категоири', null=True)
-#
-#     def __unicode__(self):
-#         return self.name
-
-
 class CommonActiveManager(models.Manager):
     """Класс менеджер для фильтрации активных объектов"""
     def get_query_set(self):
@@ -44,13 +33,13 @@ class Category(MPTTModel):
                                         help_text=_(u'Content for description meta tags'), blank=True)
     created_at = models.DateTimeField(_(u'Created at'), null=True, auto_now_add=True)
     updated_at = models.DateTimeField(_(u'Updated at'), null=True, auto_now=True)
-    parent = TreeForeignKey('self', verbose_name=_(u'Parent category'),
+    parent = TreeForeignKey('self', verbose_name=_(u'Родительская категория'),
                             related_name='children', blank=True,
-                            help_text=_(u'Parent-category for current category'), null=True)
+                            help_text=_(u'Родительская категория для текущей категоири'), null=True)
     active = CommonActiveManager()
 
     class Meta:
-        db_table = 'categories'
+        # db_table = 'categories'
         ordering = ['-created_at']
         verbose_name_plural = _(u'Категории')
 
@@ -69,13 +58,39 @@ class Category(MPTTModel):
         return('category', (), {'category_slug': self.slug})
 
 
+#  возвращает число на 1 больше чем максимальныое занчение ПриоритетаЗакупки во всех закупках,
+# если закупок нет, то возвращает 0
+def get_next_status_priority():
+    try:
+        max_status_priority = PurchaseStatus.objects.order_by('-status_priority')[0]
+        return max_status_priority.status_priority + 1
+    except:
+        return 0
+
+class PurchaseStatus(models.Model):
+    status_name = models.CharField(max_length=50, verbose_name=u'Статус закупки')
+    status_description = models.TextField(verbose_name=u'Описание статуса закупки', blank=True, null=True)
+    status_priority = models.IntegerField(verbose_name=u'Приоритет статуса', default=(get_next_status_priority), unique=True)
+    status_icon = models.FileField(_(u'Иконка'), upload_to='purchase_status/',
+                             help_text=u'Иконка статуса', blank=True)
+    class Meta:
+        ordering = ['status_priority']
+        verbose_name_plural = _(u'Статусы закупок')
+    def __unicode__(self):
+        return self.status_name
+
+
 class Purchase(models.Model):
     name = models.CharField(max_length=100, verbose_name=u'Название закупки')
-    description = models.TextField(verbose_name=u'Описание закупки')
+    description = models.TextField(verbose_name=u'Описание закупки', null=True)
     organizerProfile = models.ForeignKey('accounts.OrganizerProfile', verbose_name=u'Профиль организатора')
     created_at = models.DateTimeField(_(u'Created at'), null=True, auto_now_add=True)
     updated_at = models.DateTimeField(_(u'Updated at'), null=True, auto_now=True)
-
+    # purchase_status = models.ForeignKey(PurchaseStatus, verbose_name=u'Статус закупки', default=PurchaseStatus.objects.get(id=6) )
+    purchase_status = models.ForeignKey(PurchaseStatus, verbose_name=u'Статус закупки', default=PurchaseStatus.objects.order_by('-status_priority')[0] )
+    prepay = models.IntegerField(verbose_name=u'Предоплата', help_text=u'Отмечается в процентах', default=100)
+    percentage = models.IntegerField(verbose_name=u'Процент организатора', help_text=u'Отмечается в процентах', default=15)
+    paymethods = models.TextField(u'Способы оплаты', default=u'Не указано')  # TODO: ? Тип поля? тупо пусть пишут текстом, или сделать выбор селект. тогда отдельно надо типы оплаты вносить..
     categories = models.ManyToManyField(Category, verbose_name=_(u'Categories'),
                                         help_text=_(u'Categories for product'))
     def __unicode__(self):
@@ -107,7 +122,10 @@ class Catalog(models.Model):
     def get_products(self):
         products = Product.objects.filter(catalog=self.id)
         for product in products:
-            product.img = ProductImages.objects.filter(p_image_product=product.id)[0].url()
+            try:
+                product.image = ProductImages.objects.filter(p_image_product=product.id)[0].url()
+            except:
+                product.image = '/static/images/none_image.png'
         return products
 
 
@@ -140,7 +158,10 @@ class ProductImages(models.Model):
     p_image_product = models.ForeignKey(Product, verbose_name=u'Выбрать товар')
     # p_image_title = models.CharField(u'Название', blank=True, null=True, max_length=255)
     def url(self):
-        return "/media/%s" % self.image
+        if self.image and self.image != '':
+            return "/media/%s" % self.image
+        else:
+            return '/static/images/none_image.png'
 
 
 class CatalogProductProperties(models.Model):
@@ -154,7 +175,6 @@ class CatalogProductProperties(models.Model):
         return self.cpp_name
 
     def save(self):
-        # if not self.id:
         self.cpp_slug = translit(self.cpp_name).lower()
         super(CatalogProductProperties, self).save()
 
