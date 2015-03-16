@@ -10,17 +10,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models import permalink
 
 
-# Категории
-# class Category(MPTTModel):
-#     name = models.CharField(verbose_name=u'Name', max_length=50, unique=True)
-#     parent = TreeForeignKey('self', verbose_name=u'Родительская категория',
-#                             related_name='children', blank=True,
-#                             help_text=u'Родительская категория для текущей категоири', null=True)
-#
-#     def __unicode__(self):
-#         return self.name
-
-
 class CommonActiveManager(models.Manager):
     """Класс менеджер для фильтрации активных объектов"""
     def get_query_set(self):
@@ -44,9 +33,9 @@ class Category(MPTTModel):
                                         help_text=_(u'Content for description meta tags'), blank=True)
     created_at = models.DateTimeField(_(u'Created at'), null=True, auto_now_add=True)
     updated_at = models.DateTimeField(_(u'Updated at'), null=True, auto_now=True)
-    parent = TreeForeignKey('self', verbose_name=_(u'Parent category'),
+    parent = TreeForeignKey('self', verbose_name=_(u'Родительская категория'),
                             related_name='children', blank=True,
-                            help_text=_(u'Parent-category for current category'), null=True)
+                            help_text=_(u'Родительская категория для текущей категоири'), null=True)
     active = CommonActiveManager()
 
     class Meta:
@@ -69,7 +58,8 @@ class Category(MPTTModel):
         return('category', (), {'category_slug': self.slug})
 
 
-#  возвращает число на 1 больше чем максимальныое занчение ПриоритетаЗакупки во всех закупках
+#  возвращает число на 1 больше чем максимальныое занчение ПриоритетаЗакупки во всех закупках,
+# если закупок нет, то возвращает 0
 def get_next_status_priority():
     try:
         max_status_priority = PurchaseStatus.objects.order_by('-status_priority')[0]
