@@ -25,5 +25,7 @@ pytz==2014.10
 six==1.9.0
 sorl-thumbnail==12.2
 wsgiref==0.1.2
-
-# pip install markdown bbcode django-annoying pybbm
+Markdown==2.6.1
+bbcode==1.0.21
+django-annoying==0.8.1
+pybbm==0.16.1

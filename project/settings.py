@@ -289,3 +289,7 @@ try:
     from settings_local import *
 except ImportError:
     pass
+
+
+
+# PYBB_PERMISSION_HANDLER = "project.core.pybbm_custom.MyPermissionHandler"  зараза не работает
