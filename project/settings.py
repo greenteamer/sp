@@ -238,6 +238,7 @@ INSTALLED_APPS = (
     'project.accounts',
     'mptt_tree_editor',
     'pybb',
+    'project.pristroy',
 )
 
 FILEBROWSER_MEDIA_ROOT = MEDIA_ROOT
