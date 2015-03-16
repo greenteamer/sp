@@ -7,7 +7,6 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.core.context_processors import csrf
 from project.core.models import Purchase, Product, Catalog, ProductImages, Category, PurchaseStatus
-from project.core.functions import *
 from project.accounts.models import getOrganizerProfile
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import Http404
