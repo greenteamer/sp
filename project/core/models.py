@@ -8,6 +8,7 @@ from project.core.functions import *
 from autoslug import AutoSlugField
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import permalink
+# from datetime import datetime
 
 
 # Категории
@@ -42,8 +43,8 @@ class Category(MPTTModel):
 
     meta_description = models.CharField(_(u'Meta description'), max_length=255,
                                         help_text=_(u'Content for description meta tags'), blank=True)
-    created_at = models.DateTimeField(_(u'Created at'), null=True, auto_now_add=True)
-    updated_at = models.DateTimeField(_(u'Updated at'), null=True, auto_now=True)
+    created_at = models.DateTimeField(_(u'Created at'), null=True, auto_now_add=True) #default=datetime.utcfromtimestamp(0),
+    updated_at = models.DateTimeField(_(u'Updated at'), default='', null=True, auto_now=True)
     parent = TreeForeignKey('self', verbose_name=_(u'Parent category'),
                             related_name='children', blank=True,
                             help_text=_(u'Parent-category for current category'), null=True)
@@ -77,7 +78,7 @@ class Purchase(models.Model):
     updated_at = models.DateTimeField(_(u'Updated at'), null=True, auto_now=True)
 
     categories = models.ManyToManyField(Category, verbose_name=_(u'Categories'),
-                                        help_text=_(u'Categories for product'))
+                                        help_text=_(u'Категории для этой закупки'))
     def __unicode__(self):
         return self.name
 
