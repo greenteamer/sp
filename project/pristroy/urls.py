@@ -4,14 +4,13 @@ from django.conf.urls import patterns, url
 
 urlpatterns = patterns('project.pristroy.views',
 
-    # категория
-    # url(r'^category-(?P<category_slug>[-\w]+)/$', 'Category',
-		# {'template_name': 'pristroy/category.html'},
-		# name='category'),
-
     # Главная страница раздела Пристрой
-    url(r'^$', 'Index',
+    url(r'^/$', 'Index',
 		{'template_name': 'pristroy/index.html'},
-		name='catalog_home'),
+		name='pristroy_catalog_home'),
+    # категория
+    url(r'^/(?P<category_slug>[-\w]+)/$', 'Index',
+		{'template_name': 'pristroy/index.html'},
+		name='pristroy_category'),
 
 )

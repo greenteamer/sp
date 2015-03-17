@@ -35,29 +35,10 @@ def viewProduct(request, template_name="core/viewproduct.html"):
                                    'where core_product.id = core_productimages.p_image_product_id')
 
     product_images = ProductImages.objects.all()
-
     product = Product.objects.order_by('-id')[0]
-
-
-    try:
-        max_status_priority = PurchaseStatus.objects.order_by('-status_priority')[0]
-        max_status_priority = max_status_priority.status_priority
-    except:
-        # return 0
-        max_status_priority = 'sdfsdf'
 
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
-
-from django.contrib.auth.models import Permission
-from pybb import permissions, views as pybb_views
-class CustomPermissionHandler(permissions.DefaultPermissionHandler):
-    """
-    a custom permission handler which changes the meaning of "hidden" forum:
-    "hidden" forum or category is visible for all logged on users, not only staff
-    """
-    def may_create_poll(self, user):
-        return False
 
 
 
