@@ -18,6 +18,9 @@ class CategoryAdmin(TreeEditor):
     # exclude = ('created_at', 'updated_at',)
     prepopulated_fields = {'slug': ('name',)}
 
+class PurchaseStatusAdmin(admin.ModelAdmin):
+    list_display = ['id', 'status_name', 'status_description', 'status_icon', 'status_priority']
+    list_filter = ['status_name', 'status_priority']
 
 class PropertiesInline(admin.StackedInline):
     model = Properties
@@ -43,3 +46,4 @@ admin.site.register(Catalog)
 admin.site.register(CatalogProductProperties)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Purchase)
+admin.site.register(PurchaseStatus, PurchaseStatusAdmin)
