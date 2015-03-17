@@ -6,8 +6,7 @@ from django.core import urlresolvers
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.core.context_processors import csrf
-from project.core.models import Purchase, Product, Catalog, ProductImages, Category
-from project.core.functions import *
+from project.core.models import Purchase, Product, Catalog, ProductImages, Category, PurchaseStatus
 from project.accounts.models import getOrganizerProfile
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import Http404
@@ -24,7 +23,7 @@ def index_view(request, template_name="catalog/index.html"):
                               context_instance=RequestContext(request))
 
 
-
+#  страница для тестов
 def viewProduct(request, template_name="core/viewproduct.html"):
     # products = Product.objects.all()
 
@@ -37,10 +36,28 @@ def viewProduct(request, template_name="core/viewproduct.html"):
 
     product_images = ProductImages.objects.all()
 
+    product = Product.objects.order_by('-id')[0]
+
+
+    try:
+        max_status_priority = PurchaseStatus.objects.order_by('-status_priority')[0]
+        max_status_priority = max_status_priority.status_priority
+    except:
+        # return 0
+        max_status_priority = 'sdfsdf'
+
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
 
-
+from django.contrib.auth.models import Permission
+from pybb import permissions, views as pybb_views
+class CustomPermissionHandler(permissions.DefaultPermissionHandler):
+    """
+    a custom permission handler which changes the meaning of "hidden" forum:
+    "hidden" forum or category is visible for all logged on users, not only staff
+    """
+    def may_create_poll(self, user):
+        return False
 
 
 
