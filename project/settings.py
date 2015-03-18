@@ -14,6 +14,8 @@ PROJECT_PATH = os.path.abspath(os.path.dirname(__file__).decode('utf-8')).replac
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 ROOT_URLCONF = 'project.urls'
 
+COVERAGE_REPORT_HTML_OUTPUT_DIR = os.path.join(CURRPATH, 'cover')
+COVERAGE_PATH_EXCLUDES = os.path.join(CURRPATH, 'cover')
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -217,16 +219,6 @@ INSTALLED_APPS = (
     # 'dajax',
     'south',
     'captcha',
-    # 'sitetree',
-    # 'flatblocks',
-    # 'robokassa',
-    # Custom modules
-    # 'main',
-    # 'slider',
-    # 'country',
-    # 'feedback',
-    # 'inplaceeditform',
-    # 'inplaceeditform_extra_fields',
     'ckeditor',
     'tinymce',
     # 'djcelery',
@@ -234,6 +226,7 @@ INSTALLED_APPS = (
     'mptt',
     'project.core',
     'project.accounts',
+    'django_coverage',
 
 )
 

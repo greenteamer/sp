@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
 from django import template
-from project.accounts.models import getOrganizerProfile
+from project.accounts.models import getProfile
 
 register = template.Library()
 
@@ -9,7 +9,7 @@ register = template.Library()
 def coreLeftMenu(context, request):
     user = request.user
     if user.is_authenticated():
-        profile = getOrganizerProfile(user)
+        profile = getProfile(user)
         return {
             'user': user,
             'profile': profile,
@@ -24,7 +24,7 @@ register.inclusion_tag('core/tags/core_left_menu.html', takes_context=True)(core
 def coreTopMenu(context, request):
     user = request.user
     if user.is_authenticated():
-        profile = getOrganizerProfile(user)
+        profile = getProfile(user)
         return {
             'user': user,
             'profile': profile,

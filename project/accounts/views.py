@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
 from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, purchaseForm, catalogForm, \
-                                    catalogProductPropertiesForm, ProductForm, propertyForm
+                                    catalogProductPropertiesForm, ProductForm, propertyForm, MemberProfileForm
 from project.core.models import Purchase, Catalog, Product, CatalogProductProperties, Properties, ProductImages
 from django.shortcuts import render, render_to_response
 from project.accounts.profiles import retrieve
-from project.accounts.models import OrganizerProfile, getOrganizerProfile, repopulateOrganizerProfile
+from project.accounts.models import OrganizerProfile, getProfile, repopulateProfile
 from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, purchaseForm, UserLoginForm, ProductImagesForm
 from django.contrib import auth
 from django.contrib.auth import login, authenticate
@@ -22,7 +22,7 @@ def profileView(request, template_name):
     user = request.user
     if user.is_authenticated():
         """проверка есть ли профиль у пользователя и получение его файл accounts.models"""
-        profile = getOrganizerProfile(user)
+        profile = getProfile(user)
 
     else:
         return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
@@ -34,16 +34,25 @@ def populateProfileView(request, template_name):
     form = OrganizerProfileForm()
     if user.is_authenticated():
         """проверка есть ли профиль у пользователя и получение его файл accounts.models"""
-        profile = getOrganizerProfile(user)
+        profile = getProfile(user)
         form = OrganizerProfileForm(instance=profile)
         if request.method == "POST":
+            postdata = request.POST.copy()
+            terms = postdata.get('terms', '')
+            is_organizer = postdata.get('is_organizer', '')
             form = OrganizerProfileForm(request.POST, request.FILES)
-            if form.is_valid() and getOrganizerProfile(user): #если профиль уже существует то только обновляем (не возвращает None)
-                current_profile = getOrganizerProfile(user)
-                current_profile = repopulateOrganizerProfile(current_profile, request)
-                current_profile.save()
+
+            if form.is_valid() and getProfile(user): #если профиль уже существует то только обновляем (не возвращает None)
+                # current_profile = getProfile(user)
+                profile = repopulateProfile(profile, request)
+                profile.save()
                 return HttpResponseRedirect(urlresolvers.reverse('populateProfileView'))
-            elif form.is_valid():
+
+            elif form.is_valid() and terms == 'on' and is_organizer == 'on':
+                form.save(request.user)
+                return HttpResponseRedirect(urlresolvers.reverse('populateProfileView'))
+            elif form.is_valid() and terms == 'on' and is_organizer == '':
+                form = MemberProfileForm(request.POST, request.FILES)
                 form.save(request.user)
                 return HttpResponseRedirect(urlresolvers.reverse('populateProfileView'))
             else: #должна быть обработка ошибок
@@ -126,7 +135,7 @@ def loginView(request, template_name):
 
 def logoutView(request, template_name):
     user = request.user
-    profile = getOrganizerProfile(user)
+    profile = getProfile(user)
     if user.is_authenticated:
         auth.logout(request)
     if request.method == 'POST':
@@ -152,11 +161,12 @@ def purchases(request, template_name):
 
     """ проверяем пользователя и его профайл организатора"""
     if user.is_authenticated():
-        profile = getOrganizerProfile(user)
+        profile = checkOrganizerProfile(user)
+        if checkOrganizerProfile(user) is None: return HttpResponseRedirect(urlresolvers.reverse('profileView'))
     else:
         return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
 
-    purchases = Purchase.objects.filter(organizerProfile=profile)
+    # purchases = Purchase.objects.filter(organizerProfile=profile)
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
 
@@ -167,7 +177,8 @@ def purchaseAdd(request, template_name):
 
     """ проверяем пользователя и его профайл организатора"""
     if user.is_authenticated():
-        profile = getOrganizerProfile(user)
+         profile = checkOrganizerProfile(user)
+         if checkOrganizerProfile(user) is None: return HttpResponseRedirect(urlresolvers.reverse('profileView'))
     else:
         return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
 
@@ -192,7 +203,8 @@ def purchase(request, purchase_id, template_name, edit=False):
 
     """ проверяем пользователя и его профайл организатора"""
     if user.is_authenticated():
-        profile = getOrganizerProfile(user)
+        profile = checkOrganizerProfile(user)
+        if checkOrganizerProfile(user) is None: return HttpResponseRedirect(urlresolvers.reverse('profileView'))
     else:
         return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
 
@@ -236,7 +248,8 @@ def catalogs(request, purchase_id, template_name):
 
         """ проверяем пользователя и его профайл организатора"""
         if user.is_authenticated():
-            profile = getOrganizerProfile(user)
+            profile = checkOrganizerProfile(user)
+            if checkOrganizerProfile(user) is None: return HttpResponseRedirect(urlresolvers.reverse('profileView'))
         else:
             return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
 
@@ -257,7 +270,8 @@ def catalogAdd(request, purchase_id, template_name):
 
     """ проверяем пользователя и его профайл организатора"""
     if user.is_authenticated():
-        profile = getOrganizerProfile(user)
+        profile = checkOrganizerProfile(user)
+        if checkOrganizerProfile(user) is None: return HttpResponseRedirect(urlresolvers.reverse('profileView'))
     else:
         return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
 
@@ -324,6 +338,13 @@ def getNewCatalogProductPropertiesFormBlock(request, template_name):
 
 # Просмотр каталога
 def catalog(request, purchase_id, catalog_id, template_name):
+    """ проверяем пользователя и его профайл организатора"""
+    user = request.user
+    if user.is_authenticated():
+        profile = checkOrganizerProfile(user)
+        if checkOrganizerProfile(user) is None: return HttpResponseRedirect(urlresolvers.reverse('profileView'))
+    else:
+        return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
     try:
         purchase = Purchase.objects.get(id=purchase_id)
         catalog = Catalog.objects.get(id=catalog_id)
@@ -346,7 +367,8 @@ def products(request, purchase_id, catalog_id, template_name):
 
         """ проверяем пользователя и его профайл организатора"""
         if user.is_authenticated():
-            profile = getOrganizerProfile(user)
+            profile = checkOrganizerProfile(user)
+            if checkOrganizerProfile(user) is None: return HttpResponseRedirect(urlresolvers.reverse('profileView'))
         else:
             return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
 
@@ -384,7 +406,8 @@ def product(request, purchase_id, catalog_id, product_id, template_name, edit=Fa
 
     """ проверяем пользователя и его профайл организатора"""
     if user.is_authenticated():
-        profile = getOrganizerProfile(user)
+        profile = checkOrganizerProfile(user)
+        if checkOrganizerProfile(user) is None: return HttpResponseRedirect(urlresolvers.reverse('profileView'))
     else:
         return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
 
@@ -470,7 +493,8 @@ def productAdd(request, catalog_id, template_name):
 
         """ проверяем пользователя и его профайл организатора"""
         if user.is_authenticated():
-            profile = getOrganizerProfile(user)
+            profile = checkOrganizerProfile(user)
+            if checkOrganizerProfile(user) is None: return HttpResponseRedirect(urlresolvers.reverse('profileView'))
         else:
             return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
 
@@ -507,3 +531,10 @@ def productAdd(request, catalog_id, template_name):
             raise Http404
 
 
+def checkOrganizerProfile(user):
+    try:
+        profile = OrganizerProfile.objects.get(user=user)
+        if profile.is_checked():
+            return profile
+    except:
+        return None

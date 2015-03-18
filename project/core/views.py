@@ -8,12 +8,18 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.core.context_processors import csrf
 from project.core.models import Purchase, Product, Catalog, ProductImages
 from project.core.functions import *
-from project.accounts.models import getOrganizerProfile
+from project.accounts.models import getProfile
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import Http404
 
 def index_view(request, template_name="catalog/index.html"):
     user = request.user
+    groups = user.groups.all()
+    try:
+        user.groups.get(name='member')
+    except Exception:
+        note = u'Пожалуйста зарегистрируйтесь как участник закупок'
+
     purchases = Purchase.objects.all()
     # if user.is_authenticated():
     #     """проверка есть ли профиль у пользователя и получение его файл accounts.models"""

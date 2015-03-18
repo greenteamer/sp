@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0">
+    <object pk="1" model="auth.group">
+        <field type="CharField" name="name">organizer</field>
+        <field to="auth.permission" name="permissions" rel="ManyToManyRel"><object pk="59"></object><object pk="43"></object><object pk="44"></object><object pk="45"></object><object pk="49"></object><object pk="50"></object><object pk="51"></object><object pk="37"></object><object pk="38"></object><object pk="39"></object><object pk="46"></object><object pk="47"></object><object pk="48"></object><object pk="52"></object><object pk="53"></object><object pk="54"></object><object pk="40"></object><object pk="41"></object><object pk="42"></object></field>
+    </object>
+    <object pk="2" model="auth.group">
+        <field type="CharField" name="name">member</field>
+        <field to="auth.permission" name="permissions" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="1" model="auth.user">
+        <field type="CharField" name="password">pbkdf2_sha256$12000$d8hzXGJklMvg$VnITuKcZ+MO2QdS7URQdCK3ppy9A6xqMzNuEkvkBb8Y=</field>
+        <field type="DateTimeField" name="last_login">2015-03-10T12:36:52</field>
+        <field type="BooleanField" name="is_superuser">True</field>
+        <field type="CharField" name="username">admin</field>
+        <field type="CharField" name="first_name"></field>
+        <field type="CharField" name="last_name"></field>
+        <field type="CharField" name="email">greenteamer@bk.ru</field>
+        <field type="BooleanField" name="is_staff">True</field>
+        <field type="BooleanField" name="is_active">True</field>
+        <field type="DateTimeField" name="date_joined">2015-02-13T14:27:18</field>
+        <field to="auth.group" name="groups" rel="ManyToManyRel"><object pk="2"></object><object pk="1"></object></field>
+        <field to="auth.permission" name="user_permissions" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="2" model="auth.user">
+        <field type="CharField" name="password">pbkdf2_sha256$12000$d8hzXGJklMvg$VnITuKcZ+MO2QdS7URQdCK3ppy9A6xqMzNuEkvkBb8Y=</field>
+        <field type="DateTimeField" name="last_login">2015-02-23T20:32:42</field>
+        <field type="BooleanField" name="is_superuser">False</field>
+        <field type="CharField" name="username">organ</field>
+        <field type="CharField" name="first_name"></field>
+        <field type="CharField" name="last_name"></field>
+        <field type="CharField" name="email"></field>
+        <field type="BooleanField" name="is_staff">False</field>
+        <field type="BooleanField" name="is_active">True</field>
+        <field type="DateTimeField" name="date_joined">2015-02-23T20:32:42</field>
+        <field to="auth.group" name="groups" rel="ManyToManyRel"><object pk="1"></object></field>
+        <field to="auth.permission" name="user_permissions" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="3" model="auth.user">
+        <field type="CharField" name="password">pbkdf2_sha256$12000$d8hzXGJklMvg$VnITuKcZ+MO2QdS7URQdCK3ppy9A6xqMzNuEkvkBb8Y=</field>
+        <field type="DateTimeField" name="last_login">2015-02-24T16:03:46</field>
+        <field type="BooleanField" name="is_superuser">False</field>
+        <field type="CharField" name="username">memb</field>
+        <field type="CharField" name="first_name"></field>
+        <field type="CharField" name="last_name"></field>
+        <field type="CharField" name="email"></field>
+        <field type="BooleanField" name="is_staff">False</field>
+        <field type="BooleanField" name="is_active">True</field>
+        <field type="DateTimeField" name="date_joined">2015-02-24T16:03:41</field>
+        <field to="auth.group" name="groups" rel="ManyToManyRel"><object pk="2"></object></field>
+        <field to="auth.permission" name="user_permissions" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="1" model="accounts.organizerprofile">
+        <field type="CharField" name="email">ladskfjl@sdf.ru</field>
+        <field type="CharField" name="phone">89138886899</field>
+        <field type="CharField" name="firstName">Александр</field>
+        <field type="CharField" name="lastName">Коровкин</field>
+        <field type="CharField" name="address">Ул.  Ленина , 42-56</field>
+        <field type="CharField" name="city">Северск</field>
+        <field type="CharField" name="zipCode">636070</field>
+        <field type="BooleanField" name="organizer_checked">True</field>
+        <field to="auth.user" name="user" rel="OneToOneRel">1</field>
+        <field type="FileField" name="icon">accounts/images/maksimov_1.jpg</field>
+    </object>
+    <object pk="2" model="accounts.organizerprofile">
+        <field type="CharField" name="email">greenteamer@bk.ru</field>
+        <field type="CharField" name="phone">2345345</field>
+        <field type="CharField" name="firstName">Александр</field>
+        <field type="CharField" name="lastName">Коровкин</field>
+        <field type="CharField" name="address">Ул.  Ленина , 42-56</field>
+        <field type="CharField" name="city">Северск</field>
+        <field type="CharField" name="zipCode">636070</field>
+        <field type="BooleanField" name="organizer_checked">True</field>
+        <field to="auth.user" name="user" rel="OneToOneRel">2</field>
+        <field type="FileField" name="icon">accounts/images/sanya2.png</field>
+    </object>
+    <object pk="3" model="accounts.memberprofile">
+        <field type="CharField" name="email">sldjfl@asd.ru</field>
+        <field type="CharField" name="phone">023489</field>
+        <field type="CharField" name="firstName">KADSFLJ</field>
+        <field type="CharField" name="lastName">FALSDKJFL</field>
+        <field type="CharField" name="address">LSADJF</field>
+        <field type="CharField" name="city">LSDJKZ</field>
+        <field type="CharField" name="zipCode">92834</field>
+        <field type="BooleanField" name="member_checked">True</field>
+        <field to="auth.user" name="user" rel="OneToOneRel">3</field>
+        <field type="FileField" name="icon">accounts/images/vk_1.png</field>
+    </object>
+</django-objects>
