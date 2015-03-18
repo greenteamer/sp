@@ -44,7 +44,7 @@ class Product(Model):
     class Meta:
         verbose_name_plural = _(u'Товары')
     def url(self):
-        return '%s/product-%s' % (self.product_catalog.url(), self.id)
+        return '/pristroy/product-%s' % (self.id)
 
     def __unicode__(self):
         return self.product_name
