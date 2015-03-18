@@ -11,7 +11,7 @@ from forms import ProductForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from models import Product, Category
 
-
+# страница пристроя, и страницы категорий пристроя
 def Index(request, template_name, category_slug=False):
 
     if category_slug == False:
@@ -22,8 +22,6 @@ def Index(request, template_name, category_slug=False):
             products = Product.objects.filter(product_catalog=category.id)
         except ObjectDoesNotExist:
             raise Http404
-
-
 
     paginator = Paginator(products, 3)
     page = request.GET.get('page')
@@ -43,11 +41,41 @@ def Index(request, template_name, category_slug=False):
                               context_instance=RequestContext(request))
 
 
+# Просмотр товара
+def ProductView(request, template_name, product_id):
+    try:
+        product = Product.objects.get(id=product_id)
+    except ObjectDoesNotExist:
+        raise Http404
+    return render_to_response(template_name, locals(),
+                              context_instance=RequestContext(request))
 
-def CreateProduct(request, template_name):
 
-    product_form = ProductForm
+# создание товара в пристрой
+def CreateEditProduct(request, template_name, product_id=False):
 
+    if request.POST:
+        if product_id == False:
+            product_form = ProductForm(request.POST)
+        else:
+            product = Product.objects.get(id=product_id)
+            product_form = ProductForm(request.POST, instance=product)
+        if product_form.is_valid():
+            product_save = product_form.save()
+            # product.product_name = request.POST['product_name']
+            # product.description = request.POST['description']
+            # product.price = request.POST['price']
+            # product.sku = request.POST['sku']
+            # product.save()
+            message = 'Сохранено'
+        else:
+            message = 'Поля заполенен не верно'
+
+    if product_id == False:
+        product_form = ProductForm
+    else:
+        product = Product.objects.get(id=product_id)
+        product_form = ProductForm(instance=product)
 
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
