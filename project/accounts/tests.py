@@ -145,11 +145,11 @@ class OrganizerTest(TestCase):
     #     profileM = getProfile(userM)
     #     assert (profileM)
 
-    def test_getData(self):
-        users = User.objects.all()
-        print "%s" % users
-        profiles = OrganizerProfile.objects.all()
-        print "%s" % profiles
+    # def test_getData(self):
+    #     users = User.objects.all()
+    #     print "%s" % users
+    #     profiles = OrganizerProfile.objects.all()
+    #     print "%s" % profiles
 
 
 
@@ -248,14 +248,11 @@ class OrganizerTest(TestCase):
                 response = client.get(url)
                 profile = getProfile(user)
                 if profile.is_checked():
-                    print "%s checked - %s - %s" % (user.username, url, response.status_code)
-                    # assert (response.status_code==200)
+                    assert (response.status_code==200)
                 elif not profile.is_checked():
-                    print "%s not checked - %s - %s" % (user.username, url, response.status_code)
-                    # assert (response.status_code==302)
+                    assert (response.status_code==302)
                 else:
-                    # assert (response.status_code==302)
-                    print "%s anonimous - %s - %s" % (user.username, url, response.status_code)
+                    assert (response.status_code==302)
 
             response = self.client.post(reverse('loginView'), {'username': user.username, 'password': 'balabas'})
             assert (response.status_code==302)
