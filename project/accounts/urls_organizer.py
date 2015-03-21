@@ -40,7 +40,7 @@ urlpatterns = patterns('project.accounts.views',
 		{'template_name': 'accounts/products.html'},
 		name='products'),
 
-    url(r'^purchase-(\d+)/catalog-(?P<catalog_id>\d+)/product-add/$', 'productAdd',
+    url(r'^purchase-(?P<purchase_id>\d+)/catalog-(?P<catalog_id>\d+)/product-add/$', 'productAdd',
 		{'template_name': 'accounts/product_add.html'},
 		name='productAdd'),
 
