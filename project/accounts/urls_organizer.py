@@ -17,13 +17,13 @@ urlpatterns = patterns('project.accounts.views',
 		{'template_name': 'accounts/purchase.html'},
 		name='purchase'),
 
-    url(r'^purchase-(\d+)-edit$', 'purchase',
+    url(r'^purchase-(\d+)-edit/$', 'purchase',
 		{'template_name': 'accounts/purchase_edit.html',
          'edit': True},
 		name='purchaseEdit'),
 
 
-    url(r'^purchase-(?P<purchase_id>\d+)/catalogs$', 'catalogs',
+    url(r'^purchase-(?P<purchase_id>\d+)/catalogs/$', 'catalogs',
 		{'template_name': 'accounts/catalogs.html'},
 		name='catalogs'),
 
@@ -36,24 +36,25 @@ urlpatterns = patterns('project.accounts.views',
 		name='catalog'),
 
 
-    url(r'^purchase-(?P<purchase_id>\d+)/catalog-(?P<catalog_id>\d+)/products$', 'products',
+    url(r'^purchase-(?P<purchase_id>\d+)/catalog-(?P<catalog_id>\d+)/products/$', 'products',
 		{'template_name': 'accounts/products.html'},
 		name='products'),
 
-    url(r'^purchase-(\d+)/catalog-(?P<catalog_id>\d+)/product-add$', 'productAdd',
+    url(r'^purchase-(?P<purchase_id>\d+)/catalog-(?P<catalog_id>\d+)/product-add/$', 'productAdd',
 		{'template_name': 'accounts/product_add.html'},
 		name='productAdd'),
 
-    url(r'^purchase-(?P<purchase_id>\d+)/catalog-(?P<catalog_id>\d+)/product-(?P<product_id>\d+)$', 'product',
+    url(r'^purchase-(?P<purchase_id>\d+)/catalog-(?P<catalog_id>\d+)/product-(?P<product_id>\d+)/$', 'product',
 		{'template_name': 'accounts/product.html'},
-		name='product'),
+		name='productView'),
 
-    url(r'^purchase-(?P<purchase_id>\d+)/catalog-(?P<catalog_id>\d+)/product-(?P<product_id>\d+)-edit$', 'product',
+    url(r'^purchase-(?P<purchase_id>\d+)/catalog-(?P<catalog_id>\d+)/product-(?P<product_id>\d+)-edit/$', 'product',
 		{'template_name': 'accounts/product_edit.html',
          'edit': True},
-		name='product'),
+		name='productEdit'),
 
-    url(r'^getnewcatalogproductpropertiesformblock$', 'getNewCatalogProductPropertiesFormBlock'),
-
+    url(r'^getnewcatalogproductpropertiesformblock$', 'getNewCatalogProductPropertiesFormBlock',
+        {'template_name': 'accounts/getNewCatalogProductPropertiesFormBlock.html'},
+        ),
 
 )
