@@ -17,8 +17,8 @@
             <!-- Table row -->
             <div class="row">
 
-                <div class="col-xs-6">
-
+                <div class="col-xs-7">
+                    <h3>Основная информация</h3>
                     <b>ID: </b>{{ purchase.id }}
                     <br/>
                     <b>Название закупки: </b>{{ purchase.name }}
@@ -33,9 +33,19 @@
                         {% endfor %}
                     {% endif %}
 
+                </div><!-- /.col -->
 
+                <div class="col-xs-5">
+                    <h3>Условия закупки</h3>
+                    <b>Предоплата: </b> {{ purchase.prepay }}%
+                    <br/>
+                    <b>Процент организатора: </b>{{ purchase.percentage }}%
+                    <br/>
+                    <b>Способы оплаты:</b> {{ purchase.paymethods }}
+                    <br/>
 
                 </div><!-- /.col -->
+
             </div><!-- /.row -->
 
         </section><!-- /.content -->

@@ -14,6 +14,8 @@ PROJECT_PATH = os.path.abspath(os.path.dirname(__file__).decode('utf-8')).replac
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 ROOT_URLCONF = 'project.urls'
 
+COVERAGE_REPORT_HTML_OUTPUT_DIR = os.path.join(CURRPATH, 'cover')
+COVERAGE_PATH_EXCLUDES = os.path.join(CURRPATH, 'cover')
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -138,6 +140,7 @@ MIDDLEWARE_CLASSES = (
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'pybb.middleware.PybbMiddleware',
     #'webshop.SSLMiddleware.SSLRedirect',
 )
 
@@ -160,6 +163,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 	'django.core.context_processors.static',
 	'django.core.context_processors.request',
 	'django.contrib.messages.context_processors.messages',
+    'pybb.context_processors.processor',
 )
 
 
@@ -209,27 +213,14 @@ INSTALLED_APPS = (
     # 'grappelli',
     'filebrowser',
 	'django.contrib.admin',
-    # 'south',
 	# Uncomment the next line to enable admin documentation:
 	# 'django.contrib.admindocs',
-    # 'mptt',
     'bootstrap3',
-    # 'sorl.thumbnail',
+    'sorl.thumbnail',
     # 'dajaxice',
     # 'dajax',
-    # 'captcha',
     'south',
     'captcha',
-    # 'sitetree',
-    # 'flatblocks',
-    # 'robokassa',
-    # Custom modules
-    # 'main',
-    # 'slider',
-    # 'country',
-    # 'feedback',
-    # 'inplaceeditform',
-    # 'inplaceeditform_extra_fields',
     'ckeditor',
     'tinymce',
     # 'djcelery',
@@ -237,7 +228,10 @@ INSTALLED_APPS = (
     'mptt',
     'project.core',
     'project.accounts',
-
+    'django_coverage',
+    'mptt_tree_editor',
+    'pybb',
+    'project.pristroy',
 )
 
 FILEBROWSER_MEDIA_ROOT = MEDIA_ROOT
@@ -276,7 +270,7 @@ SITE_NAME = _(u'Product magazine')
 META_KEYWORDS = _(u'products, online, shop, buy')
 META_DESCRIPTION = _(u'Product magazine is an online supplier of products')
 LOGIN_REDIRECT_URL = '/accounts/my_account/'
-SESSION_COOKIE_AGE = 60 * 60 * 24 * 90 # 90 дней на хранение cookies
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 90  # 90 дней на хранение cookies
 PRODUCTS_PER_PAGE = 300
 AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 
@@ -289,3 +283,7 @@ try:
     from settings_local import *
 except ImportError:
     pass
+
+
+
+# PYBB_PERMISSION_HANDLER = "project.core.pybbm_custom.MyPermissionHandler"  зараза не работает

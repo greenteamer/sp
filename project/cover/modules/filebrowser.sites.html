@@ -1,0 +1,750 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+    <title>Test coverage report: filebrowser.sites</title>
+    <style type="text/css" media="screen">
+      a
+      {
+        color: #3d707a;
+      }
+      
+      a:hover, a:active
+      {
+        color: #bf7d18;
+      }
+    
+      body 
+      {
+        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+        font-size: 13px;
+      }
+      
+      .nav 
+      {
+        font-size: 12px;
+        margin-left: 50px;
+      }
+
+      .ignored
+      {
+        color: #707070;
+      }
+
+      .executed 
+      {
+        color: #3d9900;
+      }
+
+      .missed 
+      {
+        color: red;
+        font-weight: bold;
+      }
+
+      .excluded 
+      {
+        color: #6090f0;
+        font-weight: lighter;
+      }
+    
+      #content-header 
+      {
+        font-size: 12px;
+        padding: 18px 0 18px 50px;
+      }
+
+      #content-header h1 
+      {
+        font-size: 16px;
+        margin: 10px 0 0 0;
+        color: #909090;
+      }
+      
+      #module-name
+      {
+        color: #583707;
+      }
+    
+      #content-header p
+      {
+        font-size: 13px;
+        margin: 0;
+        color: #909090;
+      }
+
+      #content-header .normal 
+      {
+        color: #609030;
+      }
+
+      #content-header .warning 
+      {
+        color: #d0a000;
+      }
+
+      #content-header .critical 
+      {
+        color: red;
+      }
+      
+      #source-listing 
+      {
+        margin-bottom: 24px;
+      }
+
+      #source-listing ol 
+      {
+        padding: 0 0 0 50px;
+        width: 90%;
+        font-family: monospace;
+        list-style-position: outside;
+      }
+
+      #source-listing ol li 
+      {
+        line-height: 18px;
+        font-size: small;
+      }
+        
+      #source-listing ol code 
+      {
+        padding:  0 .001em 0 0; /* Firefox doesn't render empty li's properly */
+        font-size: medium;
+        white-space: pre;
+      }
+   </style>
+  </head>
+
+  <body>
+
+<div class="nav">
+  <a href="filebrowser.signals.html">filebrowser.signals</a> &lt;&lt;
+  <a href="../index.html">index</a>
+  &gt;&gt; <a href="filebrowser.storage.html">filebrowser.storage</a>
+</div>
+
+<div id="content-header">
+  <h1>
+    <span id="module-name">filebrowser.sites</span>:
+    323 total statements,
+    <span class="critical">0.0% covered</span>
+  </h1>
+  <p>Generated: Tue 2015-03-10 22:42 MSK</p>
+  <p>Source file: /Users/greenteamer/Desktop/Django/env/sp/lib/python2.7/site-packages/filebrowser/sites.py</p>
+  <p>
+    Stats:
+    <span class="executed">0 executed</span>,
+    <span class="missed">287 missed</span>,
+    <span class="excluded">36 excluded</span>,
+    <span class="ignored">270 ignored</span> 
+  </p> 
+</div>
+
+<div id="source-listing">
+  <ol>
+    <li class="ignored"><code># coding: utf-8</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># PYTHON IMPORTS</code></li>
+<li class="excluded"><code>import os</code></li>
+<li class="excluded"><code>import re</code></li>
+<li class="excluded"><code>from time import gmtime</code></li>
+<li class="excluded"><code>from time import strftime</code></li>
+<li class="excluded"><code>from time import localtime</code></li>
+<li class="excluded"><code>from time import time</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># DJANGO IMPORTS</code></li>
+<li class="excluded"><code>from django.shortcuts import render_to_response, HttpResponse</code></li>
+<li class="excluded"><code>from django.template import RequestContext as Context</code></li>
+<li class="excluded"><code>from django.http import HttpResponseRedirect, HttpResponseBadRequest</code></li>
+<li class="excluded"><code>from django.contrib.admin.views.decorators import staff_member_required</code></li>
+<li class="excluded"><code>from django.views.decorators.cache import never_cache</code></li>
+<li class="excluded"><code>from django.utils.translation import ugettext as _</code></li>
+<li class="excluded"><code>from django import forms</code></li>
+<li class="excluded"><code>from django.core.urlresolvers import reverse, get_urlconf, get_resolver</code></li>
+<li class="excluded"><code>from django.core.paginator import Paginator, InvalidPage, EmptyPage</code></li>
+<li class="excluded"><code>from django.utils.encoding import smart_text</code></li>
+<li class="excluded"><code>from django.contrib import messages</code></li>
+<li class="excluded"><code>from django.views.decorators.csrf import csrf_exempt</code></li>
+<li class="excluded"><code>from django.core.files.storage import DefaultStorage, default_storage, FileSystemStorage</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># FILEBROWSER IMPORTS</code></li>
+<li class="excluded"><code>from filebrowser.settings import STRICT_PIL, DIRECTORY, EXTENSIONS, SELECT_FORMATS, ADMIN_VERSIONS, ADMIN_THUMBNAIL, MAX_UPLOAD_SIZE,\</code></li>
+<li class="ignored"><code>    NORMALIZE_FILENAME, CONVERT_FILENAME, SEARCH_TRAVERSE, EXCLUDE, VERSIONS, EXTENSION_LIST, DEFAULT_SORTING_BY, DEFAULT_SORTING_ORDER,\</code></li>
+<li class="ignored"><code>    LIST_PER_PAGE, OVERWRITE_EXISTING, DEFAULT_PERMISSIONS</code></li>
+<li class="excluded"><code>from filebrowser.templatetags.fb_tags import query_helper</code></li>
+<li class="excluded"><code>from filebrowser.base import FileListing, FileObject</code></li>
+<li class="excluded"><code>from filebrowser.decorators import path_exists, file_exists</code></li>
+<li class="excluded"><code>from filebrowser.storage import FileSystemStorageMixin, StorageMixin</code></li>
+<li class="excluded"><code>from filebrowser.utils import convert_filename</code></li>
+<li class="excluded"><code>from filebrowser import signals</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># Add some required methods to FileSystemStorage</code></li>
+<li class="missed"><code>if FileSystemStorageMixin not in FileSystemStorage.__bases__:</code></li>
+<li class="missed"><code>    FileSystemStorage.__bases__ += (FileSystemStorageMixin,)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># PIL import</code></li>
+<li class="missed"><code>if STRICT_PIL:</code></li>
+<li class="excluded"><code>    from PIL import Image</code></li>
+<li class="ignored"><code>else:</code></li>
+<li class="missed"><code>    try:</code></li>
+<li class="excluded"><code>        from PIL import Image</code></li>
+<li class="missed"><code>    except ImportError:</code></li>
+<li class="excluded"><code>        import Image</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># JSON import</code></li>
+<li class="missed"><code>try:</code></li>
+<li class="excluded"><code>    import json</code></li>
+<li class="missed"><code>except ImportError:</code></li>
+<li class="excluded"><code>    from django.utils import simplejson as json</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># This cache contains all *instantiated* FileBrowser sites</code></li>
+<li class="missed"><code>_sites_cache = {}</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>def get_site_dict(app_name='filebrowser'):</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code>    Return a dict with all *deployed* FileBrowser sites that have</code></li>
+<li class="ignored"><code>    a given app_name.</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="missed"><code>    if not app_name in _sites_cache:</code></li>
+<li class="missed"><code>        return {}</code></li>
+<li class="ignored"><code>    # Get names of all deployed filebrowser sites with a give app_name</code></li>
+<li class="missed"><code>    deployed = get_resolver(get_urlconf()).app_dict[app_name]</code></li>
+<li class="ignored"><code>    # Get the deployed subset from the cache</code></li>
+<li class="missed"><code>    return dict((k, v) for k, v in _sites_cache[app_name].items() if k in deployed)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>def register_site(app_name, site_name, site):</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code>    Add a site into the site dict.</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="missed"><code>    if not app_name in _sites_cache:</code></li>
+<li class="missed"><code>        _sites_cache[app_name] = {}</code></li>
+<li class="missed"><code>    _sites_cache[app_name][site_name] = site</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>def get_default_site(app_name='filebrowser'):</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code>    Returns the default site. This function uses Django's url resolution method to</code></li>
+<li class="ignored"><code>    obtain the name of the default site.</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code>    # Get the name of the default site:</code></li>
+<li class="missed"><code>    resolver = get_resolver(get_urlconf())</code></li>
+<li class="missed"><code>    name = 'filebrowser'</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    # Django's default name resolution method (see django.core.urlresolvers.reverse())</code></li>
+<li class="missed"><code>    app_list = resolver.app_dict[app_name]</code></li>
+<li class="missed"><code>    if not name in app_list:</code></li>
+<li class="missed"><code>        name = app_list[0]</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    return get_site_dict()[name]</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>def get_breadcrumbs(query, path):</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code>    Get breadcrumbs.</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    breadcrumbs = []</code></li>
+<li class="missed"><code>    dir_query = ""</code></li>
+<li class="missed"><code>    if path:</code></li>
+<li class="missed"><code>        for item in path.split(os.sep):</code></li>
+<li class="missed"><code>            dir_query = os.path.join(dir_query, item)</code></li>
+<li class="missed"><code>            breadcrumbs.append([item, dir_query])</code></li>
+<li class="missed"><code>    return breadcrumbs</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>def get_filterdate(filter_date, date_time):</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code>    Get filterdate.</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    returnvalue = ''</code></li>
+<li class="missed"><code>    date_year = strftime("%Y", gmtime(date_time))</code></li>
+<li class="missed"><code>    date_month = strftime("%m", gmtime(date_time))</code></li>
+<li class="missed"><code>    date_day = strftime("%d", gmtime(date_time))</code></li>
+<li class="missed"><code>    if filter_date == 'today' and int(date_year) == int(localtime()[0]) and int(date_month) == int(localtime()[1]) and int(date_day) == int(localtime()[2]):</code></li>
+<li class="missed"><code>        returnvalue = 'true'</code></li>
+<li class="missed"><code>    elif filter_date == 'thismonth' and date_time &gt;= time()-2592000:</code></li>
+<li class="missed"><code>        returnvalue = 'true'</code></li>
+<li class="missed"><code>    elif filter_date == 'thisyear' and int(date_year) == int(localtime()[0]):</code></li>
+<li class="missed"><code>        returnvalue = 'true'</code></li>
+<li class="missed"><code>    elif filter_date == 'past7days' and date_time &gt;= time()-604800:</code></li>
+<li class="missed"><code>        returnvalue = 'true'</code></li>
+<li class="missed"><code>    elif filter_date == '':</code></li>
+<li class="missed"><code>        returnvalue = 'true'</code></li>
+<li class="missed"><code>    return returnvalue</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>def get_settings_var(directory=DIRECTORY):</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code>    Get settings variables used for FileBrowser listing.</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    settings_var = {}</code></li>
+<li class="ignored"><code>    # Main</code></li>
+<li class="ignored"><code>    # Extensions/Formats (for FileBrowseField)</code></li>
+<li class="missed"><code>    settings_var['EXTENSIONS'] = EXTENSIONS</code></li>
+<li class="missed"><code>    settings_var['SELECT_FORMATS'] = SELECT_FORMATS</code></li>
+<li class="ignored"><code>    # Versions</code></li>
+<li class="missed"><code>    settings_var['ADMIN_VERSIONS'] = ADMIN_VERSIONS</code></li>
+<li class="missed"><code>    settings_var['ADMIN_THUMBNAIL'] = ADMIN_THUMBNAIL</code></li>
+<li class="ignored"><code>    # FileBrowser Options</code></li>
+<li class="missed"><code>    settings_var['MAX_UPLOAD_SIZE'] = MAX_UPLOAD_SIZE</code></li>
+<li class="ignored"><code>    # Normalize Filenames</code></li>
+<li class="missed"><code>    settings_var['NORMALIZE_FILENAME'] = NORMALIZE_FILENAME</code></li>
+<li class="ignored"><code>    # Convert Filenames</code></li>
+<li class="missed"><code>    settings_var['CONVERT_FILENAME'] = CONVERT_FILENAME</code></li>
+<li class="ignored"><code>    # Traverse directories when searching</code></li>
+<li class="missed"><code>    settings_var['SEARCH_TRAVERSE'] = SEARCH_TRAVERSE</code></li>
+<li class="missed"><code>    return settings_var</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>def handle_file_upload(path, file, site):</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code>    Handle File Upload.</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    uploadedfile = None</code></li>
+<li class="missed"><code>    try:</code></li>
+<li class="missed"><code>        file_path = os.path.join(path, file.name)</code></li>
+<li class="missed"><code>        uploadedfile = site.storage.save(file_path, file)</code></li>
+<li class="missed"><code>    except Exception as inst:</code></li>
+<li class="missed"><code>        raise inst</code></li>
+<li class="missed"><code>    return uploadedfile</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>def filebrowser_view(view):</code></li>
+<li class="ignored"><code>    "Only let staff browse the files"</code></li>
+<li class="missed"><code>    return staff_member_required(never_cache(view))</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>class FileBrowserSite(object):</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code>    A filebrowser.site defines admin views for browsing your servers media files.</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def __init__(self, name=None, app_name='filebrowser', storage=default_storage):</code></li>
+<li class="missed"><code>        self.name = name</code></li>
+<li class="missed"><code>        self.app_name = app_name</code></li>
+<li class="missed"><code>        self.storage = storage</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        self._actions = {}</code></li>
+<li class="missed"><code>        self._global_actions = self._actions.copy()</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        # Register this site in the global site cache</code></li>
+<li class="missed"><code>        register_site(self.app_name, self.name, self)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        # Per-site settings:</code></li>
+<li class="missed"><code>        self.directory = DIRECTORY</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def _directory_get(self):</code></li>
+<li class="ignored"><code>        "Set directory"</code></li>
+<li class="missed"><code>        return self._directory</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def _directory_set(self, val):</code></li>
+<li class="ignored"><code>        "Get directory"</code></li>
+<li class="missed"><code>        self._directory = val</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    directory = property(_directory_get, _directory_set)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def get_urls(self):</code></li>
+<li class="ignored"><code>        "URLs for a filebrowser.site"</code></li>
+<li class="missed"><code>        try:</code></li>
+<li class="excluded"><code>            from django.conf.urls import url, patterns</code></li>
+<li class="missed"><code>        except ImportError:</code></li>
+<li class="ignored"><code>            # for Django version less then 1.4</code></li>
+<li class="excluded"><code>            from django.conf.urls.defaults import url, patterns</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        # filebrowser urls (views)</code></li>
+<li class="missed"><code>        urlpatterns = patterns(</code></li>
+<li class="ignored"><code>            '',</code></li>
+<li class="ignored"><code>            url(r'^browse/$', path_exists(self, filebrowser_view(self.browse)), name="fb_browse"),</code></li>
+<li class="ignored"><code>            url(r'^createdir/', path_exists(self, filebrowser_view(self.createdir)), name="fb_createdir"),</code></li>
+<li class="ignored"><code>            url(r'^upload/', path_exists(self, filebrowser_view(self.upload)), name="fb_upload"),</code></li>
+<li class="ignored"><code>            url(r'^delete_confirm/$', file_exists(self, path_exists(self, filebrowser_view(self.delete_confirm))), name="fb_delete_confirm"),</code></li>
+<li class="ignored"><code>            url(r'^delete/$', file_exists(self, path_exists(self, filebrowser_view(self.delete))), name="fb_delete"),</code></li>
+<li class="ignored"><code>            url(r'^detail/$', file_exists(self, path_exists(self, filebrowser_view(self.detail))), name="fb_detail"),</code></li>
+<li class="ignored"><code>            url(r'^version/$', file_exists(self, path_exists(self, filebrowser_view(self.version))), name="fb_version"),</code></li>
+<li class="ignored"><code>            url(r'^upload_file/$', staff_member_required(csrf_exempt(self._upload_file)), name="fb_do_upload"),</code></li>
+<li class="ignored"><code>        )</code></li>
+<li class="missed"><code>        return urlpatterns</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def add_action(self, action, name=None):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Register an action to be available globally.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        name = name or action.__name__</code></li>
+<li class="ignored"><code>        # Check/create short description</code></li>
+<li class="missed"><code>        if not hasattr(action, 'short_description'):</code></li>
+<li class="missed"><code>            action.short_description = action.__name__.replace("_", " ").capitalize()</code></li>
+<li class="ignored"><code>        # Check/create applies-to filter</code></li>
+<li class="missed"><code>        if not hasattr(action, 'applies_to'):</code></li>
+<li class="missed"><code>            action.applies_to = lambda x: True</code></li>
+<li class="missed"><code>        self._actions[name] = action</code></li>
+<li class="missed"><code>        self._global_actions[name] = action</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def disable_action(self, name):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Disable a globally-registered action. Raises KeyError for invalid names.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        del self._actions[name]</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def get_action(self, name):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Explicitally get a registered global action wheather it's enabled or</code></li>
+<li class="ignored"><code>        not. Raises KeyError for invalid names.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        return self._global_actions[name]</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def applicable_actions(self, fileobject):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Return a list of tuples (name, action) of actions applicable to a given fileobject.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        res = []</code></li>
+<li class="missed"><code>        for name, action in self.actions:</code></li>
+<li class="missed"><code>            if action.applies_to(fileobject):</code></li>
+<li class="missed"><code>                res.append((name, action))</code></li>
+<li class="missed"><code>        return res</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def actions(self):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Get all the enabled actions as a list of (name, func). The list</code></li>
+<li class="ignored"><code>        is sorted alphabetically by actions names</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        res = list(self._actions.items())</code></li>
+<li class="missed"><code>        res.sort(key=lambda name_func: name_func[0])</code></li>
+<li class="missed"><code>        return res</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def urls(self):</code></li>
+<li class="ignored"><code>        "filebrowser.site URLs"</code></li>
+<li class="missed"><code>        return self.get_urls(), self.app_name, self.name</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def browse(self, request):</code></li>
+<li class="ignored"><code>        "Browse Files/Directories."</code></li>
+<li class="missed"><code>        filter_re = []</code></li>
+<li class="missed"><code>        for exp in EXCLUDE:</code></li>
+<li class="missed"><code>            filter_re.append(re.compile(exp))</code></li>
+<li class="missed"><code>        for k, v in VERSIONS.items():</code></li>
+<li class="missed"><code>            exp = (r'_%s(%s)$') % (k, '|'.join(EXTENSION_LIST))</code></li>
+<li class="missed"><code>            filter_re.append(re.compile(exp, re.IGNORECASE))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        def filter_browse(item):</code></li>
+<li class="ignored"><code>            "Defining a browse filter"</code></li>
+<li class="missed"><code>            filtered = item.filename.startswith('.')</code></li>
+<li class="missed"><code>            for re_prefix in filter_re:</code></li>
+<li class="missed"><code>                if re_prefix.search(item.filename):</code></li>
+<li class="missed"><code>                    filtered = True</code></li>
+<li class="missed"><code>            if filtered:</code></li>
+<li class="missed"><code>                return False</code></li>
+<li class="missed"><code>            return True</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        query = request.GET.copy()</code></li>
+<li class="missed"><code>        path = u'%s' % os.path.join(self.directory, query.get('dir', ''))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        filelisting = FileListing(</code></li>
+<li class="ignored"><code>            path,</code></li>
+<li class="ignored"><code>            filter_func=filter_browse,</code></li>
+<li class="ignored"><code>            sorting_by=query.get('o', DEFAULT_SORTING_BY),</code></li>
+<li class="ignored"><code>            sorting_order=query.get('ot', DEFAULT_SORTING_ORDER),</code></li>
+<li class="ignored"><code>            site=self)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        files = []</code></li>
+<li class="missed"><code>        if SEARCH_TRAVERSE and query.get("q"):</code></li>
+<li class="missed"><code>            listing = filelisting.files_walk_filtered()</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            listing = filelisting.files_listing_filtered()</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        # If we do a search, precompile the search pattern now</code></li>
+<li class="missed"><code>        do_search = query.get("q")</code></li>
+<li class="missed"><code>        if do_search:</code></li>
+<li class="missed"><code>            re_q = re.compile(query.get("q").lower(), re.M)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        filter_type = query.get('filter_type')</code></li>
+<li class="missed"><code>        filter_date = query.get('filter_date')</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        for fileobject in listing:</code></li>
+<li class="ignored"><code>            # date/type filter</code></li>
+<li class="missed"><code>            append = False</code></li>
+<li class="missed"><code>            if (not filter_type or fileobject.filetype == filter_type) and (not filter_date or get_filterdate(filter_date, fileobject.date or 0)):</code></li>
+<li class="missed"><code>                append = True</code></li>
+<li class="ignored"><code>            # search</code></li>
+<li class="missed"><code>            if do_search and not re_q.search(fileobject.filename.lower()):</code></li>
+<li class="missed"><code>                append = False</code></li>
+<li class="ignored"><code>            # append</code></li>
+<li class="missed"><code>            if append:</code></li>
+<li class="missed"><code>                files.append(fileobject)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        filelisting.results_total = len(listing)</code></li>
+<li class="missed"><code>        filelisting.results_current = len(files)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        p = Paginator(files, LIST_PER_PAGE)</code></li>
+<li class="missed"><code>        page_nr = request.GET.get('p', '1')</code></li>
+<li class="missed"><code>        try:</code></li>
+<li class="missed"><code>            page = p.page(page_nr)</code></li>
+<li class="missed"><code>        except (EmptyPage, InvalidPage):</code></li>
+<li class="missed"><code>            page = p.page(p.num_pages)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        return render_to_response('filebrowser/index.html', {</code></li>
+<li class="ignored"><code>            'p': p,</code></li>
+<li class="ignored"><code>            'page': page,</code></li>
+<li class="ignored"><code>            'filelisting': filelisting,</code></li>
+<li class="ignored"><code>            'query': query,</code></li>
+<li class="ignored"><code>            'title': _(u'FileBrowser'),</code></li>
+<li class="ignored"><code>            'settings_var': get_settings_var(directory=self.directory),</code></li>
+<li class="ignored"><code>            'breadcrumbs': get_breadcrumbs(query, query.get('dir', '')),</code></li>
+<li class="ignored"><code>            'breadcrumbs_title': "",</code></li>
+<li class="ignored"><code>            'filebrowser_site': self</code></li>
+<li class="ignored"><code>        }, context_instance=Context(request, current_app=self.name))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def createdir(self, request):</code></li>
+<li class="ignored"><code>        "Create Directory"</code></li>
+<li class="excluded"><code>        from filebrowser.forms import CreateDirForm</code></li>
+<li class="missed"><code>        query = request.GET</code></li>
+<li class="missed"><code>        path = u'%s' % os.path.join(self.directory, query.get('dir', ''))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if request.method == 'POST':</code></li>
+<li class="missed"><code>            form = CreateDirForm(path, request.POST, filebrowser_site=self)</code></li>
+<li class="missed"><code>            if form.is_valid():</code></li>
+<li class="missed"><code>                server_path = os.path.join(path, form.cleaned_data['name'])</code></li>
+<li class="missed"><code>                try:</code></li>
+<li class="missed"><code>                    signals.filebrowser_pre_createdir.send(sender=request, path=server_path, name=form.cleaned_data['name'], site=self)</code></li>
+<li class="missed"><code>                    self.storage.makedirs(server_path)</code></li>
+<li class="missed"><code>                    signals.filebrowser_post_createdir.send(sender=request, path=server_path, name=form.cleaned_data['name'], site=self)</code></li>
+<li class="missed"><code>                    messages.add_message(request, messages.SUCCESS, _('The Folder %s was successfully created.') % form.cleaned_data['name'])</code></li>
+<li class="missed"><code>                    redirect_url = reverse("filebrowser:fb_browse", current_app=self.name) + query_helper(query, "ot=desc,o=date", "ot,o,filter_type,filter_date,q,p")</code></li>
+<li class="missed"><code>                    return HttpResponseRedirect(redirect_url)</code></li>
+<li class="missed"><code>                except OSError as e:</code></li>
+<li class="missed"><code>                    errno = e.args[0]</code></li>
+<li class="missed"><code>                    if errno == 13:</code></li>
+<li class="missed"><code>                        form.errors['name'] = forms.util.ErrorList([_('Permission denied.')])</code></li>
+<li class="ignored"><code>                    else:</code></li>
+<li class="missed"><code>                        form.errors['name'] = forms.util.ErrorList([_('Error creating folder.')])</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            form = CreateDirForm(path, filebrowser_site=self)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        return render_to_response('filebrowser/createdir.html', {</code></li>
+<li class="ignored"><code>            'form': form,</code></li>
+<li class="ignored"><code>            'query': query,</code></li>
+<li class="ignored"><code>            'title': _(u'New Folder'),</code></li>
+<li class="ignored"><code>            'settings_var': get_settings_var(directory=self.directory),</code></li>
+<li class="ignored"><code>            'breadcrumbs': get_breadcrumbs(query, query.get('dir', '')),</code></li>
+<li class="ignored"><code>            'breadcrumbs_title': _(u'New Folder'),</code></li>
+<li class="ignored"><code>            'filebrowser_site': self</code></li>
+<li class="ignored"><code>        }, context_instance=Context(request, current_app=self.name))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def upload(self, request):</code></li>
+<li class="ignored"><code>        "Multipe File Upload."</code></li>
+<li class="missed"><code>        query = request.GET</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        return render_to_response('filebrowser/upload.html', {</code></li>
+<li class="ignored"><code>            'query': query,</code></li>
+<li class="ignored"><code>            'title': _(u'Select files to upload'),</code></li>
+<li class="ignored"><code>            'settings_var': get_settings_var(directory=self.directory),</code></li>
+<li class="ignored"><code>            'breadcrumbs': get_breadcrumbs(query, query.get('dir', '')),</code></li>
+<li class="ignored"><code>            'breadcrumbs_title': _(u'Upload'),</code></li>
+<li class="ignored"><code>            'filebrowser_site': self</code></li>
+<li class="ignored"><code>        }, context_instance=Context(request, current_app=self.name))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def delete_confirm(self, request):</code></li>
+<li class="ignored"><code>        "Delete existing File/Directory."</code></li>
+<li class="missed"><code>        query = request.GET</code></li>
+<li class="missed"><code>        path = u'%s' % os.path.join(self.directory, query.get('dir', ''))</code></li>
+<li class="missed"><code>        fileobject = FileObject(os.path.join(path, query.get('filename', '')), site=self)</code></li>
+<li class="missed"><code>        if fileobject.filetype == "Folder":</code></li>
+<li class="missed"><code>            filelisting = FileListing(</code></li>
+<li class="ignored"><code>                os.path.join(path, fileobject.filename),</code></li>
+<li class="ignored"><code>                sorting_by=query.get('o', 'filename'),</code></li>
+<li class="ignored"><code>                sorting_order=query.get('ot', DEFAULT_SORTING_ORDER),</code></li>
+<li class="ignored"><code>                site=self)</code></li>
+<li class="missed"><code>            filelisting = filelisting.files_walk_total()</code></li>
+<li class="missed"><code>            if len(filelisting) &gt; 100:</code></li>
+<li class="missed"><code>                additional_files = len(filelisting) - 100</code></li>
+<li class="missed"><code>                filelisting = filelisting[:100]</code></li>
+<li class="ignored"><code>            else:</code></li>
+<li class="missed"><code>                additional_files = None</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            filelisting = None</code></li>
+<li class="missed"><code>            additional_files = None</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        return render_to_response('filebrowser/delete_confirm.html', {</code></li>
+<li class="ignored"><code>            'fileobject': fileobject,</code></li>
+<li class="ignored"><code>            'filelisting': filelisting,</code></li>
+<li class="ignored"><code>            'additional_files': additional_files,</code></li>
+<li class="ignored"><code>            'query': query,</code></li>
+<li class="ignored"><code>            'title': _(u'Confirm delete'),</code></li>
+<li class="ignored"><code>            'settings_var': get_settings_var(directory=self.directory),</code></li>
+<li class="ignored"><code>            'breadcrumbs': get_breadcrumbs(query, query.get('dir', '')),</code></li>
+<li class="ignored"><code>            'breadcrumbs_title': _(u'Confirm delete'),</code></li>
+<li class="ignored"><code>            'filebrowser_site': self</code></li>
+<li class="ignored"><code>        }, context_instance=Context(request, current_app=self.name))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def delete(self, request):</code></li>
+<li class="ignored"><code>        "Delete existing File/Directory."</code></li>
+<li class="missed"><code>        query = request.GET</code></li>
+<li class="missed"><code>        path = u'%s' % os.path.join(self.directory, query.get('dir', ''))</code></li>
+<li class="missed"><code>        fileobject = FileObject(os.path.join(path, query.get('filename', '')), site=self)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if request.GET:</code></li>
+<li class="missed"><code>            try:</code></li>
+<li class="missed"><code>                signals.filebrowser_pre_delete.send(sender=request, path=fileobject.path, name=fileobject.filename, site=self)</code></li>
+<li class="missed"><code>                fileobject.delete_versions()</code></li>
+<li class="missed"><code>                fileobject.delete()</code></li>
+<li class="missed"><code>                signals.filebrowser_post_delete.send(sender=request, path=fileobject.path, name=fileobject.filename, site=self)</code></li>
+<li class="missed"><code>                messages.add_message(request, messages.SUCCESS, _('Successfully deleted %s') % fileobject.filename)</code></li>
+<li class="missed"><code>            except OSError:</code></li>
+<li class="ignored"><code>                # TODO: define error-message</code></li>
+<li class="missed"><code>                pass</code></li>
+<li class="missed"><code>        redirect_url = reverse("filebrowser:fb_browse", current_app=self.name) + query_helper(query, "", "filename,filetype")</code></li>
+<li class="missed"><code>        return HttpResponseRedirect(redirect_url)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def detail(self, request):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Show detail page for a file.</code></li>
+<li class="ignored"><code>        Rename existing File/Directory (deletes existing Image Versions/Thumbnails).</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="excluded"><code>        from filebrowser.forms import ChangeForm</code></li>
+<li class="missed"><code>        query = request.GET</code></li>
+<li class="missed"><code>        path = u'%s' % os.path.join(self.directory, query.get('dir', ''))</code></li>
+<li class="missed"><code>        fileobject = FileObject(os.path.join(path, query.get('filename', '')), site=self)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if request.method == 'POST':</code></li>
+<li class="missed"><code>            form = ChangeForm(request.POST, path=path, fileobject=fileobject, filebrowser_site=self)</code></li>
+<li class="missed"><code>            if form.is_valid():</code></li>
+<li class="missed"><code>                new_name = form.cleaned_data['name']</code></li>
+<li class="missed"><code>                action_name = form.cleaned_data['custom_action']</code></li>
+<li class="missed"><code>                try:</code></li>
+<li class="missed"><code>                    action_response = None</code></li>
+<li class="missed"><code>                    if action_name:</code></li>
+<li class="missed"><code>                        action = self.get_action(action_name)</code></li>
+<li class="ignored"><code>                        # Pre-action signal</code></li>
+<li class="missed"><code>                        signals.filebrowser_actions_pre_apply.send(sender=request, action_name=action_name, fileobject=[fileobject], site=self)</code></li>
+<li class="ignored"><code>                        # Call the action to action</code></li>
+<li class="missed"><code>                        action_response = action(request=request, fileobjects=[fileobject])</code></li>
+<li class="ignored"><code>                        # Post-action signal</code></li>
+<li class="missed"><code>                        signals.filebrowser_actions_post_apply.send(sender=request, action_name=action_name, fileobject=[fileobject], result=action_response, site=self)</code></li>
+<li class="missed"><code>                    if new_name != fileobject.filename:</code></li>
+<li class="missed"><code>                        signals.filebrowser_pre_rename.send(sender=request, path=fileobject.path, name=fileobject.filename, new_name=new_name, site=self)</code></li>
+<li class="missed"><code>                        fileobject.delete_versions()</code></li>
+<li class="missed"><code>                        self.storage.move(fileobject.path, os.path.join(fileobject.head, new_name))</code></li>
+<li class="missed"><code>                        signals.filebrowser_post_rename.send(sender=request, path=fileobject.path, name=fileobject.filename, new_name=new_name, site=self)</code></li>
+<li class="missed"><code>                        messages.add_message(request, messages.SUCCESS, _('Renaming was successful.'))</code></li>
+<li class="missed"><code>                    if isinstance(action_response, HttpResponse):</code></li>
+<li class="missed"><code>                        return action_response</code></li>
+<li class="missed"><code>                    if "_continue" in request.POST:</code></li>
+<li class="missed"><code>                        redirect_url = reverse("filebrowser:fb_detail", current_app=self.name) + query_helper(query, "filename="+new_name, "filename")</code></li>
+<li class="ignored"><code>                    else:</code></li>
+<li class="missed"><code>                        redirect_url = reverse("filebrowser:fb_browse", current_app=self.name) + query_helper(query, "", "filename")</code></li>
+<li class="missed"><code>                    return HttpResponseRedirect(redirect_url)</code></li>
+<li class="missed"><code>                except OSError:</code></li>
+<li class="missed"><code>                    form.errors['name'] = forms.util.ErrorList([_('Error.')])</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            form = ChangeForm(initial={"name": fileobject.filename}, path=path, fileobject=fileobject, filebrowser_site=self)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        return render_to_response('filebrowser/detail.html', {</code></li>
+<li class="ignored"><code>            'form': form,</code></li>
+<li class="ignored"><code>            'fileobject': fileobject,</code></li>
+<li class="ignored"><code>            'query': query,</code></li>
+<li class="ignored"><code>            'title': u'%s' % fileobject.filename,</code></li>
+<li class="ignored"><code>            'settings_var': get_settings_var(directory=self.directory),</code></li>
+<li class="ignored"><code>            'breadcrumbs': get_breadcrumbs(query, query.get('dir', '')),</code></li>
+<li class="ignored"><code>            'breadcrumbs_title': u'%s' % fileobject.filename,</code></li>
+<li class="ignored"><code>            'filebrowser_site': self</code></li>
+<li class="ignored"><code>        }, context_instance=Context(request, current_app=self.name))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def version(self, request):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Version detail.</code></li>
+<li class="ignored"><code>        This just exists in order to select a version with a filebrowser–popup.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        query = request.GET</code></li>
+<li class="missed"><code>        path = u'%s' % os.path.join(self.directory, query.get('dir', ''))</code></li>
+<li class="missed"><code>        fileobject = FileObject(os.path.join(path, query.get('filename', '')), site=self)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        return render_to_response('filebrowser/version.html', {</code></li>
+<li class="ignored"><code>            'fileobject': fileobject,</code></li>
+<li class="ignored"><code>            'query': query,</code></li>
+<li class="ignored"><code>            'settings_var': get_settings_var(directory=self.directory),</code></li>
+<li class="ignored"><code>            'filebrowser_site': self</code></li>
+<li class="ignored"><code>        }, context_instance=Context(request, current_app=self.name))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def _upload_file(self, request):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Upload file to the server.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        if request.method == "POST":</code></li>
+<li class="missed"><code>            folder = request.GET.get('folder', '')</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            if len(request.FILES) == 0:</code></li>
+<li class="missed"><code>                return HttpResponseBadRequest('Invalid request! No files included.')</code></li>
+<li class="missed"><code>            if len(request.FILES) &gt; 1:</code></li>
+<li class="missed"><code>                return HttpResponseBadRequest('Invalid request! Multiple files included.')</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            filedata = list(request.FILES.values())[0]</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            fb_uploadurl_re = re.compile(r'^.*(%s)' % reverse("filebrowser:fb_upload", current_app=self.name))</code></li>
+<li class="missed"><code>            folder = fb_uploadurl_re.sub('', folder)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            path = os.path.join(self.directory, folder)</code></li>
+<li class="ignored"><code>            # we convert the filename before uploading in order</code></li>
+<li class="ignored"><code>            # to check for existing files/folders</code></li>
+<li class="missed"><code>            file_name = convert_filename(filedata.name)</code></li>
+<li class="missed"><code>            filedata.name = file_name</code></li>
+<li class="missed"><code>            file_path = os.path.join(path, file_name)</code></li>
+<li class="missed"><code>            file_already_exists = self.storage.exists(file_path)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>            # Check for name collision with a directory</code></li>
+<li class="missed"><code>            if file_already_exists and self.storage.isdir(file_path):</code></li>
+<li class="missed"><code>                ret_json = {'success': False, 'filename': file_name}</code></li>
+<li class="missed"><code>                return HttpResponse(json.dumps(ret_json))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            signals.filebrowser_pre_upload.send(sender=request, path=folder, file=filedata, site=self)</code></li>
+<li class="missed"><code>            uploadedfile = handle_file_upload(path, filedata, site=self)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            if file_already_exists and OVERWRITE_EXISTING:</code></li>
+<li class="missed"><code>                old_file = smart_text(file_path)</code></li>
+<li class="missed"><code>                new_file = smart_text(uploadedfile)</code></li>
+<li class="missed"><code>                self.storage.move(new_file, old_file, allow_overwrite=True)</code></li>
+<li class="missed"><code>                full_path = FileObject(smart_text(old_file), site=self).path_full</code></li>
+<li class="ignored"><code>            else:</code></li>
+<li class="missed"><code>                file_name = smart_text(uploadedfile)</code></li>
+<li class="missed"><code>                filedata.name = os.path.relpath(file_name, path)</code></li>
+<li class="missed"><code>                full_path = FileObject(smart_text(file_name), site=self).path_full</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>            # set permissions</code></li>
+<li class="missed"><code>            if DEFAULT_PERMISSIONS is not None:</code></li>
+<li class="missed"><code>                os.chmod(full_path, DEFAULT_PERMISSIONS)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            f = FileObject(smart_text(file_name), site=self)</code></li>
+<li class="missed"><code>            signals.filebrowser_post_upload.send(sender=request, path=folder, file=f, site=self)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>            # let Ajax Upload know whether we saved it or not</code></li>
+<li class="missed"><code>            ret_json = {'success': True, 'filename': f.filename}</code></li>
+<li class="missed"><code>            return HttpResponse(json.dumps(ret_json))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>storage = DefaultStorage()</code></li>
+<li class="ignored"><code># Default FileBrowser site</code></li>
+<li class="missed"><code>site = FileBrowserSite(name='filebrowser', storage=storage)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># Default actions</code></li>
+<li class="excluded"><code>from filebrowser.actions import flip_horizontal, flip_vertical, rotate_90_clockwise, rotate_90_counterclockwise, rotate_180</code></li>
+<li class="missed"><code>site.add_action(flip_horizontal)</code></li>
+<li class="missed"><code>site.add_action(flip_vertical)</code></li>
+<li class="missed"><code>site.add_action(rotate_90_clockwise)</code></li>
+<li class="missed"><code>site.add_action(rotate_90_counterclockwise)</code></li>
+<li class="missed"><code>site.add_action(rotate_180)</code></li>
+  </ol>
+</div>
+
+<div class="nav">
+  <a href="filebrowser.signals.html">filebrowser.signals</a> &lt;&lt;
+  <a href="../index.html">index</a>
+  &gt;&gt; <a href="filebrowser.storage.html">filebrowser.storage</a>
+</div>
+
+  </body>
+</html>
+

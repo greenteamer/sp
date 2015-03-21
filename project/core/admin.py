@@ -2,6 +2,25 @@
 #!/usr/bin/env python
 from django.contrib import admin
 from project.core.models import *
+from mptt_tree_editor.admin import TreeEditor
+
+class CategoryAdmin(TreeEditor):
+    """
+    Управление категориями
+    Как будут отображаться поля категорий в разделе администрирования
+    """
+    list_display = ("indented_short_title", "actions_column", 'name', 'created_at', 'updated_at',)
+    list_display_links = ('name',)
+    list_per_page = 20
+    ordering = ['created_at']
+    search_fields = ['name', 'description', 'meta_keywords', 'meta_description']
+    readonly_fields = ('created_at', 'updated_at',)
+    # exclude = ('created_at', 'updated_at',)
+    prepopulated_fields = {'slug': ('name',)}
+
+class PurchaseStatusAdmin(admin.ModelAdmin):
+    list_display = ['id', 'status_name', 'status_description', 'status_icon', 'status_priority']
+    list_filter = ['status_name', 'status_priority']
 
 class PropertiesInline(admin.StackedInline):
     model = Properties
@@ -25,5 +44,6 @@ admin.site.register(ProductImages)
 admin.site.register(Properties)
 admin.site.register(Catalog)
 admin.site.register(CatalogProductProperties)
-admin.site.register(Category)
+admin.site.register(Category, CategoryAdmin)
 admin.site.register(Purchase)
+admin.site.register(PurchaseStatus, PurchaseStatusAdmin)

@@ -61,7 +61,11 @@
                         <div class="col-xs-6">
                             <b>Image:</b>
                             <br/>
-                            <img src="{{ MEDIA_URL }}{{ product_image }}" width="100%" height="auto" alt=""/>
+                            {% if product_image %}
+                                <img src="{{ MEDIA_URL }}{{ product_image }}" width="100%" height="auto" alt=""/>
+                            {% else %}
+                                <img src="{{ STATIC_URL }}images/106_big.png" width="100%" height="auto" alt="Нет изображения" title="Нет изображения"/>
+                            {% endif %}
                             <br/>
                             {{ product_image_form.as_p }}
                         </div>

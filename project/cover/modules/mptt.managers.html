@@ -1,0 +1,1236 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+    <title>Test coverage report: mptt.managers</title>
+    <style type="text/css" media="screen">
+      a
+      {
+        color: #3d707a;
+      }
+      
+      a:hover, a:active
+      {
+        color: #bf7d18;
+      }
+    
+      body 
+      {
+        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+        font-size: 13px;
+      }
+      
+      .nav 
+      {
+        font-size: 12px;
+        margin-left: 50px;
+      }
+
+      .ignored
+      {
+        color: #707070;
+      }
+
+      .executed 
+      {
+        color: #3d9900;
+      }
+
+      .missed 
+      {
+        color: red;
+        font-weight: bold;
+      }
+
+      .excluded 
+      {
+        color: #6090f0;
+        font-weight: lighter;
+      }
+    
+      #content-header 
+      {
+        font-size: 12px;
+        padding: 18px 0 18px 50px;
+      }
+
+      #content-header h1 
+      {
+        font-size: 16px;
+        margin: 10px 0 0 0;
+        color: #909090;
+      }
+      
+      #module-name
+      {
+        color: #583707;
+      }
+    
+      #content-header p
+      {
+        font-size: 13px;
+        margin: 0;
+        color: #909090;
+      }
+
+      #content-header .normal 
+      {
+        color: #609030;
+      }
+
+      #content-header .warning 
+      {
+        color: #d0a000;
+      }
+
+      #content-header .critical 
+      {
+        color: red;
+      }
+      
+      #source-listing 
+      {
+        margin-bottom: 24px;
+      }
+
+      #source-listing ol 
+      {
+        padding: 0 0 0 50px;
+        width: 90%;
+        font-family: monospace;
+        list-style-position: outside;
+      }
+
+      #source-listing ol li 
+      {
+        line-height: 18px;
+        font-size: small;
+      }
+        
+      #source-listing ol code 
+      {
+        padding:  0 .001em 0 0; /* Firefox doesn't render empty li's properly */
+        font-size: medium;
+        white-space: pre;
+      }
+   </style>
+  </head>
+
+  <body>
+
+<div class="nav">
+  <a href="mptt.forms.html">mptt.forms</a> &lt;&lt;
+  <a href="../index.html">index</a>
+  &gt;&gt; <a href="mptt.models.html">mptt.models</a>
+</div>
+
+<div id="content-header">
+  <h1>
+    <span id="module-name">mptt.managers</span>:
+    458 total statements,
+    <span class="critical">10.9% covered</span>
+  </h1>
+  <p>Generated: Tue 2015-03-10 22:42 MSK</p>
+  <p>Source file: /Users/greenteamer/Desktop/Django/env/sp/lib/python2.7/site-packages/mptt/managers.py</p>
+  <p>
+    Stats:
+    <span class="executed">49 executed</span>,
+    <span class="missed">402 missed</span>,
+    <span class="excluded">7 excluded</span>,
+    <span class="ignored">621 ignored</span> 
+  </p> 
+</div>
+
+<div id="source-listing">
+  <ol>
+    <li class="ignored"><code>"""</code></li>
+<li class="ignored"><code>A custom manager for working with trees of objects.</code></li>
+<li class="ignored"><code>"""</code></li>
+<li class="excluded"><code>from __future__ import unicode_literals</code></li>
+<li class="excluded"><code>import contextlib</code></li>
+<li class="ignored"><code></code></li>
+<li class="excluded"><code>import django</code></li>
+<li class="excluded"><code>from django.db import models, transaction, connections, router</code></li>
+<li class="excluded"><code>from django.db.models import F, Max, Q</code></li>
+<li class="excluded"><code>from django.utils.translation import ugettext as _</code></li>
+<li class="ignored"><code></code></li>
+<li class="excluded"><code>from mptt.exceptions import CantDisableUpdates, InvalidMove</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>__all__ = ('TreeManager',)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>COUNT_SUBQUERY = """(</code></li>
+<li class="ignored"><code>    SELECT COUNT(*)</code></li>
+<li class="ignored"><code>    FROM %(rel_table)s</code></li>
+<li class="ignored"><code>    WHERE %(mptt_fk)s = %(mptt_table)s.%(mptt_pk)s</code></li>
+<li class="ignored"><code>)"""</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>CUMULATIVE_COUNT_SUBQUERY = """(</code></li>
+<li class="ignored"><code>    SELECT COUNT(*)</code></li>
+<li class="ignored"><code>    FROM %(rel_table)s</code></li>
+<li class="ignored"><code>    WHERE %(mptt_fk)s IN</code></li>
+<li class="ignored"><code>    (</code></li>
+<li class="ignored"><code>        SELECT m2.%(mptt_pk)s</code></li>
+<li class="ignored"><code>        FROM %(mptt_table)s m2</code></li>
+<li class="ignored"><code>        WHERE m2.%(tree_id)s = %(mptt_table)s.%(tree_id)s</code></li>
+<li class="ignored"><code>          AND m2.%(left)s BETWEEN %(mptt_table)s.%(left)s</code></li>
+<li class="ignored"><code>                              AND %(mptt_table)s.%(right)s</code></li>
+<li class="ignored"><code>    )</code></li>
+<li class="ignored"><code>)"""</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>class TreeManager(models.Manager):</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code>    A manager for working with trees of objects.</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def init_from_model(self, model):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Sets things up. This would normally be done in contribute_to_class(),</code></li>
+<li class="ignored"><code>        but Django calls that before we've created our extra tree fields on the</code></li>
+<li class="ignored"><code>        model (which we need). So it's done here instead, after field setup.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        # Avoid calling "get_field_by_name()", which populates the related</code></li>
+<li class="ignored"><code>        # models cache and can cause circular imports in complex projects.</code></li>
+<li class="ignored"><code>        # Instead, find the tree_id field using "get_fields_with_model()".</code></li>
+<li class="executed"><code>        [tree_field] = [fld for fld in model._meta.get_fields_with_model() if fld[0].name == self.tree_id_attr]</code></li>
+<li class="executed"><code>        if tree_field[1]:</code></li>
+<li class="ignored"><code>            # tree_model is the model that contains the tree fields.</code></li>
+<li class="ignored"><code>            # this is usually just the same as model, but not for derived models.</code></li>
+<li class="missed"><code>            self.tree_model = tree_field[1]</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="executed"><code>            self.tree_model = model</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>        self._base_manager = None</code></li>
+<li class="executed"><code>        if self.tree_model is not model:</code></li>
+<li class="ignored"><code>            # _base_manager is the treemanager on tree_model</code></li>
+<li class="missed"><code>            self._base_manager = self.tree_model._tree_manager</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def get_queryset_descendants(self, queryset, include_self=False):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Returns a queryset containing the descendants of all nodes in the</code></li>
+<li class="ignored"><code>        given queryset.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        If ``include_self=True``, nodes in ``queryset`` will also</code></li>
+<li class="ignored"><code>        be included in the result.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        filters = []</code></li>
+<li class="missed"><code>        assert self.model is queryset.model</code></li>
+<li class="missed"><code>        opts = queryset.model._mptt_meta</code></li>
+<li class="missed"><code>        if not queryset:</code></li>
+<li class="missed"><code>            return self.none()</code></li>
+<li class="missed"><code>        filters = None</code></li>
+<li class="missed"><code>        for node in queryset:</code></li>
+<li class="missed"><code>            lft, rght = node.lft, node.rght</code></li>
+<li class="missed"><code>            if include_self:</code></li>
+<li class="missed"><code>                lft -= 1</code></li>
+<li class="missed"><code>                rght += 1</code></li>
+<li class="missed"><code>            q = Q(**{</code></li>
+<li class="ignored"><code>                opts.tree_id_attr: getattr(node, opts.tree_id_attr),</code></li>
+<li class="ignored"><code>                '%s__gt' % opts.left_attr: lft,</code></li>
+<li class="ignored"><code>                '%s__lt' % opts.right_attr: rght,</code></li>
+<li class="ignored"><code>            })</code></li>
+<li class="missed"><code>            if filters is None:</code></li>
+<li class="missed"><code>                filters = q</code></li>
+<li class="ignored"><code>            else:</code></li>
+<li class="missed"><code>                filters |= q</code></li>
+<li class="missed"><code>        return self.filter(filters)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    @contextlib.contextmanager</code></li>
+<li class="ignored"><code>    def disable_mptt_updates(self):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Context manager. Disables mptt updates.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        NOTE that this context manager causes inconsistencies! MPTT model methods are</code></li>
+<li class="ignored"><code>        not guaranteed to return the correct results.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        When to use this method:</code></li>
+<li class="ignored"><code>            If used correctly, this method can be used to speed up bulk updates.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>            This doesn't do anything clever. It *will* mess up your tree.</code></li>
+<li class="ignored"><code>            You should follow this method with a call to TreeManager.rebuild() to ensure your</code></li>
+<li class="ignored"><code>            tree stays sane, and you should wrap both calls in a transaction.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>            This is best for updates that span a large part of the table.</code></li>
+<li class="ignored"><code>            If you are doing localised changes (1 tree, or a few trees) consider</code></li>
+<li class="ignored"><code>            using delay_mptt_updates.</code></li>
+<li class="ignored"><code>            If you are making only minor changes to your tree, just let the updates happen.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        Transactions:</code></li>
+<li class="ignored"><code>            This doesn't enforce any transactional behavior.</code></li>
+<li class="ignored"><code>            You should wrap this in a transaction to ensure database consistency.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        If updates are already disabled on the model, this is a noop.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        Usage::</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>            with transaction.atomic():</code></li>
+<li class="ignored"><code>                with MyNode.objects.disable_mptt_updates():</code></li>
+<li class="ignored"><code>                    ## bulk updates.</code></li>
+<li class="ignored"><code>                MyNode.objects.rebuild()</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        # Error cases:</code></li>
+<li class="missed"><code>        if self.model._meta.abstract:</code></li>
+<li class="ignored"><code>            #  * an abstract model. Design decision needed - do we disable updates for</code></li>
+<li class="ignored"><code>            #    all concrete models that derive from this model?</code></li>
+<li class="ignored"><code>            #    I vote no - that's a bit implicit and it's a weird use-case anyway.</code></li>
+<li class="ignored"><code>            #    Open to further discussion :)</code></li>
+<li class="missed"><code>            raise CantDisableUpdates(</code></li>
+<li class="ignored"><code>                "You can't disable/delay mptt updates on %s, it's an abstract model" % self.model.__name__</code></li>
+<li class="ignored"><code>            )</code></li>
+<li class="missed"><code>        elif self.model._meta.proxy:</code></li>
+<li class="ignored"><code>            #  * a proxy model. disabling updates would implicitly affect other models</code></li>
+<li class="ignored"><code>            #    using the db table. Caller should call this on the manager for the concrete</code></li>
+<li class="ignored"><code>            #    model instead, to make the behavior explicit.</code></li>
+<li class="missed"><code>            raise CantDisableUpdates(</code></li>
+<li class="ignored"><code>                "You can't disable/delay mptt updates on %s, it's a proxy model. Call the concrete model instead."</code></li>
+<li class="ignored"><code>                % self.model.__name__</code></li>
+<li class="ignored"><code>            )</code></li>
+<li class="missed"><code>        elif self.tree_model is not self.model:</code></li>
+<li class="ignored"><code>            #  * a multiple-inheritance child of an MPTTModel.</code></li>
+<li class="ignored"><code>            #    Disabling updates may affect instances of other models in the tree.</code></li>
+<li class="missed"><code>            raise CantDisableUpdates(</code></li>
+<li class="ignored"><code>                "You can't disable/delay mptt updates on %s, it doesn't contain the mptt fields."</code></li>
+<li class="ignored"><code>                % self.model.__name__</code></li>
+<li class="ignored"><code>            )</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if not self.model._mptt_updates_enabled:</code></li>
+<li class="ignored"><code>            # already disabled, noop.</code></li>
+<li class="missed"><code>            yield</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            self.model._set_mptt_updates_enabled(False)</code></li>
+<li class="missed"><code>            try:</code></li>
+<li class="missed"><code>                yield</code></li>
+<li class="ignored"><code>            finally:</code></li>
+<li class="missed"><code>                self.model._set_mptt_updates_enabled(True)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    @contextlib.contextmanager</code></li>
+<li class="ignored"><code>    def delay_mptt_updates(self):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Context manager. Delays mptt updates until the end of a block of bulk processing.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        NOTE that this context manager causes inconsistencies! MPTT model methods are</code></li>
+<li class="ignored"><code>        not guaranteed to return the correct results until the end of the context block.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        When to use this method:</code></li>
+<li class="ignored"><code>            If used correctly, this method can be used to speed up bulk updates.</code></li>
+<li class="ignored"><code>            This is best for updates in a localised area of the db table, especially if all</code></li>
+<li class="ignored"><code>            the updates happen in a single tree and the rest of the forest is left untouched.</code></li>
+<li class="ignored"><code>            No subsequent rebuild is necessary.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>            delay_mptt_updates does a partial rebuild of the modified trees (not the whole table).</code></li>
+<li class="ignored"><code>            If used indiscriminately, this can actually be much slower than just letting the updates</code></li>
+<li class="ignored"><code>            occur when they're required.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>            The worst case occurs when every tree in the table is modified just once.</code></li>
+<li class="ignored"><code>            That results in a full rebuild of the table, which can be *very* slow.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>            If your updates will modify most of the trees in the table (not a small number of trees),</code></li>
+<li class="ignored"><code>            you should consider using TreeManager.disable_mptt_updates, as it does much fewer</code></li>
+<li class="ignored"><code>            queries.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        Transactions:</code></li>
+<li class="ignored"><code>            This doesn't enforce any transactional behavior.</code></li>
+<li class="ignored"><code>            You should wrap this in a transaction to ensure database consistency.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        Exceptions:</code></li>
+<li class="ignored"><code>            If an exception occurs before the processing of the block, delayed updates</code></li>
+<li class="ignored"><code>            will not be applied.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        Usage::</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>            with transaction.atomic():</code></li>
+<li class="ignored"><code>                with MyNode.objects.delay_mptt_updates():</code></li>
+<li class="ignored"><code>                    ## bulk updates.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        with self.disable_mptt_updates():</code></li>
+<li class="missed"><code>            if self.model._mptt_is_tracking:</code></li>
+<li class="ignored"><code>                # already tracking, noop.</code></li>
+<li class="missed"><code>                yield</code></li>
+<li class="ignored"><code>            else:</code></li>
+<li class="missed"><code>                self.model._mptt_start_tracking()</code></li>
+<li class="missed"><code>                try:</code></li>
+<li class="missed"><code>                    yield</code></li>
+<li class="missed"><code>                except Exception:</code></li>
+<li class="ignored"><code>                    # stop tracking, but discard results</code></li>
+<li class="missed"><code>                    self.model._mptt_stop_tracking()</code></li>
+<li class="missed"><code>                    raise</code></li>
+<li class="missed"><code>                results = self.model._mptt_stop_tracking()</code></li>
+<li class="missed"><code>                partial_rebuild = self.partial_rebuild</code></li>
+<li class="missed"><code>                for tree_id in results:</code></li>
+<li class="missed"><code>                    partial_rebuild(tree_id)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    @property</code></li>
+<li class="ignored"><code>    def parent_attr(self):</code></li>
+<li class="missed"><code>        return self.model._mptt_meta.parent_attr</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    @property</code></li>
+<li class="ignored"><code>    def left_attr(self):</code></li>
+<li class="missed"><code>        return self.model._mptt_meta.left_attr</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    @property</code></li>
+<li class="ignored"><code>    def right_attr(self):</code></li>
+<li class="missed"><code>        return self.model._mptt_meta.right_attr</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    @property</code></li>
+<li class="ignored"><code>    def tree_id_attr(self):</code></li>
+<li class="executed"><code>        return self.model._mptt_meta.tree_id_attr</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    @property</code></li>
+<li class="ignored"><code>    def level_attr(self):</code></li>
+<li class="missed"><code>        return self.model._mptt_meta.level_attr</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def _translate_lookups(self, **lookups):</code></li>
+<li class="missed"><code>        new_lookups = {}</code></li>
+<li class="missed"><code>        join_parts = '__'.join</code></li>
+<li class="missed"><code>        for k, v in lookups.items():</code></li>
+<li class="missed"><code>            parts = k.split('__')</code></li>
+<li class="missed"><code>            new_parts = []</code></li>
+<li class="missed"><code>            new_parts__append = new_parts.append</code></li>
+<li class="missed"><code>            for part in parts:</code></li>
+<li class="missed"><code>                new_parts__append(getattr(self, part + '_attr', part))</code></li>
+<li class="missed"><code>            new_lookups[join_parts(new_parts)] = v</code></li>
+<li class="missed"><code>        return new_lookups</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def _mptt_filter(self, qs=None, **filters):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Like self.filter(), but translates name-agnostic filters for MPTT fields.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        if self._base_manager:</code></li>
+<li class="missed"><code>            return self._base_manager._mptt_filter(qs=qs, **filters)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if qs is None:</code></li>
+<li class="missed"><code>            qs = self.get_queryset()</code></li>
+<li class="missed"><code>        return qs.filter(**self._translate_lookups(**filters))</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def _mptt_update(self, qs=None, **items):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Like self.update(), but translates name-agnostic MPTT fields.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        if self._base_manager:</code></li>
+<li class="missed"><code>            return self._base_manager._mptt_update(qs=qs, **items)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if qs is None:</code></li>
+<li class="missed"><code>            qs = self.get_queryset()</code></li>
+<li class="missed"><code>        return qs.update(**self._translate_lookups(**items))</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def _get_connection(self, **hints):</code></li>
+<li class="missed"><code>        return connections[router.db_for_write(self.model, **hints)]</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def add_related_count(self, queryset, rel_model, rel_field, count_attr,</code></li>
+<li class="ignored"><code>                          cumulative=False):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Adds a related item count to a given ``QuerySet`` using its</code></li>
+<li class="ignored"><code>        ``extra`` method, for a ``Model`` class which has a relation to</code></li>
+<li class="ignored"><code>        this ``Manager``'s ``Model`` class.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        Arguments:</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        ``rel_model``</code></li>
+<li class="ignored"><code>           A ``Model`` class which has a relation to this `Manager``'s</code></li>
+<li class="ignored"><code>           ``Model`` class.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        ``rel_field``</code></li>
+<li class="ignored"><code>           The name of the field in ``rel_model`` which holds the</code></li>
+<li class="ignored"><code>           relation.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        ``count_attr``</code></li>
+<li class="ignored"><code>           The name of an attribute which should be added to each item in</code></li>
+<li class="ignored"><code>           this ``QuerySet``, containing a count of how many instances</code></li>
+<li class="ignored"><code>           of ``rel_model`` are related to it through ``rel_field``.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        ``cumulative``</code></li>
+<li class="ignored"><code>           If ``True``, the count will be for each item and all of its</code></li>
+<li class="ignored"><code>           descendants, otherwise it will be for each item itself.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        connection = self._get_connection()</code></li>
+<li class="missed"><code>        qn = connection.ops.quote_name</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        meta = self.model._meta</code></li>
+<li class="missed"><code>        if cumulative:</code></li>
+<li class="missed"><code>            subquery = CUMULATIVE_COUNT_SUBQUERY % {</code></li>
+<li class="ignored"><code>                'rel_table': qn(rel_model._meta.db_table),</code></li>
+<li class="ignored"><code>                'mptt_fk': qn(rel_model._meta.get_field(rel_field).column),</code></li>
+<li class="ignored"><code>                'mptt_table': qn(self.tree_model._meta.db_table),</code></li>
+<li class="ignored"><code>                'mptt_pk': qn(meta.pk.column),</code></li>
+<li class="ignored"><code>                'tree_id': qn(meta.get_field(self.tree_id_attr).column),</code></li>
+<li class="ignored"><code>                'left': qn(meta.get_field(self.left_attr).column),</code></li>
+<li class="ignored"><code>                'right': qn(meta.get_field(self.right_attr).column),</code></li>
+<li class="ignored"><code>            }</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            subquery = COUNT_SUBQUERY % {</code></li>
+<li class="ignored"><code>                'rel_table': qn(rel_model._meta.db_table),</code></li>
+<li class="ignored"><code>                'mptt_fk': qn(rel_model._meta.get_field(rel_field).column),</code></li>
+<li class="ignored"><code>                'mptt_table': qn(self.tree_model._meta.db_table),</code></li>
+<li class="ignored"><code>                'mptt_pk': qn(meta.pk.column),</code></li>
+<li class="ignored"><code>            }</code></li>
+<li class="missed"><code>        return queryset.extra(select={count_attr: subquery})</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    # rant: why oh why would you rename something so widely used?</code></li>
+<li class="executed"><code>    def get_queryset(self):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Returns a ``QuerySet`` which contains all tree items, ordered in</code></li>
+<li class="ignored"><code>        such a way that that root nodes appear in tree id order and</code></li>
+<li class="ignored"><code>        their subtrees appear in depth-first order.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        super_ = super(TreeManager, self)</code></li>
+<li class="missed"><code>        if django.VERSION &lt; (1, 7):</code></li>
+<li class="missed"><code>            qs = super_.get_query_set()</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            qs = super_.get_queryset()</code></li>
+<li class="missed"><code>        return qs.order_by(self.tree_id_attr, self.left_attr)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    if django.VERSION &lt; (1, 7):</code></li>
+<li class="ignored"><code>        # in 1.7+, get_query_set gets defined by the base manager and complains if it's called.</code></li>
+<li class="ignored"><code>        # otherwise, we have to define it ourselves.</code></li>
+<li class="executed"><code>        get_query_set = get_queryset</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def insert_node(self, node, target, position='last-child', save=False, allow_existing_pk=False):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Sets up the tree state for ``node`` (which has not yet been</code></li>
+<li class="ignored"><code>        inserted into in the database) so it will be positioned relative</code></li>
+<li class="ignored"><code>        to a given ``target`` node as specified by ``position`` (when</code></li>
+<li class="ignored"><code>        appropriate) it is inserted, with any neccessary space already</code></li>
+<li class="ignored"><code>        having been made for it.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        A ``target`` of ``None`` indicates that ``node`` should be</code></li>
+<li class="ignored"><code>        the last root node.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        If ``save`` is ``True``, ``node``'s ``save()`` method will be</code></li>
+<li class="ignored"><code>        called before it is returned.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        NOTE: This is a low-level method; it does NOT respect ``MPTTMeta.order_insertion_by``.</code></li>
+<li class="ignored"><code>        In most cases you should just set the node's parent and let mptt call this during save.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if self._base_manager:</code></li>
+<li class="missed"><code>            return self._base_manager.insert_node(node, target, position=position, save=save)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if node.pk and not allow_existing_pk and self.filter(pk=node.pk).exists():</code></li>
+<li class="missed"><code>            raise ValueError(_('Cannot insert a node which has already been saved.'))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if target is None:</code></li>
+<li class="missed"><code>            tree_id = self._get_next_tree_id()</code></li>
+<li class="missed"><code>            setattr(node, self.left_attr, 1)</code></li>
+<li class="missed"><code>            setattr(node, self.right_attr, 2)</code></li>
+<li class="missed"><code>            setattr(node, self.level_attr, 0)</code></li>
+<li class="missed"><code>            setattr(node, self.tree_id_attr, tree_id)</code></li>
+<li class="missed"><code>            setattr(node, self.parent_attr, None)</code></li>
+<li class="missed"><code>        elif target.is_root_node() and position in ['left', 'right']:</code></li>
+<li class="missed"><code>            target_tree_id = getattr(target, self.tree_id_attr)</code></li>
+<li class="missed"><code>            if position == 'left':</code></li>
+<li class="missed"><code>                tree_id = target_tree_id</code></li>
+<li class="missed"><code>                space_target = target_tree_id - 1</code></li>
+<li class="ignored"><code>            else:</code></li>
+<li class="missed"><code>                tree_id = target_tree_id + 1</code></li>
+<li class="missed"><code>                space_target = target_tree_id</code></li>
+<li class="missed"><code>            self._create_tree_space(space_target)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            setattr(node, self.left_attr, 1)</code></li>
+<li class="missed"><code>            setattr(node, self.right_attr, 2)</code></li>
+<li class="missed"><code>            setattr(node, self.level_attr, 0)</code></li>
+<li class="missed"><code>            setattr(node, self.tree_id_attr, tree_id)</code></li>
+<li class="missed"><code>            setattr(node, self.parent_attr, None)</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            setattr(node, self.left_attr, 0)</code></li>
+<li class="missed"><code>            setattr(node, self.level_attr, 0)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            space_target, level, left, parent, right_shift = \</code></li>
+<li class="ignored"><code>                self._calculate_inter_tree_move_values(node, target, position)</code></li>
+<li class="missed"><code>            tree_id = getattr(parent, self.tree_id_attr)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            self._create_space(2, space_target, tree_id)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            setattr(node, self.left_attr, -left)</code></li>
+<li class="missed"><code>            setattr(node, self.right_attr, -left + 1)</code></li>
+<li class="missed"><code>            setattr(node, self.level_attr, -level)</code></li>
+<li class="missed"><code>            setattr(node, self.tree_id_attr, tree_id)</code></li>
+<li class="missed"><code>            setattr(node, self.parent_attr, parent)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            if parent:</code></li>
+<li class="missed"><code>                self._post_insert_update_cached_parent_right(parent, right_shift)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if save:</code></li>
+<li class="missed"><code>            node.save()</code></li>
+<li class="missed"><code>        return node</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def _move_node(self, node, target, position='last-child', save=True):</code></li>
+<li class="missed"><code>        if self._base_manager:</code></li>
+<li class="missed"><code>            return self._base_manager.move_node(node, target, position=position)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if self.tree_model._mptt_is_tracking:</code></li>
+<li class="ignored"><code>            # delegate to insert_node and clean up the gaps later.</code></li>
+<li class="missed"><code>            return self.insert_node(node, target, position=position, save=save, allow_existing_pk=True)</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            if target is None:</code></li>
+<li class="missed"><code>                if node.is_child_node():</code></li>
+<li class="missed"><code>                    self._make_child_root_node(node)</code></li>
+<li class="missed"><code>            elif target.is_root_node() and position in ('left', 'right'):</code></li>
+<li class="missed"><code>                self._make_sibling_of_root_node(node, target, position)</code></li>
+<li class="ignored"><code>            else:</code></li>
+<li class="missed"><code>                if node.is_root_node():</code></li>
+<li class="missed"><code>                    self._move_root_node(node, target, position)</code></li>
+<li class="ignored"><code>                else:</code></li>
+<li class="missed"><code>                    self._move_child_node(node, target, position)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def move_node(self, node, target, position='last-child'):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Moves ``node`` relative to a given ``target`` node as specified</code></li>
+<li class="ignored"><code>        by ``position`` (when appropriate), by examining both nodes and</code></li>
+<li class="ignored"><code>        calling the appropriate method to perform the move.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        A ``target`` of ``None`` indicates that ``node`` should be</code></li>
+<li class="ignored"><code>        turned into a root node.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        Valid values for ``position`` are ``'first-child'``,</code></li>
+<li class="ignored"><code>        ``'last-child'``, ``'left'`` or ``'right'``.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        ``node`` will be modified to reflect its new tree state in the</code></li>
+<li class="ignored"><code>        database.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        This method explicitly checks for ``node`` being made a sibling</code></li>
+<li class="ignored"><code>        of a root node, as this is a special case due to our use of tree</code></li>
+<li class="ignored"><code>        ids to order root nodes.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        NOTE: This is a low-level method; it does NOT respect ``MPTTMeta.order_insertion_by``.</code></li>
+<li class="ignored"><code>        In most cases you should just move the node yourself by setting node.parent.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        self._move_node(node, target, position=position)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def root_node(self, tree_id):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Returns the root node of the tree with the given id.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        if self._base_manager:</code></li>
+<li class="missed"><code>            return self._base_manager.root_node(tree_id)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        return self._mptt_filter(tree_id=tree_id, parent=None).get()</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def root_nodes(self):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Creates a ``QuerySet`` containing root nodes.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        if self._base_manager:</code></li>
+<li class="missed"><code>            return self._base_manager.root_nodes()</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        return self._mptt_filter(parent=None)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def rebuild(self):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Rebuilds whole tree in database using `parent` link.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if self._base_manager:</code></li>
+<li class="missed"><code>            return self._base_manager.rebuild()</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        opts = self.model._mptt_meta</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        qs = self._mptt_filter(parent=None)</code></li>
+<li class="missed"><code>        if opts.order_insertion_by:</code></li>
+<li class="missed"><code>            qs = qs.order_by(*opts.order_insertion_by)</code></li>
+<li class="missed"><code>        pks = qs.values_list('pk', flat=True)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        rebuild_helper = self._rebuild_helper</code></li>
+<li class="missed"><code>        idx = 0</code></li>
+<li class="missed"><code>        for pk in pks:</code></li>
+<li class="missed"><code>            idx += 1</code></li>
+<li class="missed"><code>            rebuild_helper(pk, 1, idx)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def partial_rebuild(self, tree_id):</code></li>
+<li class="missed"><code>        if self._base_manager:</code></li>
+<li class="missed"><code>            return self._base_manager.partial_rebuild(tree_id)</code></li>
+<li class="missed"><code>        opts = self.model._mptt_meta</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        qs = self._mptt_filter(parent=None, tree_id=tree_id)</code></li>
+<li class="missed"><code>        if opts.order_insertion_by:</code></li>
+<li class="missed"><code>            qs = qs.order_by(*opts.order_insertion_by)</code></li>
+<li class="missed"><code>        pks = qs.values_list('pk', flat=True)</code></li>
+<li class="missed"><code>        if not pks:</code></li>
+<li class="missed"><code>            return</code></li>
+<li class="missed"><code>        if len(pks) &gt; 1:</code></li>
+<li class="missed"><code>            raise RuntimeError("More than one root node with tree_id %d. That's invalid, do a full rebuild." % tree_id)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        self._rebuild_helper(pks[0], 1, tree_id)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def _rebuild_helper(self, pk, left, tree_id, level=0):</code></li>
+<li class="missed"><code>        opts = self.model._mptt_meta</code></li>
+<li class="missed"><code>        right = left + 1</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        qs = self._mptt_filter(parent__pk=pk)</code></li>
+<li class="missed"><code>        if opts.order_insertion_by:</code></li>
+<li class="missed"><code>            qs = qs.order_by(*opts.order_insertion_by)</code></li>
+<li class="missed"><code>        child_ids = qs.values_list('pk', flat=True)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        rebuild_helper = self._rebuild_helper</code></li>
+<li class="missed"><code>        for child_id in child_ids:</code></li>
+<li class="missed"><code>            right = rebuild_helper(child_id, right, tree_id, level + 1)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        qs = self.model._default_manager.filter(pk=pk)</code></li>
+<li class="missed"><code>        self._mptt_update(qs,</code></li>
+<li class="ignored"><code>            left=left,</code></li>
+<li class="ignored"><code>            right=right,</code></li>
+<li class="ignored"><code>            level=level,</code></li>
+<li class="ignored"><code>            tree_id=tree_id</code></li>
+<li class="ignored"><code>        )</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        return right + 1</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def _post_insert_update_cached_parent_right(self, instance, right_shift, seen=None):</code></li>
+<li class="missed"><code>        setattr(instance, self.right_attr, getattr(instance, self.right_attr) + right_shift)</code></li>
+<li class="missed"><code>        attr = '_%s_cache' % self.parent_attr</code></li>
+<li class="missed"><code>        if hasattr(instance, attr):</code></li>
+<li class="missed"><code>            parent = getattr(instance, attr)</code></li>
+<li class="missed"><code>            if parent:</code></li>
+<li class="missed"><code>                if not seen:</code></li>
+<li class="missed"><code>                    seen = set()</code></li>
+<li class="missed"><code>                seen.add(instance)</code></li>
+<li class="missed"><code>                if parent in seen:</code></li>
+<li class="ignored"><code>                    # detect infinite recursion and throw an error</code></li>
+<li class="missed"><code>                    raise InvalidMove</code></li>
+<li class="missed"><code>                self._post_insert_update_cached_parent_right(parent, right_shift, seen=seen)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def _calculate_inter_tree_move_values(self, node, target, position):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Calculates values required when moving ``node`` relative to</code></li>
+<li class="ignored"><code>        ``target`` as specified by ``position``.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        left = getattr(node, self.left_attr)</code></li>
+<li class="missed"><code>        level = getattr(node, self.level_attr)</code></li>
+<li class="missed"><code>        target_left = getattr(target, self.left_attr)</code></li>
+<li class="missed"><code>        target_right = getattr(target, self.right_attr)</code></li>
+<li class="missed"><code>        target_level = getattr(target, self.level_attr)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if position == 'last-child' or position == 'first-child':</code></li>
+<li class="missed"><code>            if position == 'last-child':</code></li>
+<li class="missed"><code>                space_target = target_right - 1</code></li>
+<li class="ignored"><code>            else:</code></li>
+<li class="missed"><code>                space_target = target_left</code></li>
+<li class="missed"><code>            level_change = level - target_level - 1</code></li>
+<li class="missed"><code>            parent = target</code></li>
+<li class="missed"><code>        elif position == 'left' or position == 'right':</code></li>
+<li class="missed"><code>            if position == 'left':</code></li>
+<li class="missed"><code>                space_target = target_left - 1</code></li>
+<li class="ignored"><code>            else:</code></li>
+<li class="missed"><code>                space_target = target_right</code></li>
+<li class="missed"><code>            level_change = level - target_level</code></li>
+<li class="missed"><code>            parent = getattr(target, self.parent_attr)</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            raise ValueError(_('An invalid position was given: %s.') % position)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        left_right_change = left - space_target - 1</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        right_shift = 0</code></li>
+<li class="missed"><code>        if parent:</code></li>
+<li class="missed"><code>            right_shift = 2 * (node.get_descendant_count() + 1)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        return space_target, level_change, left_right_change, parent, right_shift</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def _close_gap(self, size, target, tree_id):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Closes a gap of a certain ``size`` after the given ``target``</code></li>
+<li class="ignored"><code>        point in the tree identified by ``tree_id``.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        self._manage_space(-size, target, tree_id)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def _create_space(self, size, target, tree_id):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Creates a space of a certain ``size`` after the given ``target``</code></li>
+<li class="ignored"><code>        point in the tree identified by ``tree_id``.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        self._manage_space(size, target, tree_id)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def _create_tree_space(self, target_tree_id, num_trees=1):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Creates space for a new tree by incrementing all tree ids</code></li>
+<li class="ignored"><code>        greater than ``target_tree_id``.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        qs = self._mptt_filter(tree_id__gt=target_tree_id)</code></li>
+<li class="missed"><code>        self._mptt_update(qs, tree_id=F(self.tree_id_attr) + num_trees)</code></li>
+<li class="missed"><code>        self.tree_model._mptt_track_tree_insertions(target_tree_id + 1, num_trees)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def _get_next_tree_id(self):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Determines the next largest unused tree id for the tree managed</code></li>
+<li class="ignored"><code>        by this manager.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        qs = self.get_queryset()</code></li>
+<li class="missed"><code>        max_tree_id = list(qs.aggregate(Max(self.tree_id_attr)).values())[0]</code></li>
+<li class="missed"><code>        max_tree_id = max_tree_id or 0</code></li>
+<li class="missed"><code>        return max_tree_id + 1</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def _inter_tree_move_and_close_gap(self, node, level_change,</code></li>
+<li class="ignored"><code>            left_right_change, new_tree_id, parent_pk=None):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Removes ``node`` from its current tree, with the given set of</code></li>
+<li class="ignored"><code>        changes being applied to ``node`` and its descendants, closing</code></li>
+<li class="ignored"><code>        the gap left by moving ``node`` as it does so.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        If ``parent_pk`` is ``None``, this indicates that ``node`` is</code></li>
+<li class="ignored"><code>        being moved to a brand new tree as its root node, and will thus</code></li>
+<li class="ignored"><code>        have its parent field set to ``NULL``. Otherwise, ``node`` will</code></li>
+<li class="ignored"><code>        have ``parent_pk`` set for its parent field.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        connection = self._get_connection(instance=node)</code></li>
+<li class="missed"><code>        qn = connection.ops.quote_name</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        opts = self.model._meta</code></li>
+<li class="missed"><code>        inter_tree_move_query = """</code></li>
+<li class="ignored"><code>        UPDATE %(table)s</code></li>
+<li class="ignored"><code>        SET %(level)s = CASE</code></li>
+<li class="ignored"><code>                WHEN %(left)s &gt;= %%s AND %(left)s &lt;= %%s</code></li>
+<li class="ignored"><code>                    THEN %(level)s - %%s</code></li>
+<li class="ignored"><code>                ELSE %(level)s END,</code></li>
+<li class="ignored"><code>            %(tree_id)s = CASE</code></li>
+<li class="ignored"><code>                WHEN %(left)s &gt;= %%s AND %(left)s &lt;= %%s</code></li>
+<li class="ignored"><code>                    THEN %%s</code></li>
+<li class="ignored"><code>                ELSE %(tree_id)s END,</code></li>
+<li class="ignored"><code>            %(left)s = CASE</code></li>
+<li class="ignored"><code>                WHEN %(left)s &gt;= %%s AND %(left)s &lt;= %%s</code></li>
+<li class="ignored"><code>                    THEN %(left)s - %%s</code></li>
+<li class="ignored"><code>                WHEN %(left)s &gt; %%s</code></li>
+<li class="ignored"><code>                    THEN %(left)s - %%s</code></li>
+<li class="ignored"><code>                ELSE %(left)s END,</code></li>
+<li class="ignored"><code>            %(right)s = CASE</code></li>
+<li class="ignored"><code>                WHEN %(right)s &gt;= %%s AND %(right)s &lt;= %%s</code></li>
+<li class="ignored"><code>                    THEN %(right)s - %%s</code></li>
+<li class="ignored"><code>                WHEN %(right)s &gt; %%s</code></li>
+<li class="ignored"><code>                    THEN %(right)s - %%s</code></li>
+<li class="ignored"><code>                ELSE %(right)s END,</code></li>
+<li class="ignored"><code>            %(parent)s = CASE</code></li>
+<li class="ignored"><code>                WHEN %(pk)s = %%s</code></li>
+<li class="ignored"><code>                    THEN %(new_parent)s</code></li>
+<li class="ignored"><code>                ELSE %(parent)s END</code></li>
+<li class="ignored"><code>        WHERE %(tree_id)s = %%s""" % {</code></li>
+<li class="ignored"><code>            'table': qn(self.tree_model._meta.db_table),</code></li>
+<li class="ignored"><code>            'level': qn(opts.get_field(self.level_attr).column),</code></li>
+<li class="ignored"><code>            'left': qn(opts.get_field(self.left_attr).column),</code></li>
+<li class="ignored"><code>            'tree_id': qn(opts.get_field(self.tree_id_attr).column),</code></li>
+<li class="ignored"><code>            'right': qn(opts.get_field(self.right_attr).column),</code></li>
+<li class="ignored"><code>            'parent': qn(opts.get_field(self.parent_attr).column),</code></li>
+<li class="ignored"><code>            'pk': qn(opts.pk.column),</code></li>
+<li class="ignored"><code>            'new_parent': parent_pk is None and 'NULL' or '%s',</code></li>
+<li class="ignored"><code>        }</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        left = getattr(node, self.left_attr)</code></li>
+<li class="missed"><code>        right = getattr(node, self.right_attr)</code></li>
+<li class="missed"><code>        gap_size = right - left + 1</code></li>
+<li class="missed"><code>        gap_target_left = left - 1</code></li>
+<li class="missed"><code>        params = [</code></li>
+<li class="ignored"><code>            left, right, level_change,</code></li>
+<li class="ignored"><code>            left, right, new_tree_id,</code></li>
+<li class="ignored"><code>            left, right, left_right_change,</code></li>
+<li class="ignored"><code>            gap_target_left, gap_size,</code></li>
+<li class="ignored"><code>            left, right, left_right_change,</code></li>
+<li class="ignored"><code>            gap_target_left, gap_size,</code></li>
+<li class="ignored"><code>            node.pk,</code></li>
+<li class="ignored"><code>            getattr(node, self.tree_id_attr)</code></li>
+<li class="ignored"><code>        ]</code></li>
+<li class="missed"><code>        if parent_pk is not None:</code></li>
+<li class="missed"><code>            params.insert(-1, parent_pk)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        cursor = connection.cursor()</code></li>
+<li class="missed"><code>        cursor.execute(inter_tree_move_query, params)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def _make_child_root_node(self, node, new_tree_id=None):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Removes ``node`` from its tree, making it the root node of a new</code></li>
+<li class="ignored"><code>        tree.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        If ``new_tree_id`` is not specified a new tree id will be</code></li>
+<li class="ignored"><code>        generated.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        ``node`` will be modified to reflect its new tree state in the</code></li>
+<li class="ignored"><code>        database.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        left = getattr(node, self.left_attr)</code></li>
+<li class="missed"><code>        right = getattr(node, self.right_attr)</code></li>
+<li class="missed"><code>        level = getattr(node, self.level_attr)</code></li>
+<li class="missed"><code>        if not new_tree_id:</code></li>
+<li class="missed"><code>            new_tree_id = self._get_next_tree_id()</code></li>
+<li class="missed"><code>        left_right_change = left - 1</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        self._inter_tree_move_and_close_gap(node, level, left_right_change, new_tree_id)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        # Update the node to be consistent with the updated</code></li>
+<li class="ignored"><code>        # tree in the database.</code></li>
+<li class="missed"><code>        setattr(node, self.left_attr, left - left_right_change)</code></li>
+<li class="missed"><code>        setattr(node, self.right_attr, right - left_right_change)</code></li>
+<li class="missed"><code>        setattr(node, self.level_attr, 0)</code></li>
+<li class="missed"><code>        setattr(node, self.tree_id_attr, new_tree_id)</code></li>
+<li class="missed"><code>        setattr(node, self.parent_attr, None)</code></li>
+<li class="missed"><code>        node._mptt_cached_fields[self.parent_attr] = None</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def _make_sibling_of_root_node(self, node, target, position):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Moves ``node``, making it a sibling of the given ``target`` root</code></li>
+<li class="ignored"><code>        node as specified by ``position``.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        ``node`` will be modified to reflect its new tree state in the</code></li>
+<li class="ignored"><code>        database.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        Since we use tree ids to reduce the number of rows affected by</code></li>
+<li class="ignored"><code>        tree mangement during insertion and deletion, root nodes are not</code></li>
+<li class="ignored"><code>        true siblings; thus, making an item a sibling of a root node is</code></li>
+<li class="ignored"><code>        a special case which involves shuffling tree ids around.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        if node == target:</code></li>
+<li class="missed"><code>            raise InvalidMove(_('A node may not be made a sibling of itself.'))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        opts = self.model._meta</code></li>
+<li class="missed"><code>        tree_id = getattr(node, self.tree_id_attr)</code></li>
+<li class="missed"><code>        target_tree_id = getattr(target, self.tree_id_attr)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if node.is_child_node():</code></li>
+<li class="missed"><code>            if position == 'left':</code></li>
+<li class="missed"><code>                space_target = target_tree_id - 1</code></li>
+<li class="missed"><code>                new_tree_id = target_tree_id</code></li>
+<li class="missed"><code>            elif position == 'right':</code></li>
+<li class="missed"><code>                space_target = target_tree_id</code></li>
+<li class="missed"><code>                new_tree_id = target_tree_id + 1</code></li>
+<li class="ignored"><code>            else:</code></li>
+<li class="missed"><code>                raise ValueError(_('An invalid position was given: %s.') % position)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            self._create_tree_space(space_target)</code></li>
+<li class="missed"><code>            if tree_id &gt; space_target:</code></li>
+<li class="ignored"><code>                # The node's tree id has been incremented in the</code></li>
+<li class="ignored"><code>                # database - this change must be reflected in the node</code></li>
+<li class="ignored"><code>                # object for the method call below to operate on the</code></li>
+<li class="ignored"><code>                # correct tree.</code></li>
+<li class="missed"><code>                setattr(node, self.tree_id_attr, tree_id + 1)</code></li>
+<li class="missed"><code>            self._make_child_root_node(node, new_tree_id)</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            if position == 'left':</code></li>
+<li class="missed"><code>                if target_tree_id &gt; tree_id:</code></li>
+<li class="missed"><code>                    left_sibling = target.get_previous_sibling()</code></li>
+<li class="missed"><code>                    if node == left_sibling:</code></li>
+<li class="missed"><code>                        return</code></li>
+<li class="missed"><code>                    new_tree_id = getattr(left_sibling, self.tree_id_attr)</code></li>
+<li class="missed"><code>                    lower_bound, upper_bound = tree_id, new_tree_id</code></li>
+<li class="missed"><code>                    shift = -1</code></li>
+<li class="ignored"><code>                else:</code></li>
+<li class="missed"><code>                    new_tree_id = target_tree_id</code></li>
+<li class="missed"><code>                    lower_bound, upper_bound = new_tree_id, tree_id</code></li>
+<li class="missed"><code>                    shift = 1</code></li>
+<li class="missed"><code>            elif position == 'right':</code></li>
+<li class="missed"><code>                if target_tree_id &gt; tree_id:</code></li>
+<li class="missed"><code>                    new_tree_id = target_tree_id</code></li>
+<li class="missed"><code>                    lower_bound, upper_bound = tree_id, target_tree_id</code></li>
+<li class="missed"><code>                    shift = -1</code></li>
+<li class="ignored"><code>                else:</code></li>
+<li class="missed"><code>                    right_sibling = target.get_next_sibling()</code></li>
+<li class="missed"><code>                    if node == right_sibling:</code></li>
+<li class="missed"><code>                        return</code></li>
+<li class="missed"><code>                    new_tree_id = getattr(right_sibling, self.tree_id_attr)</code></li>
+<li class="missed"><code>                    lower_bound, upper_bound = new_tree_id, tree_id</code></li>
+<li class="missed"><code>                    shift = 1</code></li>
+<li class="ignored"><code>            else:</code></li>
+<li class="missed"><code>                raise ValueError(_('An invalid position was given: %s.') % position)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            connection = self._get_connection(instance=node)</code></li>
+<li class="missed"><code>            qn = connection.ops.quote_name</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            root_sibling_query = """</code></li>
+<li class="ignored"><code>            UPDATE %(table)s</code></li>
+<li class="ignored"><code>            SET %(tree_id)s = CASE</code></li>
+<li class="ignored"><code>                WHEN %(tree_id)s = %%s</code></li>
+<li class="ignored"><code>                    THEN %%s</code></li>
+<li class="ignored"><code>                ELSE %(tree_id)s + %%s END</code></li>
+<li class="ignored"><code>            WHERE %(tree_id)s &gt;= %%s AND %(tree_id)s &lt;= %%s""" % {</code></li>
+<li class="ignored"><code>                'table': qn(self.tree_model._meta.db_table),</code></li>
+<li class="ignored"><code>                'tree_id': qn(opts.get_field(self.tree_id_attr).column),</code></li>
+<li class="ignored"><code>            }</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            cursor = connection.cursor()</code></li>
+<li class="missed"><code>            cursor.execute(root_sibling_query, [tree_id, new_tree_id, shift,</code></li>
+<li class="ignored"><code>                                                lower_bound, upper_bound])</code></li>
+<li class="missed"><code>            setattr(node, self.tree_id_attr, new_tree_id)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def _manage_space(self, size, target, tree_id):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Manages spaces in the tree identified by ``tree_id`` by changing</code></li>
+<li class="ignored"><code>        the values of the left and right columns by ``size`` after the</code></li>
+<li class="ignored"><code>        given ``target`` point.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        if self.tree_model._mptt_is_tracking:</code></li>
+<li class="missed"><code>            self.tree_model._mptt_track_tree_modified(tree_id)</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            connection = self._get_connection()</code></li>
+<li class="missed"><code>            qn = connection.ops.quote_name</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            opts = self.model._meta</code></li>
+<li class="missed"><code>            space_query = """</code></li>
+<li class="ignored"><code>            UPDATE %(table)s</code></li>
+<li class="ignored"><code>            SET %(left)s = CASE</code></li>
+<li class="ignored"><code>                    WHEN %(left)s &gt; %%s</code></li>
+<li class="ignored"><code>                        THEN %(left)s + %%s</code></li>
+<li class="ignored"><code>                    ELSE %(left)s END,</code></li>
+<li class="ignored"><code>                %(right)s = CASE</code></li>
+<li class="ignored"><code>                    WHEN %(right)s &gt; %%s</code></li>
+<li class="ignored"><code>                        THEN %(right)s + %%s</code></li>
+<li class="ignored"><code>                    ELSE %(right)s END</code></li>
+<li class="ignored"><code>            WHERE %(tree_id)s = %%s</code></li>
+<li class="ignored"><code>              AND (%(left)s &gt; %%s OR %(right)s &gt; %%s)""" % {</code></li>
+<li class="ignored"><code>                'table': qn(self.tree_model._meta.db_table),</code></li>
+<li class="ignored"><code>                'left': qn(opts.get_field(self.left_attr).column),</code></li>
+<li class="ignored"><code>                'right': qn(opts.get_field(self.right_attr).column),</code></li>
+<li class="ignored"><code>                'tree_id': qn(opts.get_field(self.tree_id_attr).column),</code></li>
+<li class="ignored"><code>            }</code></li>
+<li class="missed"><code>            cursor = connection.cursor()</code></li>
+<li class="missed"><code>            cursor.execute(space_query, [target, size, target, size, tree_id,</code></li>
+<li class="ignored"><code>                                         target, target])</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def _move_child_node(self, node, target, position):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Calls the appropriate method to move child node ``node``</code></li>
+<li class="ignored"><code>        relative to the given ``target`` node as specified by</code></li>
+<li class="ignored"><code>        ``position``.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        tree_id = getattr(node, self.tree_id_attr)</code></li>
+<li class="missed"><code>        target_tree_id = getattr(target, self.tree_id_attr)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if tree_id == target_tree_id:</code></li>
+<li class="missed"><code>            self._move_child_within_tree(node, target, position)</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            self._move_child_to_new_tree(node, target, position)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def _move_child_to_new_tree(self, node, target, position):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Moves child node ``node`` to a different tree, inserting it</code></li>
+<li class="ignored"><code>        relative to the given ``target`` node in the new tree as</code></li>
+<li class="ignored"><code>        specified by ``position``.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        ``node`` will be modified to reflect its new tree state in the</code></li>
+<li class="ignored"><code>        database.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        left = getattr(node, self.left_attr)</code></li>
+<li class="missed"><code>        right = getattr(node, self.right_attr)</code></li>
+<li class="missed"><code>        level = getattr(node, self.level_attr)</code></li>
+<li class="missed"><code>        new_tree_id = getattr(target, self.tree_id_attr)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        space_target, level_change, left_right_change, parent, new_parent_right = \</code></li>
+<li class="ignored"><code>            self._calculate_inter_tree_move_values(node, target, position)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        tree_width = right - left + 1</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        # Make space for the subtree which will be moved</code></li>
+<li class="missed"><code>        self._create_space(tree_width, space_target, new_tree_id)</code></li>
+<li class="ignored"><code>        # Move the subtree</code></li>
+<li class="missed"><code>        self._inter_tree_move_and_close_gap(node, level_change,</code></li>
+<li class="ignored"><code>            left_right_change, new_tree_id, parent.pk)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        # Update the node to be consistent with the updated</code></li>
+<li class="ignored"><code>        # tree in the database.</code></li>
+<li class="missed"><code>        setattr(node, self.left_attr, left - left_right_change)</code></li>
+<li class="missed"><code>        setattr(node, self.right_attr, right - left_right_change)</code></li>
+<li class="missed"><code>        setattr(node, self.level_attr, level - level_change)</code></li>
+<li class="missed"><code>        setattr(node, self.tree_id_attr, new_tree_id)</code></li>
+<li class="missed"><code>        setattr(node, self.parent_attr, parent)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        node._mptt_cached_fields[self.parent_attr] = parent.pk</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def _move_child_within_tree(self, node, target, position):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Moves child node ``node`` within its current tree relative to</code></li>
+<li class="ignored"><code>        the given ``target`` node as specified by ``position``.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        ``node`` will be modified to reflect its new tree state in the</code></li>
+<li class="ignored"><code>        database.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        left = getattr(node, self.left_attr)</code></li>
+<li class="missed"><code>        right = getattr(node, self.right_attr)</code></li>
+<li class="missed"><code>        level = getattr(node, self.level_attr)</code></li>
+<li class="missed"><code>        width = right - left + 1</code></li>
+<li class="missed"><code>        tree_id = getattr(node, self.tree_id_attr)</code></li>
+<li class="missed"><code>        target_left = getattr(target, self.left_attr)</code></li>
+<li class="missed"><code>        target_right = getattr(target, self.right_attr)</code></li>
+<li class="missed"><code>        target_level = getattr(target, self.level_attr)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if position == 'last-child' or position == 'first-child':</code></li>
+<li class="missed"><code>            if node == target:</code></li>
+<li class="missed"><code>                raise InvalidMove(_('A node may not be made a child of itself.'))</code></li>
+<li class="missed"><code>            elif left &lt; target_left &lt; right:</code></li>
+<li class="missed"><code>                raise InvalidMove(_('A node may not be made a child of any of its descendants.'))</code></li>
+<li class="missed"><code>            if position == 'last-child':</code></li>
+<li class="missed"><code>                if target_right &gt; right:</code></li>
+<li class="missed"><code>                    new_left = target_right - width</code></li>
+<li class="missed"><code>                    new_right = target_right - 1</code></li>
+<li class="ignored"><code>                else:</code></li>
+<li class="missed"><code>                    new_left = target_right</code></li>
+<li class="missed"><code>                    new_right = target_right + width - 1</code></li>
+<li class="ignored"><code>            else:</code></li>
+<li class="missed"><code>                if target_left &gt; left:</code></li>
+<li class="missed"><code>                    new_left = target_left - width + 1</code></li>
+<li class="missed"><code>                    new_right = target_left</code></li>
+<li class="ignored"><code>                else:</code></li>
+<li class="missed"><code>                    new_left = target_left + 1</code></li>
+<li class="missed"><code>                    new_right = target_left + width</code></li>
+<li class="missed"><code>            level_change = level - target_level - 1</code></li>
+<li class="missed"><code>            parent = target</code></li>
+<li class="missed"><code>        elif position == 'left' or position == 'right':</code></li>
+<li class="missed"><code>            if node == target:</code></li>
+<li class="missed"><code>                raise InvalidMove(_('A node may not be made a sibling of itself.'))</code></li>
+<li class="missed"><code>            elif left &lt; target_left &lt; right:</code></li>
+<li class="missed"><code>                raise InvalidMove(_('A node may not be made a sibling of any of its descendants.'))</code></li>
+<li class="missed"><code>            if position == 'left':</code></li>
+<li class="missed"><code>                if target_left &gt; left:</code></li>
+<li class="missed"><code>                    new_left = target_left - width</code></li>
+<li class="missed"><code>                    new_right = target_left - 1</code></li>
+<li class="ignored"><code>                else:</code></li>
+<li class="missed"><code>                    new_left = target_left</code></li>
+<li class="missed"><code>                    new_right = target_left + width - 1</code></li>
+<li class="ignored"><code>            else:</code></li>
+<li class="missed"><code>                if target_right &gt; right:</code></li>
+<li class="missed"><code>                    new_left = target_right - width + 1</code></li>
+<li class="missed"><code>                    new_right = target_right</code></li>
+<li class="ignored"><code>                else:</code></li>
+<li class="missed"><code>                    new_left = target_right + 1</code></li>
+<li class="missed"><code>                    new_right = target_right + width</code></li>
+<li class="missed"><code>            level_change = level - target_level</code></li>
+<li class="missed"><code>            parent = getattr(target, self.parent_attr)</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            raise ValueError(_('An invalid position was given: %s.') % position)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        left_boundary = min(left, new_left)</code></li>
+<li class="missed"><code>        right_boundary = max(right, new_right)</code></li>
+<li class="missed"><code>        left_right_change = new_left - left</code></li>
+<li class="missed"><code>        gap_size = width</code></li>
+<li class="missed"><code>        if left_right_change &gt; 0:</code></li>
+<li class="missed"><code>            gap_size = -gap_size</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        connection = self._get_connection(instance=node)</code></li>
+<li class="missed"><code>        qn = connection.ops.quote_name</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        opts = self.model._meta</code></li>
+<li class="ignored"><code>        # The level update must come before the left update to keep</code></li>
+<li class="ignored"><code>        # MySQL happy - left seems to refer to the updated value</code></li>
+<li class="ignored"><code>        # immediately after its update has been specified in the query</code></li>
+<li class="ignored"><code>        # with MySQL, but not with SQLite or Postgres.</code></li>
+<li class="missed"><code>        move_subtree_query = """</code></li>
+<li class="ignored"><code>        UPDATE %(table)s</code></li>
+<li class="ignored"><code>        SET %(level)s = CASE</code></li>
+<li class="ignored"><code>                WHEN %(left)s &gt;= %%s AND %(left)s &lt;= %%s</code></li>
+<li class="ignored"><code>                  THEN %(level)s - %%s</code></li>
+<li class="ignored"><code>                ELSE %(level)s END,</code></li>
+<li class="ignored"><code>            %(left)s = CASE</code></li>
+<li class="ignored"><code>                WHEN %(left)s &gt;= %%s AND %(left)s &lt;= %%s</code></li>
+<li class="ignored"><code>                  THEN %(left)s + %%s</code></li>
+<li class="ignored"><code>                WHEN %(left)s &gt;= %%s AND %(left)s &lt;= %%s</code></li>
+<li class="ignored"><code>                  THEN %(left)s + %%s</code></li>
+<li class="ignored"><code>                ELSE %(left)s END,</code></li>
+<li class="ignored"><code>            %(right)s = CASE</code></li>
+<li class="ignored"><code>                WHEN %(right)s &gt;= %%s AND %(right)s &lt;= %%s</code></li>
+<li class="ignored"><code>                  THEN %(right)s + %%s</code></li>
+<li class="ignored"><code>                WHEN %(right)s &gt;= %%s AND %(right)s &lt;= %%s</code></li>
+<li class="ignored"><code>                  THEN %(right)s + %%s</code></li>
+<li class="ignored"><code>                ELSE %(right)s END,</code></li>
+<li class="ignored"><code>            %(parent)s = CASE</code></li>
+<li class="ignored"><code>                WHEN %(pk)s = %%s</code></li>
+<li class="ignored"><code>                  THEN %%s</code></li>
+<li class="ignored"><code>                ELSE %(parent)s END</code></li>
+<li class="ignored"><code>        WHERE %(tree_id)s = %%s""" % {</code></li>
+<li class="ignored"><code>            'table': qn(self.tree_model._meta.db_table),</code></li>
+<li class="ignored"><code>            'level': qn(opts.get_field(self.level_attr).column),</code></li>
+<li class="ignored"><code>            'left': qn(opts.get_field(self.left_attr).column),</code></li>
+<li class="ignored"><code>            'right': qn(opts.get_field(self.right_attr).column),</code></li>
+<li class="ignored"><code>            'parent': qn(opts.get_field(self.parent_attr).column),</code></li>
+<li class="ignored"><code>            'pk': qn(opts.pk.column),</code></li>
+<li class="ignored"><code>            'tree_id': qn(opts.get_field(self.tree_id_attr).column),</code></li>
+<li class="ignored"><code>        }</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        cursor = connection.cursor()</code></li>
+<li class="missed"><code>        cursor.execute(move_subtree_query, [</code></li>
+<li class="ignored"><code>            left, right, level_change,</code></li>
+<li class="ignored"><code>            left, right, left_right_change,</code></li>
+<li class="ignored"><code>            left_boundary, right_boundary, gap_size,</code></li>
+<li class="ignored"><code>            left, right, left_right_change,</code></li>
+<li class="ignored"><code>            left_boundary, right_boundary, gap_size,</code></li>
+<li class="ignored"><code>            node.pk, parent.pk,</code></li>
+<li class="ignored"><code>            tree_id])</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        # Update the node to be consistent with the updated</code></li>
+<li class="ignored"><code>        # tree in the database.</code></li>
+<li class="missed"><code>        setattr(node, self.left_attr, new_left)</code></li>
+<li class="missed"><code>        setattr(node, self.right_attr, new_right)</code></li>
+<li class="missed"><code>        setattr(node, self.level_attr, level - level_change)</code></li>
+<li class="missed"><code>        setattr(node, self.parent_attr, parent)</code></li>
+<li class="missed"><code>        node._mptt_cached_fields[self.parent_attr] = parent.pk</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def _move_root_node(self, node, target, position):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Moves root node``node`` to a different tree, inserting it</code></li>
+<li class="ignored"><code>        relative to the given ``target`` node as specified by</code></li>
+<li class="ignored"><code>        ``position``.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        ``node`` will be modified to reflect its new tree state in the</code></li>
+<li class="ignored"><code>        database.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        left = getattr(node, self.left_attr)</code></li>
+<li class="missed"><code>        right = getattr(node, self.right_attr)</code></li>
+<li class="missed"><code>        level = getattr(node, self.level_attr)</code></li>
+<li class="missed"><code>        tree_id = getattr(node, self.tree_id_attr)</code></li>
+<li class="missed"><code>        new_tree_id = getattr(target, self.tree_id_attr)</code></li>
+<li class="missed"><code>        width = right - left + 1</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if node == target:</code></li>
+<li class="missed"><code>            raise InvalidMove(_('A node may not be made a child of itself.'))</code></li>
+<li class="missed"><code>        elif tree_id == new_tree_id:</code></li>
+<li class="missed"><code>            raise InvalidMove(_('A node may not be made a child of any of its descendants.'))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        space_target, level_change, left_right_change, parent, right_shift = \</code></li>
+<li class="ignored"><code>            self._calculate_inter_tree_move_values(node, target, position)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        # Create space for the tree which will be inserted</code></li>
+<li class="missed"><code>        self._create_space(width, space_target, new_tree_id)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        # Move the root node, making it a child node</code></li>
+<li class="missed"><code>        connection = self._get_connection(instance=node)</code></li>
+<li class="missed"><code>        qn = connection.ops.quote_name</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        opts = self.model._meta</code></li>
+<li class="missed"><code>        move_tree_query = """</code></li>
+<li class="ignored"><code>        UPDATE %(table)s</code></li>
+<li class="ignored"><code>        SET %(level)s = %(level)s - %%s,</code></li>
+<li class="ignored"><code>            %(left)s = %(left)s - %%s,</code></li>
+<li class="ignored"><code>            %(right)s = %(right)s - %%s,</code></li>
+<li class="ignored"><code>            %(tree_id)s = %%s,</code></li>
+<li class="ignored"><code>            %(parent)s = CASE</code></li>
+<li class="ignored"><code>                WHEN %(pk)s = %%s</code></li>
+<li class="ignored"><code>                    THEN %%s</code></li>
+<li class="ignored"><code>                ELSE %(parent)s END</code></li>
+<li class="ignored"><code>        WHERE %(left)s &gt;= %%s AND %(left)s &lt;= %%s</code></li>
+<li class="ignored"><code>          AND %(tree_id)s = %%s""" % {</code></li>
+<li class="ignored"><code>            'table': qn(self.tree_model._meta.db_table),</code></li>
+<li class="ignored"><code>            'level': qn(opts.get_field(self.level_attr).column),</code></li>
+<li class="ignored"><code>            'left': qn(opts.get_field(self.left_attr).column),</code></li>
+<li class="ignored"><code>            'right': qn(opts.get_field(self.right_attr).column),</code></li>
+<li class="ignored"><code>            'tree_id': qn(opts.get_field(self.tree_id_attr).column),</code></li>
+<li class="ignored"><code>            'parent': qn(opts.get_field(self.parent_attr).column),</code></li>
+<li class="ignored"><code>            'pk': qn(opts.pk.column),</code></li>
+<li class="ignored"><code>        }</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        cursor = connection.cursor()</code></li>
+<li class="missed"><code>        cursor.execute(move_tree_query, [level_change, left_right_change,</code></li>
+<li class="ignored"><code>            left_right_change, new_tree_id, node.pk, parent.pk, left, right,</code></li>
+<li class="ignored"><code>            tree_id])</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        # Update the former root node to be consistent with the updated</code></li>
+<li class="ignored"><code>        # tree in the database.</code></li>
+<li class="missed"><code>        setattr(node, self.left_attr, left - left_right_change)</code></li>
+<li class="missed"><code>        setattr(node, self.right_attr, right - left_right_change)</code></li>
+<li class="missed"><code>        setattr(node, self.level_attr, level - level_change)</code></li>
+<li class="missed"><code>        setattr(node, self.tree_id_attr, new_tree_id)</code></li>
+<li class="missed"><code>        setattr(node, self.parent_attr, parent)</code></li>
+<li class="missed"><code>        node._mptt_cached_fields[self.parent_attr] = parent.pk</code></li>
+  </ol>
+</div>
+
+<div class="nav">
+  <a href="mptt.forms.html">mptt.forms</a> &lt;&lt;
+  <a href="../index.html">index</a>
+  &gt;&gt; <a href="mptt.models.html">mptt.models</a>
+</div>
+
+  </body>
+</html>
+
