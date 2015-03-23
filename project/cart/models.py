@@ -12,3 +12,8 @@ class CartItem(models.Model):
 
     def name(self):
         return self.product.name
+    def augment_quantity(self, quantity):
+        """Изменение количества товара в корзине"""
+        if quantity.isdigit():
+            self.quantity = self.quantity + int(quantity)
+            self.save()

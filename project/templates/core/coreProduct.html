@@ -54,11 +54,15 @@
                                     {{ product.sku }}
                                 {% endif %}
 
+                                {{ form.errors }}
+                                {{ form.non_field_errors }}
+
                                 <form action="." method="post">{% csrf_token %}
-                                    <input class="form-control " id="id_cart_id" name="cart_id" type="text">
-                                    <input class="form-control " id="id_date_added" name="date_added" type="text">
-                                    <input class="form-control " id="id_product" name="product" type="text">
-                                    <input class="form-control " id="id_quantity" name="quantity" type="text">
+                                    {{ form.as_p }}
+{#                                    <input class="form-control " id="id_cart_id" name="cart_id" type="text">#}
+{#                                    <input class="form-control " id="id_date_added" name="date_added" type="text">#}
+{#                                    <input class="form-control " id="id_product" name="product" type="text">#}
+{#                                    <input class="form-control " id="id_quantity" name="quantity" type="text">#}
                                     <button type="submit" class="btn btn-primary">Купить</button>
                                 </form>
 

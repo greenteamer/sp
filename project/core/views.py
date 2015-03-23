@@ -8,7 +8,8 @@ import datetime
 from django.shortcuts import get_object_or_404, render_to_response
 from django.core.context_processors import csrf
 from project.cart.models import CartItem
-from project.cart.cart import _cart_id
+from project.cart.forms import CartItemForm
+from project.cart.cart import add_to_cart
 from project.core.models import Purchase, Product, Catalog, ProductImages, Category
 from project.accounts.models import getProfile, OrganizerProfile, MemberProfile
 from django.core.exceptions import ObjectDoesNotExist
@@ -164,14 +165,16 @@ def coreProduct(request, purchase_id, catalog_id, product_id, template_name):
     try:
         product = Product.objects.get(id=product_id)
         images = ProductImages.objects.filter(p_image_product=product_id)
-        date_added = datetime.datetime.now()
+        cart_item = CartItem(product=product)
+        form = CartItemForm(instance=cart_item)
         if request.method=="POST":
-            cart_item = CartItem()
-            cart_item.cart_id = _cart_id(request)
-            cart_item.date_added = datetime.datetime.today()
-            cart_item.quantity = 1
-            cart_item.product = product
-            cart_item.save()
+            form = CartItemForm(request.POST)
+            if form.is_valid():
+                add_to_cart(request)
+                # form.save()
+            else:
+                HttpResponseRedirect('profileView')
+
 
         return render_to_response(template_name, locals(),
                                   context_instance=RequestContext(request))
