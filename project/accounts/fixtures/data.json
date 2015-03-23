@@ -198,42 +198,6 @@
     }
 },
 {
-    "pk": 23, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "category", 
-        "name": "category", 
-        "app_label": "pristroy"
-    }
-},
-{
-    "pk": 24, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "product", 
-        "name": "product", 
-        "app_label": "pristroy"
-    }
-},
-{
-    "pk": 25, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "productimages", 
-        "name": "product images", 
-        "app_label": "pristroy"
-    }
-},
-{
-    "pk": 26, 
-    "model": "contenttypes.contenttype", 
-    "fields": {
-        "model": "captchastore", 
-        "name": "captcha store", 
-        "app_label": "captcha"
-    }
-},
-{
     "pk": "0xjmzszse5t1o3ly7y69z0bls36st6md", 
     "model": "sessions.session", 
     "fields": {
@@ -276,15 +240,6 @@
     "model": "thumbnail.kvstore", 
     "fields": {
         "value": "[\"f11067568c13e62824ee5bd886d62fe5\"]"
-    }
-},
-{
-    "pk": 1, 
-    "model": "south.migrationhistory", 
-    "fields": {
-        "applied": "2015-03-21T07:21:34", 
-        "app_name": "captcha", 
-        "migration": "0001_initial"
     }
 },
 {
@@ -1127,33 +1082,6 @@
         "codename": "delete_productimages", 
         "name": "Can delete product images", 
         "content_type": 25
-    }
-},
-{
-    "pk": 76, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "add_captchastore", 
-        "name": "Can add captcha store", 
-        "content_type": 26
-    }
-},
-{
-    "pk": 77, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "change_captchastore", 
-        "name": "Can change captcha store", 
-        "content_type": 26
-    }
-},
-{
-    "pk": 78, 
-    "model": "auth.permission", 
-    "fields": {
-        "codename": "delete_captchastore", 
-        "name": "Can delete captcha store", 
-        "content_type": 26
     }
 },
 {

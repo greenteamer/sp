@@ -21,6 +21,7 @@ TEMPLATE_DEBUG = DEBUG
 
 DEFAULT_CHARSET = 'utf-8'
 
+AUTH_PROFILE_MODULE = 'accounts.MemberProfile'
 ADMIN_EMAIL = 'greenteamer@bk.ru'
 ADMINS = (
 	# ('Your Name', 'your_email@example.com'),
@@ -174,6 +175,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 #     'webshop.ajaxapp.ajax.send_form',
 # )
 
+
 TINYMCE_JS_URL = os.path.join(CURRPATH, '/libraries/tinymce/tinymce.min.js')
 TINYMCE_DEFAULT_CONFIG = {
     'plugins': "table,spellchecker,paste,searchreplace",
@@ -232,6 +234,7 @@ INSTALLED_APPS = (
     'mptt_tree_editor',
     'pybb',
     'project.pristroy',
+    'project.cart',
 )
 
 FILEBROWSER_MEDIA_ROOT = MEDIA_ROOT

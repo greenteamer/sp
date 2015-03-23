@@ -10,9 +10,17 @@ def coreLeftMenu(context, request):
     user = request.user
     if user.is_authenticated():
         profile = getProfile(user)
+        try:
+            try:
+                test_profile = user.memberprofile
+            except:
+                test_profile = user.organizerprofile
+        except:
+            test_profile = None
         return {
             'user': user,
             'profile': profile,
+            'test_profile': test_profile,
         }
     else:
         return {
@@ -22,6 +30,8 @@ def coreLeftMenu(context, request):
 register.inclusion_tag('core/tags/core_left_menu.html', takes_context=True)(coreLeftMenu)
 
 def coreTopMenu(context, request):
+    user = request.user
+
     user = request.user
     if user.is_authenticated():
         profile = getProfile(user)

@@ -1,4 +1,5 @@
-{% if user.is_authenticated %}
+{#{% if user.is_authenticated %}#}
+{% if user.organizerprofile %}
         <aside class="main-sidebar">
                             <!-- sidebar: style can be found in sidebar.less -->
             <section class="sidebar">
@@ -83,7 +84,7 @@
             </section>
                 <!-- /.sidebar -->
         </aside>
-{% else %}
+{% elif user.memberprofile %}
 
     <aside class="main-sidebar">
                         <!-- sidebar: style can be found in sidebar.less -->

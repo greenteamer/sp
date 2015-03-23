@@ -4,8 +4,11 @@ from django.shortcuts import render
 from django.template import RequestContext
 from django.core import urlresolvers
 from django.http import HttpResponseRedirect
+import datetime
 from django.shortcuts import get_object_or_404, render_to_response
 from django.core.context_processors import csrf
+from project.cart.models import CartItem
+from project.cart.cart import _cart_id
 from project.core.models import Purchase, Product, Catalog, ProductImages, Category
 from project.accounts.models import getProfile, OrganizerProfile, MemberProfile
 from django.core.exceptions import ObjectDoesNotExist
@@ -146,6 +149,36 @@ def coreCatalog(request, purchase_id, catalog_id, template_name):
                                   context_instance=RequestContext(request))
     except ObjectDoesNotExist:
             raise Http404
+
+
+# Просмотр товара
+def coreProduct(request, purchase_id, catalog_id, product_id, template_name):
+    """ проверяем пользователя и его профайл организатора"""
+    user = request.user
+    if user.is_authenticated():
+         profile = getProfile(user)
+         if profile is None: return HttpResponseRedirect(urlresolvers.reverse('populateProfileView'))
+         elif not profile.is_checked(): return HttpResponseRedirect(urlresolvers.reverse('profileView'))
+    else:
+        return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
+    try:
+        product = Product.objects.get(id=product_id)
+        images = ProductImages.objects.filter(p_image_product=product_id)
+        date_added = datetime.datetime.now()
+        if request.method=="POST":
+            cart_item = CartItem()
+            cart_item.cart_id = _cart_id(request)
+            cart_item.date_added = datetime.datetime.today()
+            cart_item.quantity = 1
+            cart_item.product = product
+            cart_item.save()
+
+        return render_to_response(template_name, locals(),
+                                  context_instance=RequestContext(request))
+    except ObjectDoesNotExist:
+            raise Http404
+
+
 
 
 def checkOrganizerProfile(user):

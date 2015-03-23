@@ -28,6 +28,9 @@ urlpatterns = patterns('project.core.views',
     url(r'^purchase-(?P<purchase_id>\d+)/catalog-(?P<catalog_id>\d+)/$', 'coreCatalog',
 		{'template_name': 'core/core_catalog.html'},
 		name='coreCatalog'),
+     url(r'^purchase-(?P<purchase_id>\d+)/catalog-(?P<catalog_id>\d+)/product-(?P<product_id>\d+)/$', 'coreProduct',
+		{'template_name': 'core/coreProduct.html'},
+		name='coreProduct'),
 
 
 
