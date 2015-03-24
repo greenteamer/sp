@@ -175,7 +175,7 @@ def purchaseAdd(request, template_name):
     if request.POST:
         form = purchaseForm(request.POST)
         if form.is_valid():
-            form.save(user)
+            new_purchase = form.save(user)
             message = u"Новая закупка «%s» успешно добавлена" % request.POST['name']
         else:
             message = u"Ошибка при добавлении закупки"
@@ -218,6 +218,7 @@ def purchase(request, purchase_id, template_name, edit=False):
     else:
         try:
             purchase = Purchase.objects.get(id=purchase_id)  # получаем экземпляр Закупки по id
+            purchase_cat = purchase.categories.all()
         except ObjectDoesNotExist:
             raise Http404
 
