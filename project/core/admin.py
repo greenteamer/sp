@@ -3,6 +3,7 @@
 from django.contrib import admin
 from project.core.models import *
 from mptt_tree_editor.admin import TreeEditor
+from image_cropping import ImageCroppingMixin
 
 class CategoryAdmin(TreeEditor):
     """
@@ -26,7 +27,7 @@ class PropertiesInline(admin.StackedInline):
     model = Properties
     extra = 1
 
-class ProductImagesInline(admin.StackedInline):
+class ProductImagesInline(ImageCroppingMixin, admin.StackedInline):
     model = ProductImages
     extra = 1
 

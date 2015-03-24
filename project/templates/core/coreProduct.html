@@ -1,4 +1,17 @@
 {% extends "core_main.html" %}
+{% load thumbnail %}
+{% load cropping %}
+
+{% block message %}
+    {% if message %}
+        <div class="pad margin no-print">
+            <div class="callout callout-info" style="margin-bottom: 0!important;">
+                <h4><i class="fa fa-info"></i> Записочка</h4>
+                <p>{{ message }}</p>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
 
 {% block content %}
       <!-- Content Wrapper. Contains page content -->
@@ -12,6 +25,15 @@
             </ol>
             <h1>Просмотр каталога "{{ catalog.catalog_name }}" закупки - {{ purchase.name }}</h1>
         </section>
+
+        {% if message %}
+            <div class="pad margin no-print">
+                <div class="callout callout-info" style="margin-bottom: 0!important;">
+                    <h4><i class="fa fa-info"></i> Записочка</h4>
+                    <p>{{ message }}</p>
+                </div>
+            </div>
+        {% endif %}
 
         {% if not profile %}
             <div class="pad margin no-print">
@@ -41,7 +63,7 @@
                     <div class="row">
                             <div class="col-xs-12 item">
                                 {% for image in images %}
-                                    <img style="width: 300px;" src="{{ image.url }}" alt=""/>
+                                    <img style="" src="{% cropped_thumbnail image "cropping" scale=1 %}">
                                 {% endfor %}
                                 <br/>
                                 {{ product.product_name }}

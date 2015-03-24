@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
 import os
+from easy_thumbnails.conf import Settings as thumbnail_settings
 # import djcelery
 
 from django.utils.translation import ugettext_lazy as _
@@ -13,6 +14,11 @@ CURRPATH = os.path.abspath('.')
 PROJECT_PATH = os.path.abspath(os.path.dirname(__file__).decode('utf-8')).replace('\\', '/')
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 ROOT_URLCONF = 'project.urls'
+
+
+THUMBNAIL_PROCESSORS = (
+    'image_cropping.thumbnail_processors.crop_corners',
+) + thumbnail_settings.THUMBNAIL_PROCESSORS
 
 COVERAGE_REPORT_HTML_OUTPUT_DIR = os.path.join(CURRPATH, 'cover')
 COVERAGE_PATH_EXCLUDES = os.path.join(CURRPATH, 'cover')
@@ -235,6 +241,8 @@ INSTALLED_APPS = (
     'pybb',
     'project.pristroy',
     'project.cart',
+    'image_cropping',
+    'easy_thumbnails',
 )
 
 FILEBROWSER_MEDIA_ROOT = MEDIA_ROOT

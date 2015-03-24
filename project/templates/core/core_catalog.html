@@ -1,8 +1,11 @@
 {% extends "core_main.html" %}
+{% load thumbnail %}
+{% load cropping %}
+
 
 {% block content %}
       <!-- Content Wrapper. Contains page content -->
-    <div id="core_product" class="content-wrapper">
+    <div id="core_catalog" class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <ol class="breadcrumb">
@@ -47,7 +50,8 @@
                     <div class="row">
                         {% for product in catalog.get_products %}
                             <div class="col-xs-12 col-md-4 item">
-                                <img src="{{ product.image }}" alt=""/>
+                                <img style="" src="{% cropped_thumbnail product.get_image "cropping" scale=1 %}">
+{#                                <img src="{{ product.image }}" alt=""/>#}
                                 {{ product.product_name }}
                                 <br/>
                                 {{ product.description|truncatewords:15|safe }}
@@ -57,6 +61,7 @@
                                 {% if product.sku %}
                                     {{ product.sku }}
                                 {% endif %}
+                                <br/>
                                 <a class="btn btn-default" href="{{ product.url_core }}">Подробнее</a>
                             </div>
                         {% endfor %}
