@@ -5,6 +5,7 @@ import random
 from models import CartItem
 from project.core.models import Product
 from django.shortcuts import get_object_or_404
+from django.http.response import Http404
 
 CART_ID_SESSION_KEY = 'cart_id'
 
@@ -33,25 +34,31 @@ def get_cart_items(request):
 
 def add_to_cart(request):
     """Добавление товара в корзину"""
-    postdata = request.POST.copy()
-    product_id = postdata.get('product', '')
-    quantity = postdata.get('quantity', 1)
-    # Получаем товар, или возвращаем ошибку "не найден" если его не существует
-    p = get_object_or_404(Product, id=product_id)
-    # Получаем товары в корзине
-    cart_products = get_cart_items(request)
-    # Проверяем что продукт уже в корзине
-    product_in_cart = False
-    for cart_item in cart_products:
-        if (cart_item.product.id == p.id):
-            # Обновляем количество если найден
-            cart_item.augment_quantity(quantity)
-            product_in_cart = True
+    # добавлять может только участник
+    try:
+        profile = request.user.memberprofile
+        if profile.is_checked():
+            postdata = request.POST.copy()
+            product_id = postdata.get('product', '')
+            quantity = postdata.get('quantity', 1)
+            # Получаем товар, или возвращаем ошибку "не найден" если его не существует
+            p = get_object_or_404(Product, id=product_id)
+            # Получаем товары в корзине
+            cart_products = get_cart_items(request)
+            # Проверяем что продукт уже в корзине
+            product_in_cart = False
+            for cart_item in cart_products:
+                if (cart_item.product.id == p.id):
+                    # Обновляем количество если найден
+                    cart_item.augment_quantity(quantity)
+                    product_in_cart = True
 
-    if not product_in_cart:
-        # Создаем и сохраняем новую корзину
-        ci = CartItem()
-        ci.product = p
-        ci.quantity = quantity
-        ci.cart_id = _cart_id(request)
-        ci.save()
+            if not product_in_cart:
+                # Создаем и сохраняем новую корзину
+                ci = CartItem()
+                ci.product = p
+                ci.quantity = quantity
+                ci.cart_id = _cart_id(request)
+                ci.save()
+    except:
+        raise Http404

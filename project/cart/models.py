@@ -11,7 +11,7 @@ class CartItem(models.Model):
     product = models.ForeignKey(Product, unique=False)
 
     def name(self):
-        return self.product.name
+        return self.product.product_name
     def augment_quantity(self, quantity):
         """Изменение количества товара в корзине"""
         if quantity.isdigit():

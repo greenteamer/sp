@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.core.context_processors import csrf
 from project.cart.models import CartItem
 from project.cart.forms import CartItemForm
-from project.cart.cart import add_to_cart
+from project.cart.cart import add_to_cart, get_cart_items
 from project.core.models import Purchase, Product, Catalog, ProductImages, Category
 from project.accounts.models import getProfile, OrganizerProfile, MemberProfile
 from django.core.exceptions import ObjectDoesNotExist
@@ -169,10 +169,12 @@ def coreProduct(request, purchase_id, catalog_id, product_id, template_name):
         form = CartItemForm(instance=cart_item)
         if request.method=="POST":
             form = CartItemForm(request.POST)
+            add_to_cart(request)
             if form.is_valid():
                 add_to_cart(request)
                 # form.save()
             else:
+                # pass
                 HttpResponseRedirect('profileView')
 
 
@@ -181,7 +183,20 @@ def coreProduct(request, purchase_id, catalog_id, product_id, template_name):
     except ObjectDoesNotExist:
             raise Http404
 
+def cartView(request, template_name):
+    """ проверяем пользователя и его профайл организатора"""
+    user = request.user
+    if user.is_authenticated():
+         profile = getProfile(user)
+         if profile is None: return HttpResponseRedirect(urlresolvers.reverse('populateProfileView'))
+         elif not profile.is_checked(): return HttpResponseRedirect(urlresolvers.reverse('profileView'))
+    else:
+        return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
 
+    cart_items = get_cart_items(request)
+
+    return render_to_response(template_name, locals(),
+                            context_instance=RequestContext(request))
 
 
 def checkOrganizerProfile(user):

@@ -149,7 +149,8 @@ class Product(models.Model):
 
     def __unicode__(self):
         return self.product_name
-
+    def get_image(self):
+        return ProductImages.objects.filter(p_image_product=self.id).first()
     def get_all_image(self):
         return ProductImages.objects.filter(p_image_product=self.id)
 

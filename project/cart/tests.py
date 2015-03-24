@@ -1,40 +1,30 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
-from django.test import TestCase, RequestFactory
+from django.test import TestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse
-import sys
-import re
-import random
-import datetime
-from django.core import mail
-from django_webtest import WebTest
 from models import CartItem
-from cart import _cart_id
-from django.contrib.auth.models import User, Group
-from project.core.models import PurchaseStatus, Category, Product, Catalog
-
-
-# Create your tests here.
+from django.contrib.auth.models import User
+from project.core.views import getProfile
 
 class CartTest(TestCase):
     # fixtures = ['auth.xml', 'accounts.xml', 'core.xml']
     # fixtures = ['fixtures.xml']
     fixtures = ['accounts/fixtures/data.json']
-    client = Client()
-    csrf_client = Client(enforce_csrf_checks=True)
-    user = User()
 
-    def def_putToCart(self):
+    def def_pushToCart(self):
         users = User.objects.all()
         for user in users:
-            factory = RequestFactory()
             client = Client()
-            request = factory.get('/purchase-1/catalog-1/')
-            response = client.post(reverse('loginView'), {'username': user.username, 'password': 'balabas'})
+            client.login(username=user.username, password='balabas')
+            # response = client.get('/purchase-1/catalog-1/product-1/')
+            response = client.post('/purchase-1/catalog-1/product-1/', {'quantity': 1, 'product':1,})
+            profile = getProfile(user)
+            if hasattr(profile, 'member_checked') and profile.is_checked():
+                assert (response.status_code==200)
+        print u'Проверенный участник может добавлять товар'
 
-
-            product = Product.objects.get(id=1)
+            # product = Product.objects.get(id=1)
             # cart_item = CartItem.objects.create(
             #     cart_id=_cart_id(request),
             #     date_added = datetime.datetime.now(),
@@ -44,11 +34,11 @@ class CartTest(TestCase):
             # cart_item.save()
 
     def test_getCartItems(self):
-        # self.def_putToCart()
+        self.def_pushToCart()
         cart_items = CartItem.objects.all()
         for item in cart_items:
-            print u"%s (%s), %s, %s кол-во:%s" % (item.id, item.product.product_name, item.cart_id, item.date_added, item.quantity)
-
+            # print u"%s (%s), %s, %s кол-во:%s" % (item.id, item.product.product_name, item.cart_id, item.date_added, item.quantity)
+            print u'продукт %s в корзине' % item.name()
     # def def_createOrganizerProfile(self, username, checked=False):
     #     self.user = User.objects.create(username=username,)
     #     self.user.set_password("balabas")
