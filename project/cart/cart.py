@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from project.accounts.models import getProfile
 from django.http.response import Http404, HttpResponseRedirect
 
+
 CART_ID_SESSION_KEY = 'cart_id'
 
 def _cart_id(request):
@@ -29,9 +30,13 @@ def _generate_cart_id():
         cart_id += characters[random.randint(0, len(characters) - 1)]
     return cart_id
 
+
 def get_cart_items(request):
-    """Получение всех товаров для текущей корзины"""
-    return CartItem.objects.filter(cart_id=_cart_id(request))
+    cart_items = CartItem.objects.filter(user=request.user)
+    cart_items.full_count = 0
+    for item in cart_items:
+        cart_items.full_count = cart_items.full_count + item.quantity
+    return cart_items
 
 
 def add_to_cart(request):
@@ -59,4 +64,31 @@ def add_to_cart(request):
             ci.product = p
             ci.quantity = quantity
             ci.cart_id = _cart_id(request)
+            ci.user = request.user
             ci.save()
+
+
+def get_single_item(request, item_id):
+    """Получаем конкретный товар в корзине"""
+    return get_object_or_404(CartItem, id=item_id, user=request.user)
+
+
+def remove_from_cart(request):
+    """Удаляет выбранный товар из корзины"""
+    postdata = request.POST.copy()
+    item_id = postdata['item_id']
+    cart_item = get_single_item(request, item_id)
+    if cart_item:
+        cart_item.delete()
+
+
+def update_cart(request):
+    """Обновляет количество отдельного товара"""
+    postdata = request.POST.copy()
+    item_id = postdata['item_id']
+    quantity = postdata['quantity']
+    cart_item = get_single_item(request, item_id)
+    if cart_item:
+        if quantity.isdigit() and int(quantity) > 0:
+            cart_item.quantity = int(quantity)
+            cart_item.save()

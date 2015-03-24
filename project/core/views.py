@@ -127,13 +127,6 @@ def coreProduct(request, purchase_id, catalog_id, product_id, template_name):  #
 
 
 
-@check_profile
-def cartView(request, template_name):
-    cart_items = get_cart_items(request)
-    return render_to_response(template_name, locals(),
-                            context_instance=RequestContext(request))
-
-
 
 # def checkOrganizerProfile(user):
 #     try:

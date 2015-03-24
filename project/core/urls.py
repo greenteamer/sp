@@ -13,10 +13,6 @@ urlpatterns = patterns('project.core.views',
 		{'template_name': 'core/core_categories.html'},
 		name='categories'),
 
-    url(r'^cart/$', 'cartView',
-		{'template_name': 'core/core_cart.html'},
-		name='cartView'),
-
 
     # страница одной категории
     url(r'^category-(?P<category_slug>[-\w]+)/$', 'coreCategory',

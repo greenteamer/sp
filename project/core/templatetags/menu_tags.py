@@ -2,6 +2,7 @@
 #!/usr/bin/env python
 from django import template
 from project.accounts.models import getProfile
+from project.cart.cart import get_cart_items
 
 register = template.Library()
 
@@ -30,7 +31,6 @@ def coreLeftMenu(context, request):
 register.inclusion_tag('core/tags/core_left_menu.html', takes_context=True)(coreLeftMenu)
 
 def coreTopMenu(context, request):
-    user = request.user
 
     user = request.user
     if user.is_authenticated():
@@ -38,6 +38,8 @@ def coreTopMenu(context, request):
         return {
             'user': user,
             'profile': profile,
+            'cart_items': get_cart_items(request),
+            'request': request,
         }
     else:
         return {
