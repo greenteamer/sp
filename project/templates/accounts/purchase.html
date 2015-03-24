@@ -30,8 +30,26 @@
 
                     <b>ID: </b>{{ purchase.id }}
                     <br/>
-                    <b>Name: </b>{{ purchase.name }}
-                    <br/><br/>
+                    <b>Название: </b>{{ purchase.name }}
+                    <br/>
+                    <b>Создана: </b>{{ purchase.created_at }}
+                        {% if purchase.created_at !=  purchase.updated_at %} | <b>Обновлена: </b>{{ purchase.updated_at }} {% endif %}
+                    <br/>
+                    <b>Статус закупки: </b>{{ purchase.purchase_status }}
+                    <br/>
+                    <b>Предоплата: </b>{{ purchase.prepay }}
+                    <br/>
+                    <b>Процент организатора: </b>{{ purchase.percentage }}
+                    <br/>
+                    <b>Способы оплаты: </b>{{ purchase.paymethods }}
+                    <br/>
+                    <b>Категории: </b>
+                    {% for category in purchase.categories.all %}
+                        {{ category }}
+                        {% if not forloop.last %}, {% else %}{% endif %}
+                    {% endfor %}
+                    <br/>
+                    <br/>
 
                     <a class="btn btn-success" href="{{ purchase.url }}-edit">Изменить закупку</a>
                     <br/><br/>
