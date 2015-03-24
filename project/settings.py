@@ -138,6 +138,7 @@ MIDDLEWARE_CLASSES = (
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'pybb.middleware.PybbMiddleware',
     #'webshop.SSLMiddleware.SSLRedirect',
 )
 
@@ -160,6 +161,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 	'django.core.context_processors.static',
 	'django.core.context_processors.request',
 	'django.contrib.messages.context_processors.messages',
+    'pybb.context_processors.processor',
 )
 
 
@@ -235,6 +237,8 @@ INSTALLED_APPS = (
     'project.core',
     'project.accounts',
     'mptt_tree_editor',
+    'pybb',
+    'project.pristroy',
 )
 
 FILEBROWSER_MEDIA_ROOT = MEDIA_ROOT
@@ -273,7 +277,7 @@ SITE_NAME = _(u'Product magazine')
 META_KEYWORDS = _(u'products, online, shop, buy')
 META_DESCRIPTION = _(u'Product magazine is an online supplier of products')
 LOGIN_REDIRECT_URL = '/accounts/my_account/'
-SESSION_COOKIE_AGE = 60 * 60 * 24 * 90 # 90 дней на хранение cookies
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 90  # 90 дней на хранение cookies
 PRODUCTS_PER_PAGE = 300
 AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 
@@ -286,3 +290,7 @@ try:
     from settings_local import *
 except ImportError:
     pass
+
+
+
+# PYBB_PERMISSION_HANDLER = "project.core.pybbm_custom.MyPermissionHandler"  зараза не работает

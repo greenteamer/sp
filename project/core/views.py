@@ -6,8 +6,7 @@ from django.core import urlresolvers
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.core.context_processors import csrf
-from project.core.models import Purchase, Product, Catalog, ProductImages, Category
-from project.core.functions import *
+from project.core.models import Purchase, Product, Catalog, ProductImages, Category, PurchaseStatus
 from project.accounts.models import getOrganizerProfile
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import Http404
@@ -24,7 +23,7 @@ def index_view(request, template_name="catalog/index.html"):
                               context_instance=RequestContext(request))
 
 
-
+#  страница для тестов
 def viewProduct(request, template_name="core/viewproduct.html"):
     # products = Product.objects.all()
 
@@ -36,11 +35,10 @@ def viewProduct(request, template_name="core/viewproduct.html"):
                                    'where core_product.id = core_productimages.p_image_product_id')
 
     product_images = ProductImages.objects.all()
+    product = Product.objects.order_by('-id')[0]
 
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
-
-
 
 
 
