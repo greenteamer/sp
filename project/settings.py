@@ -243,6 +243,7 @@ INSTALLED_APPS = (
     'project.cart',
     'image_cropping',
     'easy_thumbnails',
+    'import_export',
 )
 
 FILEBROWSER_MEDIA_ROOT = MEDIA_ROOT

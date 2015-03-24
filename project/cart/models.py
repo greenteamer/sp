@@ -31,5 +31,7 @@ class CartItem(models.Model):  # TODO: добавить profile_member и profil
             return MemberProfile.objects.get(user=self.user)
         except:
             None
+    def __unicode__(self):
+        return self.product.name
 
 

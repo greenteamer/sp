@@ -73,10 +73,15 @@
                                                         <h4>{{ catalog }}</h4>
                                                     </td>
                                                     <td>
-                                                        {% for item in list %}
-                                                            <p>{{ item.product.product_name }}<span class="label label-success">{{ item.quantity }}</span><br/><small>{{ item.user.username }}</small></p>
+                                                        <form action="." method="post">{% csrf_token %}
+                                                            <button class="btn btn-file" type="submit" name="export">Скачать Exel файл</button>
+                                                        </form>
 
-                                                        {% endfor %}
+
+{#                                                        {% for item in list %}#}
+{#                                                            <p>{{ item.product.product_name }}<span class="label label-success">{{ item.quantity }}</span><br/><small>{{ item.user.username }}</small></p>#}
+{##}
+{#                                                        {% endfor %}#}
                                                     </td>
                                                     <td>
 
