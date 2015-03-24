@@ -25,25 +25,26 @@ class Category(Model):
         verbose_name_plural = _(u'Категории')
 
     def __unicode__(self):
-        return self.name
+        return self.category_name
         # return '%s%s' % ('--' * self.level, self.name)
 
     @permalink
-    def get_absolute_url(self):
-        return('category', (), {'category_slug': self.category_slug})     #Генерация постоянных ссылок на категории
+    def url(self):
+        return('pristroy_category', (), {'category_slug': self.category_slug})     #Генерация постоянных ссылок на категории
+
 
 # Товары
 class Product(Model):
     product_name = models.CharField(max_length=100, verbose_name=u'Название товара')
     product_description = models.TextField(verbose_name=u'Описание товара')
     product_price = models.FloatField(verbose_name=u'Цена')
-    product_sku = models.IntegerField(verbose_name=u'Артикул',null=True,blank=True)
     product_catalog = models.ForeignKey(Category, verbose_name=u'Выбрать категорию')
     product_created_at = models.DateTimeField(_(u'Created at'), null=True, auto_now_add=True)
     product_updated_at = models.DateTimeField(_(u'Updated at'), null=True, auto_now=True)
-
+    class Meta:
+        verbose_name_plural = _(u'Товары')
     def url(self):
-        return '%s/product-%s' % (self.product_catalog.url(), self.id)
+        return '/pristroy/product-%s' % (self.id)
 
     def __unicode__(self):
         return self.product_name
@@ -57,7 +58,8 @@ class ProductImages(models.Model):
                              help_text=u'Изображение', blank=True)
     p_image_product = models.ForeignKey(Product, verbose_name=u'Выбрать товар')
     p_image_title = models.CharField(u'Название', blank=True, null=True, max_length=255)
-
+    class Meta:
+        verbose_name_plural = _(u'Изображения для товаров')
     def url(self):
         if self.image and self.image != '':
             return "/media/%s" % self.image

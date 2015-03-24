@@ -8,6 +8,7 @@ from project.core.functions import *
 from autoslug import AutoSlugField
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import permalink
+# from datetime import datetime
 
 
 class CommonActiveManager(models.Manager):
@@ -31,8 +32,8 @@ class Category(MPTTModel):
 
     meta_description = models.CharField(_(u'Meta description'), max_length=255,
                                         help_text=_(u'Content for description meta tags'), blank=True)
-    created_at = models.DateTimeField(_(u'Created at'), null=True, auto_now_add=True)
-    updated_at = models.DateTimeField(_(u'Updated at'), null=True, auto_now=True)
+    created_at = models.DateTimeField(_(u'Created at'), null=True, auto_now_add=True) #default=datetime.utcfromtimestamp(0),
+    updated_at = models.DateTimeField(_(u'Updated at'), default='', null=True, auto_now=True)
     parent = TreeForeignKey('self', verbose_name=_(u'Родительская категория'),
                             related_name='children', blank=True,
                             help_text=_(u'Родительская категория для текущей категоири'), null=True)
@@ -86,13 +87,14 @@ class Purchase(models.Model):
     organizerProfile = models.ForeignKey('accounts.OrganizerProfile', verbose_name=u'Профиль организатора')
     created_at = models.DateTimeField(_(u'Created at'), null=True, auto_now_add=True)
     updated_at = models.DateTimeField(_(u'Updated at'), null=True, auto_now=True)
-    # purchase_status = models.ForeignKey(PurchaseStatus, verbose_name=u'Статус закупки', default=PurchaseStatus.objects.get(id=6) )
-    purchase_status = models.ForeignKey(PurchaseStatus, verbose_name=u'Статус закупки', default=PurchaseStatus.objects.order_by('-status_priority')[0] )
+    # purchase_status = models.ForeignKey(PurchaseStatus, verbose_name=u'Статус закупки', default=PurchaseStatus.objects.order_by('-status_priority')[0] )
+    purchase_status = models.ForeignKey(PurchaseStatus, verbose_name=u'Статус закупки', null=True, blank=True)
+    # purchase_status = models.ForeignKey(PurchaseStatus, verbose_name=u'Статус закупки')
     prepay = models.IntegerField(verbose_name=u'Предоплата', help_text=u'Отмечается в процентах', default=100)
     percentage = models.IntegerField(verbose_name=u'Процент организатора', help_text=u'Отмечается в процентах', default=15)
     paymethods = models.TextField(u'Способы оплаты', default=u'Не указано')  # TODO: ? Тип поля? тупо пусть пишут текстом, или сделать выбор селект. тогда отдельно надо типы оплаты вносить..
     categories = models.ManyToManyField(Category, verbose_name=_(u'Categories'),
-                                        help_text=_(u'Categories for product'))
+                                        help_text=_(u'Категории для этой закупки'))
     def __unicode__(self):
         return self.name
 
