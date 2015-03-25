@@ -1,0 +1,1021 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+    <title>Test coverage report: mptt.models</title>
+    <style type="text/css" media="screen">
+      a
+      {
+        color: #3d707a;
+      }
+      
+      a:hover, a:active
+      {
+        color: #bf7d18;
+      }
+    
+      body 
+      {
+        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+        font-size: 13px;
+      }
+      
+      .nav 
+      {
+        font-size: 12px;
+        margin-left: 50px;
+      }
+
+      .ignored
+      {
+        color: #707070;
+      }
+
+      .executed 
+      {
+        color: #3d9900;
+      }
+
+      .missed 
+      {
+        color: red;
+        font-weight: bold;
+      }
+
+      .excluded 
+      {
+        color: #6090f0;
+        font-weight: lighter;
+      }
+    
+      #content-header 
+      {
+        font-size: 12px;
+        padding: 18px 0 18px 50px;
+      }
+
+      #content-header h1 
+      {
+        font-size: 16px;
+        margin: 10px 0 0 0;
+        color: #909090;
+      }
+      
+      #module-name
+      {
+        color: #583707;
+      }
+    
+      #content-header p
+      {
+        font-size: 13px;
+        margin: 0;
+        color: #909090;
+      }
+
+      #content-header .normal 
+      {
+        color: #609030;
+      }
+
+      #content-header .warning 
+      {
+        color: #d0a000;
+      }
+
+      #content-header .critical 
+      {
+        color: red;
+      }
+      
+      #source-listing 
+      {
+        margin-bottom: 24px;
+      }
+
+      #source-listing ol 
+      {
+        padding: 0 0 0 50px;
+        width: 90%;
+        font-family: monospace;
+        list-style-position: outside;
+      }
+
+      #source-listing ol li 
+      {
+        line-height: 18px;
+        font-size: small;
+      }
+        
+      #source-listing ol code 
+      {
+        padding:  0 .001em 0 0; /* Firefox doesn't render empty li's properly */
+        font-size: medium;
+        white-space: pre;
+      }
+   </style>
+  </head>
+
+  <body>
+
+<div class="nav">
+  <a href="mptt.managers.html">mptt.managers</a> &lt;&lt;
+  <a href="../index.html">index</a>
+  &gt;&gt; <a href="mptt.utils.html">mptt.utils</a>
+</div>
+
+<div id="content-header">
+  <h1>
+    <span id="module-name">mptt.models</span>:
+    452 total statements,
+    <span class="critical">31.4% covered</span>
+  </h1>
+  <p>Generated: Tue 2015-03-10 22:42 MSK</p>
+  <p>Source file: /Users/greenteamer/Desktop/Django/env/sp/lib/python2.7/site-packages/mptt/models.py</p>
+  <p>
+    Stats:
+    <span class="executed">138 executed</span>,
+    <span class="missed">302 missed</span>,
+    <span class="excluded">12 excluded</span>,
+    <span class="ignored">412 ignored</span> 
+  </p> 
+</div>
+
+<div id="source-listing">
+  <ol>
+    <li class="excluded"><code>from __future__ import unicode_literals</code></li>
+<li class="excluded"><code>from functools import reduce</code></li>
+<li class="excluded"><code>import operator</code></li>
+<li class="excluded"><code>import threading</code></li>
+<li class="excluded"><code>import warnings</code></li>
+<li class="ignored"><code></code></li>
+<li class="excluded"><code>from django.db import models</code></li>
+<li class="excluded"><code>from django.db.models.base import ModelBase</code></li>
+<li class="excluded"><code>from django.db.models.query import Q</code></li>
+<li class="ignored"><code></code></li>
+<li class="excluded"><code>from django.utils import six</code></li>
+<li class="excluded"><code>from django.utils.translation import ugettext as _</code></li>
+<li class="ignored"><code></code></li>
+<li class="excluded"><code>from mptt.fields import TreeForeignKey, TreeOneToOneField, TreeManyToManyField</code></li>
+<li class="excluded"><code>from mptt.managers import TreeManager</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>class _classproperty(object):</code></li>
+<li class="executed"><code>    def __init__(self, getter, setter=None):</code></li>
+<li class="executed"><code>        self.fget = getter</code></li>
+<li class="executed"><code>        self.fset = setter</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def __get__(self, cls, owner):</code></li>
+<li class="missed"><code>        return self.fget(owner)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def __set__(self, cls, owner, value):</code></li>
+<li class="missed"><code>        if not self.fset:</code></li>
+<li class="missed"><code>            raise AttributeError("This classproperty is read only")</code></li>
+<li class="missed"><code>        self.fset(owner, value)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>class classpropertytype(property):</code></li>
+<li class="executed"><code>    def __init__(self, name, bases=(), members={}):</code></li>
+<li class="executed"><code>        return super(classpropertytype, self).__init__(</code></li>
+<li class="ignored"><code>            members.get('__get__'),</code></li>
+<li class="ignored"><code>            members.get('__set__'),</code></li>
+<li class="ignored"><code>            members.get('__delete__'),</code></li>
+<li class="ignored"><code>            members.get('__doc__')</code></li>
+<li class="ignored"><code>        )</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>classproperty = classpropertytype('classproperty')</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>class MPTTOptions(object):</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code>    Options class for MPTT models. Use this as an inner class called ``MPTTMeta``::</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        class MyModel(MPTTModel):</code></li>
+<li class="ignored"><code>            class MPTTMeta:</code></li>
+<li class="ignored"><code>                order_insertion_by = ['name']</code></li>
+<li class="ignored"><code>                parent_attr = 'myparent'</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    order_insertion_by = []</code></li>
+<li class="executed"><code>    left_attr = 'lft'</code></li>
+<li class="executed"><code>    right_attr = 'rght'</code></li>
+<li class="executed"><code>    tree_id_attr = 'tree_id'</code></li>
+<li class="executed"><code>    level_attr = 'level'</code></li>
+<li class="executed"><code>    parent_attr = 'parent'</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def __init__(self, opts=None, **kwargs):</code></li>
+<li class="ignored"><code>        # Override defaults with options provided</code></li>
+<li class="executed"><code>        if opts:</code></li>
+<li class="executed"><code>            opts = list(opts.__dict__.items())</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            opts = []</code></li>
+<li class="executed"><code>        opts.extend(list(kwargs.items()))</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>        if 'tree_manager_attr' in [opt[0] for opt in opts]:</code></li>
+<li class="missed"><code>            raise ValueError("`tree_manager_attr` has been removed; you should instantiate a TreeManager as a normal manager on your model instead.")</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>        for key, value in opts:</code></li>
+<li class="executed"><code>            if key[:2] == '__':</code></li>
+<li class="executed"><code>                continue</code></li>
+<li class="missed"><code>            setattr(self, key, value)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        # Normalize order_insertion_by to a list</code></li>
+<li class="executed"><code>        if isinstance(self.order_insertion_by, six.string_types):</code></li>
+<li class="missed"><code>            self.order_insertion_by = [self.order_insertion_by]</code></li>
+<li class="executed"><code>        elif isinstance(self.order_insertion_by, tuple):</code></li>
+<li class="missed"><code>            self.order_insertion_by = list(self.order_insertion_by)</code></li>
+<li class="executed"><code>        elif self.order_insertion_by is None:</code></li>
+<li class="missed"><code>            self.order_insertion_by = []</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def __iter__(self):</code></li>
+<li class="executed"><code>        return ((k, v) for k, v in self.__dict__.items() if k[0] != '_')</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    # Helper methods for accessing tree attributes on models.</code></li>
+<li class="executed"><code>    def get_raw_field_value(self, instance, field_name):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Gets the value of the given fieldname for the instance.</code></li>
+<li class="ignored"><code>        This is not the same as getattr().</code></li>
+<li class="ignored"><code>        This function will return IDs for foreignkeys etc, rather than doing</code></li>
+<li class="ignored"><code>        a database query.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        field = instance._meta.get_field(field_name)</code></li>
+<li class="missed"><code>        return field.value_from_object(instance)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def set_raw_field_value(self, instance, field_name, value):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Sets the value of the given fieldname for the instance.</code></li>
+<li class="ignored"><code>        This is not the same as setattr().</code></li>
+<li class="ignored"><code>        This function requires an ID for a foreignkey (etc) rather than an instance.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        field = instance._meta.get_field(field_name)</code></li>
+<li class="missed"><code>        setattr(instance, field.attname, value)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def update_mptt_cached_fields(self, instance):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Caches (in an instance._mptt_cached_fields dict) the original values of:</code></li>
+<li class="ignored"><code>         - parent pk</code></li>
+<li class="ignored"><code>         - fields specified in order_insertion_by</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        These are used in pre_save to determine if the relevant fields have changed,</code></li>
+<li class="ignored"><code>        so that the MPTT fields need to be updated.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        instance._mptt_cached_fields = {}</code></li>
+<li class="missed"><code>        field_names = set((self.parent_attr,))</code></li>
+<li class="missed"><code>        field_names__add = field_names.add</code></li>
+<li class="missed"><code>        if self.order_insertion_by:</code></li>
+<li class="missed"><code>            for f in self.order_insertion_by:</code></li>
+<li class="missed"><code>                if f[0] == '-':</code></li>
+<li class="missed"><code>                    f = f[1:]</code></li>
+<li class="missed"><code>                field_names__add(f)</code></li>
+<li class="missed"><code>        for field_name in field_names:</code></li>
+<li class="missed"><code>            instance._mptt_cached_fields[field_name] = self.get_raw_field_value(instance, field_name)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def insertion_target_filters(self, instance, order_insertion_by):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Creates a filter which matches suitable right siblings for ``node``,</code></li>
+<li class="ignored"><code>        where insertion should maintain ordering according to the list of</code></li>
+<li class="ignored"><code>        fields in ``order_insertion_by``.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        For example, given an ``order_insertion_by`` of</code></li>
+<li class="ignored"><code>        ``['field1', 'field2', 'field3']``, the resulting filter should</code></li>
+<li class="ignored"><code>        correspond to the following SQL::</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>           field1 &gt; %s</code></li>
+<li class="ignored"><code>           OR (field1 = %s AND field2 &gt; %s)</code></li>
+<li class="ignored"><code>           OR (field1 = %s AND field2 = %s AND field3 &gt; %s)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        fields = []</code></li>
+<li class="missed"><code>        filters = []</code></li>
+<li class="missed"><code>        fields__append = fields.append</code></li>
+<li class="missed"><code>        filters__append = filters.append</code></li>
+<li class="missed"><code>        and_ = operator.and_</code></li>
+<li class="missed"><code>        or_ = operator.or_</code></li>
+<li class="missed"><code>        for field_name in order_insertion_by:</code></li>
+<li class="missed"><code>            if field_name[0] == '-':</code></li>
+<li class="missed"><code>                field_name = field_name[1:]</code></li>
+<li class="missed"><code>                filter_suffix = '__lt'</code></li>
+<li class="ignored"><code>            else:</code></li>
+<li class="missed"><code>                filter_suffix = '__gt'</code></li>
+<li class="missed"><code>            value = getattr(instance, field_name)</code></li>
+<li class="missed"><code>            if value is None:</code></li>
+<li class="ignored"><code>                # node isn't saved yet. get the insertion value from pre_save.</code></li>
+<li class="missed"><code>                field = instance._meta.get_field(field_name)</code></li>
+<li class="missed"><code>                value = field.pre_save(instance, True)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            q = Q(**{field_name + filter_suffix: value})</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            filters__append(reduce(and_, [Q(**{f: v}) for f, v in fields] + [q]))</code></li>
+<li class="missed"><code>            fields__append((field_name, value))</code></li>
+<li class="missed"><code>        return reduce(or_, filters)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def get_ordered_insertion_target(self, node, parent):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Attempts to retrieve a suitable right sibling for ``node``</code></li>
+<li class="ignored"><code>        underneath ``parent`` (which may be ``None`` in the case of root</code></li>
+<li class="ignored"><code>        nodes) so that ordering by the fields specified by the node's class'</code></li>
+<li class="ignored"><code>        ``order_insertion_by`` option is maintained.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        Returns ``None`` if no suitable sibling can be found.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        right_sibling = None</code></li>
+<li class="ignored"><code>        # Optimisation - if the parent doesn't have descendants,</code></li>
+<li class="ignored"><code>        # the node will always be its last child.</code></li>
+<li class="missed"><code>        if parent is None or parent.get_descendant_count() &gt; 0:</code></li>
+<li class="missed"><code>            opts = node._mptt_meta</code></li>
+<li class="missed"><code>            order_by = opts.order_insertion_by[:]</code></li>
+<li class="missed"><code>            filters = self.insertion_target_filters(node, order_by)</code></li>
+<li class="missed"><code>            if parent:</code></li>
+<li class="missed"><code>                filters = filters &amp; Q(**{opts.parent_attr: parent})</code></li>
+<li class="ignored"><code>                # Fall back on tree ordering if multiple child nodes have</code></li>
+<li class="ignored"><code>                # the same values.</code></li>
+<li class="missed"><code>                order_by.append(opts.left_attr)</code></li>
+<li class="ignored"><code>            else:</code></li>
+<li class="missed"><code>                filters = filters &amp; Q(**{opts.parent_attr: None})</code></li>
+<li class="ignored"><code>                # Fall back on tree id ordering if multiple root nodes have</code></li>
+<li class="ignored"><code>                # the same values.</code></li>
+<li class="missed"><code>                order_by.append(opts.tree_id_attr)</code></li>
+<li class="missed"><code>            queryset = node.__class__._tree_manager.filter(filters).order_by(*order_by)</code></li>
+<li class="missed"><code>            if node.pk:</code></li>
+<li class="missed"><code>                queryset = queryset.exclude(pk=node.pk)</code></li>
+<li class="missed"><code>            try:</code></li>
+<li class="missed"><code>                right_sibling = queryset[:1][0]</code></li>
+<li class="missed"><code>            except IndexError:</code></li>
+<li class="ignored"><code>                # No suitable right sibling could be found</code></li>
+<li class="missed"><code>                pass</code></li>
+<li class="missed"><code>        return right_sibling</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>class MPTTModelBase(ModelBase):</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code>    Metaclass for MPTT models</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def __new__(meta, class_name, bases, class_dict):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Create subclasses of MPTTModel. This:</code></li>
+<li class="ignored"><code>         - adds the MPTT fields to the class</code></li>
+<li class="ignored"><code>         - adds a TreeManager to the model</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="executed"><code>        if class_name == 'NewBase' and class_dict == {}:</code></li>
+<li class="ignored"><code>            # skip ModelBase, on django &lt; 1.5 it doesn't handle NewBase.</code></li>
+<li class="executed"><code>            super_new = super(ModelBase, meta).__new__</code></li>
+<li class="executed"><code>            return super_new(meta, class_name, bases, class_dict)</code></li>
+<li class="executed"><code>        is_MPTTModel = False</code></li>
+<li class="executed"><code>        try:</code></li>
+<li class="executed"><code>            MPTTModel</code></li>
+<li class="executed"><code>        except NameError:</code></li>
+<li class="executed"><code>            is_MPTTModel = True</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>        MPTTMeta = class_dict.pop('MPTTMeta', None)</code></li>
+<li class="executed"><code>        if not MPTTMeta:</code></li>
+<li class="executed"><code>            class MPTTMeta:</code></li>
+<li class="executed"><code>                pass</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>        initial_options = frozenset(dir(MPTTMeta))</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        # extend MPTTMeta from base classes</code></li>
+<li class="executed"><code>        for base in bases:</code></li>
+<li class="executed"><code>            if hasattr(base, '_mptt_meta'):</code></li>
+<li class="executed"><code>                for name, value in base._mptt_meta:</code></li>
+<li class="missed"><code>                    if name == 'tree_manager_attr':</code></li>
+<li class="missed"><code>                        continue</code></li>
+<li class="missed"><code>                    if name not in initial_options:</code></li>
+<li class="missed"><code>                        setattr(MPTTMeta, name, value)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>        class_dict['_mptt_meta'] = MPTTOptions(MPTTMeta)</code></li>
+<li class="executed"><code>        super_new = super(MPTTModelBase, meta).__new__</code></li>
+<li class="executed"><code>        cls = super_new(meta, class_name, bases, class_dict)</code></li>
+<li class="executed"><code>        cls = meta.register(cls)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        # see error cases in TreeManager.disable_mptt_updates for the reasoning here.</code></li>
+<li class="executed"><code>        cls._mptt_tracking_base = None</code></li>
+<li class="executed"><code>        if is_MPTTModel:</code></li>
+<li class="executed"><code>            bases = [cls]</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="executed"><code>            bases = [base for base in cls.mro() if issubclass(base, MPTTModel)]</code></li>
+<li class="executed"><code>        for base in bases:</code></li>
+<li class="executed"><code>            if not (base._meta.abstract or base._meta.proxy) and base._tree_manager.tree_model is base:</code></li>
+<li class="executed"><code>                cls._mptt_tracking_base = base</code></li>
+<li class="executed"><code>                break</code></li>
+<li class="executed"><code>        if cls is cls._mptt_tracking_base:</code></li>
+<li class="executed"><code>            cls._threadlocal = threading.local()</code></li>
+<li class="ignored"><code>            # set on first access (to make threading errors more obvious):</code></li>
+<li class="ignored"><code>            #    cls._threadlocal.mptt_delayed_tree_changes = None</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>        return cls</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    @classmethod</code></li>
+<li class="ignored"><code>    def register(meta, cls, **kwargs):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        For the weird cases when you need to add tree-ness to an *existing*</code></li>
+<li class="ignored"><code>        class. For other cases you should subclass MPTTModel instead of calling this.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>        if not issubclass(cls, models.Model):</code></li>
+<li class="missed"><code>            raise ValueError(_("register() expects a Django model class argument"))</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>        if not hasattr(cls, '_mptt_meta'):</code></li>
+<li class="missed"><code>            cls._mptt_meta = MPTTOptions(**kwargs)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>        abstract = getattr(cls._meta, 'abstract', False)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>        try:</code></li>
+<li class="executed"><code>            MPTTModel</code></li>
+<li class="executed"><code>        except NameError:</code></li>
+<li class="ignored"><code>            # We're defining the base class right now, so don't do anything</code></li>
+<li class="ignored"><code>            # We only want to add this stuff to the subclasses.</code></li>
+<li class="ignored"><code>            # (Otherwise if field names are customized, we'll end up adding two</code></li>
+<li class="ignored"><code>            # copies)</code></li>
+<li class="executed"><code>            pass</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="executed"><code>            if not issubclass(cls, MPTTModel):</code></li>
+<li class="missed"><code>                bases = list(cls.__bases__)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>                # strip out bases that are strict superclasses of MPTTModel.</code></li>
+<li class="ignored"><code>                # (i.e. Model, object)</code></li>
+<li class="ignored"><code>                # this helps linearize the type hierarchy if possible</code></li>
+<li class="missed"><code>                for i in range(len(bases) - 1, -1, -1):</code></li>
+<li class="missed"><code>                    if issubclass(MPTTModel, bases[i]):</code></li>
+<li class="missed"><code>                        del bases[i]</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>                bases.insert(0, MPTTModel)</code></li>
+<li class="missed"><code>                cls.__bases__ = tuple(bases)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>            for key in ('left_attr', 'right_attr', 'tree_id_attr', 'level_attr'):</code></li>
+<li class="executed"><code>                field_name = getattr(cls._mptt_meta, key)</code></li>
+<li class="executed"><code>                try:</code></li>
+<li class="executed"><code>                    cls._meta.get_field(field_name)</code></li>
+<li class="executed"><code>                except models.FieldDoesNotExist:</code></li>
+<li class="executed"><code>                    field = models.PositiveIntegerField(db_index=True, editable=False)</code></li>
+<li class="executed"><code>                    field.contribute_to_class(cls, field_name)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>            # Add a tree manager, if there isn't one already</code></li>
+<li class="executed"><code>            if not abstract:</code></li>
+<li class="executed"><code>                manager = getattr(cls, 'objects', None)</code></li>
+<li class="executed"><code>                if manager is None:</code></li>
+<li class="executed"><code>                    manager = cls._default_manager._copy_to_model(cls)</code></li>
+<li class="executed"><code>                    manager.contribute_to_class(cls, 'objects')</code></li>
+<li class="missed"><code>                elif manager.model != cls:</code></li>
+<li class="ignored"><code>                    # manager was inherited</code></li>
+<li class="missed"><code>                    manager = manager._copy_to_model(cls)</code></li>
+<li class="missed"><code>                    manager.contribute_to_class(cls, 'objects')</code></li>
+<li class="executed"><code>                if hasattr(manager, 'init_from_model'):</code></li>
+<li class="executed"><code>                    manager.init_from_model(cls)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>                # make sure we have a tree manager somewhere</code></li>
+<li class="executed"><code>                tree_manager = None</code></li>
+<li class="executed"><code>                for attr in sorted(dir(cls)):</code></li>
+<li class="executed"><code>                    try:</code></li>
+<li class="executed"><code>                        obj = getattr(cls, attr)</code></li>
+<li class="missed"><code>                    except AttributeError:</code></li>
+<li class="missed"><code>                        continue</code></li>
+<li class="executed"><code>                    if isinstance(obj, TreeManager):</code></li>
+<li class="executed"><code>                        tree_manager = obj</code></li>
+<li class="ignored"><code>                        # prefer any locally defined manager (i.e. keep going if not local)</code></li>
+<li class="executed"><code>                        if obj.model is cls:</code></li>
+<li class="executed"><code>                            break</code></li>
+<li class="executed"><code>                if tree_manager and tree_manager.model is not cls:</code></li>
+<li class="missed"><code>                    tree_manager = tree_manager._copy_to_model(cls)</code></li>
+<li class="executed"><code>                elif tree_manager is None:</code></li>
+<li class="missed"><code>                    tree_manager = TreeManager()</code></li>
+<li class="executed"><code>                tree_manager.contribute_to_class(cls, '_tree_manager')</code></li>
+<li class="executed"><code>                tree_manager.init_from_model(cls)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>                # avoid using ManagerDescriptor, so instances can refer to self._tree_manager</code></li>
+<li class="executed"><code>                setattr(cls, '_tree_manager', tree_manager)</code></li>
+<li class="executed"><code>        return cls</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>class MPTTModel(six.with_metaclass(MPTTModelBase, models.Model)):</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code>    Base class for tree models.</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="executed"><code>    _default_manager = TreeManager()</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    class Meta:</code></li>
+<li class="executed"><code>        abstract = True</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def __init__(self, *args, **kwargs):</code></li>
+<li class="missed"><code>        super(MPTTModel, self).__init__(*args, **kwargs)</code></li>
+<li class="missed"><code>        self._mptt_meta.update_mptt_cached_fields(self)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def _mpttfield(self, fieldname):</code></li>
+<li class="missed"><code>        translated_fieldname = getattr(self._mptt_meta, fieldname + '_attr')</code></li>
+<li class="missed"><code>        return getattr(self, translated_fieldname)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    @_classproperty</code></li>
+<li class="ignored"><code>    def _mptt_updates_enabled(cls):</code></li>
+<li class="missed"><code>        if not cls._mptt_tracking_base:</code></li>
+<li class="missed"><code>            return True</code></li>
+<li class="missed"><code>        return getattr(cls._mptt_tracking_base._threadlocal, 'mptt_updates_enabled', True)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    # ideally this'd be part of the _mptt_updates_enabled classproperty, but it seems</code></li>
+<li class="ignored"><code>    # that settable classproperties are very, very hard to do! suggestions please :)</code></li>
+<li class="executed"><code>    @classmethod</code></li>
+<li class="ignored"><code>    def _set_mptt_updates_enabled(cls, value):</code></li>
+<li class="missed"><code>        assert cls is cls._mptt_tracking_base, "Can't enable or disable mptt updates on a non-tracking class."</code></li>
+<li class="missed"><code>        cls._threadlocal.mptt_updates_enabled = value</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    @_classproperty</code></li>
+<li class="ignored"><code>    def _mptt_is_tracking(cls):</code></li>
+<li class="missed"><code>        if not cls._mptt_tracking_base:</code></li>
+<li class="missed"><code>            return False</code></li>
+<li class="missed"><code>        if not hasattr(cls._threadlocal, 'mptt_delayed_tree_changes'):</code></li>
+<li class="ignored"><code>            # happens the first time this is called from each thread</code></li>
+<li class="missed"><code>            cls._threadlocal.mptt_delayed_tree_changes = None</code></li>
+<li class="missed"><code>        return cls._threadlocal.mptt_delayed_tree_changes is not None</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    @classmethod</code></li>
+<li class="ignored"><code>    def _mptt_start_tracking(cls):</code></li>
+<li class="missed"><code>        assert cls is cls._mptt_tracking_base, "Can't start or stop mptt tracking on a non-tracking class."</code></li>
+<li class="missed"><code>        assert not cls._mptt_is_tracking, "mptt tracking is already started."</code></li>
+<li class="missed"><code>        cls._threadlocal.mptt_delayed_tree_changes = set()</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    @classmethod</code></li>
+<li class="ignored"><code>    def _mptt_stop_tracking(cls):</code></li>
+<li class="missed"><code>        assert cls is cls._mptt_tracking_base, "Can't start or stop mptt tracking on a non-tracking class."</code></li>
+<li class="missed"><code>        assert cls._mptt_is_tracking, "mptt tracking isn't started."</code></li>
+<li class="missed"><code>        results = cls._threadlocal.mptt_delayed_tree_changes</code></li>
+<li class="missed"><code>        cls._threadlocal.mptt_delayed_tree_changes = None</code></li>
+<li class="missed"><code>        return results</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    @classmethod</code></li>
+<li class="ignored"><code>    def _mptt_track_tree_modified(cls, tree_id):</code></li>
+<li class="missed"><code>        if not cls._mptt_is_tracking:</code></li>
+<li class="missed"><code>            return</code></li>
+<li class="missed"><code>        cls._threadlocal.mptt_delayed_tree_changes.add(tree_id)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    @classmethod</code></li>
+<li class="ignored"><code>    def _mptt_track_tree_insertions(cls, tree_id, num_inserted):</code></li>
+<li class="missed"><code>        if not cls._mptt_is_tracking:</code></li>
+<li class="missed"><code>            return</code></li>
+<li class="missed"><code>        changes = cls._threadlocal.mptt_delayed_tree_changes</code></li>
+<li class="missed"><code>        if not num_inserted or not changes:</code></li>
+<li class="missed"><code>            return</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if num_inserted &lt; 0:</code></li>
+<li class="missed"><code>            deleted = range(tree_id + num_inserted, -num_inserted)</code></li>
+<li class="missed"><code>            changes.difference_update(deleted)</code></li>
+<li class="missed"><code>        new_changes = set([(t + num_inserted if t &gt;= tree_id else t) for t in changes])</code></li>
+<li class="missed"><code>        cls._threadlocal.mptt_delayed_tree_changes = new_changes</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def get_ancestors(self, ascending=False, include_self=False):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Creates a ``QuerySet`` containing the ancestors of this model</code></li>
+<li class="ignored"><code>        instance.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        This defaults to being in descending order (root ancestor first,</code></li>
+<li class="ignored"><code>        immediate parent last); passing ``True`` for the ``ascending``</code></li>
+<li class="ignored"><code>        argument will reverse the ordering (immediate parent first, root</code></li>
+<li class="ignored"><code>        ancestor last).</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        If ``include_self`` is ``True``, the ``QuerySet`` will also</code></li>
+<li class="ignored"><code>        include this model instance.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        if self.is_root_node():</code></li>
+<li class="missed"><code>            if not include_self:</code></li>
+<li class="missed"><code>                return self._tree_manager.none()</code></li>
+<li class="ignored"><code>            else:</code></li>
+<li class="ignored"><code>                # Filter on pk for efficiency.</code></li>
+<li class="missed"><code>                return self._tree_manager.filter(pk=self.pk)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        opts = self._mptt_meta</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        order_by = opts.left_attr</code></li>
+<li class="missed"><code>        if ascending:</code></li>
+<li class="missed"><code>            order_by = '-' + order_by</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        left = getattr(self, opts.left_attr)</code></li>
+<li class="missed"><code>        right = getattr(self, opts.right_attr)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if not include_self:</code></li>
+<li class="missed"><code>            left -= 1</code></li>
+<li class="missed"><code>            right += 1</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        qs = self._tree_manager._mptt_filter(</code></li>
+<li class="ignored"><code>            left__lte=left,</code></li>
+<li class="ignored"><code>            right__gte=right,</code></li>
+<li class="ignored"><code>            tree_id=self._mpttfield('tree_id'),</code></li>
+<li class="ignored"><code>        )</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        return qs.order_by(order_by)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def get_children(self):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Returns a ``QuerySet`` containing the immediate children of this</code></li>
+<li class="ignored"><code>        model instance, in tree order.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        The benefit of using this method over the reverse relation</code></li>
+<li class="ignored"><code>        provided by the ORM to the instance's children is that a</code></li>
+<li class="ignored"><code>        database query can be avoided in the case where the instance is</code></li>
+<li class="ignored"><code>        a leaf node (it has no children).</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        If called from a template where the tree has been walked by the</code></li>
+<li class="ignored"><code>        ``cache_tree_children`` filter, no database query is required.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        if hasattr(self, '_cached_children'):</code></li>
+<li class="missed"><code>            qs = self._tree_manager.filter(pk__in=[n.pk for n in self._cached_children])</code></li>
+<li class="missed"><code>            qs._result_cache = self._cached_children</code></li>
+<li class="missed"><code>            return qs</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            if self.is_leaf_node():</code></li>
+<li class="missed"><code>                return self._tree_manager.none()</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            return self._tree_manager._mptt_filter(parent=self)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def get_descendants(self, include_self=False):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Creates a ``QuerySet`` containing descendants of this model</code></li>
+<li class="ignored"><code>        instance, in tree order.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        If ``include_self`` is ``True``, the ``QuerySet`` will also</code></li>
+<li class="ignored"><code>        include this model instance.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        if self.is_leaf_node():</code></li>
+<li class="missed"><code>            if not include_self:</code></li>
+<li class="missed"><code>                return self._tree_manager.none()</code></li>
+<li class="ignored"><code>            else:</code></li>
+<li class="missed"><code>                return self._tree_manager.filter(pk=self.pk)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        opts = self._mptt_meta</code></li>
+<li class="missed"><code>        left = getattr(self, opts.left_attr)</code></li>
+<li class="missed"><code>        right = getattr(self, opts.right_attr)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if not include_self:</code></li>
+<li class="missed"><code>            left += 1</code></li>
+<li class="missed"><code>            right -= 1</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        return self._tree_manager._mptt_filter(</code></li>
+<li class="ignored"><code>            tree_id=self._mpttfield('tree_id'),</code></li>
+<li class="ignored"><code>            left__gte=left,</code></li>
+<li class="ignored"><code>            left__lte=right</code></li>
+<li class="ignored"><code>        )</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def get_descendant_count(self):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Returns the number of descendants this model instance has.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        if self._mpttfield('right') is None:</code></li>
+<li class="ignored"><code>            # node not saved yet</code></li>
+<li class="missed"><code>            return 0</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            return (self._mpttfield('right') - self._mpttfield('left') - 1) // 2</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def get_leafnodes(self, include_self=False):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Creates a ``QuerySet`` containing leafnodes of this model</code></li>
+<li class="ignored"><code>        instance, in tree order.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        If ``include_self`` is ``True``, the ``QuerySet`` will also</code></li>
+<li class="ignored"><code>        include this model instance (if it is a leaf node)</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        descendants = self.get_descendants(include_self=include_self)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        return self._tree_manager._mptt_filter(descendants,</code></li>
+<li class="ignored"><code>            left=(models.F(self._mptt_meta.right_attr) - 1)</code></li>
+<li class="ignored"><code>        )</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def get_next_sibling(self, *filter_args, **filter_kwargs):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Returns this model instance's next sibling in the tree, or</code></li>
+<li class="ignored"><code>        ``None`` if it doesn't have a next sibling.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        qs = self._tree_manager.filter(*filter_args, **filter_kwargs)</code></li>
+<li class="missed"><code>        if self.is_root_node():</code></li>
+<li class="missed"><code>            qs = self._tree_manager._mptt_filter(qs,</code></li>
+<li class="ignored"><code>                parent=None,</code></li>
+<li class="ignored"><code>                tree_id__gt=self._mpttfield('tree_id'),</code></li>
+<li class="ignored"><code>            )</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            qs = self._tree_manager._mptt_filter(qs,</code></li>
+<li class="ignored"><code>                parent__pk=getattr(self, self._mptt_meta.parent_attr + '_id'),</code></li>
+<li class="ignored"><code>                left__gt=self._mpttfield('right'),</code></li>
+<li class="ignored"><code>            )</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        siblings = qs[:1]</code></li>
+<li class="missed"><code>        return siblings and siblings[0] or None</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def get_previous_sibling(self, *filter_args, **filter_kwargs):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Returns this model instance's previous sibling in the tree, or</code></li>
+<li class="ignored"><code>        ``None`` if it doesn't have a previous sibling.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        opts = self._mptt_meta</code></li>
+<li class="missed"><code>        qs = self._tree_manager.filter(*filter_args, **filter_kwargs)</code></li>
+<li class="missed"><code>        if self.is_root_node():</code></li>
+<li class="missed"><code>            qs = self._tree_manager._mptt_filter(qs,</code></li>
+<li class="ignored"><code>                parent=None,</code></li>
+<li class="ignored"><code>                tree_id__lt=self._mpttfield('tree_id'),</code></li>
+<li class="ignored"><code>            )</code></li>
+<li class="missed"><code>            qs = qs.order_by('-' + opts.tree_id_attr)</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            qs = self._tree_manager._mptt_filter(qs,</code></li>
+<li class="ignored"><code>                parent__pk=getattr(self, opts.parent_attr + '_id'),</code></li>
+<li class="ignored"><code>                right__lt=self._mpttfield('left'),</code></li>
+<li class="ignored"><code>            )</code></li>
+<li class="missed"><code>            qs = qs.order_by('-' + opts.right_attr)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        siblings = qs[:1]</code></li>
+<li class="missed"><code>        return siblings and siblings[0] or None</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def get_root(self):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Returns the root node of this model instance's tree.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        if self.is_root_node() and type(self) == self._tree_manager.tree_model:</code></li>
+<li class="missed"><code>            return self</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        return self._tree_manager._mptt_filter(</code></li>
+<li class="ignored"><code>            tree_id=self._mpttfield('tree_id'),</code></li>
+<li class="ignored"><code>            parent=None,</code></li>
+<li class="ignored"><code>        ).get()</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def get_siblings(self, include_self=False):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Creates a ``QuerySet`` containing siblings of this model</code></li>
+<li class="ignored"><code>        instance. Root nodes are considered to be siblings of other root</code></li>
+<li class="ignored"><code>        nodes.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        If ``include_self`` is ``True``, the ``QuerySet`` will also</code></li>
+<li class="ignored"><code>        include this model instance.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        if self.is_root_node():</code></li>
+<li class="missed"><code>            queryset = self._tree_manager._mptt_filter(parent=None)</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            parent_id = getattr(self, self._mptt_meta.parent_attr + '_id')</code></li>
+<li class="missed"><code>            queryset = self._tree_manager._mptt_filter(parent__pk=parent_id)</code></li>
+<li class="missed"><code>        if not include_self:</code></li>
+<li class="missed"><code>            queryset = queryset.exclude(pk=self.pk)</code></li>
+<li class="missed"><code>        return queryset</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def get_level(self):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Returns the level of this node (distance from root)</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        return getattr(self, self._mptt_meta.level_attr)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def insert_at(self, target, position='first-child', save=False, allow_existing_pk=False):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Convenience method for calling ``TreeManager.insert_node`` with this</code></li>
+<li class="ignored"><code>        model instance.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        self._tree_manager.insert_node(self, target, position, save, allow_existing_pk=allow_existing_pk)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def is_child_node(self):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Returns ``True`` if this model instance is a child node, ``False``</code></li>
+<li class="ignored"><code>        otherwise.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        return not self.is_root_node()</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def is_leaf_node(self):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Returns ``True`` if this model instance is a leaf node (it has no</code></li>
+<li class="ignored"><code>        children), ``False`` otherwise.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        return not self.get_descendant_count()</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def is_root_node(self):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Returns ``True`` if this model instance is a root node,</code></li>
+<li class="ignored"><code>        ``False`` otherwise.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        return getattr(self, self._mptt_meta.parent_attr + '_id') is None</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def is_descendant_of(self, other, include_self=False):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Returns ``True`` if this model is a descendant of the given node,</code></li>
+<li class="ignored"><code>        ``False`` otherwise.</code></li>
+<li class="ignored"><code>        If include_self is True, also returns True if the two nodes are the same node.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        opts = self._mptt_meta</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if include_self and other.pk == self.pk:</code></li>
+<li class="missed"><code>            return True</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if getattr(self, opts.tree_id_attr) != getattr(other, opts.tree_id_attr):</code></li>
+<li class="missed"><code>            return False</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            left = getattr(self, opts.left_attr)</code></li>
+<li class="missed"><code>            right = getattr(self, opts.right_attr)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            return left &gt; getattr(other, opts.left_attr) and right &lt; getattr(other, opts.right_attr)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def is_ancestor_of(self, other, include_self=False):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Returns ``True`` if this model is an ancestor of the given node,</code></li>
+<li class="ignored"><code>        ``False`` otherwise.</code></li>
+<li class="ignored"><code>        If include_self is True, also returns True if the two nodes are the same node.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        if include_self and other.pk == self.pk:</code></li>
+<li class="missed"><code>            return True</code></li>
+<li class="missed"><code>        return other.is_descendant_of(self)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def move_to(self, target, position='first-child'):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Convenience method for calling ``TreeManager.move_node`` with this</code></li>
+<li class="ignored"><code>        model instance.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        NOTE: This is a low-level method; it does NOT respect ``MPTTMeta.order_insertion_by``.</code></li>
+<li class="ignored"><code>        In most cases you should just move the node yourself by setting node.parent.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        self._tree_manager.move_node(self, target, position)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def _is_saved(self, using=None):</code></li>
+<li class="missed"><code>        if not self.pk or self._mpttfield('tree_id') is None:</code></li>
+<li class="missed"><code>            return False</code></li>
+<li class="missed"><code>        opts = self._meta</code></li>
+<li class="missed"><code>        if opts.pk.rel is None:</code></li>
+<li class="missed"><code>            return True</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            if not hasattr(self, '_mptt_saved'):</code></li>
+<li class="missed"><code>                manager = self.__class__._base_manager</code></li>
+<li class="missed"><code>                manager = manager.using(using)</code></li>
+<li class="missed"><code>                self._mptt_saved = manager.filter(pk=self.pk).exists()</code></li>
+<li class="missed"><code>            return self._mptt_saved</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def save(self, *args, **kwargs):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        If this is a new node, sets tree fields up before it is inserted</code></li>
+<li class="ignored"><code>        into the database, making room in the tree structure as neccessary,</code></li>
+<li class="ignored"><code>        defaulting to making the new node the last child of its parent.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        It the node's left and right edge indicators already been set, we</code></li>
+<li class="ignored"><code>        take this as indication that the node has already been set up for</code></li>
+<li class="ignored"><code>        insertion, so its tree fields are left untouched.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        If this is an existing node and its parent has been changed,</code></li>
+<li class="ignored"><code>        performs reparenting in the tree structure, defaulting to making the</code></li>
+<li class="ignored"><code>        node the last child of its new parent.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        In either case, if the node's class has its ``order_insertion_by``</code></li>
+<li class="ignored"><code>        tree option set, the node will be inserted or moved to the</code></li>
+<li class="ignored"><code>        appropriate position to maintain ordering by the specified field.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        do_updates = self.__class__._mptt_updates_enabled</code></li>
+<li class="missed"><code>        track_updates = self.__class__._mptt_is_tracking</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        opts = self._mptt_meta</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if not (do_updates or track_updates):</code></li>
+<li class="ignored"><code>            # inside manager.disable_mptt_updates(), don't do any updates.</code></li>
+<li class="ignored"><code>            # unless we're also inside TreeManager.delay_mptt_updates()</code></li>
+<li class="missed"><code>            if self._mpttfield('left') is None:</code></li>
+<li class="ignored"><code>                # we need to set *some* values, though don't care too much what.</code></li>
+<li class="missed"><code>                parent = getattr(self, '_%s_cache' % opts.parent_attr, None)</code></li>
+<li class="ignored"><code>                # if we have a cached parent, have a stab at getting possibly-correct values.</code></li>
+<li class="ignored"><code>                # otherwise, meh.</code></li>
+<li class="missed"><code>                if parent:</code></li>
+<li class="missed"><code>                    left = parent._mpttfield('left') + 1</code></li>
+<li class="missed"><code>                    setattr(self, opts.left_attr, left)</code></li>
+<li class="missed"><code>                    setattr(self, opts.right_attr, left + 1)</code></li>
+<li class="missed"><code>                    setattr(self, opts.level_attr, parent._mpttfield('level') + 1)</code></li>
+<li class="missed"><code>                    setattr(self, opts.tree_id_attr, parent._mpttfield('tree_id'))</code></li>
+<li class="missed"><code>                    self._tree_manager._post_insert_update_cached_parent_right(parent, 2)</code></li>
+<li class="ignored"><code>                else:</code></li>
+<li class="missed"><code>                    setattr(self, opts.left_attr, 1)</code></li>
+<li class="missed"><code>                    setattr(self, opts.right_attr, 2)</code></li>
+<li class="missed"><code>                    setattr(self, opts.level_attr, 0)</code></li>
+<li class="missed"><code>                    setattr(self, opts.tree_id_attr, 0)</code></li>
+<li class="missed"><code>            return super(MPTTModel, self).save(*args, **kwargs)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        parent_id = opts.get_raw_field_value(self, opts.parent_attr)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        # determine whether this instance is already in the db</code></li>
+<li class="missed"><code>        force_update = kwargs.get('force_update', False)</code></li>
+<li class="missed"><code>        force_insert = kwargs.get('force_insert', False)</code></li>
+<li class="missed"><code>        collapse_old_tree = None</code></li>
+<li class="missed"><code>        if force_update or (not force_insert and self._is_saved(using=kwargs.get('using'))):</code></li>
+<li class="ignored"><code>            # it already exists, so do a move</code></li>
+<li class="missed"><code>            old_parent_id = self._mptt_cached_fields[opts.parent_attr]</code></li>
+<li class="missed"><code>            same_order = old_parent_id == parent_id</code></li>
+<li class="missed"><code>            if same_order and len(self._mptt_cached_fields) &gt; 1:</code></li>
+<li class="missed"><code>                get_raw_field_value = opts.get_raw_field_value</code></li>
+<li class="missed"><code>                for field_name, old_value in self._mptt_cached_fields.items():</code></li>
+<li class="missed"><code>                    if old_value != get_raw_field_value(self, field_name):</code></li>
+<li class="missed"><code>                        same_order = False</code></li>
+<li class="missed"><code>                        break</code></li>
+<li class="missed"><code>                if not do_updates and not same_order:</code></li>
+<li class="missed"><code>                    same_order = True</code></li>
+<li class="missed"><code>                    self.__class__._mptt_track_tree_modified(self._mpttfield('tree_id'))</code></li>
+<li class="missed"><code>            elif (not do_updates) and not same_order and old_parent_id is None:</code></li>
+<li class="ignored"><code>                # the old tree no longer exists, so we need to collapse it.</code></li>
+<li class="missed"><code>                collapse_old_tree = self._mpttfield('tree_id')</code></li>
+<li class="missed"><code>                parent = getattr(self, opts.parent_attr)</code></li>
+<li class="missed"><code>                tree_id = parent._mpttfield('tree_id')</code></li>
+<li class="missed"><code>                left = parent._mpttfield('left') + 1</code></li>
+<li class="missed"><code>                self.__class__._mptt_track_tree_modified(tree_id)</code></li>
+<li class="missed"><code>                setattr(self, opts.tree_id_attr, tree_id)</code></li>
+<li class="missed"><code>                setattr(self, opts.left_attr, left)</code></li>
+<li class="missed"><code>                setattr(self, opts.right_attr, left + 1)</code></li>
+<li class="missed"><code>                setattr(self, opts.level_attr, parent._mpttfield('level') + 1)</code></li>
+<li class="missed"><code>                same_order = True</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            if not same_order:</code></li>
+<li class="missed"><code>                opts.set_raw_field_value(self, opts.parent_attr, old_parent_id)</code></li>
+<li class="missed"><code>                try:</code></li>
+<li class="missed"><code>                    right_sibling = None</code></li>
+<li class="missed"><code>                    if opts.order_insertion_by:</code></li>
+<li class="missed"><code>                        right_sibling = opts.get_ordered_insertion_target(self, getattr(self, opts.parent_attr))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>                    if parent_id is not None:</code></li>
+<li class="missed"><code>                        parent = getattr(self, opts.parent_attr)</code></li>
+<li class="ignored"><code>                        # If we aren't already a descendant of the new parent, we need to update the parent.rght so</code></li>
+<li class="ignored"><code>                        # things like get_children and get_descendant_count work correctly.</code></li>
+<li class="missed"><code>                        update_cached_parent = (</code></li>
+<li class="ignored"><code>                            getattr(self, opts.tree_id_attr) != getattr(parent, opts.tree_id_attr) or</code></li>
+<li class="ignored"><code>                            getattr(self, opts.left_attr) &lt; getattr(parent, opts.left_attr) or</code></li>
+<li class="ignored"><code>                            getattr(self, opts.right_attr) &gt; getattr(parent, opts.right_attr))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>                    if right_sibling:</code></li>
+<li class="missed"><code>                        self._tree_manager._move_node(self, right_sibling, 'left', save=False)</code></li>
+<li class="ignored"><code>                    else:</code></li>
+<li class="ignored"><code>                        # Default movement</code></li>
+<li class="missed"><code>                        if parent_id is None:</code></li>
+<li class="missed"><code>                            root_nodes = self._tree_manager.root_nodes()</code></li>
+<li class="missed"><code>                            try:</code></li>
+<li class="missed"><code>                                rightmost_sibling = root_nodes.exclude(pk=self.pk).order_by('-' + opts.tree_id_attr)[0]</code></li>
+<li class="missed"><code>                                self._tree_manager._move_node(self, rightmost_sibling, 'right', save=False)</code></li>
+<li class="missed"><code>                            except IndexError:</code></li>
+<li class="missed"><code>                                pass</code></li>
+<li class="ignored"><code>                        else:</code></li>
+<li class="missed"><code>                            self._tree_manager._move_node(self, parent, 'last-child', save=False)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>                    if parent_id is not None and update_cached_parent:</code></li>
+<li class="ignored"><code>                        # Update rght of cached parent</code></li>
+<li class="missed"><code>                        right_shift = 2 * (self.get_descendant_count() + 1)</code></li>
+<li class="missed"><code>                        self._tree_manager._post_insert_update_cached_parent_right(parent, right_shift)</code></li>
+<li class="ignored"><code>                finally:</code></li>
+<li class="ignored"><code>                    # Make sure the new parent is always</code></li>
+<li class="ignored"><code>                    # restored on the way out in case of errors.</code></li>
+<li class="missed"><code>                    opts.set_raw_field_value(self, opts.parent_attr, parent_id)</code></li>
+<li class="ignored"><code>            else:</code></li>
+<li class="missed"><code>                opts.set_raw_field_value(self, opts.parent_attr, parent_id)</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="ignored"><code>            # new node, do an insert</code></li>
+<li class="missed"><code>            if (getattr(self, opts.left_attr) and getattr(self, opts.right_attr)):</code></li>
+<li class="ignored"><code>                # This node has already been set up for insertion.</code></li>
+<li class="missed"><code>                pass</code></li>
+<li class="ignored"><code>            else:</code></li>
+<li class="missed"><code>                parent = getattr(self, opts.parent_attr)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>                right_sibling = None</code></li>
+<li class="ignored"><code>                # if we're inside delay_mptt_updates, don't do queries to find sibling position.</code></li>
+<li class="ignored"><code>                # instead, do default insertion. correct positions will be found during partial rebuild later.</code></li>
+<li class="ignored"><code>                # *unless* this is a root node. (as update tracking doesn't handle re-ordering of trees.)</code></li>
+<li class="missed"><code>                if do_updates or parent is None:</code></li>
+<li class="missed"><code>                    if opts.order_insertion_by:</code></li>
+<li class="missed"><code>                        right_sibling = opts.get_ordered_insertion_target(self, parent)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>                if right_sibling:</code></li>
+<li class="missed"><code>                    self.insert_at(right_sibling, 'left', allow_existing_pk=True)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>                    if parent:</code></li>
+<li class="ignored"><code>                        # since we didn't insert into parent, we have to update parent.rght</code></li>
+<li class="ignored"><code>                        # here instead of in TreeManager.insert_node()</code></li>
+<li class="missed"><code>                        right_shift = 2 * (self.get_descendant_count() + 1)</code></li>
+<li class="missed"><code>                        self._tree_manager._post_insert_update_cached_parent_right(parent, right_shift)</code></li>
+<li class="ignored"><code>                else:</code></li>
+<li class="ignored"><code>                    # Default insertion</code></li>
+<li class="missed"><code>                    self.insert_at(parent, position='last-child', allow_existing_pk=True)</code></li>
+<li class="missed"><code>        try:</code></li>
+<li class="missed"><code>            super(MPTTModel, self).save(*args, **kwargs)</code></li>
+<li class="ignored"><code>        finally:</code></li>
+<li class="missed"><code>            if collapse_old_tree is not None:</code></li>
+<li class="missed"><code>                self._tree_manager._create_tree_space(collapse_old_tree, -1)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        self._mptt_saved = True</code></li>
+<li class="missed"><code>        opts.update_mptt_cached_fields(self)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def delete(self, *args, **kwargs):</code></li>
+<li class="ignored"><code>        """Calling ``delete`` on a node will delete it as well as its full subtree, as</code></li>
+<li class="ignored"><code>        opposed to reattaching all the subnodes to its parent node.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        There are no argument specific to a MPTT model, all the arguments will be passed</code></li>
+<li class="ignored"><code>        directly to the django's ``Model.delete``.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        ``delete`` will not return anything. """</code></li>
+<li class="missed"><code>        tree_width = (self._mpttfield('right') -</code></li>
+<li class="ignored"><code>                      self._mpttfield('left') + 1)</code></li>
+<li class="missed"><code>        target_right = self._mpttfield('right')</code></li>
+<li class="missed"><code>        tree_id = self._mpttfield('tree_id')</code></li>
+<li class="missed"><code>        self._tree_manager._close_gap(tree_width, target_right, tree_id)</code></li>
+<li class="missed"><code>        parent = getattr(self, '_%s_cache' % self._mptt_meta.parent_attr, None)</code></li>
+<li class="missed"><code>        if parent:</code></li>
+<li class="missed"><code>            right_shift = -self.get_descendant_count() - 2</code></li>
+<li class="missed"><code>            self._tree_manager._post_insert_update_cached_parent_right(parent, right_shift)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        super(MPTTModel, self).delete(*args, **kwargs)</code></li>
+  </ol>
+</div>
+
+<div class="nav">
+  <a href="mptt.managers.html">mptt.managers</a> &lt;&lt;
+  <a href="../index.html">index</a>
+  &gt;&gt; <a href="mptt.utils.html">mptt.utils</a>
+</div>
+
+  </body>
+</html>
+

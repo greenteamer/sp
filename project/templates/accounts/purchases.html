@@ -30,7 +30,7 @@
                 <div class="col-xs-6">
 
                     <ul>
-                        {% for purchase in purchases%}
+                        {% for purchase in profile.getOrganizerPurchases %}
                             <li><a href="/profile/organizer/purchase-{{ purchase.id }}">{{ purchase.name }}</a></li>
                         {% endfor %}
                     </ul>
