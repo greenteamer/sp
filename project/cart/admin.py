@@ -8,7 +8,6 @@ from import_export.admin import ImportExportModelAdmin, ImportExportMixin, Impor
 class CartItemResource(resources.ModelResource):
     class Meta:
         model = CartItem
-        to_encoding = 'utf-8'
 
 class CartItemAdmin(ImportExportActionModelAdmin):
     resource_class = CartItemResource

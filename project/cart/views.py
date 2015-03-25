@@ -37,5 +37,8 @@ def purchasesCartView(request, template_name):  # TODO: настроить эк�
         if postdata.has_key('export'):
             items = CartItem.objects.all()
             return ExcelResponse(items)
+        if postdata.has_key('import'):
+            items = CartItem.objects.all()
+            return ExcelResponse(items)
     return render_to_response(template_name, locals(),
                             context_instance=RequestContext(request))
