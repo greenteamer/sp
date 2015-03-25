@@ -1,0 +1,16 @@
+{% load i18n %}
+{% load mptt_tags %}
+
+{% if nodes %}
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-default">
+            <ul>
+                {% for node in nodes %}
+                    <li><a href="{{ node.url }}">{{ node }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% else %}
+    У вас нет ни одной категории. Создайте категории в административной панеле.
+{% endif %}
