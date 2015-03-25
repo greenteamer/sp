@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 # from project.accounts.profiles import getOrganizerPurchases
 from project.core.models import Purchase
+from django.core.exceptions import ObjectDoesNotExist
 
 
 
@@ -30,6 +31,10 @@ class OrganizerProfile(BaseUserInfo):
     icon = models.FileField(_(u'Image'), upload_to='accounts/images/',
                              help_text=u'Фото', blank=True)
 
+    organizer_checked = models.BooleanField(default=False)
+
+    def is_checked(self):
+        return self.organizer_checked==True
 
     def __unicode__(self):
         return _(u'Профиль: ') + self.user.username
@@ -47,13 +52,35 @@ class OrganizerProfile(BaseUserInfo):
             return None
 
 
-def getOrganizerProfile(user):
+class MemberProfile(BaseUserInfo):
+    """Профиль пользователя"""
+    user = models.OneToOneField(User, unique=True)
+    icon = models.FileField(_(u'Image'), upload_to='accounts/images/',
+                             help_text=u'Фото', blank=True)
+
+    member_checked = models.BooleanField(default=False)
+
+    def is_checked(self):
+        return self.member_checked==True
+
+    def __unicode__(self):
+        return _(u'Профиль: ') + self.user.username
+
+    class Meta:
+        verbose_name_plural = _(u'Профили участников')
+
+
+def getProfile(user):
     try:
-        return OrganizerProfile.objects.get(user=user)
-    except:
+        try:
+            return OrganizerProfile.objects.get(user=user)
+        except:
+            return MemberProfile.objects.get(user=user)
+    except ObjectDoesNotExist:
         return None
 
-def repopulateOrganizerProfile(profile, request):
+
+def repopulateProfile(profile, request):
     profile.firstName = request.POST['firstName']
     profile.lastName = request.POST['lastName']
     profile.email = request.POST['email']
