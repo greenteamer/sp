@@ -113,8 +113,9 @@ class purchaseForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(purchaseForm, self).__init__(*args, **kwargs)
-        self.fields['name'].widget.attrs = {'placeholder': 'Введите название закупки', 'class': 'form-control'}
-        self.fields['description'].widget.attrs = {'placeholder': 'Введите описание закупки', 'class': 'form-control'}
+        for field in self.fields:
+            self.fields[field].widget.attrs = {'placeholder': self.fields[field].label, 'class': 'form-control'}
+
     def save(self, user):
         obj = super(purchaseForm, self).save(commit=False)
         obj.organizerProfile = getProfile(user)
