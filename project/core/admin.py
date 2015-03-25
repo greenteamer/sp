@@ -3,6 +3,9 @@
 from django.contrib import admin
 from project.core.models import *
 from mptt_tree_editor.admin import TreeEditor
+from image_cropping import ImageCroppingMixin
+from import_export import resources
+from import_export.admin import ImportExportModelAdmin, ImportExportMixin, ImportExportActionModelAdmin
 
 class CategoryAdmin(TreeEditor):
     """
@@ -26,18 +29,25 @@ class PropertiesInline(admin.StackedInline):
     model = Properties
     extra = 1
 
-class ProductImagesInline(admin.StackedInline):
+class ProductImagesInline(ImageCroppingMixin, admin.StackedInline):
     model = ProductImages
     extra = 1
 
-class ProductAdmin(admin.ModelAdmin):
-    model = Product
+class ProductResource(resources.ModelResource):
+    class Meta:
+        model = Product
+
+class ProductAdmin(ImportExportActionModelAdmin):
+    resource_class = ProductResource
+    # model = Product
     # fieldsets = [
     #     (u'Основная информация', {'fields':['name','slug','body']}),
     #     (u'Специальная информация', {'fields': ['special_image','special_body']}),
     # ]
     inlines = [PropertiesInline, ProductImagesInline]
+    pass
     # prepopulated_fields = {'slug':('name',)}
+
 
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductImages)

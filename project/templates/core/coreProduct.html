@@ -2,10 +2,20 @@
 {% load thumbnail %}
 {% load cropping %}
 
+{% block message %}
+    {% if message %}
+        <div class="pad margin no-print">
+            <div class="callout callout-info" style="margin-bottom: 0!important;">
+                <h4><i class="fa fa-info"></i> Записочка</h4>
+                <p>{{ message }}</p>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
 
 {% block content %}
       <!-- Content Wrapper. Contains page content -->
-    <div id="core_catalog" class="content-wrapper">
+    <div id="core_product" class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <ol class="breadcrumb">
@@ -15,6 +25,15 @@
             </ol>
             <h1>Просмотр каталога "{{ catalog.catalog_name }}" закупки - {{ purchase.name }}</h1>
         </section>
+
+        {% if message %}
+            <div class="pad margin no-print">
+                <div class="callout callout-info" style="margin-bottom: 0!important;">
+                    <h4><i class="fa fa-info"></i> Записочка</h4>
+                    <p>{{ message }}</p>
+                </div>
+            </div>
+        {% endif %}
 
         {% if not profile %}
             <div class="pad margin no-print">
@@ -33,25 +52,20 @@
 
                 <div class="col-xs-6">
 
-                    <b>ID: </b>{{ catalog.id }}
+                    <b>ID: </b>{{ product.id }}
                     <br/>
-                    <b>Name: </b>{{ catalog.catalog_name }}
+                    <b>Name: </b>{{ product.product_name }}
                     <br/>
                     {#<a href="/profile/organizer/purchase-{{ purchase.id }}catalog-{{ catalog.id }}-edit">Изменить каталог</a>#}
                     <br/>
-                    <ul>
-                        {% for catalog_product_property in catalog_product_properties %}
-                            <li>{{ catalog_product_property.cpp_name }}: {{ catalog_product_property.cpp_values }}</li>
-                        {% endfor %}
-                    </ul>
-
                 </div><!-- /.col -->
                 <div class="col-xs-12">
                     <div class="row">
-                        {% for product in catalog.get_products %}
-                            <div class="col-xs-12 col-md-4 item">
-                                <img style="" src="{% cropped_thumbnail product.get_image "cropping" scale=1 %}">
-{#                                <img src="{{ product.image }}" alt=""/>#}
+                            <div class="col-xs-12 item">
+                                {% for image in images %}
+                                    <img style="" src="{% cropped_thumbnail image "cropping" scale=1 %}">
+                                {% endfor %}
+                                <br/>
                                 {{ product.product_name }}
                                 <br/>
                                 {{ product.description|truncatewords:15|safe }}
@@ -61,10 +75,20 @@
                                 {% if product.sku %}
                                     {{ product.sku }}
                                 {% endif %}
-                                <br/>
-                                <a class="btn btn-default" href="{{ product.url_core }}">Подробнее</a>
+
+                                {{ form.errors }}
+                                {{ form.non_field_errors }}
+
+                                <form action="." method="post">{% csrf_token %}
+                                    {{ form.as_p }}
+{#                                    <input class="form-control " id="id_cart_id" name="cart_id" type="text">#}
+{#                                    <input class="form-control " id="id_date_added" name="date_added" type="text">#}
+{#                                    <input class="form-control " id="id_product" name="product" type="text">#}
+{#                                    <input class="form-control " id="id_quantity" name="quantity" type="text">#}
+                                    <button type="submit" class="btn btn-primary">Купить</button>
+                                </form>
+
                             </div>
-                        {% endfor %}
                     </div>
                 </div>
             </div><!-- /.row -->

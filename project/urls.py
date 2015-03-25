@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     url(r'^forum/', include('pybb.urls', namespace='pybb')),
     url(r'^pristroy', include('project.pristroy.urls')),
     url(r'^', include('project.core.urls')),
+    url(r'^', include('project.cart.urls')),
     url(r'^profile/', include('project.accounts.urls')),
 )
 
