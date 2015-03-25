@@ -52,6 +52,17 @@
             </div>
         {% endif %}
 
+        {% if messages %}
+            <div class="pad margin no-print">
+                <div class="callout callout-info" style="margin-bottom: 0!important;">
+                    <h4><i class="fa fa-info"></i> Записочка:</h4>
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
 
 
         <!-- Main content -->

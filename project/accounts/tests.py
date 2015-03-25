@@ -207,8 +207,8 @@ class OrganizerTest(TestCase):
                 is_login = client.login(username=user.username, password="balabas")
                 response = client.get(reverse(url))
                 assert (response.status_code == 200 and is_login)
-                if urls.index(url)+1 == len(urls):
-                    print u"Accounts Urls проверены для пользователя %s" % user.username
+                # if urls.index(url)+1 == len(urls):
+                #     print u"Accounts Urls проверены для пользователя %s" % user.username
 
             """проверка что организатор может просматривать и добавлять закупки
             проверка что все кроме проверенных организаторов редиректятся """
@@ -257,6 +257,8 @@ class OrganizerTest(TestCase):
             response = self.client.post(reverse('loginView'), {'username': user.username, 'password': 'balabas'})
             assert (response.status_code==302)
 
+            print u"пользователь %s успешно проверен" % user.username
+
         print "все пользователи залогинились"
 
         client = Client()
@@ -267,10 +269,11 @@ class OrganizerTest(TestCase):
             # каждая страница должна вывести 302 редирект на регистрацию
             response = client.get(url)
             assert (response.status_code==302)
-        print u"Аноним Пользователь редиректится по ссылкам организатора успешно"
+        print u"Аноним Пользователь редиректится успешно"
 
         response = self.client.post(reverse('registrationView'), {'username': "testReg", 'email': 'aksdhf@sdfsd.ru', 'password1': 'balabas', 'terms': 'on'})
         assert (response.status_code==302)  #успешная регистрация
+        print u"Успешная регистрация нового пользователя"
 
 
 
