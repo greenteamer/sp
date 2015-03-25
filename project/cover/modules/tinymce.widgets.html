@@ -1,0 +1,310 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+    <title>Test coverage report: tinymce.widgets</title>
+    <style type="text/css" media="screen">
+      a
+      {
+        color: #3d707a;
+      }
+      
+      a:hover, a:active
+      {
+        color: #bf7d18;
+      }
+    
+      body 
+      {
+        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+        font-size: 13px;
+      }
+      
+      .nav 
+      {
+        font-size: 12px;
+        margin-left: 50px;
+      }
+
+      .ignored
+      {
+        color: #707070;
+      }
+
+      .executed 
+      {
+        color: #3d9900;
+      }
+
+      .missed 
+      {
+        color: red;
+        font-weight: bold;
+      }
+
+      .excluded 
+      {
+        color: #6090f0;
+        font-weight: lighter;
+      }
+    
+      #content-header 
+      {
+        font-size: 12px;
+        padding: 18px 0 18px 50px;
+      }
+
+      #content-header h1 
+      {
+        font-size: 16px;
+        margin: 10px 0 0 0;
+        color: #909090;
+      }
+      
+      #module-name
+      {
+        color: #583707;
+      }
+    
+      #content-header p
+      {
+        font-size: 13px;
+        margin: 0;
+        color: #909090;
+      }
+
+      #content-header .normal 
+      {
+        color: #609030;
+      }
+
+      #content-header .warning 
+      {
+        color: #d0a000;
+      }
+
+      #content-header .critical 
+      {
+        color: red;
+      }
+      
+      #source-listing 
+      {
+        margin-bottom: 24px;
+      }
+
+      #source-listing ol 
+      {
+        padding: 0 0 0 50px;
+        width: 90%;
+        font-family: monospace;
+        list-style-position: outside;
+      }
+
+      #source-listing ol li 
+      {
+        line-height: 18px;
+        font-size: small;
+      }
+        
+      #source-listing ol code 
+      {
+        padding:  0 .001em 0 0; /* Firefox doesn't render empty li's properly */
+        font-size: medium;
+        white-space: pre;
+      }
+   </style>
+  </head>
+
+  <body>
+
+<div class="nav">
+  <a href="tinymce.views.html">tinymce.views</a> &lt;&lt;
+  <a href="../index.html">index</a>
+</div>
+
+<div id="content-header">
+  <h1>
+    <span id="module-name">tinymce.widgets</span>:
+    105 total statements,
+    <span class="critical">14.6% covered</span>
+  </h1>
+  <p>Generated: Tue 2015-03-10 22:42 MSK</p>
+  <p>Source file: /Users/greenteamer/Desktop/Django/env/sp/lib/python2.7/site-packages/tinymce/widgets.py</p>
+  <p>
+    Stats:
+    <span class="executed">13 executed</span>,
+    <span class="missed">76 missed</span>,
+    <span class="excluded">16 excluded</span>,
+    <span class="ignored">50 ignored</span> 
+  </p> 
+</div>
+
+<div id="source-listing">
+  <ol>
+    <li class="ignored"><code># Copyright (c) 2008 Joost Cassee</code></li>
+<li class="ignored"><code># Licensed under the terms of the MIT License (see LICENSE.txt)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>"""</code></li>
+<li class="ignored"><code>This TinyMCE widget was copied and extended from this code by John D'Agostino:</code></li>
+<li class="ignored"><code>http://code.djangoproject.com/wiki/CustomWidgetsTinyMCE</code></li>
+<li class="ignored"><code>"""</code></li>
+<li class="excluded"><code>from __future__ import unicode_literals</code></li>
+<li class="ignored"><code></code></li>
+<li class="excluded"><code>import tinymce.settings</code></li>
+<li class="excluded"><code>from django import forms</code></li>
+<li class="excluded"><code>from django.conf import settings</code></li>
+<li class="excluded"><code>from django.contrib.admin import widgets as admin_widgets</code></li>
+<li class="excluded"><code>from django.core.urlresolvers import reverse</code></li>
+<li class="excluded"><code>from django.forms.widgets import flatatt</code></li>
+<li class="excluded"><code>from django.utils.html import escape</code></li>
+<li class="excluded"><code>from django.utils.datastructures import SortedDict</code></li>
+<li class="excluded"><code>from django.utils.safestring import mark_safe</code></li>
+<li class="excluded"><code>from django.utils.translation import get_language, ugettext as _</code></li>
+<li class="executed"><code>try:</code></li>
+<li class="excluded"><code>    import json</code></li>
+<li class="missed"><code>except ImportError:</code></li>
+<li class="excluded"><code>    from django.utils import simplejson as json</code></li>
+<li class="executed"><code>try:</code></li>
+<li class="excluded"><code>    from django.utils.encoding import smart_text as smart_unicode</code></li>
+<li class="missed"><code>except ImportError:</code></li>
+<li class="missed"><code>    try:</code></li>
+<li class="excluded"><code>        from django.utils.encoding import smart_unicode</code></li>
+<li class="missed"><code>    except ImportError:</code></li>
+<li class="excluded"><code>        from django.forms.util import smart_unicode</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>class TinyMCE(forms.Textarea):</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code>    TinyMCE widget. Set settings.TINYMCE_JS_URL to set the location of the</code></li>
+<li class="ignored"><code>    javascript file. Default is "MEDIA_URL + 'js/tiny_mce/tiny_mce.js'".</code></li>
+<li class="ignored"><code>    You can customize the configuration with the mce_attrs argument to the</code></li>
+<li class="ignored"><code>    constructor.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    In addition to the standard configuration you can set the</code></li>
+<li class="ignored"><code>    'content_language' parameter. It takes the value of the 'language'</code></li>
+<li class="ignored"><code>    parameter by default.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    In addition to the default settings from settings.TINYMCE_DEFAULT_CONFIG,</code></li>
+<li class="ignored"><code>    this widget sets the 'language', 'directionality' and</code></li>
+<li class="ignored"><code>    'spellchecker_languages' parameters by default. The first is derived from</code></li>
+<li class="ignored"><code>    the current Django language, the others from the 'content_language'</code></li>
+<li class="ignored"><code>    parameter.</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="executed"><code>    def __init__(self, content_language=None, attrs=None, mce_attrs=None):</code></li>
+<li class="missed"><code>        super(TinyMCE, self).__init__(attrs)</code></li>
+<li class="missed"><code>        mce_attrs = mce_attrs or {}</code></li>
+<li class="missed"><code>        self.mce_attrs = mce_attrs</code></li>
+<li class="missed"><code>        if not 'mode' in self.mce_attrs:</code></li>
+<li class="missed"><code>            self.mce_attrs['mode'] = 'exact'</code></li>
+<li class="missed"><code>        self.mce_attrs['strict_loading_mode'] = 1</code></li>
+<li class="missed"><code>        if content_language is None:</code></li>
+<li class="missed"><code>            content_language = mce_attrs.get('language', None)</code></li>
+<li class="missed"><code>        self.content_language = content_language</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def get_mce_config(self, attrs):</code></li>
+<li class="missed"><code>        mce_config = tinymce.settings.DEFAULT_CONFIG.copy()</code></li>
+<li class="missed"><code>        mce_config.update(get_language_config(self.content_language))</code></li>
+<li class="missed"><code>        if tinymce.settings.USE_FILEBROWSER:</code></li>
+<li class="missed"><code>            mce_config['file_browser_callback'] = "djangoFileBrowser"</code></li>
+<li class="missed"><code>        mce_config.update(self.mce_attrs)</code></li>
+<li class="missed"><code>        if mce_config['mode'] == 'exact':</code></li>
+<li class="missed"><code>            mce_config['elements'] = attrs['id']</code></li>
+<li class="missed"><code>        return mce_config</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def get_mce_json(self, mce_config):</code></li>
+<li class="ignored"><code>        # Fix for js functions</code></li>
+<li class="missed"><code>        js_functions = {}</code></li>
+<li class="missed"><code>        for k in ('paste_preprocess', 'paste_postprocess'):</code></li>
+<li class="missed"><code>            if k in mce_config:</code></li>
+<li class="missed"><code>               js_functions[k] = mce_config[k]</code></li>
+<li class="missed"><code>               del mce_config[k]</code></li>
+<li class="missed"><code>        mce_json = json.dumps(mce_config)</code></li>
+<li class="missed"><code>        for k in js_functions:</code></li>
+<li class="missed"><code>            index = mce_json.rfind('}')</code></li>
+<li class="missed"><code>            mce_json = mce_json[:index]+', '+k+':'+js_functions[k].strip()+mce_json[index:]</code></li>
+<li class="missed"><code>        return mce_json</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def render(self, name, value, attrs=None):</code></li>
+<li class="missed"><code>        if value is None:</code></li>
+<li class="missed"><code>            value = ''</code></li>
+<li class="missed"><code>        value = smart_unicode(value)</code></li>
+<li class="missed"><code>        final_attrs = self.build_attrs(attrs)</code></li>
+<li class="missed"><code>        final_attrs['name'] = name</code></li>
+<li class="missed"><code>        final_attrs['class'] = 'tinymce'</code></li>
+<li class="missed"><code>        assert 'id' in final_attrs, "TinyMCE widget attributes must contain 'id'"</code></li>
+<li class="missed"><code>        mce_config = self.get_mce_config(final_attrs)</code></li>
+<li class="missed"><code>        mce_json = self.get_mce_json(mce_config)</code></li>
+<li class="missed"><code>        if tinymce.settings.USE_COMPRESSOR:</code></li>
+<li class="missed"><code>            compressor_config = {</code></li>
+<li class="ignored"><code>                'plugins': mce_config.get('plugins', ''),</code></li>
+<li class="ignored"><code>                'themes': mce_config.get('theme', 'advanced'),</code></li>
+<li class="ignored"><code>                'languages': mce_config.get('language', ''),</code></li>
+<li class="ignored"><code>                'diskcache': True,</code></li>
+<li class="ignored"><code>                'debug': False,</code></li>
+<li class="ignored"><code>            }</code></li>
+<li class="missed"><code>            final_attrs['data-mce-gz-conf'] = json.dumps(compressor_config)</code></li>
+<li class="missed"><code>        final_attrs['data-mce-conf'] = mce_json</code></li>
+<li class="missed"><code>        html = ['&lt;textarea%s&gt;%s&lt;/textarea&gt;' % (flatatt(final_attrs), escape(value))]</code></li>
+<li class="missed"><code>        return mark_safe('\n'.join(html))</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    def _media(self):</code></li>
+<li class="missed"><code>        if tinymce.settings.USE_COMPRESSOR:</code></li>
+<li class="missed"><code>            js = [reverse('tinymce-compressor')]</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            js = [tinymce.settings.JS_URL]</code></li>
+<li class="missed"><code>        if tinymce.settings.USE_FILEBROWSER:</code></li>
+<li class="missed"><code>            js.append(reverse('tinymce-filebrowser'))</code></li>
+<li class="missed"><code>        js.append('django_tinymce/init_tinymce.js')</code></li>
+<li class="missed"><code>        return forms.Media(js=js)</code></li>
+<li class="executed"><code>    media = property(_media)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>class AdminTinyMCE(TinyMCE, admin_widgets.AdminTextareaWidget):</code></li>
+<li class="executed"><code>    pass</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>def get_language_config(content_language=None):</code></li>
+<li class="missed"><code>    language = get_language()[:2]</code></li>
+<li class="missed"><code>    if content_language:</code></li>
+<li class="missed"><code>        content_language = content_language[:2]</code></li>
+<li class="ignored"><code>    else:</code></li>
+<li class="missed"><code>        content_language = language</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    config = {}</code></li>
+<li class="missed"><code>    config['language'] = language</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    lang_names = SortedDict()</code></li>
+<li class="missed"><code>    for lang, name in settings.LANGUAGES:</code></li>
+<li class="missed"><code>        if lang[:2] not in lang_names: lang_names[lang[:2]] = []</code></li>
+<li class="missed"><code>        lang_names[lang[:2]].append(_(name))</code></li>
+<li class="missed"><code>    sp_langs = []</code></li>
+<li class="missed"><code>    for lang, names in lang_names.items():</code></li>
+<li class="missed"><code>        if lang == content_language:</code></li>
+<li class="missed"><code>            default = '+'</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            default = ''</code></li>
+<li class="missed"><code>        sp_langs.append('%s%s=%s' % (default, ' / '.join(names), lang))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    config['spellchecker_languages'] = ','.join(sp_langs)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    if content_language in settings.LANGUAGES_BIDI:</code></li>
+<li class="missed"><code>        config['directionality'] = 'rtl'</code></li>
+<li class="ignored"><code>    else:</code></li>
+<li class="missed"><code>        config['directionality'] = 'ltr'</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    if tinymce.settings.USE_SPELLCHECKER:</code></li>
+<li class="missed"><code>        config['spellchecker_rpc_url'] = reverse('tinymce.views.spell_check')</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    return config</code></li>
+  </ol>
+</div>
+
+<div class="nav">
+  <a href="tinymce.views.html">tinymce.views</a> &lt;&lt;
+  <a href="../index.html">index</a>
+</div>
+
+  </body>
+</html>
+

@@ -1,0 +1,675 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+    <title>Test coverage report: project.accounts.views</title>
+    <style type="text/css" media="screen">
+      a
+      {
+        color: #3d707a;
+      }
+      
+      a:hover, a:active
+      {
+        color: #bf7d18;
+      }
+    
+      body 
+      {
+        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+        font-size: 13px;
+      }
+      
+      .nav 
+      {
+        font-size: 12px;
+        margin-left: 50px;
+      }
+
+      .ignored
+      {
+        color: #707070;
+      }
+
+      .executed 
+      {
+        color: #3d9900;
+      }
+
+      .missed 
+      {
+        color: red;
+        font-weight: bold;
+      }
+
+      .excluded 
+      {
+        color: #6090f0;
+        font-weight: lighter;
+      }
+    
+      #content-header 
+      {
+        font-size: 12px;
+        padding: 18px 0 18px 50px;
+      }
+
+      #content-header h1 
+      {
+        font-size: 16px;
+        margin: 10px 0 0 0;
+        color: #909090;
+      }
+      
+      #module-name
+      {
+        color: #583707;
+      }
+    
+      #content-header p
+      {
+        font-size: 13px;
+        margin: 0;
+        color: #909090;
+      }
+
+      #content-header .normal 
+      {
+        color: #609030;
+      }
+
+      #content-header .warning 
+      {
+        color: #d0a000;
+      }
+
+      #content-header .critical 
+      {
+        color: red;
+      }
+      
+      #source-listing 
+      {
+        margin-bottom: 24px;
+      }
+
+      #source-listing ol 
+      {
+        padding: 0 0 0 50px;
+        width: 90%;
+        font-family: monospace;
+        list-style-position: outside;
+      }
+
+      #source-listing ol li 
+      {
+        line-height: 18px;
+        font-size: small;
+      }
+        
+      #source-listing ol code 
+      {
+        padding:  0 .001em 0 0; /* Firefox doesn't render empty li's properly */
+        font-size: medium;
+        white-space: pre;
+      }
+   </style>
+  </head>
+
+  <body>
+
+<div class="nav">
+  <a href="project.accounts.urls_organizer.html">project.accounts.urls_organizer</a> &lt;&lt;
+  <a href="../index.html">index</a>
+  &gt;&gt; <a href="project.core.admin.html">project.core.admin</a>
+</div>
+
+<div id="content-header">
+  <h1>
+    <span id="module-name">project.accounts.views</span>:
+    311 total statements,
+    <span class="critical">15.6% covered</span>
+  </h1>
+  <p>Generated: Tue 2015-03-10 22:42 MSK</p>
+  <p>Source file: /Users/greenteamer/Desktop/Django/applications/sp/project/accounts/views.py</p>
+  <p>
+    Stats:
+    <span class="executed">46 executed</span>,
+    <span class="missed">249 missed</span>,
+    <span class="excluded">16 excluded</span>,
+    <span class="ignored">207 ignored</span> 
+  </p> 
+</div>
+
+<div id="source-listing">
+  <ol>
+    <li class="ignored"><code># -*- coding: utf-8 -*-</code></li>
+<li class="ignored"><code>#!/usr/bin/env python</code></li>
+<li class="excluded"><code>from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, purchaseForm, catalogForm, \</code></li>
+<li class="ignored"><code>                                    catalogProductPropertiesForm, ProductForm, propertyForm, MemberProfileForm</code></li>
+<li class="excluded"><code>from project.core.models import Purchase, Catalog, Product, CatalogProductProperties, Properties, ProductImages</code></li>
+<li class="excluded"><code>from django.shortcuts import render, render_to_response</code></li>
+<li class="excluded"><code>from project.accounts.profiles import retrieve</code></li>
+<li class="excluded"><code>from project.accounts.models import OrganizerProfile, getProfile, repopulateProfile</code></li>
+<li class="excluded"><code>from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, purchaseForm, UserLoginForm, ProductImagesForm</code></li>
+<li class="excluded"><code>from django.contrib import auth</code></li>
+<li class="excluded"><code>from django.contrib.auth import login, authenticate</code></li>
+<li class="excluded"><code>from django.template import RequestContext</code></li>
+<li class="excluded"><code>from django.core import urlresolvers</code></li>
+<li class="excluded"><code>from django.http import HttpResponseRedirect</code></li>
+<li class="excluded"><code>from project.settings import ADMIN_EMAIL</code></li>
+<li class="excluded"><code>from django.core.mail import send_mail, EmailMultiAlternatives</code></li>
+<li class="excluded"><code>from django.core.exceptions import ObjectDoesNotExist</code></li>
+<li class="excluded"><code>from django.http.response import Http404, HttpResponse</code></li>
+<li class="excluded"><code>from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>def profileView(request, template_name):</code></li>
+<li class="executed"><code>    user = request.user</code></li>
+<li class="executed"><code>    if user.is_authenticated():</code></li>
+<li class="ignored"><code>        """проверка есть ли профиль у пользователя и получение его файл accounts.models"""</code></li>
+<li class="executed"><code>        profile = getProfile(user)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    else:</code></li>
+<li class="executed"><code>        return HttpResponseRedirect(urlresolvers.reverse('registrationView'))</code></li>
+<li class="executed"><code>    return render_to_response(template_name, locals(),</code></li>
+<li class="ignored"><code>                              context_instance=RequestContext(request))</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>def populateProfileView(request, template_name):</code></li>
+<li class="executed"><code>    user = request.user</code></li>
+<li class="executed"><code>    form = OrganizerProfileForm()</code></li>
+<li class="executed"><code>    if user.is_authenticated():</code></li>
+<li class="ignored"><code>        """проверка есть ли профиль у пользователя и получение его файл accounts.models"""</code></li>
+<li class="missed"><code>        profile = getProfile(user)</code></li>
+<li class="missed"><code>        form = OrganizerProfileForm(instance=profile)</code></li>
+<li class="missed"><code>        if request.method == "POST":</code></li>
+<li class="missed"><code>            postdata = request.POST.copy()</code></li>
+<li class="missed"><code>            terms = postdata.get('terms', '')</code></li>
+<li class="missed"><code>            is_organizer = postdata.get('is_organizer', '')</code></li>
+<li class="missed"><code>            form = OrganizerProfileForm(request.POST, request.FILES)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            if form.is_valid() and getProfile(user): #если профиль уже существует то только обновляем (не возвращает None)</code></li>
+<li class="ignored"><code>                # current_profile = getProfile(user)</code></li>
+<li class="missed"><code>                profile = repopulateProfile(profile, request)</code></li>
+<li class="missed"><code>                profile.save()</code></li>
+<li class="missed"><code>                return HttpResponseRedirect(urlresolvers.reverse('populateProfileView'))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            elif form.is_valid() and terms == 'on' and is_organizer == 'on':</code></li>
+<li class="missed"><code>                form.save(request.user)</code></li>
+<li class="missed"><code>                return HttpResponseRedirect(urlresolvers.reverse('populateProfileView'))</code></li>
+<li class="missed"><code>            elif form.is_valid() and terms == 'on' and is_organizer == '':</code></li>
+<li class="missed"><code>                form = MemberProfileForm(request.POST, request.FILES)</code></li>
+<li class="missed"><code>                form.save(request.user)</code></li>
+<li class="missed"><code>                return HttpResponseRedirect(urlresolvers.reverse('populateProfileView'))</code></li>
+<li class="ignored"><code>            else: #должна быть обработка ошибок</code></li>
+<li class="missed"><code>                form = UserRegistrationForm(request.POST, request.FILES)</code></li>
+<li class="missed"><code>                return render(request, 'accounts/populate_profile.html', {</code></li>
+<li class="ignored"><code>                    'form': form,</code></li>
+<li class="ignored"><code>                    'error': form.errors,</code></li>
+<li class="ignored"><code>                })</code></li>
+<li class="ignored"><code>    else:</code></li>
+<li class="executed"><code>        return HttpResponseRedirect(urlresolvers.reverse('registrationView'))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    return render_to_response(template_name, locals(),</code></li>
+<li class="ignored"><code>                              context_instance=RequestContext(request))</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>#регистрация пользователя</code></li>
+<li class="executed"><code>def registrationView(request, template_name):</code></li>
+<li class="executed"><code>    if request.method == 'POST':</code></li>
+<li class="missed"><code>        postdata = request.POST.copy()</code></li>
+<li class="missed"><code>        form = UserRegistrationForm(postdata)</code></li>
+<li class="missed"><code>        terms = postdata.get('terms', '')</code></li>
+<li class="missed"><code>        if form.is_valid() and terms == 'on':</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            form.save()</code></li>
+<li class="missed"><code>            un = postdata.get('username', '')</code></li>
+<li class="ignored"><code>            # name="password1" т.к. два поля с подтверждением</code></li>
+<li class="missed"><code>            pw = postdata.get('password1', '')</code></li>
+<li class="missed"><code>            new_user = auth.authenticate(username=un, password=pw)</code></li>
+<li class="missed"><code>            if new_user and new_user.is_active:</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>                # отправляем e-mail о регистрации нового пользователя</code></li>
+<li class="missed"><code>                subject = u'sp.ru регистрация %s' % new_user.username</code></li>
+<li class="missed"><code>                message = u' Зарегистрирован новый пользователь %s / пароль: %s' % (new_user.username, pw)</code></li>
+<li class="missed"><code>                send_mail(subject, message, 'teamer777@gmail.com', [ADMIN_EMAIL], fail_silently=False)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>                auth.login(request, new_user)</code></li>
+<li class="ignored"><code>                # Редирект на url с именем my_account</code></li>
+<li class="missed"><code>                url = urlresolvers.reverse('profileView')</code></li>
+<li class="missed"><code>                return HttpResponseRedirect(url)</code></li>
+<li class="missed"><code>        elif terms == '':</code></li>
+<li class="missed"><code>            form = UserRegistrationForm(postdata)</code></li>
+<li class="missed"><code>            terms_error = 'пожалуйста подтвердите условия пользования сайтом'</code></li>
+<li class="missed"><code>            return render(request, 'accounts/registration.html', {</code></li>
+<li class="ignored"><code>                'terms_error': terms_error,</code></li>
+<li class="ignored"><code>                'form': form,</code></li>
+<li class="ignored"><code>            })</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            form = UserRegistrationForm(postdata)</code></li>
+<li class="missed"><code>            return render(request, 'accounts/registration.html', {</code></li>
+<li class="ignored"><code>                'form': form,</code></li>
+<li class="ignored"><code>                'error': form.errors,</code></li>
+<li class="ignored"><code>            })</code></li>
+<li class="ignored"><code>    else:</code></li>
+<li class="executed"><code>        form = UserRegistrationForm()</code></li>
+<li class="executed"><code>    return render_to_response(template_name, locals(),</code></li>
+<li class="ignored"><code>                              context_instance=RequestContext(request))</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>#страница входа для зарегистрированного пользователя</code></li>
+<li class="executed"><code>def loginView(request, template_name):</code></li>
+<li class="executed"><code>    form = UserLoginForm()</code></li>
+<li class="executed"><code>    if request.method == 'POST':</code></li>
+<li class="executed"><code>        postdata = request.POST.copy()</code></li>
+<li class="executed"><code>        form = UserLoginForm(postdata)</code></li>
+<li class="executed"><code>        username = request.POST['username']</code></li>
+<li class="executed"><code>        password = request.POST['password']</code></li>
+<li class="executed"><code>        user = auth.authenticate(username=username, password=password)</code></li>
+<li class="executed"><code>        if user is not None and user.is_active:</code></li>
+<li class="ignored"><code>        # Правильный пароль и пользователь "активен"</code></li>
+<li class="missed"><code>            auth.login(request, user)</code></li>
+<li class="ignored"><code>        # Перенаправление на "правильную" страницу</code></li>
+<li class="missed"><code>            return HttpResponseRedirect("/profile/")</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="executed"><code>            form = UserLoginForm(postdata)</code></li>
+<li class="executed"><code>            error = 'Логин или пароль введены не верно'</code></li>
+<li class="executed"><code>            return render(request, 'accounts/login.html', {</code></li>
+<li class="ignored"><code>                'form': form,</code></li>
+<li class="ignored"><code>                'error': error,</code></li>
+<li class="ignored"><code>            })</code></li>
+<li class="missed"><code>    return render_to_response(template_name, locals(),</code></li>
+<li class="ignored"><code>                              context_instance=RequestContext(request))</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>def logoutView(request, template_name):</code></li>
+<li class="missed"><code>    user = request.user</code></li>
+<li class="missed"><code>    profile = getProfile(user)</code></li>
+<li class="missed"><code>    if user.is_authenticated:</code></li>
+<li class="missed"><code>        auth.logout(request)</code></li>
+<li class="missed"><code>    if request.method == 'POST':</code></li>
+<li class="missed"><code>        username = request.POST["username"]</code></li>
+<li class="missed"><code>        password = request.POST["password"]</code></li>
+<li class="missed"><code>        user = auth.authenticate(username=username, password=password)</code></li>
+<li class="missed"><code>        if user is not None and user.is_active:</code></li>
+<li class="ignored"><code>        # Правильный пароль и пользователь "активен"</code></li>
+<li class="missed"><code>            auth.login(request, user)</code></li>
+<li class="ignored"><code>        # Перенаправление на "правильную" страницу</code></li>
+<li class="missed"><code>            return HttpResponseRedirect("/profile/")</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            HttpResponseRedirect(urlresolvers.reverse('loginView'))</code></li>
+<li class="missed"><code>    return render_to_response(template_name, locals(),</code></li>
+<li class="ignored"><code>                              context_instance=RequestContext(request))</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># __ Закупки __</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># Просмотр всех закупок</code></li>
+<li class="executed"><code>def purchases(request, template_name):</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    user = request.user</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    """ проверяем пользователя и его профайл организатора"""</code></li>
+<li class="missed"><code>    if user.is_authenticated():</code></li>
+<li class="missed"><code>        profile = getProfile(user)</code></li>
+<li class="ignored"><code>    else:</code></li>
+<li class="missed"><code>        return HttpResponseRedirect(urlresolvers.reverse('registrationView'))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    purchases = Purchase.objects.filter(organizerProfile=profile)</code></li>
+<li class="missed"><code>    return render_to_response(template_name, locals(),</code></li>
+<li class="ignored"><code>                              context_instance=RequestContext(request))</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># Добавление закупки</code></li>
+<li class="executed"><code>def purchaseAdd(request, template_name):</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    user = request.user</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    """ проверяем пользователя и его профайл организатора"""</code></li>
+<li class="executed"><code>    if user.is_authenticated():</code></li>
+<li class="executed"><code>        profile = getProfile(user)</code></li>
+<li class="ignored"><code>    else:</code></li>
+<li class="executed"><code>        return HttpResponseRedirect(urlresolvers.reverse('registrationView'))</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    message = ''</code></li>
+<li class="executed"><code>    if request.POST:</code></li>
+<li class="missed"><code>        form = purchaseForm(request.POST)</code></li>
+<li class="missed"><code>        if form.is_valid():</code></li>
+<li class="missed"><code>            form.save(user)</code></li>
+<li class="missed"><code>            message = u"Новая закупка «%s» успешно добавлена" % request.POST['name']</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            message = u"Ошибка при добавлении закупки"</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    purchase_form = purchaseForm()</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    return render_to_response(template_name, locals(),</code></li>
+<li class="ignored"><code>                              context_instance=RequestContext(request))</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># Просмотр или редактирование одной конкретной закупки (по id)</code></li>
+<li class="executed"><code>def purchase(request, purchase_id, template_name, edit=False):</code></li>
+<li class="missed"><code>    user = request.user</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    """ проверяем пользователя и его профайл организатора"""</code></li>
+<li class="missed"><code>    if user.is_authenticated():</code></li>
+<li class="missed"><code>        profile = getProfile(user)</code></li>
+<li class="ignored"><code>    else:</code></li>
+<li class="missed"><code>        return HttpResponseRedirect(urlresolvers.reverse('registrationView'))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    message = ''</code></li>
+<li class="missed"><code>    if edit == True:  # если передан парамерт edit равный True, то редактируем закупку</code></li>
+<li class="missed"><code>        try:</code></li>
+<li class="missed"><code>            purchase = Purchase.objects.get(id=purchase_id)  # получаем экземпляр Закупки по id</code></li>
+<li class="missed"><code>            if request.POST:</code></li>
+<li class="missed"><code>                form = purchaseForm(request.POST)</code></li>
+<li class="missed"><code>                if form.is_valid():</code></li>
+<li class="missed"><code>                    purchase.name = request.POST['name']</code></li>
+<li class="missed"><code>                    purchase.save()</code></li>
+<li class="missed"><code>                    message = u"Закупка «%s» успешно изменена" % request.POST['name']</code></li>
+<li class="ignored"><code>                else:</code></li>
+<li class="missed"><code>                    message = u"Ошибка при изменении закупки"</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            purchase_form = purchaseForm(instance=purchase) # заполненная форма текущей закупки</code></li>
+<li class="missed"><code>            return render_to_response(template_name, locals(),</code></li>
+<li class="ignored"><code>                                  context_instance=RequestContext(request))</code></li>
+<li class="missed"><code>        except ObjectDoesNotExist:</code></li>
+<li class="missed"><code>            raise Http404</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    else:</code></li>
+<li class="missed"><code>        try:</code></li>
+<li class="missed"><code>            purchase = Purchase.objects.get(id=purchase_id)  # получаем экземпляр Закупки по id</code></li>
+<li class="missed"><code>        except ObjectDoesNotExist:</code></li>
+<li class="missed"><code>            raise Http404</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        return render_to_response(template_name, locals(),</code></li>
+<li class="ignored"><code>                                  context_instance=RequestContext(request))</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># __ // Закупки __</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># __ Каталоги __</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># Просмотр всех каталогов для текущей закупки</code></li>
+<li class="executed"><code>def catalogs(request, purchase_id, template_name):</code></li>
+<li class="missed"><code>    try:</code></li>
+<li class="missed"><code>        user = request.user</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        """ проверяем пользователя и его профайл организатора"""</code></li>
+<li class="missed"><code>        if user.is_authenticated():</code></li>
+<li class="missed"><code>            profile = getProfile(user)</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            return HttpResponseRedirect(urlresolvers.reverse('registrationView'))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        purchase = Purchase.objects.get(id=purchase_id)</code></li>
+<li class="missed"><code>        catalogs = Catalog.objects.filter(catalog_purchase=purchase_id)</code></li>
+<li class="ignored"><code>        # catalogs = Catalog.objects.all()</code></li>
+<li class="missed"><code>        return render_to_response(template_name, locals(),</code></li>
+<li class="ignored"><code>                                  context_instance=RequestContext(request))</code></li>
+<li class="missed"><code>    except ObjectDoesNotExist:</code></li>
+<li class="missed"><code>            raise Http404</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># Добавление каталога</code></li>
+<li class="executed"><code>def catalogAdd(request, purchase_id, template_name):</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    user = request.user</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    """ проверяем пользователя и его профайл организатора"""</code></li>
+<li class="missed"><code>    if user.is_authenticated():</code></li>
+<li class="missed"><code>        profile = getProfile(user)</code></li>
+<li class="ignored"><code>    else:</code></li>
+<li class="missed"><code>        return HttpResponseRedirect(urlresolvers.reverse('registrationView'))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    message = ''</code></li>
+<li class="missed"><code>    if request.POST:</code></li>
+<li class="missed"><code>        catalog_form = catalogForm(request.POST)</code></li>
+<li class="ignored"><code>        # catalogProductProperties_form = catalogProductPropertiesForm(request.POST)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if catalog_form.is_valid():</code></li>
+<li class="missed"><code>            new_catalog = catalog_form.save(purchase_id)  # каталог сохраняется для нужной закупки - переопределена ф-я save, возвращает созданный объект каталога</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            cpp_names = request.POST.getlist('cpp_name')</code></li>
+<li class="missed"><code>            cpp_values = request.POST.getlist('cpp_values')</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            cpp_purchase = Purchase.objects.get(id=purchase_id)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            for cpp_name in cpp_names:</code></li>
+<li class="missed"><code>                if cpp_name != '' and cpp_name != None:</code></li>
+<li class="missed"><code>                    new_catalogProductProperties = CatalogProductProperties()</code></li>
+<li class="missed"><code>                    new_catalogProductProperties.cpp_name = cpp_name</code></li>
+<li class="missed"><code>                    new_catalogProductProperties.cpp_values = cpp_values[cpp_names.index(cpp_name)]</code></li>
+<li class="missed"><code>                    new_catalogProductProperties.cpp_catalog = new_catalog</code></li>
+<li class="missed"><code>                    new_catalogProductProperties.cpp_purchase = cpp_purchase</code></li>
+<li class="missed"><code>                    new_catalogProductProperties.save()</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            message = u"Новый каталог «%s» успешно добавлен. &lt;br/&gt; Добавить еще: " % request.POST['catalog_name']</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            message = u"Ошибка при добавлении каталога"</code></li>
+<li class="ignored"><code>        #</code></li>
+<li class="ignored"><code>        # if catalog_form.is_valid() and catalogProductProperties_form.is_valid():</code></li>
+<li class="ignored"><code>        #     new_catalogProductProperties = catalogProductProperties_form.save(commit=False)</code></li>
+<li class="ignored"><code>        #     new_catalogProductProperties.cpp_catalog = catalog_form.save(purchase_id)  # каталог сохраняется для нужной закупки - переопределена ф-я save, возвращает созданный объект каталога</code></li>
+<li class="ignored"><code>        #     new_catalogProductProperties.cpp_purchase = Purchase.objects.get(id=purchase_id)</code></li>
+<li class="ignored"><code>        #     new_catalogProductProperties.save()</code></li>
+<li class="ignored"><code>        #     message = u"Новый каталог «%s» успешно добавлен. &lt;br/&gt; Добавить еще: " % request.POST['catalog_name']</code></li>
+<li class="ignored"><code>        # else:</code></li>
+<li class="ignored"><code>        #     message = u"Ошибка при добавлении каталога"</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    catalog_form = catalogForm()</code></li>
+<li class="missed"><code>    catalogProductProperties_form = catalogProductPropertiesForm()</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    return render_to_response(template_name, locals(),</code></li>
+<li class="ignored"><code>                              context_instance=RequestContext(request))</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># страница для ajax запроса получения полей ввода свойств,при добавлении каталога</code></li>
+<li class="executed"><code>def getNewCatalogProductPropertiesFormBlock(request, template_name):</code></li>
+<li class="ignored"><code>    # content = '&lt;label&gt;Свойство товара в каталоге:&lt;/label&gt; \</code></li>
+<li class="ignored"><code>    #     &lt;input class="form-control" name="cpp_name" placeholder="Введите свойство для товаров в этом каталоге" type="text"&gt; \</code></li>
+<li class="ignored"><code>	 #    &lt;label&gt;Возможные значения:&lt;/label&gt; \</code></li>
+<li class="ignored"><code>	 #    &lt;input class="form-control" name="cpp_values" placeholder="Введите возможные значения для свойства через символ &amp;quot;;&amp;quot;" type="text"&gt; \</code></li>
+<li class="ignored"><code>    #     &lt;hr/&gt;'</code></li>
+<li class="missed"><code>    catalogProductProperties_form = catalogProductPropertiesForm()</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    #</code></li>
+<li class="missed"><code>    return HttpResponse()</code></li>
+<li class="missed"><code>    return render_to_response(template_name, locals(),</code></li>
+<li class="ignored"><code>                              context_instance=RequestContext(request))</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># Просмотр каталога</code></li>
+<li class="executed"><code>def catalog(request, purchase_id, catalog_id, template_name):</code></li>
+<li class="missed"><code>    try:</code></li>
+<li class="missed"><code>        purchase = Purchase.objects.get(id=purchase_id)</code></li>
+<li class="missed"><code>        catalog = Catalog.objects.get(id=catalog_id)</code></li>
+<li class="missed"><code>        catalog_product_properties = CatalogProductProperties.objects.filter(cpp_catalog=catalog_id)</code></li>
+<li class="ignored"><code>        # catalogs = Catalog.objects.all()</code></li>
+<li class="missed"><code>        return render_to_response(template_name, locals(),</code></li>
+<li class="ignored"><code>                                  context_instance=RequestContext(request))</code></li>
+<li class="missed"><code>    except ObjectDoesNotExist:</code></li>
+<li class="missed"><code>            raise Http404</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># __ // Каталоги __</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># __ Товары __</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># Просмотр всех товаров для текущего каталога</code></li>
+<li class="executed"><code>def products(request, purchase_id, catalog_id, template_name):</code></li>
+<li class="missed"><code>    try:</code></li>
+<li class="missed"><code>        user = request.user</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        """ проверяем пользователя и его профайл организатора"""</code></li>
+<li class="missed"><code>        if user.is_authenticated():</code></li>
+<li class="missed"><code>            profile = getProfile(user)</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            return HttpResponseRedirect(urlresolvers.reverse('registrationView'))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        purchase = Purchase.objects.get(id=purchase_id)</code></li>
+<li class="missed"><code>        catalog = Catalog.objects.get(id=catalog_id)</code></li>
+<li class="missed"><code>        products = Product.objects.filter(catalog=catalog_id)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        for product in products:</code></li>
+<li class="missed"><code>            try:</code></li>
+<li class="missed"><code>                product.product_image = ProductImages.objects.get(p_image_product_id=product.id).image</code></li>
+<li class="missed"><code>            except:</code></li>
+<li class="missed"><code>                continue</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        paginator = Paginator(products, 3)</code></li>
+<li class="missed"><code>        page = request.GET.get('page')</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        try:</code></li>
+<li class="missed"><code>            page_products = paginator.page(page)</code></li>
+<li class="missed"><code>        except PageNotAnInteger:</code></li>
+<li class="ignored"><code>            # If page is not an integer, deliver first page.</code></li>
+<li class="missed"><code>            page_products = paginator.page(1)</code></li>
+<li class="missed"><code>        except EmptyPage:</code></li>
+<li class="ignored"><code>            # If page is out of range (e.g. 9999), deliver last page of results.</code></li>
+<li class="missed"><code>            page_products = paginator.page(paginator.num_pages)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        return render_to_response(template_name, locals(),</code></li>
+<li class="ignored"><code>                                  context_instance=RequestContext(request))</code></li>
+<li class="missed"><code>    except ObjectDoesNotExist:</code></li>
+<li class="missed"><code>            raise Http404</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># Просмотр и Редактирование товара</code></li>
+<li class="executed"><code>def product(request, purchase_id, catalog_id, product_id, template_name, edit=False):</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    user = request.user</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    """ проверяем пользователя и его профайл организатора"""</code></li>
+<li class="missed"><code>    if user.is_authenticated():</code></li>
+<li class="missed"><code>        profile = getProfile(user)</code></li>
+<li class="ignored"><code>    else:</code></li>
+<li class="missed"><code>        return HttpResponseRedirect(urlresolvers.reverse('registrationView'))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    message = ''</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    if edit == True:  # если передан парамерт edit равный True, то редактируем товар</code></li>
+<li class="ignored"><code>        # try:</code></li>
+<li class="missed"><code>        product = Product.objects.get(id=product_id)  # получаем экземпляр товара по id</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if request.POST:</code></li>
+<li class="missed"><code>            product_form = ProductForm(request.POST)</code></li>
+<li class="missed"><code>            product_image_form = ProductImagesForm(request.POST, request.FILES)</code></li>
+<li class="missed"><code>            if product_form.is_valid() and product_image_form.is_valid():</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>                product.product_name = request.POST['product_name']</code></li>
+<li class="missed"><code>                product.description = request.POST['description']</code></li>
+<li class="missed"><code>                product.price = request.POST['price']</code></li>
+<li class="missed"><code>                product.sku = request.POST['sku']</code></li>
+<li class="missed"><code>                product.save()</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>                if request.FILES:</code></li>
+<li class="missed"><code>                    ProductImages.objects.get(p_image_product_id=product_id).delete()</code></li>
+<li class="missed"><code>                    product_image_form.save(product_id)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>                Properties.objects.filter(properties_product_id=product_id).delete()</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>                properties = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)</code></li>
+<li class="missed"><code>                for property in properties:</code></li>
+<li class="missed"><code>                    try:</code></li>
+<li class="missed"><code>                        if request.POST[property.cpp_slug] is not None:</code></li>
+<li class="missed"><code>                            new_properties = Properties()</code></li>
+<li class="missed"><code>                            new_properties.properties_value = request.POST[property.cpp_slug]  #request.POST['tsvet']</code></li>
+<li class="missed"><code>                            new_properties.properties_product = product</code></li>
+<li class="missed"><code>                            new_properties.properties_catalogProductProperties = CatalogProductProperties.objects.get(cpp_slug=property.cpp_slug)</code></li>
+<li class="missed"><code>                            new_properties.save()</code></li>
+<li class="missed"><code>                    except:</code></li>
+<li class="missed"><code>                        continue</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>                message = u"Новый товар %s успешно отредактирован." % request.POST['product_name']</code></li>
+<li class="ignored"><code>            else:</code></li>
+<li class="missed"><code>                message = u"Ошибка при изменении товара"</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        product = Product.objects.get(id=product_id)</code></li>
+<li class="missed"><code>        product_image_Obj = ProductImages(p_image_product_id=product_id)</code></li>
+<li class="missed"><code>        try:</code></li>
+<li class="missed"><code>            product_image = ProductImages.objects.get(p_image_product_id=product_id).image</code></li>
+<li class="missed"><code>        except:</code></li>
+<li class="missed"><code>            product_image = False</code></li>
+<li class="missed"><code>        product_image_form = ProductImagesForm(instance=product_image_Obj)</code></li>
+<li class="missed"><code>        product_form = ProductForm(instance=product)                    # заполненная форма текущей товара</code></li>
+<li class="missed"><code>        property_form = propertyForm(catalog_id, product_id)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        return render_to_response(template_name, locals(),</code></li>
+<li class="ignored"><code>                              context_instance=RequestContext(request))</code></li>
+<li class="ignored"><code>        # except ObjectDoesNotExist:</code></li>
+<li class="ignored"><code>        #     raise Http404</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    else:           # если параметр edit равный True не передан, но выводим товар</code></li>
+<li class="missed"><code>        try:</code></li>
+<li class="missed"><code>            purchase = Purchase.objects.get(id=purchase_id)</code></li>
+<li class="missed"><code>            catalog = Catalog.objects.get(id=catalog_id)</code></li>
+<li class="missed"><code>            product = Product.objects.get(id=product_id)</code></li>
+<li class="missed"><code>            product_image = ProductImages.objects.get(p_image_product_id=product_id).image</code></li>
+<li class="missed"><code>            properties = Properties.objects.filter(properties_product=product_id)  # получим все свойства для этого товара</code></li>
+<li class="missed"><code>            all_properties = {}</code></li>
+<li class="missed"><code>            for property in properties:</code></li>
+<li class="missed"><code>                current_catalog_product_properties = CatalogProductProperties.objects.get(id=property.properties_catalogProductProperties_id)</code></li>
+<li class="missed"><code>                all_properties.update({current_catalog_product_properties.cpp_name: property.properties_value.split(";")})  # формируется словарь вида {имя_свойства: значения_распарсенные_в_список}</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>            return render_to_response(template_name, locals(),</code></li>
+<li class="ignored"><code>                                          context_instance=RequestContext(request))</code></li>
+<li class="missed"><code>        except ObjectDoesNotExist:</code></li>
+<li class="missed"><code>                raise Http404</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># Добавление товара</code></li>
+<li class="executed"><code>def productAdd(request, catalog_id, template_name):</code></li>
+<li class="missed"><code>    try:</code></li>
+<li class="missed"><code>        message = ''</code></li>
+<li class="missed"><code>        user = request.user</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        """ проверяем пользователя и его профайл организатора"""</code></li>
+<li class="missed"><code>        if user.is_authenticated():</code></li>
+<li class="missed"><code>            profile = getProfile(user)</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            return HttpResponseRedirect(urlresolvers.reverse('registrationView'))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if request.POST:</code></li>
+<li class="missed"><code>            product_form = ProductForm(request.POST)</code></li>
+<li class="missed"><code>            product_image_form = ProductImagesForm(request.POST, request.FILES)</code></li>
+<li class="missed"><code>            if product_form.is_valid() and product_image_form.is_valid():</code></li>
+<li class="missed"><code>                new_product = product_form.save(catalog_id)</code></li>
+<li class="missed"><code>                product_image_form.save(new_product.id)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>                properties = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)</code></li>
+<li class="missed"><code>                for property in properties:</code></li>
+<li class="missed"><code>                    try:</code></li>
+<li class="missed"><code>                        if request.POST[property.cpp_slug] is not None:</code></li>
+<li class="missed"><code>                            new_properties = Properties()</code></li>
+<li class="missed"><code>                            new_properties.properties_value = request.POST[property.cpp_slug]  #request.POST['tsvet']</code></li>
+<li class="missed"><code>                            new_properties.properties_product = new_product</code></li>
+<li class="missed"><code>                            new_properties.properties_catalogProductProperties = CatalogProductProperties.objects.get(cpp_slug=property.cpp_slug)</code></li>
+<li class="missed"><code>                            new_properties.save()</code></li>
+<li class="missed"><code>                    except:</code></li>
+<li class="missed"><code>                        continue</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>                message = u"Новый товар %s успешно добавлен." % request.POST['product_name']</code></li>
+<li class="ignored"><code>            else:</code></li>
+<li class="missed"><code>                message = u"Ошибка при добавлении товара"</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        product_form = ProductForm</code></li>
+<li class="missed"><code>        property_form = propertyForm(catalog_id)</code></li>
+<li class="missed"><code>        product_image_form = ProductImagesForm()</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        return render_to_response(template_name, locals(),</code></li>
+<li class="ignored"><code>                                  context_instance=RequestContext(request))</code></li>
+<li class="missed"><code>    except ObjectDoesNotExist:</code></li>
+<li class="missed"><code>            raise Http404</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+  </ol>
+</div>
+
+<div class="nav">
+  <a href="project.accounts.urls_organizer.html">project.accounts.urls_organizer</a> &lt;&lt;
+  <a href="../index.html">index</a>
+  &gt;&gt; <a href="project.core.admin.html">project.core.admin</a>
+</div>
+
+  </body>
+</html>
+
