@@ -5,5 +5,8 @@
     left: 0;
 }
 #core_product .item img{
+    /*width: 100%;*/
+}
+#core_catalog .item img{
     width: 100%;
 }

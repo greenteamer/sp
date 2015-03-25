@@ -1,0 +1,116 @@
+{% extends "core_main.html" %}
+{% load thumbnail %}
+
+{% block content %}
+      <!-- Content Wrapper. Contains page content -->
+    <div id="core_product" class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
+                <li class="active">Корзина</li>
+            </ol>
+            <h1>Просмотр корзины</h1>
+        </section>
+
+        {% if not profile %}
+            <div class="pad margin no-print">
+                <div class="callout callout-info" style="margin-bottom: 0!important;">
+                    <h4><i class="fa fa-info"></i> Записочка</h4>
+                    Для того что бы работать организатором в SP Mooscow, вам необходимо заполнить личные данные, после этого Ваша учетная запись будет рассмотренна админимтратором и ей будет присвоен соответствующий статус
+                </div>
+            </div>
+        {% endif %}
+
+
+        <!-- Main content -->
+        <section class="invoice">
+            <!-- Table row -->
+            <div class="row">
+
+                <div class="col-xs-12">
+                    <div class="row">
+
+{#                        <div class="col-xs-12">#}
+{#                            {% for catalog, list in dict.items %}#}
+{#                                <h4>{{ catalog }}</h4>#}
+{#                                {% for item in list %}#}
+{#                                    <div>#}
+{#                                        {% with 'http://'|add:request.META.HTTP_HOST|add:item.product.get_image.url as path %}#}
+{#                                            {% thumbnail path "50x50" crop="center" as im %}#}
+{#                                                <img class="pull-left" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">#}
+{#                                            {% endthumbnail %}#}
+{#                                        {% endwith %}#}
+{#                                        <p>{{ item.product.product_name }}</p>#}
+{#                                        <small>{{ item.product.description }}</small>#}
+{#                                    </div>#}
+{#                                    <br/>#}
+{#                                {% endfor %}#}
+{##}
+{#                                <p>{{ list }}</p>#}
+{#                            {% endfor %}#}
+{#                        </div>#}
+
+
+                        <div class="col-xs-12">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Закупка</th>
+                                            <th scope="col">Каталог</th>
+                                            <th scope="col">Продукт</th>
+                                            <th scope="col" class="right">Итого:</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        {% if dict %}
+                                            {% for catalog, list in dict.items %}
+                                                <tr>
+                                                    <td></td>
+                                                    <td>
+                                                        <h4>{{ catalog }}</h4>
+                                                    </td>
+                                                    <td>
+                                                        <form action="." method="post">{% csrf_token %}
+                                                            <button class="btn btn-file" type="submit" name="export">Скачать Exel файл</button>
+                                                        </form>
+
+
+{#                                                        {% for item in list %}#}
+{#                                                            <p>{{ item.product.product_name }}<span class="label label-success">{{ item.quantity }}</span><br/><small>{{ item.user.username }}</small></p>#}
+{##}
+{#                                                        {% endfor %}#}
+                                                    </td>
+                                                    <td>
+
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tbody>
+
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="5">Стоимость товаров:</th>
+{#                                            <th>{{ cart_subtotal }} руб.</th>#}
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+            </div><!-- /.row -->
+
+        </section><!-- /.content -->
+        <div class="clearfix"></div>
+    </div><!-- /.content-wrapper -->
+
+{% endblock %}
+

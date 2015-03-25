@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
 import os
+from easy_thumbnails.conf import Settings as thumbnail_settings
 # import djcelery
 
 from django.utils.translation import ugettext_lazy as _
@@ -14,6 +15,11 @@ PROJECT_PATH = os.path.abspath(os.path.dirname(__file__).decode('utf-8')).replac
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 ROOT_URLCONF = 'project.urls'
 
+
+THUMBNAIL_PROCESSORS = (
+    'image_cropping.thumbnail_processors.crop_corners',
+) + thumbnail_settings.THUMBNAIL_PROCESSORS
+
 COVERAGE_REPORT_HTML_OUTPUT_DIR = os.path.join(CURRPATH, 'cover')
 COVERAGE_PATH_EXCLUDES = os.path.join(CURRPATH, 'cover')
 DEBUG = True
@@ -21,6 +27,7 @@ TEMPLATE_DEBUG = DEBUG
 
 DEFAULT_CHARSET = 'utf-8'
 
+AUTH_PROFILE_MODULE = 'accounts.MemberProfile'
 ADMIN_EMAIL = 'greenteamer@bk.ru'
 ADMINS = (
 	# ('Your Name', 'your_email@example.com'),
@@ -174,6 +181,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 #     'webshop.ajaxapp.ajax.send_form',
 # )
 
+
 TINYMCE_JS_URL = os.path.join(CURRPATH, '/libraries/tinymce/tinymce.min.js')
 TINYMCE_DEFAULT_CONFIG = {
     'plugins': "table,spellchecker,paste,searchreplace",
@@ -232,6 +240,10 @@ INSTALLED_APPS = (
     'mptt_tree_editor',
     'pybb',
     'project.pristroy',
+    'project.cart',
+    'image_cropping',
+    'easy_thumbnails',
+    'import_export',
 )
 
 FILEBROWSER_MEDIA_ROOT = MEDIA_ROOT
