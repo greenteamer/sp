@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+    <title>Test coverage report: sorl.thumbnail.parsers</title>
+    <style type="text/css" media="screen">
+      a
+      {
+        color: #3d707a;
+      }
+      
+      a:hover, a:active
+      {
+        color: #bf7d18;
+      }
+    
+      body 
+      {
+        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+        font-size: 13px;
+      }
+      
+      .nav 
+      {
+        font-size: 12px;
+        margin-left: 50px;
+      }
+
+      .ignored
+      {
+        color: #707070;
+      }
+
+      .executed 
+      {
+        color: #3d9900;
+      }
+
+      .missed 
+      {
+        color: red;
+        font-weight: bold;
+      }
+
+      .excluded 
+      {
+        color: #6090f0;
+        font-weight: lighter;
+      }
+    
+      #content-header 
+      {
+        font-size: 12px;
+        padding: 18px 0 18px 50px;
+      }
+
+      #content-header h1 
+      {
+        font-size: 16px;
+        margin: 10px 0 0 0;
+        color: #909090;
+      }
+      
+      #module-name
+      {
+        color: #583707;
+      }
+    
+      #content-header p
+      {
+        font-size: 13px;
+        margin: 0;
+        color: #909090;
+      }
+
+      #content-header .normal 
+      {
+        color: #609030;
+      }
+
+      #content-header .warning 
+      {
+        color: #d0a000;
+      }
+
+      #content-header .critical 
+      {
+        color: red;
+      }
+      
+      #source-listing 
+      {
+        margin-bottom: 24px;
+      }
+
+      #source-listing ol 
+      {
+        padding: 0 0 0 50px;
+        width: 90%;
+        font-family: monospace;
+        list-style-position: outside;
+      }
+
+      #source-listing ol li 
+      {
+        line-height: 18px;
+        font-size: small;
+      }
+        
+      #source-listing ol code 
+      {
+        padding:  0 .001em 0 0; /* Firefox doesn't render empty li's properly */
+        font-size: medium;
+        white-space: pre;
+      }
+   </style>
+  </head>
+
+  <body>
+
+<div class="nav">
+  <a href="sorl.thumbnail.models.html">sorl.thumbnail.models</a> &lt;&lt;
+  <a href="../index.html">index</a>
+  &gt;&gt; <a href="sorl.thumbnail.shortcuts.html">sorl.thumbnail.shortcuts</a>
+</div>
+
+<div id="content-header">
+  <h1>
+    <span id="module-name">sorl.thumbnail.parsers</span>:
+    61 total statements,
+    <span class="critical">0.0% covered</span>
+  </h1>
+  <p>Generated: Tue 2015-03-10 22:42 MSK</p>
+  <p>Source file: /Users/greenteamer/Desktop/Django/env/sp/lib/python2.7/site-packages/sorl/thumbnail/parsers.py</p>
+  <p>
+    Stats:
+    <span class="executed">0 executed</span>,
+    <span class="missed">58 missed</span>,
+    <span class="excluded">3 excluded</span>,
+    <span class="ignored">45 ignored</span> 
+  </p> 
+</div>
+
+<div id="source-listing">
+  <ol>
+    <li class="ignored"><code># coding=utf-8</code></li>
+<li class="excluded"><code>import re</code></li>
+<li class="ignored"><code></code></li>
+<li class="excluded"><code>from django.utils import six</code></li>
+<li class="ignored"><code></code></li>
+<li class="excluded"><code>from sorl.thumbnail.helpers import ThumbnailError, toint</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>bgpos_pat = re.compile(r'^(?P&lt;value&gt;\d+)(?P&lt;unit&gt;%|px)$')</code></li>
+<li class="missed"><code>geometry_pat = re.compile(r'^(?P&lt;x&gt;\d+)?(?:x(?P&lt;y&gt;\d+))?$')</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>class ThumbnailParseError(ThumbnailError):</code></li>
+<li class="missed"><code>    pass</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>def parse_geometry(geometry, ratio=None):</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code>    Parses a geometry string syntax and returns a (width, height) tuple</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="missed"><code>    m = geometry_pat.match(geometry)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def syntax_error():</code></li>
+<li class="missed"><code>        return ThumbnailParseError('Geometry does not have the correct '</code></li>
+<li class="ignored"><code>                                   'syntax: %s' % geometry)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    if not m:</code></li>
+<li class="missed"><code>        raise syntax_error()</code></li>
+<li class="missed"><code>    x = m.group('x')</code></li>
+<li class="missed"><code>    y = m.group('y')</code></li>
+<li class="missed"><code>    if x is None and y is None:</code></li>
+<li class="missed"><code>        raise syntax_error()</code></li>
+<li class="missed"><code>    if x is not None:</code></li>
+<li class="missed"><code>        x = int(x)</code></li>
+<li class="missed"><code>    if y is not None:</code></li>
+<li class="missed"><code>        y = int(y)</code></li>
+<li class="ignored"><code>        # calculate x or y proportionally if not set but we need the image ratio</code></li>
+<li class="ignored"><code>    # for this</code></li>
+<li class="missed"><code>    if ratio is not None:</code></li>
+<li class="missed"><code>        ratio = float(ratio)</code></li>
+<li class="missed"><code>        if x is None:</code></li>
+<li class="missed"><code>            x = toint(y * ratio)</code></li>
+<li class="missed"><code>        elif y is None:</code></li>
+<li class="missed"><code>            y = toint(x / ratio)</code></li>
+<li class="missed"><code>    return x, y</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>def parse_crop(crop, xy_image, xy_window):</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code>    Returns x, y offsets for cropping. The window area should fit inside</code></li>
+<li class="ignored"><code>    image but it works out anyway</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    x_alias_percent = {</code></li>
+<li class="ignored"><code>        'left': '0%',</code></li>
+<li class="ignored"><code>        'center': '50%',</code></li>
+<li class="ignored"><code>        'right': '100%',</code></li>
+<li class="ignored"><code>    }</code></li>
+<li class="missed"><code>    y_alias_percent = {</code></li>
+<li class="ignored"><code>        'top': '0%',</code></li>
+<li class="ignored"><code>        'center': '50%',</code></li>
+<li class="ignored"><code>        'bottom': '100%',</code></li>
+<li class="ignored"><code>    }</code></li>
+<li class="missed"><code>    xy_crop = crop.split(' ')</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    if len(xy_crop) == 1:</code></li>
+<li class="missed"><code>        if crop in x_alias_percent:</code></li>
+<li class="missed"><code>            x_crop = x_alias_percent[crop]</code></li>
+<li class="missed"><code>            y_crop = '50%'</code></li>
+<li class="missed"><code>        elif crop in y_alias_percent:</code></li>
+<li class="missed"><code>            y_crop = y_alias_percent[crop]</code></li>
+<li class="missed"><code>            x_crop = '50%'</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            x_crop, y_crop = crop, crop</code></li>
+<li class="missed"><code>    elif len(xy_crop) == 2:</code></li>
+<li class="missed"><code>        x_crop, y_crop = xy_crop</code></li>
+<li class="missed"><code>        x_crop = x_alias_percent.get(x_crop, x_crop)</code></li>
+<li class="missed"><code>        y_crop = y_alias_percent.get(y_crop, y_crop)</code></li>
+<li class="ignored"><code>    else:</code></li>
+<li class="missed"><code>        raise ThumbnailParseError('Unrecognized crop option: %s' % crop)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def get_offset(crop, epsilon):</code></li>
+<li class="missed"><code>        m = bgpos_pat.match(crop)</code></li>
+<li class="missed"><code>        if not m:</code></li>
+<li class="missed"><code>            raise ThumbnailParseError('Unrecognized crop option: %s' % crop)</code></li>
+<li class="missed"><code>        value = int(m.group('value'))  # we only take ints in the regexp</code></li>
+<li class="missed"><code>        unit = m.group('unit')</code></li>
+<li class="missed"><code>        if unit == '%':</code></li>
+<li class="missed"><code>            value = epsilon * value / 100.0</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        # return ∈ [0, epsilon]</code></li>
+<li class="missed"><code>        return int(max(0, min(value, epsilon)))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    offset_x = get_offset(x_crop, xy_image[0] - xy_window[0])</code></li>
+<li class="missed"><code>    offset_y = get_offset(y_crop, xy_image[1] - xy_window[1])</code></li>
+<li class="missed"><code>    return offset_x, offset_y</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>def parse_cropbox(cropbox):</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code>    Returns x, y, x2, y2 tuple for cropping.</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="missed"><code>    if isinstance(cropbox, six.text_type):</code></li>
+<li class="missed"><code>        return tuple([int(x.strip()) for x in cropbox.split(',')])</code></li>
+<li class="ignored"><code>    else:</code></li>
+<li class="missed"><code>        return tuple(cropbox)</code></li>
+  </ol>
+</div>
+
+<div class="nav">
+  <a href="sorl.thumbnail.models.html">sorl.thumbnail.models</a> &lt;&lt;
+  <a href="../index.html">index</a>
+  &gt;&gt; <a href="sorl.thumbnail.shortcuts.html">sorl.thumbnail.shortcuts</a>
+</div>
+
+  </body>
+</html>
+
