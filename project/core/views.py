@@ -13,8 +13,10 @@ from project.cart.cart import add_to_cart, get_cart_items
 from project.core.models import Purchase, Product, Catalog, ProductImages, Category
 from project.accounts.models import getProfile, OrganizerProfile, MemberProfile
 from django.core.exceptions import ObjectDoesNotExist
-from django.http.response import Http404
+from django.http.response import HttpResponse, Http404
 from django.contrib import messages
+from project.accounts.forms import propertyForm
+
 
 """декоратор проверки профиля пользователя
 принимает пользователя , возвращяет профайл"""
@@ -115,6 +117,7 @@ def coreCatalog(request, purchase_id, catalog_id, template_name):  # TODO: ре�
 def coreProduct(request, purchase_id, catalog_id, product_id, template_name):  # TODO: реализовать ajax добавление в корзину
     try:
         product = Product.objects.get(id=product_id)
+        property_form = propertyForm(catalog_id)
         images = ProductImages.objects.filter(p_image_product=product_id)
         cart_item = CartItem(product=product)
         form = CartItemForm(request.POST or None, instance=cart_item)
@@ -124,6 +127,28 @@ def coreProduct(request, purchase_id, catalog_id, product_id, template_name):  #
                                   context_instance=RequestContext(request))
     except ObjectDoesNotExist:
             raise Http404
+
+
+
+
+
+
+
+
+
+# страница для обработки ajax запросов
+def ajaxquery(request):
+
+    # TODO: Заменить на Post / не работает.
+    product = Product.objects.get(id=request.GET['product_id'])
+    product_properties = product.property
+    if request.GET['product_properties'] in product_properties and request.GET['product_properties'] != '':
+        return HttpResponse('ok')
+    else:
+        return HttpResponse('no')
+
+    # return HttpResponse(product_properties)
+
 
 
 

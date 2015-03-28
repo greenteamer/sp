@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, include, url
 
 urlpatterns = patterns('project.core.views',
 
@@ -29,10 +29,12 @@ urlpatterns = patterns('project.core.views',
     url(r'^purchase-(?P<purchase_id>\d+)/catalog-(?P<catalog_id>\d+)/$', 'coreCatalog',
 		{'template_name': 'core/core_catalog.html'},
 		name='coreCatalog'),
-     url(r'^purchase-(?P<purchase_id>\d+)/catalog-(?P<catalog_id>\d+)/product-(?P<product_id>\d+)/$', 'coreProduct',
+    url(r'^purchase-(?P<purchase_id>\d+)/catalog-(?P<catalog_id>\d+)/product-(?P<product_id>\d+)/$', 'coreProduct',
 		{'template_name': 'core/coreProduct.html'},
 		name='coreProduct'),
 
+    # страница для обработки ajax запросов
+    url(r'^ajaxquery/$', 'ajaxquery', name='ajaxquery'),
 
 
     # Страницы сайта
@@ -40,3 +42,6 @@ urlpatterns = patterns('project.core.views',
     #     {'template_name':'main/page.html'},
     #     name='page_view'),
 )
+
+
+

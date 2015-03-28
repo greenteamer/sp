@@ -76,6 +76,11 @@
                                     {{ product.sku }}
                                 {% endif %}
 
+                                <div class="properties">
+                                    <b>Свойства:</b>
+                                    {{ property_form }}
+                                </div>
+
                                 {{ form.errors }}
                                 {{ form.non_field_errors }}
 
@@ -85,7 +90,7 @@
 {#                                    <input class="form-control " id="id_date_added" name="date_added" type="text">#}
 {#                                    <input class="form-control " id="id_product" name="product" type="text">#}
 {#                                    <input class="form-control " id="id_quantity" name="quantity" type="text">#}
-                                    <button type="submit" class="btn btn-primary">Купить</button>
+                                    <button type="submit" id="add_to_cart" class="btn btn-primary">Купить</button>
                                 </form>
 
                             </div>
@@ -99,3 +104,63 @@
 
 {% endblock %}
 
+
+{% block page_js %}
+    <script src='{{ STATIC_URL }}AdminLte/plugins/fastclick/fastclick.min.js'></script>
+    <script src="{{ STATIC_URL }}AdminLte/dist/js/app.min.js" type="text/javascript"></script>
+{#    <script src="{{ STATIC_URL }}AdminLte/dist/js/demo.js" type="text/javascript"></script>#}
+<script src='{{ STATIC_URL }}js/jquery.cookie.js'></script>
+
+    <script>
+        (function($) {
+            $(document).ready(function() {
+
+                $('#add_to_cart').click(function () {
+                    str = '';
+                    checked_input = $('.properties input:checked');
+                    var len = checked_input.length;
+                    checked_input.each(function (i, elem) {
+                        if (i != len - 1) {
+                            str += elem.value + ',';
+                        }else{
+                            str += elem.value;
+                        }
+                    });
+                    console.log('отправлено: ' + str);
+
+                    csrftoken = $.cookie('csrftoken');
+                    $.get(                    {#   TODO: Заменить на Post / не работает. #}
+                        "/ajaxquery/",
+                        {
+                            action: 'chek_properties_product',
+                            product_properties: str,
+                            product_id: {{ product.id }},
+                            csrfmiddlewaretoken: csrftoken
+                        },
+                        onAjaxSuccess
+                    );
+                    function onAjaxSuccess(data){
+                        console.log('получено: ' + data);
+{#                        $("#insertfields").append(data);#}
+                        if (data=='no') {
+                            console.log('Выбранные параметры не верны');
+                            alert('Не найден товар с выбранными вами свойствами.');
+                        }
+                        else {
+                            console.log('ПОКУПКА РАЗРЕШЕНА');
+                            alert('Товар будет добавлен в корзину как только допишу код');
+                            // тут будет аджакс запрос покупки товара
+                        }
+                    }
+
+
+                    return false;
+                });
+
+
+
+            });
+        })(jQuery);
+    </script>
+
+{% endblock %}
