@@ -117,7 +117,7 @@
 
                 $('#add_to_cart').click(function () {
                     str = '';
-                    checked_input = $('.properties input:checked');
+                    var checked_input = $('.properties input:checked');
                     var len = checked_input.length;
                     checked_input.each(function (i, elem) {
                         if (i != len - 1) {
@@ -126,31 +126,51 @@
                             str += elem.value;
                         }
                     });
-                    console.log('отправлено: ' + str);
+                    console.log('Свойства: ' + str);
 
                     csrftoken = $.cookie('csrftoken');
-                    $.get(                    {#   TODO: Заменить на Post / не работает. #}
-                        "/ajaxquery/",
+                    $.post(
+                        "",             // Урл
                         {
                             action: 'chek_properties_product',
+                            ajax: 1,
                             product_properties: str,
-                            product_id: {{ product.id }},
+                            product: {{ product.id }},
+                            quantity: $('#id_quantity').val(),
                             csrfmiddlewaretoken: csrftoken
                         },
                         onAjaxSuccess
                     );
                     function onAjaxSuccess(data){
                         console.log('получено: ' + data);
-{#                        $("#insertfields").append(data);#}
-                        if (data=='no') {
-                            console.log('Выбранные параметры не верны');
-                            alert('Не найден товар с выбранными вами свойствами.');
+                        var result = $.parseJSON(data);
+                        if(result.status == 'ok'){
+                            var cart_item = $('#cart_item_' + result.cart_item_id)
+                            if(cart_item.length) {  // такой товар в корзине уже есть
+                                // исправляем цифры количества товара в корзине
+                                cart_item.find('.product_quantity').text(parseInt(cart_item.find('.product_quantity').text()) + parseInt(result.quantity));
+                                full_count_product = $('.full_count_product');
+                                full_count_product.text( parseInt($(full_count_product[0]).text()) + parseInt(result.quantity) );
+
+                            }else{  // Значит элемент новый
+
+                                $('#cart_item_menu').append('<li class="cart_item" id="cart_item_' + result.cart_item_id + '"> \
+                                        <div class="pull-left"> \
+                                              <img src="{{ product.get_image.url }}" width="50" height="50"> \
+                                        </div> \
+                                        <a style="padding:0 10px;" href="{{ product.url_core }}"> \
+                                            <span class="product_quantity label label-success pull-right">' + result.quantity +'</span> \
+                                            <h4 class="product_name" style="max-width: 80%;">{{ product.product_name }}</h4> \
+                                            <p class="product_description">{{ product.description|truncatewords:15|safe }}</p> \
+                                        </a> \
+                                    </li>');
+                                full_count_product = $('.full_count_product');
+                                full_count_product.text( parseInt($(full_count_product[0]).text()) + parseInt(result.quantity) );
+
+{#                                console.log('new element');#}
+                            }
                         }
-                        else {
-                            console.log('ПОКУПКА РАЗРЕШЕНА');
-                            alert('Товар будет добавлен в корзину как только допишу код');
-                            // тут будет аджакс запрос покупки товара
-                        }
+
                     }
 
 

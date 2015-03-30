@@ -108,16 +108,16 @@
             <li class="dropdown messages-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <i class="fa fa-shopping-cart"></i>
-                    <span class="label label-success">{{ cart_items.full_count }}</span>
+                    <span class="full_count_product label label-success">{{ cart_items.full_count }}</span>
                     <span>Корзина</span>
                 </a>
             <ul class="dropdown-menu">
-              <li class="header">В вашей корзине {{ cart_items.full_count }} товаров</li>
+              <li class="header">В вашей корзине <span class="full_count_product">{{ cart_items.full_count }}</span> товаров</li>
               <li>
                 <!-- inner menu: contains the actual data -->
-                <ul class="menu">
+                <ul class="menu" id="cart_item_menu">
                     {% for item in cart_items %}
-                        <li>
+                        <li class="cart_item" id="cart_item_{{ item.id }}">
                             <div class="pull-left">
                                 {% with 'http://'|add:request.META.HTTP_HOST|add:item.product.get_image.url as path %}
                                     {% thumbnail path "50x50" crop="center" as im %}
@@ -126,11 +126,10 @@
                                 {% endwith %}
                             </div>
                             <a style="padding:0 10px;" href="{{ item.product.url_core }}">
-                                <span class="label label-success pull-right">{{ item.quantity }}</span>
-                                <h4 style="max-width: 80%;">{{ item.product.product_name }}</h4>
-                                <p>{{ item.product.description }}</p>
+                                <span class="product_quantity label label-success pull-right">{{ item.quantity }}</span>
+                                <h4 class="product_name" style="max-width: 80%;">{{ item.product.product_name }}</h4>
+                                <p class="product_description">{{ item.product.description }}</p>
                             </a>
-
                         </li>
                     {% endfor %}
                 </ul>

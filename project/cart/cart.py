@@ -57,6 +57,7 @@ def add_to_cart(request):
                 # Обновляем количество если найден
                 cart_item.augment_quantity(quantity)
                 product_in_cart = True
+                return {'id': cart_item.id, 'quantity': quantity}        # Возвратим данные записи в корзине
 
         if not product_in_cart:
             # Создаем и сохраняем новую корзину
@@ -66,7 +67,7 @@ def add_to_cart(request):
             ci.cart_id = _cart_id(request)
             ci.user = request.user
             ci.save()
-
+            return {'id': ci.id, 'quantity': quantity}    # Возвратим данные новой записи в корзине
 
 def get_single_item(request, item_id):
     """Получаем конкретный товар в корзине"""
