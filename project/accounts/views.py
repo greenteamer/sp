@@ -17,6 +17,8 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import Http404, HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+# from project.core.functions import get_propeties
+
 
 def profileView(request, template_name):
     user = request.user
@@ -532,7 +534,9 @@ def productAdd(request, purchase_id, catalog_id, template_name):
             product_form = ProductForm(request.POST)
             product_image_form = ProductImagesForm(request.POST, request.FILES)
             if product_form.is_valid() and product_image_form.is_valid():
-                new_product = product_form.save(catalog_id)
+                svoystva = request.POST.getlist('svoystva')
+                sv = ';'.join(svoystva)            # u'34,green,41;34,green,42;34,green,43;34,blue,41;34,blue,42'
+                new_product = product_form.save(catalog_id, sv)
                 product_image_form.save(new_product.id)
 
                 properties = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
@@ -540,7 +544,7 @@ def productAdd(request, purchase_id, catalog_id, template_name):
                     try:
                         if request.POST[property.cpp_slug] is not None:
                             new_properties = Properties()
-                            new_properties.properties_value = request.POST[property.cpp_slug]  #request.POST['tsvet']
+                            new_properties.properties_value = request.POST[property.cpp_slug]  # request.POST['tsvet']
                             new_properties.properties_product = new_product
                             new_properties.properties_catalogProductProperties = CatalogProductProperties.objects.get(cpp_slug=property.cpp_slug)
                             new_properties.save()
@@ -555,10 +559,41 @@ def productAdd(request, purchase_id, catalog_id, template_name):
         property_form = propertyForm(catalog_id)
         product_image_form = ProductImagesForm()
 
+
+        svoystvaa = get_propeties(catalog_id, 'list')
+
+
         return render_to_response(template_name, locals(),
                                   context_instance=RequestContext(request))
     except ObjectDoesNotExist:
             raise Http404
+
+
+#  Примает id закупки, и способ возвращения
+#  Возвращает все возможные кобинации свойств закупки
+def get_propeties(catalog_id, type='list'):
+    cpp_obj = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
+    list = []
+    i = 0
+    dict = {}
+    for cpp_object in cpp_obj:
+        values = cpp_object.cpp_values.split(";")
+        dict[i] = values
+        i += 1
+
+    import itertools
+    # dict = {0: ['34', '35'], 1: ['green', 'blue', 'black'], 2: ['41', '42']}
+    for items in itertools.product(*dict.values()):
+        list.append(','.join(items))
+
+    stroka = ';'.join(list)
+
+    if type == 'list':
+        return list
+    elif type == 'stroka':
+        return stroka
+    else:
+        return None
 
 
 def checkOrganizerProfile(user):

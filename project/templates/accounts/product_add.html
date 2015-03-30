@@ -52,7 +52,12 @@
                     <!-- form start -->
                     <form action="" method="post" enctype="multipart/form-data" >
                         {% csrf_token %}
-                        {{ form2 }}
+                        {{ svoystvaa }} <br/>
+                        {% for sv in svoystvaa %}
+                            <label for="s{{ forloop.counter }}">{{ sv }}</label>
+                            <input name="svoystva" id="s{{ forloop.counter }}" type="checkbox" value="{{ sv }}" type="text"/> <br/>
+                        {% endfor %}
+                        {{ test_var }}
                         <hr/>
                         {{ product_form }}
                         <br/>

@@ -4,10 +4,11 @@ from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 # from project.accounts.models import OrganizerProfile
 from django.utils.text import slugify
-from project.core.functions import *
+from project.core.functions import translit
 from autoslug import AutoSlugField
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import permalink
+from image_cropping import ImageRatioField
 # from datetime import datetime
 
 
@@ -143,6 +144,7 @@ class Product(models.Model):
     catalog = models.ForeignKey(Catalog, verbose_name=u'Выбрать каталог')
     created_at = models.DateTimeField(_(u'Created at'), null=True, auto_now_add=True)
     updated_at = models.DateTimeField(_(u'Updated at'), null=True, auto_now=True)
+    property = models.TextField(default='', verbose_name=u'Свойства товара')
 
     def url(self):
         return '%s/product-%s' % (self.catalog.url(), self.id)
@@ -152,7 +154,8 @@ class Product(models.Model):
 
     def __unicode__(self):
         return self.product_name
-
+    def get_image(self):
+        return ProductImages.objects.filter(p_image_product=self.id).first()
     def get_all_image(self):
         return ProductImages.objects.filter(p_image_product=self.id)
 
@@ -160,6 +163,7 @@ class Product(models.Model):
 class ProductImages(models.Model):
     image = models.FileField(_(u'Image'), upload_to='product/',
                              help_text=u'Изображение', blank=True)
+    cropping = ImageRatioField('image', '500x320', verbose_name=u'Обрезка для продукта')
     p_image_product = models.ForeignKey(Product, verbose_name=u'Выбрать товар')
     p_image_title = models.CharField(u'Название', blank=True, null=True, max_length=255)
     def url(self):
