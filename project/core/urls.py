@@ -33,6 +33,8 @@ urlpatterns = patterns('project.core.views',
 		{'template_name': 'core/coreProduct.html'},
 		name='coreProduct'),
 
+
+
     # страница для обработки ajax запросов
     url(r'^ajaxquery/$', 'ajaxquery', name='ajaxquery'),
 

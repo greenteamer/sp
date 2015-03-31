@@ -145,13 +145,13 @@
                         console.log('получено: ' + data);
                         var result = $.parseJSON(data);
                         if(result.status == 'ok'){
-                            var cart_item = $('#cart_item_' + result.cart_item_id)
+                            var cart_item = $('#cart_item_' + result.cart_item_id);
                             if(cart_item.length) {  // такой товар в корзине уже есть
                                 // исправляем цифры количества товара в корзине
                                 cart_item.find('.product_quantity').text(parseInt(cart_item.find('.product_quantity').text()) + parseInt(result.quantity));
                                 full_count_product = $('.full_count_product');
                                 full_count_product.text( parseInt($(full_count_product[0]).text()) + parseInt(result.quantity) );
-
+                                alert('Товар в корзине успешно обновлен');
                             }else{  // Значит элемент новый
 
                                 $('#cart_item_menu').append('<li class="cart_item" id="cart_item_' + result.cart_item_id + '"> \
@@ -161,17 +161,21 @@
                                         <a style="padding:0 10px;" href="{{ product.url_core }}"> \
                                             <span class="product_quantity label label-success pull-right">' + result.quantity +'</span> \
                                             <h4 class="product_name" style="max-width: 80%;">{{ product.product_name }}</h4> \
-                                            <p class="product_description">{{ product.description|truncatewords:15|safe }}</p> \
+                                            <p class="product_properties">' + result.properties + '</p> \
                                         </a> \
                                     </li>');
                                 full_count_product = $('.full_count_product');
                                 full_count_product.text( parseInt($(full_count_product[0]).text()) + parseInt(result.quantity) );
-
+                                alert('Товар успешно добавлен в корзину');
 {#                                console.log('new element');#}
                             }
+                        }else if (result.status == 'no'){
+                            alert('Не найдено товара с такими свойствами');
+                        }else{
+                            alert('Не известная ошибка');
                         }
 
-                    }
+                    }  // --/- end onAjaxSuccess function
 
 
                     return false;

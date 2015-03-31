@@ -46,6 +46,7 @@ def add_to_cart(request):
         postdata = request.POST.copy()
         product_id = postdata.get('product', '')
         quantity = postdata.get('quantity', 1)
+        properties = postdata.get('product_properties', '')
         # Получаем товар, или возвращаем ошибку "не найден" если его не существует
         p = get_object_or_404(Product, id=product_id)
         # Получаем товары в корзине
@@ -53,11 +54,11 @@ def add_to_cart(request):
         # Проверяем что продукт уже в корзине
         product_in_cart = False
         for cart_item in cart_products:
-            if (cart_item.product.id == p.id):
-                # Обновляем количество если найден
+            # if (cart_item.product.id == p.id):    # Обновляем количество если найден
+            if (cart_item.product.id == p.id and cart_item.properties == properties):  # Обновляем количество если найден товар с таким же ствойство
                 cart_item.augment_quantity(quantity)
                 product_in_cart = True
-                return {'id': cart_item.id, 'quantity': quantity}        # Возвратим данные записи в корзине
+                return {'id': cart_item.id, 'quantity': quantity, 'properties': properties} # Возвратим данные записи в корзине
 
         if not product_in_cart:
             # Создаем и сохраняем новую корзину
@@ -66,8 +67,9 @@ def add_to_cart(request):
             ci.quantity = quantity
             ci.cart_id = _cart_id(request)
             ci.user = request.user
+            ci.properties = properties
             ci.save()
-            return {'id': ci.id, 'quantity': quantity}    # Возвратим данные новой записи в корзине
+            return {'id': ci.id, 'quantity': quantity, 'properties': properties}  # Возвратим данные новой записи в корзине
 
 def get_single_item(request, item_id):
     """Получаем конкретный товар в корзине"""
