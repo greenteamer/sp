@@ -131,10 +131,8 @@ def coreProduct(request, purchase_id, catalog_id, product_id, template_name):  #
                 cart_item = CartItem(product=product)
                 form = CartItemForm(request.POST or None, instance=cart_item)
                 if form.is_valid():
-                    cart_item = add_to_cart(request)
-                    id = cart_item['id']
-                    quantity = cart_item['quantity']
-                    ajax_return = '{"status":"ok", "cart_item_id":"%d", "quantity":"%s"}' % (id, quantity)
+                    cart_item = add_to_cart(request)    # Добавление в корзину
+                    ajax_return = '{"status":"ok", "cart_item_id":"%d", "quantity":"%s", "properties":"%s"}' % (cart_item['id'], cart_item['quantity'], cart_item['properties'])
                 else:
                     ajax_return = '{"status":"error"}'
                 return HttpResponse(ajax_return)
