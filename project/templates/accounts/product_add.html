@@ -47,21 +47,27 @@
             <!-- Table row -->
             <div class="row">
 
-                <div class="col-xs-6">
+                <div class="col-xs-10">
 
                     <!-- form start -->
                     <form action="" method="post" enctype="multipart/form-data" >
                         {% csrf_token %}
-                        {{ svoystvaa }} <br/>
-                        {% for sv in svoystvaa %}
-                            <label for="s{{ forloop.counter }}">{{ sv }}</label>
-                            <input name="svoystva" id="s{{ forloop.counter }}" type="checkbox" value="{{ sv }}" type="text"/> <br/>
-                        {% endfor %}
+{#                        {{ svoystvaa }} <br/>#}
+
                         {{ test_var }}
                         <hr/>
                         {{ product_form }}
                         <br/>
-                        {{ property_form }}
+{#                        {{ property_form }}#}
+                        <label>Возможные свойства этого товара:</label>
+                        <div style="overflow: hidden;">
+                            {% for property in properties %}
+                                <div style="float:left;margin:0 10px 10px; 0;" >
+                                    <label for="s{{ forloop.counter }}">{{ property }}</label>
+                                    <input name="properties" id="s{{ forloop.counter }}" type="checkbox" value="{{ property }}" type="text"/>
+                                </div>
+                            {% endfor %}
+                        </div>
                         <br/>
                         {{ product_image_form }}
                         <br/>
