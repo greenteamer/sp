@@ -6,5 +6,9 @@ from models import CartItem
 class CartItemForm(forms.ModelForm):
     class Meta:
         model = CartItem
-        widgets = {'product': forms.HiddenInput(),}
-        exclude = ('cart_id', 'user')
+        widgets = {'product': forms.HiddenInput()}
+        exclude = ('cart_id', 'user', 'properties')
+
+
+class ExportForm(forms.Form):
+    catalog = forms.IntegerField()
