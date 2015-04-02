@@ -47,18 +47,23 @@
                     <br/>
 
                     {#<a href="/profile/organizer/purchase-{{ purchase.id }}catalog-{{ catalog.id }}-edit">Изменить каталог</a>#}
-
-                    <b>all_properties: </b>
-                    <ul>
-                        {% for name_value, values in all_properties.items %}
-                            <li> {{ name_value }} :
-                                {% for value in values %}
-                                    {{ value }}
+                    <b>Свойства: </b>
+                    <div style="overflow: hidden;">
+                    {% for property in product_properties%}
+                        <div style="float:left;margin:0 7px 7px 0;">{{ property }}</div>
+                    {% endfor %}
+                    </div>
+{#                    <b>all_properties: </b>#}
+{#                    <ul>#}
+{#                        {% for name_value, values in all_properties.items %}#}
+{#                            <li> {{ name_value }} :#}
+{#                                {% for value in values %}#}
+{#                                    {{ value }}#}
 {#                                  <input type="radio" name="{{ name_value }}" value="{{ value }}"> ;#}
-                                {% endfor %}
-                            </li>
-                        {% endfor %}
-                    </ul>
+{#                                {% endfor %}#}
+{#                            </li>#}
+{#                        {% endfor %}#}
+{#                    </ul>#}
                     <br/>
 
                 </div><!-- /.col -->
