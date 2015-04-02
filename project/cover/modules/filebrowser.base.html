@@ -1,0 +1,734 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+    <title>Test coverage report: filebrowser.base</title>
+    <style type="text/css" media="screen">
+      a
+      {
+        color: #3d707a;
+      }
+      
+      a:hover, a:active
+      {
+        color: #bf7d18;
+      }
+    
+      body 
+      {
+        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+        font-size: 13px;
+      }
+      
+      .nav 
+      {
+        font-size: 12px;
+        margin-left: 50px;
+      }
+
+      .ignored
+      {
+        color: #707070;
+      }
+
+      .executed 
+      {
+        color: #3d9900;
+      }
+
+      .missed 
+      {
+        color: red;
+        font-weight: bold;
+      }
+
+      .excluded 
+      {
+        color: #6090f0;
+        font-weight: lighter;
+      }
+    
+      #content-header 
+      {
+        font-size: 12px;
+        padding: 18px 0 18px 50px;
+      }
+
+      #content-header h1 
+      {
+        font-size: 16px;
+        margin: 10px 0 0 0;
+        color: #909090;
+      }
+      
+      #module-name
+      {
+        color: #583707;
+      }
+    
+      #content-header p
+      {
+        font-size: 13px;
+        margin: 0;
+        color: #909090;
+      }
+
+      #content-header .normal 
+      {
+        color: #609030;
+      }
+
+      #content-header .warning 
+      {
+        color: #d0a000;
+      }
+
+      #content-header .critical 
+      {
+        color: red;
+      }
+      
+      #source-listing 
+      {
+        margin-bottom: 24px;
+      }
+
+      #source-listing ol 
+      {
+        padding: 0 0 0 50px;
+        width: 90%;
+        font-family: monospace;
+        list-style-position: outside;
+      }
+
+      #source-listing ol li 
+      {
+        line-height: 18px;
+        font-size: small;
+      }
+        
+      #source-listing ol code 
+      {
+        padding:  0 .001em 0 0; /* Firefox doesn't render empty li's properly */
+        font-size: medium;
+        white-space: pre;
+      }
+   </style>
+  </head>
+
+  <body>
+
+<div class="nav">
+  <a href="filebrowser.actions.html">filebrowser.actions</a> &lt;&lt;
+  <a href="../index.html">index</a>
+  &gt;&gt; <a href="filebrowser.decorators.html">filebrowser.decorators</a>
+</div>
+
+<div id="content-header">
+  <h1>
+    <span id="module-name">filebrowser.base</span>:
+    323 total statements,
+    <span class="critical">0.0% covered</span>
+  </h1>
+  <p>Generated: Tue 2015-03-10 22:42 MSK</p>
+  <p>Source file: /Users/greenteamer/Desktop/Django/env/sp/lib/python2.7/site-packages/filebrowser/base.py</p>
+  <p>
+    Stats:
+    <span class="executed">0 executed</span>,
+    <span class="missed">301 missed</span>,
+    <span class="excluded">22 excluded</span>,
+    <span class="ignored">254 ignored</span> 
+  </p> 
+</div>
+
+<div id="source-listing">
+  <ol>
+    <li class="ignored"><code># coding: utf-8</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># PYTHON IMPORTS</code></li>
+<li class="excluded"><code>import os</code></li>
+<li class="excluded"><code>import datetime</code></li>
+<li class="excluded"><code>import time</code></li>
+<li class="excluded"><code>import platform</code></li>
+<li class="excluded"><code>import mimetypes</code></li>
+<li class="excluded"><code>from tempfile import NamedTemporaryFile</code></li>
+<li class="excluded"><code>import warnings</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># DJANGO IMPORTS</code></li>
+<li class="excluded"><code>from django.core.files import File</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># FILEBROWSER IMPORTS</code></li>
+<li class="excluded"><code>from filebrowser.settings import EXTENSIONS, VERSIONS, ADMIN_VERSIONS, VERSIONS_BASEDIR, VERSION_QUALITY, PLACEHOLDER, FORCE_PLACEHOLDER, SHOW_PLACEHOLDER, STRICT_PIL, IMAGE_MAXBLOCK, DEFAULT_PERMISSIONS</code></li>
+<li class="excluded"><code>from filebrowser.utils import path_strip, scale_and_crop</code></li>
+<li class="excluded"><code>from django.utils.encoding import python_2_unicode_compatible, smart_str</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code># PIL import</code></li>
+<li class="missed"><code>if STRICT_PIL:</code></li>
+<li class="excluded"><code>    from PIL import Image</code></li>
+<li class="excluded"><code>    from PIL import ImageFile</code></li>
+<li class="ignored"><code>else:</code></li>
+<li class="missed"><code>    try:</code></li>
+<li class="excluded"><code>        from PIL import Image</code></li>
+<li class="excluded"><code>        from PIL import ImageFile</code></li>
+<li class="missed"><code>    except ImportError:</code></li>
+<li class="excluded"><code>        import Image</code></li>
+<li class="excluded"><code>        import ImageFile</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>ImageFile.MAXBLOCK = IMAGE_MAXBLOCK  # default is 64k</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>class FileListing():</code></li>
+<li class="excluded"><code>    """</code></li>
+<li class="ignored"><code>    The FileListing represents a group of FileObjects/FileDirObjects.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    An example::</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        from filebrowser.base import FileListing</code></li>
+<li class="ignored"><code>        filelisting = FileListing(path, sorting_by='date', sorting_order='desc')</code></li>
+<li class="ignored"><code>        print filelisting.files_listing_total()</code></li>
+<li class="ignored"><code>        print filelisting.results_listing_total()</code></li>
+<li class="ignored"><code>        for fileobject in filelisting.files_listing_total():</code></li>
+<li class="ignored"><code>            print fileobject.filetype</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    where path is a relative path to a storage location</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code>    # Four variables to store the length of a listing obtained by various listing methods</code></li>
+<li class="ignored"><code>    # (updated whenever a particular listing method is called).</code></li>
+<li class="missed"><code>    _results_listing_total = None</code></li>
+<li class="missed"><code>    _results_walk_total = None</code></li>
+<li class="missed"><code>    _results_listing_filtered = None</code></li>
+<li class="missed"><code>    _results_walk_total = None</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def __init__(self, path, filter_func=None, sorting_by=None, sorting_order=None, site=None):</code></li>
+<li class="missed"><code>        self.path = path</code></li>
+<li class="missed"><code>        self.filter_func = filter_func</code></li>
+<li class="missed"><code>        self.sorting_by = sorting_by</code></li>
+<li class="missed"><code>        self.sorting_order = sorting_order</code></li>
+<li class="missed"><code>        if not site:</code></li>
+<li class="excluded"><code>            from filebrowser.sites import site as default_site</code></li>
+<li class="missed"><code>            site = default_site</code></li>
+<li class="missed"><code>        self.site = site</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    # HELPER METHODS</code></li>
+<li class="ignored"><code>    # sort_by_attr</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def sort_by_attr(self, seq, attr):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Sort the sequence of objects by object's attribute</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        Arguments:</code></li>
+<li class="ignored"><code>        seq  - the list or any sequence (including immutable one) of objects to sort.</code></li>
+<li class="ignored"><code>        attr - the name of attribute to sort by</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        Returns:</code></li>
+<li class="ignored"><code>        the sorted list of objects.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="excluded"><code>        import operator</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        # Use the "Schwartzian transform"</code></li>
+<li class="ignored"><code>        # Create the auxiliary list of tuples where every i-th tuple has form</code></li>
+<li class="ignored"><code>        # (seq[i].attr, i, seq[i]) and sort it. The second item of tuple is needed not</code></li>
+<li class="ignored"><code>        # only to provide stable sorting, but mainly to eliminate comparison of objects</code></li>
+<li class="ignored"><code>        # (which can be expensive or prohibited) in case of equal attribute values.</code></li>
+<li class="missed"><code>        intermed = sorted(zip(map(getattr, seq, (attr,)*len(seq)), range(len(seq)), seq))</code></li>
+<li class="missed"><code>        return list(map(operator.getitem, intermed, (-1,) * len(intermed)))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    _is_folder_stored = None</code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def is_folder(self):</code></li>
+<li class="missed"><code>        if self._is_folder_stored is None:</code></li>
+<li class="missed"><code>            self._is_folder_stored = self.site.storage.isdir(self.path)</code></li>
+<li class="missed"><code>        return self._is_folder_stored</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def listing(self):</code></li>
+<li class="ignored"><code>        "List all files for path"</code></li>
+<li class="missed"><code>        if self.is_folder:</code></li>
+<li class="missed"><code>            dirs, files = self.site.storage.listdir(self.path)</code></li>
+<li class="missed"><code>            return (f for f in dirs + files)</code></li>
+<li class="missed"><code>        return []</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def _walk(self, path, filelisting):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Recursively walks the path and collects all files and</code></li>
+<li class="ignored"><code>        directories.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        Danger: Symbolic links can create cycles and this function</code></li>
+<li class="ignored"><code>        ends up in a regression.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="missed"><code>        dirs, files = self.site.storage.listdir(path)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if dirs:</code></li>
+<li class="missed"><code>            for d in dirs:</code></li>
+<li class="missed"><code>                self._walk(os.path.join(path, d), filelisting)</code></li>
+<li class="missed"><code>                filelisting.extend([path_strip(os.path.join(path, d), self.site.directory)])</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if files:</code></li>
+<li class="missed"><code>            for f in files:</code></li>
+<li class="missed"><code>                filelisting.extend([path_strip(os.path.join(path, f), self.site.directory)])</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def walk(self):</code></li>
+<li class="ignored"><code>        "Walk all files for path"</code></li>
+<li class="missed"><code>        filelisting = []</code></li>
+<li class="missed"><code>        if self.is_folder:</code></li>
+<li class="missed"><code>            self._walk(self.path, filelisting)</code></li>
+<li class="missed"><code>        return filelisting</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    # Cached results of files_listing_total (without any filters and sorting applied)</code></li>
+<li class="missed"><code>    _fileobjects_total = None</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def files_listing_total(self):</code></li>
+<li class="ignored"><code>        "Returns FileObjects for all files in listing"</code></li>
+<li class="missed"><code>        if self._fileobjects_total is None:</code></li>
+<li class="missed"><code>            self._fileobjects_total = []</code></li>
+<li class="missed"><code>            for item in self.listing():</code></li>
+<li class="missed"><code>                fileobject = FileObject(os.path.join(self.path, item), site=self.site)</code></li>
+<li class="missed"><code>                self._fileobjects_total.append(fileobject)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        files = self._fileobjects_total</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        if self.sorting_by:</code></li>
+<li class="missed"><code>            files = self.sort_by_attr(files, self.sorting_by)</code></li>
+<li class="missed"><code>        if self.sorting_order == "desc":</code></li>
+<li class="missed"><code>            files.reverse()</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        self._results_listing_total = len(files)</code></li>
+<li class="missed"><code>        return files</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def files_walk_total(self):</code></li>
+<li class="ignored"><code>        "Returns FileObjects for all files in walk"</code></li>
+<li class="missed"><code>        files = []</code></li>
+<li class="missed"><code>        for item in self.walk():</code></li>
+<li class="missed"><code>            fileobject = FileObject(os.path.join(self.site.directory, item), site=self.site)</code></li>
+<li class="missed"><code>            files.append(fileobject)</code></li>
+<li class="missed"><code>        if self.sorting_by:</code></li>
+<li class="missed"><code>            files = self.sort_by_attr(files, self.sorting_by)</code></li>
+<li class="missed"><code>        if self.sorting_order == "desc":</code></li>
+<li class="missed"><code>            files.reverse()</code></li>
+<li class="missed"><code>        self._results_walk_total = len(files)</code></li>
+<li class="missed"><code>        return files</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def files_listing_filtered(self):</code></li>
+<li class="ignored"><code>        "Returns FileObjects for filtered files in listing"</code></li>
+<li class="missed"><code>        if self.filter_func:</code></li>
+<li class="missed"><code>            listing = list(filter(self.filter_func, self.files_listing_total()))</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            listing = self.files_listing_total()</code></li>
+<li class="missed"><code>        self._results_listing_filtered = len(listing)</code></li>
+<li class="missed"><code>        return listing</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def files_walk_filtered(self):</code></li>
+<li class="ignored"><code>        "Returns FileObjects for filtered files in walk"</code></li>
+<li class="missed"><code>        if self.filter_func:</code></li>
+<li class="missed"><code>            listing = list(filter(self.filter_func, self.files_walk_total()))</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            listing = self.files_walk_total()</code></li>
+<li class="missed"><code>        self._results_walk_filtered = len(listing)</code></li>
+<li class="missed"><code>        return listing</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def results_listing_total(self):</code></li>
+<li class="ignored"><code>        "Counter: all files"</code></li>
+<li class="missed"><code>        if self._results_listing_total is not None:</code></li>
+<li class="missed"><code>            return self._results_listing_total</code></li>
+<li class="missed"><code>        return len(self.files_listing_total())</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def results_walk_total(self):</code></li>
+<li class="ignored"><code>        "Counter: all files"</code></li>
+<li class="missed"><code>        if self._results_walk_total is not None:</code></li>
+<li class="missed"><code>            return self._results_walk_total</code></li>
+<li class="missed"><code>        return len(self.files_walk_total())</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def results_listing_filtered(self):</code></li>
+<li class="ignored"><code>        "Counter: filtered files"</code></li>
+<li class="missed"><code>        if self._results_listing_filtered is not None:</code></li>
+<li class="missed"><code>            return self._results_listing_filtered</code></li>
+<li class="missed"><code>        return len(self.files_listing_filtered())</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def results_walk_filtered(self):</code></li>
+<li class="ignored"><code>        "Counter: filtered files"</code></li>
+<li class="missed"><code>        if self._results_walk_filtered is not None:</code></li>
+<li class="missed"><code>            return self._results_walk_filtered</code></li>
+<li class="missed"><code>        return len(self.files_walk_filtered())</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>@python_2_unicode_compatible</code></li>
+<li class="ignored"><code>class FileObject():</code></li>
+<li class="excluded"><code>    """</code></li>
+<li class="ignored"><code>    The FileObject represents a file (or directory) on the server.</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    An example::</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>        from filebrowser.base import FileObject</code></li>
+<li class="ignored"><code>        fileobject = FileObject(path)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    where path is a relative path to a storage location</code></li>
+<li class="ignored"><code>    """</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def __init__(self, path, site=None):</code></li>
+<li class="missed"><code>        if not site:</code></li>
+<li class="excluded"><code>            from filebrowser.sites import site as default_site</code></li>
+<li class="missed"><code>            site = default_site</code></li>
+<li class="missed"><code>        self.site = site</code></li>
+<li class="missed"><code>        if platform.system() == 'Windows':</code></li>
+<li class="missed"><code>            self.path = path.replace('\\', '/')</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            self.path = path</code></li>
+<li class="missed"><code>        self.head = os.path.dirname(path)</code></li>
+<li class="missed"><code>        self.filename = os.path.basename(path)</code></li>
+<li class="missed"><code>        self.filename_lower = self.filename.lower()</code></li>
+<li class="missed"><code>        self.filename_root, self.extension = os.path.splitext(self.filename)</code></li>
+<li class="missed"><code>        self.mimetype = mimetypes.guess_type(self.filename)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def __str__(self):</code></li>
+<li class="missed"><code>        return smart_str(self.path)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def name(self):</code></li>
+<li class="missed"><code>        return self.path</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def __repr__(self):</code></li>
+<li class="missed"><code>        return "&lt;%s: %s&gt;" % (self.__class__.__name__, self or "None")</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def __len__(self):</code></li>
+<li class="missed"><code>        return len(self.path)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    # HELPER METHODS</code></li>
+<li class="ignored"><code>    # _get_file_type</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def _get_file_type(self):</code></li>
+<li class="ignored"><code>        "Get file type as defined in EXTENSIONS."</code></li>
+<li class="missed"><code>        file_type = ''</code></li>
+<li class="missed"><code>        for k, v in EXTENSIONS.items():</code></li>
+<li class="missed"><code>            for extension in v:</code></li>
+<li class="missed"><code>                if self.extension.lower() == extension.lower():</code></li>
+<li class="missed"><code>                    file_type = k</code></li>
+<li class="missed"><code>        return file_type</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    # GENERAL ATTRIBUTES/PROPERTIES</code></li>
+<li class="ignored"><code>    # filetype</code></li>
+<li class="ignored"><code>    # filesize</code></li>
+<li class="ignored"><code>    # date</code></li>
+<li class="ignored"><code>    # datetime</code></li>
+<li class="ignored"><code>    # exists</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    _filetype_stored = None</code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def filetype(self):</code></li>
+<li class="ignored"><code>        "Filetype as defined with EXTENSIONS"</code></li>
+<li class="missed"><code>        if self._filetype_stored is not None:</code></li>
+<li class="missed"><code>            return self._filetype_stored</code></li>
+<li class="missed"><code>        if self.is_folder:</code></li>
+<li class="missed"><code>            self._filetype_stored = 'Folder'</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            self._filetype_stored = self._get_file_type()</code></li>
+<li class="missed"><code>        return self._filetype_stored</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    _filesize_stored = None</code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def filesize(self):</code></li>
+<li class="ignored"><code>        "Filesize in bytes"</code></li>
+<li class="missed"><code>        if self._filesize_stored is not None:</code></li>
+<li class="missed"><code>            return self._filesize_stored</code></li>
+<li class="missed"><code>        if self.exists:</code></li>
+<li class="missed"><code>            self._filesize_stored = self.site.storage.size(self.path)</code></li>
+<li class="missed"><code>            return self._filesize_stored</code></li>
+<li class="missed"><code>        return None</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    _date_stored = None</code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def date(self):</code></li>
+<li class="ignored"><code>        "Modified time (from site.storage) as float (mktime)"</code></li>
+<li class="missed"><code>        if self._date_stored is not None:</code></li>
+<li class="missed"><code>            return self._date_stored</code></li>
+<li class="missed"><code>        if self.exists:</code></li>
+<li class="missed"><code>            self._date_stored = time.mktime(self.site.storage.modified_time(self.path).timetuple())</code></li>
+<li class="missed"><code>            return self._date_stored</code></li>
+<li class="missed"><code>        return None</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def datetime(self):</code></li>
+<li class="ignored"><code>        "Modified time (from site.storage) as datetime"</code></li>
+<li class="missed"><code>        if self.date:</code></li>
+<li class="missed"><code>            return datetime.datetime.fromtimestamp(self.date)</code></li>
+<li class="missed"><code>        return None</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    _exists_stored = None</code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def exists(self):</code></li>
+<li class="ignored"><code>        "True, if the path exists, False otherwise"</code></li>
+<li class="missed"><code>        if self._exists_stored is None:</code></li>
+<li class="missed"><code>            self._exists_stored = self.site.storage.exists(self.path)</code></li>
+<li class="missed"><code>        return self._exists_stored</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    # PATH/URL ATTRIBUTES/PROPERTIES</code></li>
+<li class="ignored"><code>    # path (see init)</code></li>
+<li class="ignored"><code>    # path_relative_directory</code></li>
+<li class="ignored"><code>    # path_full</code></li>
+<li class="ignored"><code>    # dirname</code></li>
+<li class="ignored"><code>    # url</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def path_relative_directory(self):</code></li>
+<li class="ignored"><code>        "Path relative to site.directory"</code></li>
+<li class="missed"><code>        return path_strip(self.path, self.site.directory)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def path_full(self):</code></li>
+<li class="ignored"><code>        "Absolute path as defined with site.storage"</code></li>
+<li class="missed"><code>        return self.site.storage.path(self.path)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def dirname(self):</code></li>
+<li class="ignored"><code>        "The directory (not including site.directory)"</code></li>
+<li class="missed"><code>        return os.path.dirname(self.path_relative_directory)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def url(self):</code></li>
+<li class="ignored"><code>        "URL for the file/folder as defined with site.storage"</code></li>
+<li class="missed"><code>        return self.site.storage.url(self.path)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    # IMAGE ATTRIBUTES/PROPERTIES</code></li>
+<li class="ignored"><code>    # dimensions</code></li>
+<li class="ignored"><code>    # width</code></li>
+<li class="ignored"><code>    # height</code></li>
+<li class="ignored"><code>    # aspectratio</code></li>
+<li class="ignored"><code>    # orientation</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    _dimensions_stored = None</code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def dimensions(self):</code></li>
+<li class="ignored"><code>        "Image dimensions as a tuple"</code></li>
+<li class="missed"><code>        if self.filetype != 'Image':</code></li>
+<li class="missed"><code>            return None</code></li>
+<li class="missed"><code>        if self._dimensions_stored is not None:</code></li>
+<li class="missed"><code>            return self._dimensions_stored</code></li>
+<li class="missed"><code>        try:</code></li>
+<li class="missed"><code>            im = Image.open(self.site.storage.open(self.path))</code></li>
+<li class="missed"><code>            self._dimensions_stored = im.size</code></li>
+<li class="missed"><code>        except:</code></li>
+<li class="missed"><code>            pass</code></li>
+<li class="missed"><code>        return self._dimensions_stored</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def width(self):</code></li>
+<li class="ignored"><code>        "Image width in px"</code></li>
+<li class="missed"><code>        if self.dimensions:</code></li>
+<li class="missed"><code>            return self.dimensions[0]</code></li>
+<li class="missed"><code>        return None</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def height(self):</code></li>
+<li class="ignored"><code>        "Image height in px"</code></li>
+<li class="missed"><code>        if self.dimensions:</code></li>
+<li class="missed"><code>            return self.dimensions[1]</code></li>
+<li class="missed"><code>        return None</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def aspectratio(self):</code></li>
+<li class="ignored"><code>        "Aspect ratio (float format)"</code></li>
+<li class="missed"><code>        if self.dimensions:</code></li>
+<li class="missed"><code>            return float(self.width)/float(self.height)</code></li>
+<li class="missed"><code>        return None</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def orientation(self):</code></li>
+<li class="ignored"><code>        "Image orientation, either 'Landscape' or 'Portrait'"</code></li>
+<li class="missed"><code>        if self.dimensions:</code></li>
+<li class="missed"><code>            if self.dimensions[0] &gt;= self.dimensions[1]:</code></li>
+<li class="missed"><code>                return "Landscape"</code></li>
+<li class="ignored"><code>            else:</code></li>
+<li class="missed"><code>                return "Portrait"</code></li>
+<li class="missed"><code>        return None</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    # FOLDER ATTRIBUTES/PROPERTIES</code></li>
+<li class="ignored"><code>    # directory (deprecated)</code></li>
+<li class="ignored"><code>    # folder (deprecated)</code></li>
+<li class="ignored"><code>    # is_folder</code></li>
+<li class="ignored"><code>    # is_empty</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def directory(self):</code></li>
+<li class="ignored"><code>        "Folder(s) relative from site.directory"</code></li>
+<li class="missed"><code>        warnings.warn("directory will be removed with 3.6, use path_relative_directory instead.", DeprecationWarning)</code></li>
+<li class="missed"><code>        return path_strip(self.path, self.site.directory)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def folder(self):</code></li>
+<li class="ignored"><code>        "Parent folder(s)"</code></li>
+<li class="missed"><code>        warnings.warn("directory will be removed with 3.6, use dirname instead.", DeprecationWarning)</code></li>
+<li class="missed"><code>        return os.path.dirname(path_strip(os.path.join(self.head, ''), self.site.directory))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    _is_folder_stored = None</code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def is_folder(self):</code></li>
+<li class="ignored"><code>        "True, if path is a folder"</code></li>
+<li class="missed"><code>        if self._is_folder_stored is None:</code></li>
+<li class="missed"><code>            self._is_folder_stored = self.site.storage.isdir(self.path)</code></li>
+<li class="missed"><code>        return self._is_folder_stored</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def is_empty(self):</code></li>
+<li class="ignored"><code>        "True, if folder is empty. False otherwise, or if the object is not a folder."</code></li>
+<li class="missed"><code>        if self.is_folder:</code></li>
+<li class="missed"><code>            dirs, files = self.site.storage.listdir(self.path)</code></li>
+<li class="missed"><code>            if not dirs and not files:</code></li>
+<li class="missed"><code>                return True</code></li>
+<li class="missed"><code>        return False</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    # VERSION ATTRIBUTES/PROPERTIES</code></li>
+<li class="ignored"><code>    # is_version</code></li>
+<li class="ignored"><code>    # versions_basedir</code></li>
+<li class="ignored"><code>    # original</code></li>
+<li class="ignored"><code>    # original_filename</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def is_version(self):</code></li>
+<li class="ignored"><code>        "True if file is a version, false otherwise"</code></li>
+<li class="missed"><code>        tmp = self.filename_root.split("_")</code></li>
+<li class="missed"><code>        if tmp[len(tmp)-1] in VERSIONS:</code></li>
+<li class="missed"><code>            return True</code></li>
+<li class="missed"><code>        return False</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def versions_basedir(self):</code></li>
+<li class="ignored"><code>        "Main directory for storing versions (either VERSIONS_BASEDIR or site.directory)"</code></li>
+<li class="missed"><code>        if VERSIONS_BASEDIR:</code></li>
+<li class="missed"><code>            return VERSIONS_BASEDIR</code></li>
+<li class="missed"><code>        elif self.site.directory:</code></li>
+<li class="missed"><code>            return self.site.directory</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            return ""</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def original(self):</code></li>
+<li class="ignored"><code>        "Returns the original FileObject"</code></li>
+<li class="missed"><code>        if self.is_version:</code></li>
+<li class="missed"><code>            relative_path = self.head.replace(self.versions_basedir, "").lstrip("/")</code></li>
+<li class="missed"><code>            return FileObject(os.path.join(self.site.directory, relative_path, self.original_filename), site=self.site)</code></li>
+<li class="missed"><code>        return self</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    @property</code></li>
+<li class="ignored"><code>    def original_filename(self):</code></li>
+<li class="ignored"><code>        "Get the filename of an original image from a version"</code></li>
+<li class="missed"><code>        tmp = self.filename_root.split("_")</code></li>
+<li class="missed"><code>        if tmp[len(tmp)-1] in VERSIONS:</code></li>
+<li class="missed"><code>            return u"%s%s" % (self.filename_root.replace("_%s" % tmp[len(tmp)-1], ""), self.extension)</code></li>
+<li class="missed"><code>        return self.filename</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    # VERSION METHODS</code></li>
+<li class="ignored"><code>    # versions()</code></li>
+<li class="ignored"><code>    # admin_versions()</code></li>
+<li class="ignored"><code>    # version_name(suffix)</code></li>
+<li class="ignored"><code>    # version_path(suffix)</code></li>
+<li class="ignored"><code>    # version_generate(suffix)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def versions(self):</code></li>
+<li class="ignored"><code>        "List of versions (not checking if they actually exist)"</code></li>
+<li class="missed"><code>        version_list = []</code></li>
+<li class="missed"><code>        if self.filetype == "Image" and not self.is_version:</code></li>
+<li class="missed"><code>            for version in sorted(VERSIONS):</code></li>
+<li class="missed"><code>                version_list.append(os.path.join(self.versions_basedir, self.dirname, self.version_name(version)))</code></li>
+<li class="missed"><code>        return version_list</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def admin_versions(self):</code></li>
+<li class="ignored"><code>        "List of admin versions (not checking if they actually exist)"</code></li>
+<li class="missed"><code>        version_list = []</code></li>
+<li class="missed"><code>        if self.filetype == "Image" and not self.is_version:</code></li>
+<li class="missed"><code>            for version in ADMIN_VERSIONS:</code></li>
+<li class="missed"><code>                version_list.append(os.path.join(self.versions_basedir, self.dirname, self.version_name(version)))</code></li>
+<li class="missed"><code>        return version_list</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def version_name(self, version_suffix):</code></li>
+<li class="ignored"><code>        "Name of a version"  # FIXME: version_name for version?</code></li>
+<li class="missed"><code>        return self.filename_root + "_" + version_suffix + self.extension</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def version_path(self, version_suffix):</code></li>
+<li class="ignored"><code>        "Path to a version (relative to storage location)"  # FIXME: version_path for version?</code></li>
+<li class="missed"><code>        return os.path.join(self.versions_basedir, self.dirname, self.version_name(version_suffix))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def version_generate(self, version_suffix):</code></li>
+<li class="ignored"><code>        "Generate a version"  # FIXME: version_generate for version?</code></li>
+<li class="missed"><code>        path = self.path</code></li>
+<li class="missed"><code>        version_path = self.version_path(version_suffix)</code></li>
+<li class="missed"><code>        if not self.site.storage.isfile(version_path):</code></li>
+<li class="missed"><code>            version_path = self._generate_version(version_suffix)</code></li>
+<li class="missed"><code>        elif self.site.storage.modified_time(path) &gt; self.site.storage.modified_time(version_path):</code></li>
+<li class="missed"><code>            version_path = self._generate_version(version_suffix)</code></li>
+<li class="missed"><code>        return FileObject(version_path, site=self.site)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def _generate_version(self, version_suffix):</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code>        Generate Version for an Image.</code></li>
+<li class="ignored"><code>        value has to be a path relative to the storage location.</code></li>
+<li class="ignored"><code>        """</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        tmpfile = File(NamedTemporaryFile())</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>        try:</code></li>
+<li class="missed"><code>            f = self.site.storage.open(self.path)</code></li>
+<li class="missed"><code>        except IOError:</code></li>
+<li class="missed"><code>            return ""</code></li>
+<li class="missed"><code>        im = Image.open(f)</code></li>
+<li class="missed"><code>        version_path = self.version_path(version_suffix)</code></li>
+<li class="missed"><code>        version_dir, version_basename = os.path.split(version_path)</code></li>
+<li class="missed"><code>        root, ext = os.path.splitext(version_basename)</code></li>
+<li class="missed"><code>        version = scale_and_crop(im, VERSIONS[version_suffix]['width'], VERSIONS[version_suffix]['height'], VERSIONS[version_suffix]['opts'])</code></li>
+<li class="missed"><code>        if not version:</code></li>
+<li class="missed"><code>            version = im</code></li>
+<li class="ignored"><code>        # version methods as defined with VERSIONS</code></li>
+<li class="missed"><code>        if 'methods' in VERSIONS[version_suffix].keys():</code></li>
+<li class="missed"><code>            for m in VERSIONS[version_suffix]['methods']:</code></li>
+<li class="missed"><code>                if callable(m):</code></li>
+<li class="missed"><code>                    version = m(version)</code></li>
+<li class="ignored"><code>        # save version</code></li>
+<li class="missed"><code>        try:</code></li>
+<li class="missed"><code>            version.save(tmpfile, format=Image.EXTENSION[ext.lower()], quality=VERSION_QUALITY, optimize=(os.path.splitext(version_path)[1] != '.gif'))</code></li>
+<li class="missed"><code>        except IOError:</code></li>
+<li class="missed"><code>            version.save(tmpfile, format=Image.EXTENSION[ext.lower()], quality=VERSION_QUALITY)</code></li>
+<li class="ignored"><code>        # remove old version, if any</code></li>
+<li class="missed"><code>        if version_path != self.site.storage.get_available_name(version_path):</code></li>
+<li class="missed"><code>            self.site.storage.delete(version_path)</code></li>
+<li class="missed"><code>        self.site.storage.save(version_path, tmpfile)</code></li>
+<li class="ignored"><code>        # set permissions</code></li>
+<li class="missed"><code>        if DEFAULT_PERMISSIONS is not None:</code></li>
+<li class="missed"><code>            os.chmod(self.site.storage.path(version_path), DEFAULT_PERMISSIONS)</code></li>
+<li class="missed"><code>        return version_path</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code>    # DELETE METHODS</code></li>
+<li class="ignored"><code>    # delete()</code></li>
+<li class="ignored"><code>    # delete_versions()</code></li>
+<li class="ignored"><code>    # delete_admin_versions()</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def delete(self):</code></li>
+<li class="ignored"><code>        "Delete FileObject (deletes a folder recursively)"</code></li>
+<li class="missed"><code>        if self.is_folder:</code></li>
+<li class="missed"><code>            self.site.storage.rmtree(self.path)</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            self.site.storage.delete(self.path)</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def delete_versions(self):</code></li>
+<li class="ignored"><code>        "Delete versions"</code></li>
+<li class="missed"><code>        for version in self.versions():</code></li>
+<li class="missed"><code>            try:</code></li>
+<li class="missed"><code>                self.site.storage.delete(version)</code></li>
+<li class="missed"><code>            except:</code></li>
+<li class="missed"><code>                pass</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def delete_admin_versions(self):</code></li>
+<li class="ignored"><code>        "Delete admin versions"</code></li>
+<li class="missed"><code>        for version in self.admin_versions():</code></li>
+<li class="missed"><code>            try:</code></li>
+<li class="missed"><code>                self.site.storage.delete(version)</code></li>
+<li class="missed"><code>            except:</code></li>
+<li class="missed"><code>                pass</code></li>
+  </ol>
+</div>
+
+<div class="nav">
+  <a href="filebrowser.actions.html">filebrowser.actions</a> &lt;&lt;
+  <a href="../index.html">index</a>
+  &gt;&gt; <a href="filebrowser.decorators.html">filebrowser.decorators</a>
+</div>
+
+  </body>
+</html>
+

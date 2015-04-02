@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib import auth
 from django.utils.translation import ugettext, ugettext_lazy as _
 from captcha.fields import CaptchaField
-from project.accounts.models import OrganizerProfile, getOrganizerProfile
+from project.accounts.models import OrganizerProfile, getProfile, MemberProfile
 from project.core.models import Purchase, Catalog, CatalogProductProperties, Product, ProductImages, Properties
 from django.forms import ModelForm, Form
 from project.core.functions import *
@@ -22,16 +22,35 @@ class OrganizerProfileForm(forms.ModelForm):
         self.fields['city'].widget.attrs = {'placeholder':'Ваш город', 'class':'form-control'}
         self.fields['zipCode'].widget.attrs = {'placeholder':'Почтовый индекс', 'class':'form-control'}
         self.fields['icon'].widget.attrs = {'class':'btn btn-block btn-default btn-sm'}
-
     class Meta:
         model = OrganizerProfile
         # widgets = {'user': forms.HiddenInput()}
         exclude = ('user',)
-
     def save(self, user):
         obj = super(OrganizerProfileForm, self).save(commit=False)
         obj.user = user
         return obj.save()
+
+
+class MemberProfileForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(MemberProfileForm, self).__init__(*args, **kwargs)
+        self.fields['firstName'].widget.attrs = {'placeholder':'Ваше Имя', 'class':'form-control'}
+        self.fields['lastName'].widget.attrs = {'placeholder':'Ваша Фамилия', 'class':'form-control'}
+        self.fields['email'].widget.attrs = {'placeholder':'Ваш e-mail', 'class':'form-control'}
+        self.fields['phone'].widget.attrs = {'placeholder':'Ваш телефон', 'class':'form-control'}
+        self.fields['address'].widget.attrs = {'placeholder':'Ваш адрес', 'class':'form-control'}
+        self.fields['city'].widget.attrs = {'placeholder':'Ваш город', 'class':'form-control'}
+        self.fields['zipCode'].widget.attrs = {'placeholder':'Почтовый индекс', 'class':'form-control'}
+        self.fields['icon'].widget.attrs = {'class':'btn btn-block btn-default btn-sm'}
+    class Meta:
+        model = MemberProfile
+        exclude = ('user',)
+    def save(self, user):
+        obj = super(MemberProfileForm, self).save(commit=False)
+        obj.user = user
+        return obj.save()
+
 
 class UserRegistrationForm(forms.ModelForm):
     error_messages = {
@@ -55,7 +74,6 @@ class UserRegistrationForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ("username",)
-
     def clean_username(self):
         username = self.cleaned_data["username"]
         try:
@@ -63,13 +81,13 @@ class UserRegistrationForm(forms.ModelForm):
         except User.DoesNotExist:
             return username
         raise forms.ValidationError(self.error_messages['duplicate_username'])
-
     def save(self, commit=True):
         user = super(UserRegistrationForm, self).save(commit=False)
         user.set_password(self.cleaned_data["password1"])
         if commit:
             user.save()
         return user
+
 
 class UserLoginForm(forms.ModelForm):
     error_messages = {
@@ -87,24 +105,6 @@ class UserLoginForm(forms.ModelForm):
         model = User
         fields = ("username",)
 
-    # def clean_username(self):
-    #     username = self.cleaned_data["username"]
-    #     try:
-    #         User.objects.get(username=username)
-    #     except User.DoesNotExist:
-    #         return username
-    #     raise forms.ValidationError(self.error_messages['duplicate_username'])
-
-    # def auth_user(self):
-    #     username = self.cleaned_data["username"]
-    #     password = self.cleaned_data["password"]
-    #     try:
-    #         User.objects.get(username=username)
-    #         user = auth.authenticate(username=username, password=password)
-    #         return user
-    #     except User.DoesNotExist:
-    #         return forms.ValidationError(self.error_messages['wrong'])
-
 
 class purchaseForm(ModelForm):
     class Meta:
@@ -113,12 +113,12 @@ class purchaseForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(purchaseForm, self).__init__(*args, **kwargs)
-        self.fields['name'].widget.attrs = {'placeholder': 'Введите название закупки', 'class': 'form-control'}
-        self.fields['description'].widget.attrs = {'placeholder': 'Введите описание закупки', 'class': 'form-control'}
+        for field in self.fields:
+            self.fields[field].widget.attrs = {'placeholder': self.fields[field].label, 'class': 'form-control'}
 
     def save(self, user):
         obj = super(purchaseForm, self).save(commit=False)
-        obj.organizerProfile = getOrganizerProfile(user)
+        obj.organizerProfile = getProfile(user)
         obj.save()
         return obj
 

@@ -1,0 +1,317 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+    <title>Test coverage report: south.exceptions</title>
+    <style type="text/css" media="screen">
+      a
+      {
+        color: #3d707a;
+      }
+      
+      a:hover, a:active
+      {
+        color: #bf7d18;
+      }
+    
+      body 
+      {
+        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+        font-size: 13px;
+      }
+      
+      .nav 
+      {
+        font-size: 12px;
+        margin-left: 50px;
+      }
+
+      .ignored
+      {
+        color: #707070;
+      }
+
+      .executed 
+      {
+        color: #3d9900;
+      }
+
+      .missed 
+      {
+        color: red;
+        font-weight: bold;
+      }
+
+      .excluded 
+      {
+        color: #6090f0;
+        font-weight: lighter;
+      }
+    
+      #content-header 
+      {
+        font-size: 12px;
+        padding: 18px 0 18px 50px;
+      }
+
+      #content-header h1 
+      {
+        font-size: 16px;
+        margin: 10px 0 0 0;
+        color: #909090;
+      }
+      
+      #module-name
+      {
+        color: #583707;
+      }
+    
+      #content-header p
+      {
+        font-size: 13px;
+        margin: 0;
+        color: #909090;
+      }
+
+      #content-header .normal 
+      {
+        color: #609030;
+      }
+
+      #content-header .warning 
+      {
+        color: #d0a000;
+      }
+
+      #content-header .critical 
+      {
+        color: red;
+      }
+      
+      #source-listing 
+      {
+        margin-bottom: 24px;
+      }
+
+      #source-listing ol 
+      {
+        padding: 0 0 0 50px;
+        width: 90%;
+        font-family: monospace;
+        list-style-position: outside;
+      }
+
+      #source-listing ol li 
+      {
+        line-height: 18px;
+        font-size: small;
+      }
+        
+      #source-listing ol code 
+      {
+        padding:  0 .001em 0 0; /* Firefox doesn't render empty li's properly */
+        font-size: medium;
+        white-space: pre;
+      }
+   </style>
+  </head>
+
+  <body>
+
+<div class="nav">
+  <a href="sorl.thumbnail.shortcuts.html">sorl.thumbnail.shortcuts</a> &lt;&lt;
+  <a href="../index.html">index</a>
+  &gt;&gt; <a href="south.logger.html">south.logger</a>
+</div>
+
+<div id="content-header">
+  <h1>
+    <span id="module-name">south.exceptions</span>:
+    99 total statements,
+    <span class="critical">1.0% covered</span>
+  </h1>
+  <p>Generated: Tue 2015-03-10 22:42 MSK</p>
+  <p>Source file: /Users/greenteamer/Desktop/Django/env/sp/lib/python2.7/site-packages/south/exceptions.py</p>
+  <p>
+    Stats:
+    <span class="executed">1 executed</span>,
+    <span class="missed">96 missed</span>,
+    <span class="excluded">2 excluded</span>,
+    <span class="ignored">61 ignored</span> 
+  </p> 
+</div>
+
+<div id="source-listing">
+  <ol>
+    <li class="excluded"><code>from __future__ import print_function</code></li>
+<li class="ignored"><code></code></li>
+<li class="excluded"><code>from traceback import format_exception, format_exc</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>class SouthError(RuntimeError):</code></li>
+<li class="missed"><code>    pass</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>class SouthWarning(RuntimeWarning):</code></li>
+<li class="missed"><code>    pass</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>class BrokenMigration(SouthError):</code></li>
+<li class="missed"><code>    def __init__(self, migration, exc_info):</code></li>
+<li class="missed"><code>        self.migration = migration</code></li>
+<li class="missed"><code>        self.exc_info = exc_info</code></li>
+<li class="missed"><code>        if self.exc_info:</code></li>
+<li class="missed"><code>            self.traceback = ''.join(format_exception(*self.exc_info))</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            try:</code></li>
+<li class="missed"><code>                self.traceback = format_exc()</code></li>
+<li class="missed"><code>            except AttributeError: # Python3 when there is no previous exception</code></li>
+<li class="missed"><code>                self.traceback = None</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def __str__(self):</code></li>
+<li class="missed"><code>        return ("While loading migration '%(migration)s':\n"</code></li>
+<li class="ignored"><code>                '%(traceback)s' % self.__dict__)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>class UnknownMigration(BrokenMigration):</code></li>
+<li class="missed"><code>    def __str__(self):</code></li>
+<li class="missed"><code>        if not hasattr(self, "traceback"):</code></li>
+<li class="missed"><code>            self.traceback = ""</code></li>
+<li class="missed"><code>        return ("Migration '%(migration)s' probably doesn't exist.\n"</code></li>
+<li class="ignored"><code>                '%(traceback)s' % self.__dict__)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>class InvalidMigrationModule(SouthError):</code></li>
+<li class="missed"><code>    def __init__(self, application, module):</code></li>
+<li class="missed"><code>        self.application = application</code></li>
+<li class="missed"><code>        self.module = module</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def __str__(self):</code></li>
+<li class="missed"><code>        return ('The migration module specified for %(application)s, %(module)r, is invalid; the parent module does not exist.' % self.__dict__)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>class NoMigrations(SouthError):</code></li>
+<li class="missed"><code>    def __init__(self, application):</code></li>
+<li class="executed"><code>        self.application = application</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def __str__(self):</code></li>
+<li class="missed"><code>        return "Application '%(application)s' has no migrations." % self.__dict__</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>class MultiplePrefixMatches(SouthError):</code></li>
+<li class="missed"><code>    def __init__(self, prefix, matches):</code></li>
+<li class="missed"><code>        self.prefix = prefix</code></li>
+<li class="missed"><code>        self.matches = matches</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def __str__(self):</code></li>
+<li class="missed"><code>        self.matches_list = "\n    ".join([str(m) for m in self.matches])</code></li>
+<li class="missed"><code>        return ("Prefix '%(prefix)s' matches more than one migration:\n"</code></li>
+<li class="ignored"><code>                "    %(matches_list)s") % self.__dict__</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>class GhostMigrations(SouthError):</code></li>
+<li class="missed"><code>    def __init__(self, ghosts):</code></li>
+<li class="missed"><code>        self.ghosts = ghosts</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def __str__(self):</code></li>
+<li class="missed"><code>        self.ghosts_list = "\n    ".join([str(m) for m in self.ghosts])</code></li>
+<li class="missed"><code>        return ("\n\n ! These migrations are in the database but not on disk:\n"</code></li>
+<li class="ignored"><code>                "    %(ghosts_list)s\n"</code></li>
+<li class="ignored"><code>                " ! I'm not trusting myself; either fix this yourself by fiddling\n"</code></li>
+<li class="ignored"><code>                " ! with the south_migrationhistory table, or pass --delete-ghost-migrations\n"</code></li>
+<li class="ignored"><code>                " ! to South to have it delete ALL of these records (this may not be good).") % self.__dict__</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>class CircularDependency(SouthError):</code></li>
+<li class="missed"><code>    def __init__(self, trace):</code></li>
+<li class="missed"><code>        self.trace = trace</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def __str__(self):</code></li>
+<li class="missed"><code>        trace = " -&gt; ".join([str(s) for s in self.trace])</code></li>
+<li class="missed"><code>        return ("Found circular dependency:\n"</code></li>
+<li class="ignored"><code>                "    %s") % trace</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>class InconsistentMigrationHistory(SouthError):</code></li>
+<li class="missed"><code>    def __init__(self, problems):</code></li>
+<li class="missed"><code>        self.problems = problems</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def __str__(self):</code></li>
+<li class="missed"><code>        return ('Inconsistent migration history\n'</code></li>
+<li class="ignored"><code>                'The following options are available:\n'</code></li>
+<li class="ignored"><code>                '    --merge: will just attempt the migration ignoring any potential dependency conflicts.')</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>class DependsOnHigherMigration(SouthError):</code></li>
+<li class="missed"><code>    def __init__(self, migration, depends_on):</code></li>
+<li class="missed"><code>        self.migration = migration</code></li>
+<li class="missed"><code>        self.depends_on = depends_on</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def __str__(self):</code></li>
+<li class="missed"><code>        return "Lower migration '%(migration)s' depends on a higher migration '%(depends_on)s' in the same app." % self.__dict__</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>class DependsOnUnknownMigration(SouthError):</code></li>
+<li class="missed"><code>    def __init__(self, migration, depends_on):</code></li>
+<li class="missed"><code>        self.migration = migration</code></li>
+<li class="missed"><code>        self.depends_on = depends_on</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def __str__(self):</code></li>
+<li class="missed"><code>        print("Migration '%(migration)s' depends on unknown migration '%(depends_on)s'." % self.__dict__)</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>class DependsOnUnmigratedApplication(SouthError):</code></li>
+<li class="missed"><code>    def __init__(self, migration, application):</code></li>
+<li class="missed"><code>        self.migration = migration</code></li>
+<li class="missed"><code>        self.application = application</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def __str__(self):</code></li>
+<li class="missed"><code>        return "Migration '%(migration)s' depends on unmigrated application '%(application)s'." % self.__dict__</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>class FailedDryRun(SouthError):</code></li>
+<li class="missed"><code>    def __init__(self, migration, exc_info):</code></li>
+<li class="missed"><code>        self.migration = migration</code></li>
+<li class="missed"><code>        self.name = migration.name()</code></li>
+<li class="missed"><code>        self.exc_info = exc_info</code></li>
+<li class="missed"><code>        self.traceback = ''.join(format_exception(*self.exc_info))</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def __str__(self):</code></li>
+<li class="missed"><code>        return (" ! Error found during dry run of '%(name)s'! Aborting.\n"</code></li>
+<li class="ignored"><code>                "%(traceback)s") % self.__dict__</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>class ORMBaseNotIncluded(SouthError):</code></li>
+<li class="ignored"><code>    """Raised when a frozen model has something in _ormbases which isn't frozen."""</code></li>
+<li class="missed"><code>    pass</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>class UnfreezeMeLater(Exception):</code></li>
+<li class="ignored"><code>    """An exception, which tells the ORM unfreezer to postpone this model."""</code></li>
+<li class="missed"><code>    pass</code></li>
+<li class="ignored"><code></code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>class ImpossibleORMUnfreeze(SouthError):</code></li>
+<li class="ignored"><code>    """Raised if the ORM can't manage to unfreeze all the models in a linear fashion."""</code></li>
+<li class="missed"><code>    pass</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>class ConstraintDropped(SouthWarning):</code></li>
+<li class="missed"><code>    def __init__(self, constraint, table, column=None):</code></li>
+<li class="missed"><code>        self.table = table</code></li>
+<li class="missed"><code>        if column:</code></li>
+<li class="missed"><code>            self.column = ".%s" % column</code></li>
+<li class="ignored"><code>        else:</code></li>
+<li class="missed"><code>            self.column = ""</code></li>
+<li class="missed"><code>        self.constraint = constraint</code></li>
+<li class="ignored"><code></code></li>
+<li class="missed"><code>    def __str__(self):</code></li>
+<li class="missed"><code>        return "Constraint %(constraint)s was dropped from %(table)s%(column)s -- was this intended?" % self.__dict__</code></li>
+  </ol>
+</div>
+
+<div class="nav">
+  <a href="sorl.thumbnail.shortcuts.html">sorl.thumbnail.shortcuts</a> &lt;&lt;
+  <a href="../index.html">index</a>
+  &gt;&gt; <a href="south.logger.html">south.logger</a>
+</div>
+
+  </body>
+</html>
+

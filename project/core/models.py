@@ -8,6 +8,7 @@ from project.core.functions import *
 from autoslug import AutoSlugField
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import permalink
+from image_cropping import ImageRatioField
 # from datetime import datetime
 
 
@@ -60,7 +61,7 @@ class Category(MPTTModel):
 
 
 #  возвращает число на 1 больше чем максимальныое занчение ПриоритетаЗакупки во всех закупках,
-# если закупок нет, то возвращает 0
+#  если закупок нет, то возвращает 0
 def get_next_status_priority():
     try:
         max_status_priority = PurchaseStatus.objects.order_by('-status_priority')[0]
@@ -92,11 +93,14 @@ class Purchase(models.Model):
     # purchase_status = models.ForeignKey(PurchaseStatus, verbose_name=u'Статус закупки')
     prepay = models.IntegerField(verbose_name=u'Предоплата', help_text=u'Отмечается в процентах', default=100)
     percentage = models.IntegerField(verbose_name=u'Процент организатора', help_text=u'Отмечается в процентах', default=15)
-    paymethods = models.TextField(u'Способы оплаты', default=u'Не указано')  # TODO: ? Тип поля? тупо пусть пишут текстом, или сделать выбор селект. тогда отдельно надо типы оплаты вносить..
+    paymethods = models.TextField(u'Способы оплаты', default=u'Не указано')
     categories = models.ManyToManyField(Category, verbose_name=_(u'Categories'),
                                         help_text=_(u'Категории для этой закупки'))
     def __unicode__(self):
         return self.name
+
+    # def get_categories:
+    #     return Category.objects.filter()
 
     def get_catalogs(self):
         return Catalog.objects.filter(catalog_purchase=self.id)
@@ -149,7 +153,8 @@ class Product(models.Model):
 
     def __unicode__(self):
         return self.product_name
-
+    def get_image(self):
+        return ProductImages.objects.filter(p_image_product=self.id).first()
     def get_all_image(self):
         return ProductImages.objects.filter(p_image_product=self.id)
 
@@ -157,6 +162,7 @@ class Product(models.Model):
 class ProductImages(models.Model):
     image = models.FileField(_(u'Image'), upload_to='product/',
                              help_text=u'Изображение', blank=True)
+    cropping = ImageRatioField('image', '500x320', verbose_name=u'Обрезка для продукта')
     p_image_product = models.ForeignKey(Product, verbose_name=u'Выбрать товар')
     p_image_title = models.CharField(u'Название', blank=True, null=True, max_length=255)
     def url(self):

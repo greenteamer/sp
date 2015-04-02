@@ -26,6 +26,7 @@
                 <div class="callout callout-info" style="margin-bottom: 0!important;">
                     <h4><i class="fa fa-info"></i> Поздравляем</h4>
                     {{ message }}
+                    {% if new_purchase %} <a href="{{ new_purchase.url }}">Посмотреть</a> {% endif %}
                 </div>
             </div>
         {% endif %}
@@ -40,7 +41,7 @@
                     <!-- form start -->
                     <form action="" method="post">
                         {% csrf_token %}
-                        {{ purchase_form }}
+                        {{ purchase_form.as_p }}
                         <div class="box-footer">
                             <button type="submit" class="btn btn-primary">Отправить</button>
                         </div>
