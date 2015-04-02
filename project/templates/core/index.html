@@ -13,6 +13,17 @@
             </ol>
         </section>
 
+        <div class="pad margin no-print">
+            <div class="callout callout-info" style="margin-bottom: 0!important;">
+                <h4><i class="fa fa-info"></i> Записочка</h4>
+                <p>{{ groups }}</p>
+                {% for group in groups %}
+                    {{ group.name }}
+                {% endfor %}
+            </div>
+        </div>
+
+
         {% if not profile %}
             <div class="pad margin no-print">
                 <div class="callout callout-info" style="margin-bottom: 0!important;">

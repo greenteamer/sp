@@ -55,7 +55,20 @@
                             <hr/>
                             {{ product_form.as_p }}
                             <br/>
-                            {{ property_form }}
+{#                            {{ property_form }}#}
+                            <label>Возможные свойства этого товара:</label>
+                            <div style="overflow: hidden;">
+                                {% for property in properties %}
+                                    <div style="float:left;margin:0 10px 10px; 0;" >
+                                        <label for="s{{ forloop.counter }}">{{ property }}</label>
+                                        <input name="properties" id="s{{ forloop.counter }}" type="checkbox"
+                                            {% for product_property in product_properties %}
+                                                {% if property == product_property %}checked="checked"{% endif %}
+                                            {% endfor %}
+                                        value="{{ property }}" />
+                                    </div>
+                                 {% endfor %}
+                            </div>
                             <br/>
                         </div><!-- /.col -->
                         <div class="col-xs-6">
