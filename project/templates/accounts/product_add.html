@@ -62,7 +62,7 @@
                         <label>Возможные свойства этого товара:</label>
                         <div style="overflow: hidden;">
                             {% for property in properties %}
-                                <div style="float:left;margin:0 10px 10px; 0;" >
+                                <div style="float:left;margin:0 10px 10px 0;" >
                                     <label for="s{{ forloop.counter }}">{{ property }}</label>
                                     <input name="properties" id="s{{ forloop.counter }}" type="checkbox" value="{{ property }}" type="text"/>
                                 </div>

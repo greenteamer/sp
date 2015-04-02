@@ -15,7 +15,7 @@ from project.accounts.models import getProfile, OrganizerProfile, MemberProfile
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import HttpResponse, Http404
 from django.contrib import messages
-# from project.accounts.forms import propertyForm
+from project.accounts.forms import propertyForm
 
 
 """декоратор проверки профиля пользователя
@@ -140,7 +140,7 @@ def coreProduct(request, purchase_id, catalog_id, product_id, template_name):  #
                 return HttpResponse('{"status":"no"}')
 
         product = Product.objects.get(id=product_id)
-        # property_form = propertyForm(catalog_id)
+        property_form = propertyForm(catalog_id)
         images = ProductImages.objects.filter(p_image_product=product_id)
         cart_item = CartItem(product=product)
         form = CartItemForm(request.POST or None, instance=cart_item)
