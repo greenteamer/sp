@@ -37,9 +37,10 @@
                     <div>
 
                         <!-- form start -->
-                        <form action="" method="post">
+                        <form action="" method="post" enctype="multipart/form-data" >
                             {% csrf_token %}
                             {{ product_form }}
+                            {{ product_image_form }}
                             <div class="box-footer">
                                 <button type="submit" class="btn btn-primary">Отправить</button>
                             </div>

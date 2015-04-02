@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.core import urlresolvers
 from django.http import HttpResponseRedirect
-from forms import ProductForm
+from forms import ProductForm, ProductImagesForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from models import Product, Category
 
@@ -56,12 +56,17 @@ def CreateEditProduct(request, template_name, product_id=False):
 
     if request.POST:
         if product_id == False:
+            if request.FILES:
+                # product_image_form = ProductImagesForm(request.POST, request.FILES)
+                product_image_form = ProductImagesForm(request.POST, request.FILES)
             product_form = ProductForm(request.POST)
         else:
             product = Product.objects.get(id=product_id)
             product_form = ProductForm(request.POST, instance=product)
         if product_form.is_valid():
             product_save = product_form.save()
+            if request.FILES:
+                product_image_form.save(product_save.id)
             # product.product_name = request.POST['product_name']
             # product.description = request.POST['description']
             # product.price = request.POST['price']
@@ -73,6 +78,7 @@ def CreateEditProduct(request, template_name, product_id=False):
 
     if product_id == False:
         product_form = ProductForm
+        product_image_form = ProductImagesForm()
     else:
         product = Product.objects.get(id=product_id)
         product_form = ProductForm(instance=product)
