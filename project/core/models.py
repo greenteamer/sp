@@ -4,7 +4,7 @@ from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 # from project.accounts.models import OrganizerProfile
 from django.utils.text import slugify
-from project.core.functions import *
+from project.core.functions import translit
 from autoslug import AutoSlugField
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import permalink
@@ -144,6 +144,7 @@ class Product(models.Model):
     catalog = models.ForeignKey(Catalog, verbose_name=u'Выбрать каталог')
     created_at = models.DateTimeField(_(u'Created at'), null=True, auto_now_add=True)
     updated_at = models.DateTimeField(_(u'Updated at'), null=True, auto_now=True)
+    property = models.TextField(default='', verbose_name=u'Свойства товара')
 
     def url(self):
         return '%s/product-%s' % (self.catalog.url(), self.id)

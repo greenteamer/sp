@@ -11,7 +11,6 @@ from excel_response import ExcelResponse
 
 @check_profile
 def cartView(request, template_name):
-    cart_items = get_cart_items(request)
     if request.method == 'POST':
         postdata = request.POST.copy()
         if postdata.has_key('remove'):
@@ -21,6 +20,7 @@ def cartView(request, template_name):
         # if postdata.has_key('checkout'):
         #     checkout_url = checkout.get_checkout_url(request)
         #     return HttpResponseRedirect(checkout_url)
+    cart_items = get_cart_items(request)
     return render_to_response(template_name, locals(),
                             context_instance=RequestContext(request))
 

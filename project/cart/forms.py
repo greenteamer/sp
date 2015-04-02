@@ -7,4 +7,4 @@ class CartItemForm(forms.ModelForm):
     class Meta:
         model = CartItem
         widgets = {'product': forms.HiddenInput(),}
-        exclude = ('cart_id', 'user')
+        exclude = ('cart_id', 'user', 'properties')
