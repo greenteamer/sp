@@ -61,22 +61,23 @@
                                                 </a>
                                             </td>
                                             <td>
-                                            <div class="panel-group" id="accordion">
-                                                <div class="panel panel-default">
-                                                    <div class="panel-heading">
-                                                        <h4 class="panel-title">
-                                                            <a class="accordion_button" data-toggle="collapse" data-parent="#accordion" href="#item{{ item.id }}">Подробнее <i class="fa fa-caret-down"></i></a>
-                                                        </h4>
-                                                    </div>
-                                                    <div id="item{{ item.id }}" class="panel-collapse collapse" style="height: auto;">
-                                                        <div class="panel-body" style="text-align: left">
-                                                            <span><i class="fa fa-shopping-cart"></i> {{ item.product.product_name }}</span> <br/>
-                                                            <span><i class="fa fa-tachometer"></i> {{ item.product.product_name }} гр.</span> <br/>
-                                                            <span><i class="fa fa-cutlery"></i> {{ item.product.product_name }}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                                {{ item.properties }}
+{#                                                <div class="panel-group" id="accordion">#}
+{#                                                    <div class="panel panel-default">#}
+{#                                                        <div class="panel-heading">#}
+{#                                                            <h4 class="panel-title">#}
+{#                                                                <a class="accordion_button" data-toggle="collapse" data-parent="#accordion" href="#item{{ item.id }}">Подробнее <i class="fa fa-caret-down"></i></a>#}
+{#                                                            </h4>#}
+{#                                                        </div>#}
+{#                                                        <div id="item{{ item.id }}" class="panel-collapse collapse" style="height: auto;">#}
+{#                                                            <div class="panel-body" style="text-align: left">#}
+{#                                                                <span><i class="fa fa-shopping-cart"></i> {{ item.product.product_name }}</span> <br/>#}
+{#                                                                <span><i class="fa fa-tachometer"></i> {{ item.product.product_name }} гр.</span> <br/>#}
+{#                                                                <span><i class="fa fa-cutlery"></i> {{ item.product.product_name }}</span>#}
+{#                                                            </div>#}
+{#                                                        </div>#}
+{#                                                    </div>#}
+{#                                                </div>#}
 
                                             </td>
                                             <td>
@@ -88,7 +89,6 @@
                                                     <input type="hidden" name="item_id" value="{{ item.id }}" />
                                             </td>
                                             <td>
-{#                                                    <input type="hidden" name="item_id" value="{{ item.id }}" />#}
                                                     <button class="btn btn-success" type="submit" name="update">
                                                     <i class="icon-refresh icon-white"></i> <span>Обновить</span></button>
                                                 </form>
