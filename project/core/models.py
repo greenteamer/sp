@@ -161,7 +161,7 @@ class Product(models.Model):
 
 
 class ProductImages(models.Model):
-    image = models.FileField(_(u'Image'), upload_to='product/',
+    image = models.ImageField(_(u'Image'), upload_to='product/',
                              help_text=u'Изображение', blank=True)
     cropping = ImageRatioField('image', '500x320', verbose_name=u'Обрезка для продукта')
     p_image_product = models.ForeignKey(Product, verbose_name=u'Выбрать товар')
