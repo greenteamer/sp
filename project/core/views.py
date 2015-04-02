@@ -18,9 +18,9 @@ from django.contrib import messages
 from project.accounts.forms import propertyForm
 
 
-"""декоратор проверки профиля пользователя
-принимает пользователя , возвращяет профайл"""
 def check_profile(func):
+    """декоратор проверки профиля пользователя
+п   ринимает пользователя , возвращяет профайл"""
     def wrapper(request, *args, **kwargs):
         if request.user.is_authenticated():
             profile = getProfile(request.user)

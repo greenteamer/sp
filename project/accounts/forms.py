@@ -10,7 +10,6 @@ from project.core.models import Purchase, Catalog, CatalogProductProperties, Pro
 from django.forms import ModelForm, Form
 from project.core.functions import *
 
-
 class OrganizerProfileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(OrganizerProfileForm, self).__init__(*args, **kwargs)
@@ -43,9 +42,11 @@ class MemberProfileForm(forms.ModelForm):
         self.fields['city'].widget.attrs = {'placeholder':'Ваш город', 'class':'form-control'}
         self.fields['zipCode'].widget.attrs = {'placeholder':'Почтовый индекс', 'class':'form-control'}
         self.fields['icon'].widget.attrs = {'class':'btn btn-block btn-default btn-sm'}
+
     class Meta:
         model = MemberProfile
         exclude = ('user',)
+
     def save(self, user):
         obj = super(MemberProfileForm, self).save(commit=False)
         obj.user = user
@@ -65,11 +66,9 @@ class UserRegistrationForm(forms.ModelForm):
     email = forms.EmailField(
         label=_("Email"),
         error_messages = {'invalid': "Введите корректный e-mail адрес"},
-        widget=forms.TextInput(attrs={'placeholder': 'Ваш e-mail', 'class': 'form-control'}),
-    )
+        widget=forms.TextInput(attrs={'placeholder': 'Ваш e-mail', 'class': 'form-control'}),)
     password1 = forms.CharField(label=_("Password"),
-        widget=forms.PasswordInput(attrs={'placeholder': 'Введите пароль', 'class': 'form-control'})
-    )
+                                widget=forms.PasswordInput(attrs={'placeholder': 'Введите пароль', 'class': 'form-control'}))
 
     class Meta:
         model = User
@@ -127,9 +126,11 @@ class catalogForm(ModelForm):
     class Meta:
         model = Catalog
         exclude = ('catalog_purchase',)
+
     def __init__(self, *args, **kwargs):
         super(catalogForm, self).__init__(*args, **kwargs)
         self.fields['catalog_name'].widget.attrs = {'placeholder': 'Введите название каталога', 'class': 'form-control'}
+
     def save(self, purchase_id):
         # TODO: сделать валидацию на существование закупки (purchase_id)
         obj = super(catalogForm, self).save(commit=False)
@@ -142,6 +143,7 @@ class catalogProductPropertiesForm(ModelForm):
     class Meta:
         model = CatalogProductProperties
         fields = ["cpp_name", "cpp_values"]
+
     def __init__(self, *args, **kwargs):
         super(catalogProductPropertiesForm, self).__init__(*args, **kwargs)
         self.fields['cpp_name'].widget.attrs = {'placeholder': 'Введите свойство для товаров в этом каталоге', 'class': 'form-control'}
@@ -152,12 +154,14 @@ class ProductForm(ModelForm):
     class Meta:
         model = Product
         exclude = ('catalog', 'property')
+
     def __init__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)
         self.fields['product_name'].widget.attrs = {'class': 'form-control'}
         self.fields['description'].widget.attrs = {'class': 'form-control'}
         self.fields['price'].widget.attrs = {'class': 'form-control'}
         self.fields['sku'].widget.attrs = {'class': 'form-control'}
+
     def save(self, catalog_id, sv=''):
         # TODO: сделать валидацию на существование каталога (catalog_id)
         obj = super(ProductForm, self).save(commit=False)
@@ -171,16 +175,17 @@ class ProductImagesForm(ModelForm):
     class Meta:
         model = ProductImages
         exclude = ('p_image_product', 'cropping')
+
     def __init__(self, *args, **kwargs):
         super(ProductImagesForm, self).__init__(*args, **kwargs)
         self.fields['image'].widget.attrs = {'class': 'btn btn-block btn-default btn-sm'}
         self.fields['p_image_title'].widget.attrs = {'class': 'form-control'}
+
     def save(self, product_id):
         obj = super(ProductImagesForm, self).save(commit=False)
         obj.p_image_product = Product.objects.get(id=product_id)
         obj.save()
         return obj
-
 
 
 # Старая форма свойств. Удалить если все норм с новой.

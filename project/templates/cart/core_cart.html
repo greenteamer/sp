@@ -42,7 +42,6 @@
                                             <th scope="col">Цена</th>
                                             <th>Кол-во</th>
                                             <th></th>
-                                            <th></th>
                                             <th scope="col" class="right">Итого:</th>
                                         </tr>
                                     </thead>
@@ -87,8 +86,8 @@
                                                 <form method="post" action="." class="cart">{% csrf_token %}
                                                     <input type="text" name="quantity" value="{{ item.quantity }}" id="quantity" size="2" class="quantity" maxlength="5" />
                                                     <input type="hidden" name="item_id" value="{{ item.id }}" />
-                                            </td>
-                                            <td>
+{#                                            </td>#}
+{#                                            <td>#}
                                                     <button class="btn btn-success" type="submit" name="update">
                                                     <i class="icon-refresh icon-white"></i> <span>Обновить</span></button>
                                                 </form>
