@@ -34,11 +34,6 @@
                             <i class="ion ion-clipboard"></i>
                             <h3 class="box-title"><b>{{ catalog.catalog_name }}</b> - {{ catalog.created_at }}</h3>
                             <div class="box-tools pull-right">
-{#                                <select name="status" id="status">#}
-{#                                    <option value="">В работе</option>#}
-{#                                    <option value="">На оплате</option>#}
-{#                                    <option value="">Закрыта</option>#}
-{#                                </select>#}
                             </div>
                         </div><!-- /.box-header -->
                         <div class="box-body">
@@ -55,26 +50,29 @@
                                             <th scope="col">Продукт</th>
                                             <th scope="col">Описание</th>
                                             <th scope="col">Свойства</th>
-                                            <th scope="col"></th>
-                                            <th></th>
+                                            <th colspan="1"></th>
+                                            <th colspan="1"></th>
                                         </tr>
                                     </thead>
-{#                                    <tfoot>#}
-{#                                        <tr>#}
-{#                                            <th colspan="5">Стоимость товаров:</th>#}
-{#                                            <th></th>#}
-{#                                            <th>100500 р.</th>#}
-{#                                        </tr>#}
-{#                                    </tfoot>#}
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="5">Стоимость товаров:</th>
+                                            <th>100500 р.</th>
+                                        </tr>
+                                    </tfoot>
                                     <tbody>
-                                        {% for product in catalog.get_products %}
+                                        {% for product in products %}
                                             <tr>
                                                 <td><img width="100" src="{{ product.image }}" alt=""/></td>
                                                 <td><a href="{{ product.url }}">{{ product.product_name }}</a></td>
                                                 <td>{{ product.description|truncatewords:20|safe }}</td>
-                                                <td>{{ product.get_properties }}</td>
-                                                <td><a href="{{ product.url }}-edit/"><button class="btn btn-block btn-success btn-sm"><i class="fa fa-pencil"></i> <span>Редактировать товар</span></button></a></td>
-                                                <td><a href="{{ product.url }}/product-add/"><button class="btn btn-block btn-danger btn-sm" name="add_product"><i class="fa fa-archive"></i> <span>Удалить товар</span></button></td>
+                                                <td>
+                                                    {% for property in product.property %}
+                                                        {{ property }}
+                                                    {% endfor %}
+                                                </td>
+                                                <td><a href="{{ product.url }}-edit/"><button style=" width: 150px;" class="btn btn-block btn-success btn-sm"><i class="fa fa-pencil"></i> <span>Редактировать товар</span></button></a></td>
+                                                <td><a href="{{ product.url }}/product-add/"><button style=" width: 150px;" class="btn btn-block btn-danger btn-sm" name="add_product"><i class="fa fa-archive"></i> <span>Удалить товар</span></button></td>
                                             </tr>
                                         {% endfor %}
                                     </tbody>
@@ -83,25 +81,9 @@
                         </div><!-- /.box-body -->
                         <div class="box-footer clearfix no-border">
                             <a href="{{ catalog.url }}-edit/"><button style="margin-left: 10px;" class="btn btn-default pull-right"><i class="fa fa-pencil-square-o"></i> Редактировать Каталог</button></a>
-                            <a href="{{ catalog.url }}/product-add/"><button class="btn btn-default pull-right"><i class="fa fa-plus-square-o"></i> Добавить товар</button></a>
+                            <a href="{{ catalog.url }}/product-add/"><button style="margin-left: 10px;" class="btn btn-default pull-right"><i class="fa fa-plus-square-o"></i> Добавить товар</button></a>
                         </div>
                     </div>
-
-                    <b>ID: </b>{{ catalog.id }}
-                    <br/>
-                    <b>Name: </b>{{ catalog.catalog_name }}
-                    <br/>
-                    {#<a href="/profile/organizer/purchase-{{ purchase.id }}catalog-{{ catalog.id }}-edit">Изменить каталог</a>#}
-                    <br/>
-                    <ul>
-                        {% for catalog_product_property in catalog_product_properties %}
-                            <li><b>{{ catalog_product_property.cpp_name }}</b>: {{ catalog_product_property.cpp_values }}</li>
-                        {% endfor %}
-                    </ul>
-
-                    <br/><br/>
-{#                    <a class="btn btn-success" href="{{ catalog.url_account }}-edit">Изменить каталог</a>#}
-                    <br/><br/>
                     <a class="btn btn-primary" href="{{ catalog.url }}/products">Посмотреть товары</a>
                     <a class="btn btn-primary" href="{{ purchase.url }}/catalogs">Все каталоги</a>
 

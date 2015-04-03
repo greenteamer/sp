@@ -166,8 +166,8 @@ class Product(models.Model):
     def get_all_image(self):
         return ProductImages.objects.filter(p_image_product=self.id)
 
-    def get_properties(self):
-        return Properties.objects.get(properties_product=self.id)
+    # def get_properties(self):
+    #     return Properties.objects.filter(properties_product=self.id)
 
 
 class ProductImages(models.Model):

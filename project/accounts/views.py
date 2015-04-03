@@ -358,6 +358,9 @@ def catalog(request, purchase_id, catalog_id, template_name):
         catalog = Catalog.objects.get(id=catalog_id)
         catalog_product_properties = CatalogProductProperties.objects.filter(cpp_catalog=catalog_id)
         # catalogs = Catalog.objects.all()
+        products = catalog.get_products()
+        for product in products:
+            product.property = product.property.split(';')  # для более читаемого вида
         return render_to_response(template_name, locals(),
                                   context_instance=RequestContext(request))
     except ObjectDoesNotExist:
