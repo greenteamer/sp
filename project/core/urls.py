@@ -34,10 +34,9 @@ urlpatterns = patterns('project.core.views',
 		name='coreProduct'),
 
 
-
-    # страница для обработки ajax запросов
-    url(r'^ajaxquery/$', 'ajaxquery', name='ajaxquery'),
-
+    # # страница для обработки ajax запросов
+    # url(r'^ajaxquery/$', 'ajaxquery', name='ajaxquery'),
+    #
 
     # Страницы сайта
     # url(r'^(?P<slug>[-\w]+)/$', 'page_view',
