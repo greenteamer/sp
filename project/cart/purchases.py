@@ -1,58 +1,29 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
-import decimal
-import random
-from models import CartItem
 from project.core.models import Product, Purchase, Catalog
-from django.shortcuts import get_object_or_404
 from project.accounts.models import getProfile
+from project.cart.models import CartItem
 
-def get_purchases_items(request):
+
+def get_purchases_dict(request):
+    # посроение словаря для полного вывода данных о своих закупках для организатора
+    # purchases_dict - словарь словарей
+    # purchases_dict.keys() - Объекты закупок товары которых были добавлены в корзину участниками (купленных товаров)
+    # purchases_dict.values() - словари вида {Каталог: [список объектов купленных товароов(cart_items)]}
     profile = getProfile(request.user)
-    dict = {}
-    list_items = []
+    purchases_dict = {}
     for purchase in Purchase.objects.filter(organizerProfile=profile):
+        purchase_dict = {}
         for catalog in Catalog.objects.filter(catalog_purchase=purchase):
+            list_items = []
             for product in Product.objects.filter(catalog=catalog):
                 try:
                     items = CartItem.objects.filter(product=product)
                     if items:
                         list_items.extend(items)
-                        # for item in items:
-                        #     total = total+item.quantity*item.product.price
                 except:
                     pass
-
-            dict.update({catalog.catalog_name:list_items})
-
-    return dict
-
-# def get_purchases_items(request):
-#     profile = getProfile(request.user)
-#     dict = {}
-#     list_items = []
-#     for item in CartItem.objects.filter(user=request.user):
-#         list_items.append(item)
-#     # for catalog in Catalog.objects.all():
-#     #     sorted_list = list_items.
-#     # for purchase in Purchase.objects.filter(organizerProfile=profile):
-#     #     for catalog in Catalog.objects.filter(catalog_purchase=purchase):
-#     #         for product in Product.objects.filter(catalog=catalog):
-#     #             try:
-#     #                 items = CartItem.objects.filter(product=product)
-#     #                 if items:
-#     #                     list_items.extend(items)
-#     #                     # for item in items:
-#     #                     #     total = total+item.quantity*item.product.price
-#     #             except:
-#     #                 pass
-#     #
-#     dict.update({'catalog':list_items})
-#
-#     return dict
-
-    # cart_items = CartItem.objects.filter(user=request.user)
-    # cart_items.full_count = 0
-    # for item in cart_items:
-    #     cart_items.full_count = cart_items.full_count + item.quantity
-    # return cart_items
+            if list_items:
+                purchase_dict.update({catalog: list_items})
+        purchases_dict.update({purchase: purchase_dict})
+    return purchases_dict

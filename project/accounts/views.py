@@ -17,6 +17,7 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import Http404, HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from project.cart.purchases import get_purchases_dict
 # from project.core.functions import get_propeties
 
 
@@ -30,6 +31,7 @@ def profileView(request, template_name):
         return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
+
 
 def populateProfileView(request, template_name):
     user = request.user
@@ -57,7 +59,7 @@ def populateProfileView(request, template_name):
                 form = MemberProfileForm(request.POST, request.FILES)
                 form.save(request.user)
                 return HttpResponseRedirect(urlresolvers.reverse('populateProfileView'))
-            else: #должна быть обработка ошибок
+            else:  # TODO: должна быть обработка ошибок
                 form = UserRegistrationForm(request.POST, request.FILES)
                 return render(request, 'accounts/populate_profile.html', {
                     'form': form,
@@ -154,36 +156,31 @@ def logoutView(request, template_name):
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
 
-# __ Закупки __
 
+# __ Закупки __
 # Просмотр всех закупок
 def purchases(request, template_name):
-
     user = request.user
-
     """ проверяем пользователя и его профайл организатора"""
     if user.is_authenticated():
         profile = checkOrganizerProfile(user)
         if checkOrganizerProfile(user) is None: return HttpResponseRedirect(urlresolvers.reverse('profileView'))
     else:
         return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
-
-    # purchases = Purchase.objects.filter(organizerProfile=profile)
+    purchases_dict = get_purchases_dict(request)  # получаем словарь словарей ... описание в cart.purchases.py
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
 
+
 # Добавление закупки
 def purchaseAdd(request, template_name):
-
     user = request.user
-
     """ проверяем пользователя и его профайл организатора"""
     if user.is_authenticated():
          profile = checkOrganizerProfile(user)
          if profile is None: return HttpResponseRedirect(urlresolvers.reverse('profileView'))
     else:
         return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
-
     message = ''
     if request.POST:
         form = purchaseForm(request.POST)
@@ -192,9 +189,7 @@ def purchaseAdd(request, template_name):
             message = u"Новая закупка «%s» успешно добавлена" % request.POST['name']
         else:
             message = u"Ошибка при добавлении закупки"
-
     purchase_form = purchaseForm()
-
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
 
@@ -202,7 +197,6 @@ def purchaseAdd(request, template_name):
 # Просмотр или редактирование одной конкретной закупки (по id)
 def purchase(request, purchase_id, template_name, edit=False):
     user = request.user
-
     """ проверяем пользователя и его профайл организатора"""
     """ проверяем является ли он владельцем закупки """
     if user.is_authenticated():
@@ -213,7 +207,6 @@ def purchase(request, purchase_id, template_name, edit=False):
             return HttpResponseRedirect(urlresolvers.reverse('profileView'))
     else:
         return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
-
     message = ''
     if edit == True:  # если передан парамерт edit равный True, то редактируем закупку
         try:
@@ -226,20 +219,17 @@ def purchase(request, purchase_id, template_name, edit=False):
                     message = u"Закупка «%s» успешно изменена" % request.POST['name']
                 else:
                     message = u"Ошибка при изменении закупки"
-
             purchase_form = purchaseForm(instance=purchase) # заполненная форма текущей закупки
             return render_to_response(template_name, locals(),
                                   context_instance=RequestContext(request))
         except ObjectDoesNotExist:
             raise Http404
-
     else:
         try:
             purchase = Purchase.objects.get(id=purchase_id)  # получаем экземпляр Закупки по id
             purchase_cat = purchase.categories.all()
         except ObjectDoesNotExist:
             raise Http404
-
         return render_to_response(template_name, locals(),
                                   context_instance=RequestContext(request))
 
