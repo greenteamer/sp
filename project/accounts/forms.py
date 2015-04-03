@@ -6,7 +6,7 @@ from django.contrib import auth
 from django.utils.translation import ugettext, ugettext_lazy as _
 from captcha.fields import CaptchaField
 from project.accounts.models import OrganizerProfile, getProfile, MemberProfile
-from project.core.models import Purchase, Catalog, CatalogProductProperties, Product, ProductImages, Properties
+from project.core.models import Purchase, Catalog, CatalogProductProperties, Product, ProductImages  # , Properties
 from django.forms import ModelForm, Form
 from project.core.functions import *
 
@@ -214,15 +214,15 @@ def propertyForm(catalog_id, product_id=False):
                     name = value
                 slug = translit(name).lower()
 
-                if product_id != False:
-                    cpp_id = CatalogProductProperties.objects.get(cpp_slug=slug)
-                    try:
-                        property_value = Properties.objects.get(properties_catalogProductProperties_id=cpp_id, properties_product_id=product_id)
-                        self.fields[slug] = forms.ChoiceField(widget=forms.RadioSelect, label=name, choices=list_choices, initial=property_value.properties_value)
-                    except:
-                        self.fields[slug] = forms.ChoiceField(widget=forms.RadioSelect, label=name, choices=list_choices)
-                else:
-                    self.fields[slug] = forms.ChoiceField(widget=forms.RadioSelect, label=name, choices=list_choices)
+                # if product_id != False:
+                #     cpp_id = CatalogProductProperties.objects.get(cpp_slug=slug)
+                #     try:
+                #         property_value = Properties.objects.get(properties_catalogProductProperties_id=cpp_id, properties_product_id=product_id)
+                #         self.fields[slug] = forms.ChoiceField(widget=forms.RadioSelect, label=name, choices=list_choices, initial=property_value.properties_value)
+                #     except:
+                #         self.fields[slug] = forms.ChoiceField(widget=forms.RadioSelect, label=name, choices=list_choices)
+                # else:
+                self.fields[slug] = forms.ChoiceField(widget=forms.RadioSelect, label=name, choices=list_choices)
 
     return DynamicPropertyForm()
 
