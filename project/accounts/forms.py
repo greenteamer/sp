@@ -151,17 +151,18 @@ class catalogProductPropertiesForm(ModelForm):
 class ProductForm(ModelForm):
     class Meta:
         model = Product
-        exclude = ('catalog',)
+        exclude = ('catalog', 'property')
     def __init__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)
         self.fields['product_name'].widget.attrs = {'class': 'form-control'}
         self.fields['description'].widget.attrs = {'class': 'form-control'}
         self.fields['price'].widget.attrs = {'class': 'form-control'}
         self.fields['sku'].widget.attrs = {'class': 'form-control'}
-    def save(self, catalog_id):
+    def save(self, catalog_id, sv=''):
         # TODO: сделать валидацию на существование каталога (catalog_id)
         obj = super(ProductForm, self).save(commit=False)
         obj.catalog = Catalog.objects.get(id=catalog_id)
+        obj.property = sv
         obj.save()
         return obj
 
@@ -169,10 +170,11 @@ class ProductForm(ModelForm):
 class ProductImagesForm(ModelForm):
     class Meta:
         model = ProductImages
-        exclude = ('p_image_product',)
+        exclude = ('p_image_product', 'cropping')
     def __init__(self, *args, **kwargs):
         super(ProductImagesForm, self).__init__(*args, **kwargs)
         self.fields['image'].widget.attrs = {'class': 'btn btn-block btn-default btn-sm'}
+        self.fields['p_image_title'].widget.attrs = {'class': 'form-control'}
     def save(self, product_id):
         obj = super(ProductImagesForm, self).save(commit=False)
         obj.p_image_product = Product.objects.get(id=product_id)
@@ -180,6 +182,8 @@ class ProductImagesForm(ModelForm):
         return obj
 
 
+
+# Старая форма свойств. Удалить если все норм с новой.
 def propertyForm(catalog_id, product_id=False):
 
     cpp_obj = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
@@ -215,17 +219,6 @@ def propertyForm(catalog_id, product_id=False):
                     self.fields[slug] = forms.ChoiceField(widget=forms.RadioSelect, label=name, choices=list_choices)
 
     return DynamicPropertyForm()
-
-
-
-# class testFrom(forms.Form):
-    # flieds, sdfdf, sdfd  = [forms.CharField(),forms.CharField(),forms.CharField()]
-    #
-    # flied = forms.CharField()
-    # sdfdf = forms.CharField()
-    # sdfd = forms.CharField()
-    #
-    # choice_field = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
 
 
 

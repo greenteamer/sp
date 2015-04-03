@@ -1,0 +1,132 @@
+{% extends "core_main.html" %}
+{% load thumbnail %}
+
+{% block content %}
+      <!-- Content Wrapper. Contains page content -->
+    <div id="core_product" class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
+                <li class="active">Корзина</li>
+            </ol>
+            <h1>Просмотр корзины</h1>
+        </section>
+
+        {% if not profile %}
+            <div class="pad margin no-print">
+                <div class="callout callout-info" style="margin-bottom: 0!important;">
+                    <h4><i class="fa fa-info"></i> Записочка</h4>
+                    Для того что бы работать организатором в SP Mooscow, вам необходимо заполнить личные данные, после этого Ваша учетная запись будет рассмотренна админимтратором и ей будет присвоен соответствующий статус
+                </div>
+            </div>
+        {% endif %}
+
+
+        <!-- Main content -->
+        <section class="invoice">
+            <!-- Table row -->
+            <div class="row">
+
+                <div class="col-xs-12">
+                    <div class="row">
+
+
+                        <div class="col-xs-12">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Продукты</th>
+                                            <th scope="col">Характеристики</th>
+                                            <th scope="col">Цена</th>
+                                            <th>Кол-во</th>
+                                            <th></th>
+                                            <th></th>
+                                            <th scope="col" class="right">Итого:</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% if cart_items %}
+                                            {% for item in cart_items %}
+                                        <tr>
+                                            <td>
+                                                {% with 'http://'|add:request.META.HTTP_HOST|add:item.product.get_image.url as path %}
+                                                    {% thumbnail path "50x50" crop="center" as im %}
+                                                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                                                    {% endthumbnail %}
+                                                {% endwith %}
+                                                <a href="{{ item.product.url_core }}" class="cart">
+                                                {{ item.product.product_name }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                {{ item.properties }}
+{#                                                <div class="panel-group" id="accordion">#}
+{#                                                    <div class="panel panel-default">#}
+{#                                                        <div class="panel-heading">#}
+{#                                                            <h4 class="panel-title">#}
+{#                                                                <a class="accordion_button" data-toggle="collapse" data-parent="#accordion" href="#item{{ item.id }}">Подробнее <i class="fa fa-caret-down"></i></a>#}
+{#                                                            </h4>#}
+{#                                                        </div>#}
+{#                                                        <div id="item{{ item.id }}" class="panel-collapse collapse" style="height: auto;">#}
+{#                                                            <div class="panel-body" style="text-align: left">#}
+{#                                                                <span><i class="fa fa-shopping-cart"></i> {{ item.product.product_name }}</span> <br/>#}
+{#                                                                <span><i class="fa fa-tachometer"></i> {{ item.product.product_name }} гр.</span> <br/>#}
+{#                                                                <span><i class="fa fa-cutlery"></i> {{ item.product.product_name }}</span>#}
+{#                                                            </div>#}
+{#                                                        </div>#}
+{#                                                    </div>#}
+{#                                                </div>#}
+
+                                            </td>
+                                            <td>
+                                                {{ item.product.price }} <i class="fa fa-rub"></i>
+                                            </td>
+                                            <td class="right">
+                                                <form method="post" action="." class="cart">{% csrf_token %}
+                                                    <input type="text" name="quantity" value="{{ item.quantity }}" id="quantity" size="2" class="quantity" maxlength="5" />
+                                                    <input type="hidden" name="item_id" value="{{ item.id }}" />
+                                            </td>
+                                            <td>
+                                                    <button class="btn btn-success" type="submit" name="update">
+                                                    <i class="icon-refresh icon-white"></i> <span>Обновить</span></button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <form method="post" action="." class="cart">{% csrf_token %}
+                                                    <input type="hidden" name="item_id" value="{{ item.id }}" />
+                                                    <button class="btn btn-danger" type="submit" name="remove">
+                                                    <i class="icon-trash icon-white"></i> Удалить</button>
+                                                </form>
+                                            </td>
+                                            <td class="right">{{ item.total_price }} <i class="fa fa-rub"></i></td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% else %}
+                                        <tr>
+                                            <td colspan="6" style="height:30px;">Ваша корзина пуста</td>
+                                        </tr>
+                                        {% endif %}
+                                    </tbody>
+
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="5">Стоимость товаров:</th>
+{#                                            <th>{{ cart_subtotal }} руб.</th>#}
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div><!-- /.row -->
+
+        </section><!-- /.content -->
+        <div class="clearfix"></div>
+    </div><!-- /.content-wrapper -->
+
+{% endblock %}
+
