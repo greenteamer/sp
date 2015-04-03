@@ -207,4 +207,12 @@ class Properties(models.Model):
         return self.properties_value
 
 
+class ImportFiles(models.Model):
+    file = models.FileField(verbose_name=u'Файл для импорта товаров в каталог', upload_to='import_xls')
+    import_catalog = models.ForeignKey(Catalog)
+
+    def __unicode__(self):
+        return self.import_catalog.catalog_name
+
+
 

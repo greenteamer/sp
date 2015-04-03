@@ -82,6 +82,27 @@
                         <div class="box-footer clearfix no-border">
                             <a href="{{ catalog.url }}-edit/"><button style="margin-left: 10px;" class="btn btn-default pull-right"><i class="fa fa-pencil-square-o"></i> Редактировать Каталог</button></a>
                             <a href="{{ catalog.url }}/product-add/"><button style="margin-left: 10px;" class="btn btn-default pull-right"><i class="fa fa-plus-square-o"></i> Добавить товар</button></a>
+                            <div style="width:400px;" class="box box-success">
+                                <div class="box-header" data-toggle="tooltip" title="" data-original-title="Добавить товары с помощью xml файла">
+                                    <h3 class="box-title">Импорт товаров в каталог</h3>
+                                    <div class="box-tools pull-right">
+{#                                        <button class="btn btn-primary btn-xs" data-widget="collapse"><i class="fa fa-minus"></i></button>#}
+{#                                        <button class="btn btn-primary btn-xs" data-widget="remove"><i class="fa fa-times"></i></button>#}
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <form enctype="multipart/form-data" class="" action="." method="post">{% csrf_token %}
+                                        <div class="form-group">
+                                            {{ form.import_catalog.as_hidden }}
+                                            {{ form.file }}
+                                        </div>
+                                        <button style="margin-left: 0px;" type="submit" class="btn btn-success" name="import"><i class="fa fa-download"></i> <span>Импорт XLS</span></button>
+                                    </form>
+                                </div><!-- /.box-body -->
+                                <div class="box-footer">
+                                    <p>Вы можете загрузить файл в формате Exel(xls). Файл должен совпадать со структурой Вашего каталога.</p>
+                                </div><!-- /.box-footer-->
+                            </div>
                         </div>
                     </div>
                     <a class="btn btn-primary" href="{{ catalog.url }}/products">Посмотреть товары</a>
@@ -89,6 +110,8 @@
 
                 </div><!-- /.col -->
             </div><!-- /.row -->
+
+
 
         </section><!-- /.content -->
         <div class="clearfix"></div>
