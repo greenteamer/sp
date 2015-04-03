@@ -188,7 +188,8 @@ class ProductImagesForm(ModelForm):
         return obj
 
 
-# Старая форма свойств. Удалить если все норм с новой.
+# динамичная форма свойств.перечисляет свойства выбранного каталога
+# TODO: сделать выбор по умолчанию каждого из свойств
 def propertyForm(catalog_id, product_id=False):
 
     cpp_obj = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)

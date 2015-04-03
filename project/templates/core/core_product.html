@@ -81,11 +81,11 @@
                                     {{ property_form }}
                                 </div>
 
-                                {{ form.errors }}
-                                {{ form.non_field_errors }}
+                                {{ cart_form.errors }}
+                                {{ cart_form.non_field_errors }}
 
                                 <form action="." method="post">{% csrf_token %}
-                                    {{ form.as_p }}
+                                    {{ cart_form.as_p }}
 {#                                    <input class="form-control " id="id_cart_id" name="cart_id" type="text">#}
 {#                                    <input class="form-control " id="id_date_added" name="date_added" type="text">#}
 {#                                    <input class="form-control " id="id_product" name="product" type="text">#}
@@ -116,25 +116,25 @@
             $(document).ready(function() {
 
                 $('#add_to_cart').click(function () {
-                    str = '';
+                    var product_properties = '';
                     var checked_input = $('.properties input:checked');
                     var len = checked_input.length;
                     checked_input.each(function (i, elem) {
                         if (i != len - 1) {
-                            str += elem.value + ',';
+                            product_properties += elem.value + ',';
                         }else{
-                            str += elem.value;
+                            product_properties += elem.value;
                         }
                     });
-                    console.log('Свойства: ' + str);
+                    console.log('Свойства: ' + product_properties);
 
-                    csrftoken = $.cookie('csrftoken');
+                    var csrftoken = $.cookie('csrftoken');
                     $.post(
                         "",             // Урл
                         {
-                            action: 'chek_properties_product',
+{#                            action: 'chek_properties_product',#}
                             ajax: 1,
-                            product_properties: str,
+                            product_properties: product_properties,
                             product: {{ product.id }},
                             quantity: $('#id_quantity').val(),
                             csrfmiddlewaretoken: csrftoken
