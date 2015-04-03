@@ -2,7 +2,7 @@
 #!/usr/bin/env python
 from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, purchaseForm, catalogForm, \
                                     catalogProductPropertiesForm, ProductForm, MemberProfileForm  #propertyForm
-from project.core.models import Purchase, Catalog, Product, CatalogProductProperties, Properties, ProductImages
+from project.core.models import Purchase, Catalog, Product, CatalogProductProperties, ProductImages #, Properties
 from django.shortcuts import render, render_to_response
 from project.accounts.profiles import retrieve
 from project.accounts.models import OrganizerProfile, getProfile, repopulateProfile
