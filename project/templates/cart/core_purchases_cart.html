@@ -27,83 +27,50 @@
         <section class="invoice">
             <!-- Table row -->
             <div class="row">
-
                 <div class="col-xs-12">
                     <div class="row">
-
-{#                        <div class="col-xs-12">#}
-{#                            {% for catalog, list in dict.items %}#}
-{#                                <h4>{{ catalog }}</h4>#}
-{#                                {% for item in list %}#}
-{#                                    <div>#}
-{#                                        {% with 'http://'|add:request.META.HTTP_HOST|add:item.product.get_image.url as path %}#}
-{#                                            {% thumbnail path "50x50" crop="center" as im %}#}
-{#                                                <img class="pull-left" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">#}
-{#                                            {% endthumbnail %}#}
-{#                                        {% endwith %}#}
-{#                                        <p>{{ item.product.product_name }}</p>#}
-{#                                        <small>{{ item.product.description }}</small>#}
-{#                                    </div>#}
-{#                                    <br/>#}
-{#                                {% endfor %}#}
-{##}
-{#                                <p>{{ list }}</p>#}
-{#                            {% endfor %}#}
-{#                        </div>#}
-
-
                         <div class="col-xs-12">
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Закупка</th>
-                                            <th scope="col">Каталог</th>
-                                            <th scope="col">Продукт</th>
-                                            <th scope="col" class="right">Итого:</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-
-                                        {% if dict %}
+                            {% if purchases_dict %}
+                                {% for purchase, dict in purchases_dict.items %}
+                                    <h3>{{ purchase.name }}</h3>
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th width="20%" scope="col">Каталог</th>
+                                                    <th width="35%" scope="col">Продукт</th>
+                                                    <th width="35%" scope="col" class="right">Итого:</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
                                             {% for catalog, list in dict.items %}
                                                 <tr>
-                                                    <td></td>
+                                                    <td>{{ purchase.name }}</td>
                                                     <td>
-                                                        <h4>{{ catalog }}</h4>
+                                                        <h4>{{ catalog.catalog_name }}</h4>
                                                     </td>
                                                     <td>
                                                         <form action="." method="post">{% csrf_token %}
+                                                            <input type="text" class="hidden" name="{{ form.catalog.html_name }}" value="{{ catalog.id }}"/>
+{#                                                            {{ form.catalog.as_hidden }}#}
                                                             <button class="btn btn-file" type="submit" name="export">Скачать Exel файл</button>
                                                         </form>
-
-
-{#                                                        {% for item in list %}#}
-{#                                                            <p>{{ item.product.product_name }}<span class="label label-success">{{ item.quantity }}</span><br/><small>{{ item.user.username }}</small></p>#}
-{##}
-{#                                                        {% endfor %}#}
                                                     </td>
                                                     <td>
-
                                                     </td>
                                                 </tr>
                                             {% endfor %}
-                                        {% endif %}
-                                    </tbody>
-
-                                    <tfoot>
-                                        <tr>
-                                            <th colspan="5">Стоимость товаров:</th>
-{#                                            <th>{{ cart_subtotal }} руб.</th>#}
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <th colspan="5">Стоимость товаров:</th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
                         </div>
-
-
-
-
                     </div>
                 </div>
             </div><!-- /.row -->

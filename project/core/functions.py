@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-def populateFormProduct(request):
-    
-    return 1
-
 
 
 # обычная посимвольная транислитерация

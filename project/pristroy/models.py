@@ -65,3 +65,9 @@ class ProductImages(models.Model):
             return "/media/%s" % self.image
         else:
             return '/static/images/none_image.png'
+
+
+
+
+
+
