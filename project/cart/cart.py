@@ -39,6 +39,11 @@ def get_cart_items(request):
     return cart_items
 
 
+# def getCartItemsForOrganizer(organizer):
+#
+#     return cart_items
+
+
 def add_to_cart(request):
     """Добавление товара в корзину"""
     profile = getProfile(request.user)

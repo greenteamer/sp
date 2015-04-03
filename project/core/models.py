@@ -122,8 +122,13 @@ class Catalog(models.Model):
 
     def url(self):
         return '%s/catalog-%s' % (self.catalog_purchase.url(), self.id)
+
     def url_core(self):
         return '%s/catalog-%s' % (self.catalog_purchase.url_core(), self.id)
+
+    def get_products_count(self):
+        products = Product.objects.filter(catalog=self.id)
+        return len(products)
 
     def get_products(self):
         products = Product.objects.filter(catalog=self.id)
@@ -154,10 +159,15 @@ class Product(models.Model):
 
     def __unicode__(self):
         return self.product_name
+
     def get_image(self):
         return ProductImages.objects.filter(p_image_product=self.id).first()
+
     def get_all_image(self):
         return ProductImages.objects.filter(p_image_product=self.id)
+
+    def get_properties(self):
+        return Properties.objects.get(properties_product=self.id)
 
 
 class ProductImages(models.Model):

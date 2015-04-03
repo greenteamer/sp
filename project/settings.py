@@ -15,6 +15,8 @@ PROJECT_PATH = os.path.abspath(os.path.dirname(__file__).decode('utf-8')).replac
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 ROOT_URLCONF = 'project.urls'
 
+DATA_IMPORTER_EXCEL_DECODER = 'cp1252'
+DATA_IMPORTER_DECODER = 'UTF-8'
 
 THUMBNAIL_PROCESSORS = (
     'image_cropping.thumbnail_processors.crop_corners',
