@@ -1,24 +1,22 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
 from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, purchaseForm, catalogForm, \
-                                    catalogProductPropertiesForm, ProductForm, MemberProfileForm  #propertyForm
-from project.core.models import Purchase, Catalog, Product, CatalogProductProperties, Properties, ProductImages
+                                    catalogProductPropertiesForm, ProductForm, MemberProfileForm, UserLoginForm, ProductImagesForm
+from project.core.forms import ImportXLSForm
+from project.core.models import Purchase, Catalog, Product, CatalogProductProperties, Properties, ProductImages, ImportFiles
 from django.shortcuts import render, render_to_response
-from project.accounts.profiles import retrieve
 from project.accounts.models import OrganizerProfile, getProfile, repopulateProfile
-from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, purchaseForm, UserLoginForm, ProductImagesForm
 from django.contrib import auth
-from django.contrib.auth import login, authenticate
+import xlrd
 from django.template import RequestContext
 from django.core import urlresolvers
 from django.http import HttpResponseRedirect
-from project.settings import ADMIN_EMAIL
+from project.settings import ADMIN_EMAIL, IMPORT_XLS
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import Http404, HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from project.cart.purchases import get_purchases_dict
-# from project.core.functions import get_propeties
+from project.cart.purchases import get_purchases_dict, get_all_purchases_dict
 
 
 def profileView(request, template_name):
@@ -167,7 +165,8 @@ def purchases(request, template_name):
         if checkOrganizerProfile(user) is None: return HttpResponseRedirect(urlresolvers.reverse('profileView'))
     else:
         return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
-    purchases_dict = get_purchases_dict(request)  # получаем словарь словарей ... описание в cart.purchases.py
+    # purchases_dict = get_purchases_dict(request)  # получаем словарь словарей ... описание в cart.purchases.py
+    purchases_dict = get_all_purchases_dict(request)  # словарь словарей всех закупок пользователя
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
 
@@ -357,7 +356,46 @@ def catalog(request, purchase_id, catalog_id, template_name):
         purchase = Purchase.objects.get(id=purchase_id)
         catalog = Catalog.objects.get(id=catalog_id)
         catalog_product_properties = CatalogProductProperties.objects.filter(cpp_catalog=catalog_id)
-        # catalogs = Catalog.objects.all()
+        products = catalog.get_products()
+        for product in products:
+            product.property = product.property.split(';')  # для более читаемого вида
+        if request.method == 'POST':
+            # импорт товаров через xml
+            form = ImportXLSForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save()
+                file_name = '%s/%s' % (IMPORT_XLS, request.FILES['file'].name)
+                rb = xlrd.open_workbook(file_name, formatting_info=True)
+                sheet = rb.sheet_by_index(0)
+                objects_dict = {}
+                for colnum in range(sheet.ncols):
+                    col = sheet.col_values(colnum)
+                    """ с помощью метода pop() извлекаем 1 эллемент колонки и используем его как ключ, удаляя его
+                    из последовательности значения при этом - список всех элементов колонки кроме первого """
+                    objects_dict.update({col.pop(0): col})
+                for rownum in range(sheet.nrows):
+                    row = sheet.row_values(rownum)
+                    if rownum != 0:
+                        new_product = Product()
+                        try:
+                            test_sku = int(objects_dict['sku'][rownum-1])
+                            exist_products = Product.objects.filter(sku=test_sku)
+                            for test_prod in exist_products:
+                                if test_prod in Product.objects.filter(catalog=catalog):
+                                    continue  # прерываем итерацию и создание товара если нашелся SKU в каталоге
+                        except:
+                            new_product.sku = objects_dict['sku'][rownum-1]
+                            new_product.catalog = catalog
+                            new_product.description = objects_dict['description'][rownum-1]
+                            new_product.product_name = objects_dict['product_name'][rownum-1]
+                            new_product.property = objects_dict['property'][rownum-1]
+                            new_product.price = objects_dict['price'][rownum-1]
+                            new_product.save()
+                return HttpResponseRedirect(catalog.url())
+        else:
+            instance_form = ImportFiles.objects.create(import_catalog=catalog)
+            form = ImportXLSForm(instance=instance_form)
+            new_product = Product()
         return render_to_response(template_name, locals(),
                                   context_instance=RequestContext(request))
     except ObjectDoesNotExist:
