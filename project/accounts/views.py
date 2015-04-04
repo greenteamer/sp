@@ -379,18 +379,24 @@ def catalog(request, purchase_id, catalog_id, template_name):
                         new_product = Product()
                         try:
                             test_sku = int(objects_dict['sku'][rownum-1])
-                            exist_products = Product.objects.filter(sku=test_sku)
-                            for test_prod in exist_products:
-                                if test_prod in Product.objects.filter(catalog=catalog):
-                                    continue  # прерываем итерацию и создание товара если нашелся SKU в каталоге
+                            if Product.objects.filter(catalog=catalog, sku=test_sku):
+                                continue
+                            # for test_prod in exist_products:
+                                # if test_prod in Product.objects.filter(catalog=catalog):
+                                #     continue  # прерываем итерацию и создание товара если нашелся SKU в каталоге
                         except:
-                            new_product.sku = objects_dict['sku'][rownum-1]
-                            new_product.catalog = catalog
-                            new_product.description = objects_dict['description'][rownum-1]
-                            new_product.product_name = objects_dict['product_name'][rownum-1]
-                            new_product.property = objects_dict['property'][rownum-1]
-                            new_product.price = objects_dict['price'][rownum-1]
-                            new_product.save()
+                            pass
+                        new_product.sku = objects_dict['sku'][rownum-1]
+                        new_product.catalog = catalog
+                        new_product.description = objects_dict['description'][rownum-1]
+                        new_product.product_name = objects_dict['product_name'][rownum-1]
+                        new_product.property = objects_dict['property'][rownum-1]
+                        new_product.price = objects_dict['price'][rownum-1]
+                        new_product.save()
+                        new_image = ProductImages()
+                        new_image.image = 'product/04_small.jpg'
+                        new_image.p_image_product = new_product
+                        new_image.save()
                 return HttpResponseRedirect(catalog.url())
         else:
             instance_form = ImportFiles.objects.create(import_catalog=catalog)
@@ -484,8 +490,11 @@ def product(request, purchase_id, catalog_id, product_id, template_name, edit=Fa
                 product.save()
 
                 if request.FILES:
-                    ProductImages.objects.get(p_image_product_id=product_id).delete()
-                    product_image_form.save(product_id)
+                    try:
+                        ProductImages.objects.get(p_image_product_id=product_id).delete()
+                        product_image_form.save(product_id)
+                    except:
+                        product_image_form.save(product_id)
 
                 # Сохранение свойств в старом формате. Удалить если все норм работает.
                 # Properties.objects.filter(properties_product_id=product_id).delete()
