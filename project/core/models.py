@@ -222,14 +222,23 @@ class CatalogProductProperties(models.Model):
         self.cpp_slug = translit(self.cpp_name).lower()
         super(CatalogProductProperties, self).save()
 
-#
+
+
 # class Properties(models.Model):
 #     properties_value = models.CharField(max_length=100, verbose_name=u'Значения свойства товара')
 #     properties_product = models.ForeignKey(Product)
 #     properties_catalogProductProperties = models.ForeignKey(CatalogProductProperties)
-#
+# 
 #     def __unicode__(self):
 #         return self.properties_value
-#
-#
-#
+# 
+
+class ImportFiles(models.Model):
+    file = models.FileField(verbose_name=u'Файл для импорта товаров в каталог', upload_to='import_xls')
+    import_catalog = models.ForeignKey(Catalog)
+
+    def __unicode__(self):
+        return self.import_catalog.catalog_name
+
+
+

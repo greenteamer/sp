@@ -34,5 +34,14 @@ python ../manage.py migrate cart 0001 --fake
 python ../manage.py migrate accounts 0001 --fake
 python ../manage.py loaddata __initial_data.json
 
-
-
+# для тестирования в питон консоли
+>>> import xlrd
+>>> from project.settings import IMPORT_XLS
+>>> file_name = '/Users/greenteamer/Desktop/Django/applications/sp/media/import_xls/file_new.xls'
+>>> rb = xlrd.open_workbook(file_name, formatting_info=True)
+>>> sheet = rb.sheet_by_index(0)
+>>> for rownum in range(sheet.nrows):  # можно копировать блок
+        row = sheet.row_values(rownum)
+        if rownum == 0:
+            for c_el in row:
+                keys.append(c_el)
