@@ -209,11 +209,11 @@ class ProductImages(models.Model):
 
 
 class CatalogProductProperties(models.Model):
-    cpp_name = models.CharField(max_length=100, verbose_name=u'Свойство товара в каталоге', unique=True)
+    cpp_name = models.CharField(max_length=100, verbose_name=u'Свойство товара в каталоге')
     cpp_slug = models.CharField(null=True, max_length=255, blank=True)
     cpp_values = models.CharField(max_length=255, verbose_name=u'Возможные значения')
     cpp_catalog = models.ForeignKey(Catalog)
-    cpp_purchase = models.ForeignKey(Purchase)  # зачем привязка к закупке если есть привязка к каталогу?..
+    # cpp_purchase = models.ForeignKey(Purchase)  # зачем привязка к закупке если есть привязка к каталогу?..
 
     def __unicode__(self):
         return self.cpp_name
