@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
 from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, purchaseForm, catalogForm, \
-                                    catalogProductPropertiesForm, ProductForm, MemberProfileForm, UserLoginForm, ProductImagesForm
+                                    catalogProductPropertiesForm, ProductForm, MemberProfileForm, UserLoginForm, ProductImagesForm  # propertyForm
 from project.core.forms import ImportXLSForm
-from project.core.models import Purchase, Catalog, Product, CatalogProductProperties, Properties, ProductImages, ImportFiles
+from project.core.models import Purchase, Catalog, Product, CatalogProductProperties, Properties, ProductImages, ImportFiles  #, Properties
 from django.shortcuts import render, render_to_response, redirect
 from project.accounts.models import OrganizerProfile, getProfile, repopulateProfile
 from django.contrib import auth
