@@ -27,6 +27,19 @@
             <!-- Table row -->
             <div class="row">
 
+{#                {{ list_obj }}#}
+                {% for item_list in list_obj %}
+                    Список полей: <br/>
+                    {{ item_list }}<br/>
+                    Расшифровка: <br/>
+                    {% for item in item_list %}
+                        <span>{{ item }} </span>
+                    {% endfor %}
+                    <br/>
+                    <br/>
+                {% endfor %}
+
+
                 <div class="col-xs-12">
                 {% if purchases_dict %}
                     {% for purchase, dict in purchases_dict.items %}
@@ -52,11 +65,11 @@
                                             <tr>
                                                 <th scope="col">Каталог</th>
                                                 <th scope="col">Кол-во товаров</th>
-                                                <th scope="col">Кол-во заказов</th>
+{#                                                <th scope="col">Кол-во заказов</th>#}
                                                 <th scope="col"></th>
                                                 <th scope="col"></th>
-                                                <th scope="col"></th>
-                                                <th></th>
+                                                <th scope="col">Импорт товаров</th>
+                                                <th scope="col">Экспорт заказов</th>
                                             </tr>
                                         </thead>
                                         <tfoot>
@@ -70,7 +83,7 @@
                                             {% for catalog, list in dict.items %}
                                                 <tr>
                                                     <td><a href="{{ catalog.url }}">{{ catalog.catalog_name }}</a></td>
-                                                    <td>{{ catalog.get_products_count }}</td>
+{#                                                    <td>{{ catalog.get_products_count }}</td>#}
                                                     <td>{{ list|length }}</td>
                                                     <td><a href="{{ catalog.url }}"><button class="btn btn-block btn-success btn-sm"><i class="fa fa-pencil"></i> <span>Редактировать каталог</span></button></a></td>
                                                     <td><a href="{{ catalog.url }}/product-add/"><button class="btn btn-block btn-warning btn-sm" name="add_product"><i class="fa fa-plus"></i> <span>Добавить товар</span></button></td>
