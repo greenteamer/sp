@@ -108,7 +108,8 @@ class Purchase(models.Model):
     #     return Category.objects.filter()
 
     def get_current_status(self):
-        return PurchaseStatusLinks.objects.get(purchase=self.id, active=True)
+        status = PurchaseStatusLinks.objects.get(purchase=self.id, active=True)
+        return status.status
 
     def get_catalogs(self):
         return Catalog.objects.filter(catalog_purchase=self.id)

@@ -38,3 +38,7 @@ def get_all_purchases_dict(request):
             purchase_dict.update({catalog: Product.objects.filter(catalog=catalog)})
         purchases_dict.update({purchase: purchase_dict})
     return purchases_dict
+
+
+def change_status(request):
+    return True

@@ -3,7 +3,8 @@
 from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, purchaseForm, catalogForm, \
                                     catalogProductPropertiesForm, ProductForm, MemberProfileForm, UserLoginForm, ProductImagesForm  # propertyForm
 from project.core.forms import ImportXLSForm
-from project.core.models import Purchase, Catalog, Product, CatalogProductProperties, ProductImages, ImportFiles  #, Properties
+from project.core.models import Purchase, PurchaseStatus, Catalog, Product, CatalogProductProperties, \
+                                ProductImages, ImportFiles, PurchaseStatusLinks  #, Properties
 from django.shortcuts import render, render_to_response, redirect
 from project.accounts.models import OrganizerProfile, getProfile, repopulateProfile
 from django.contrib import auth
@@ -180,6 +181,18 @@ def logoutView(request, template_name):
 # Просмотр всех закупок
 @check_organizer
 def purchases(request, template_name):
+    statuses = PurchaseStatus.objects.all()
+
+    if 'ajax' in request.POST:
+
+        # purchasestatuslinks = PurchaseStatusLinks.objects.get(status_id=2, purchase_id=1)
+        purchasestatuslinks = PurchaseStatusLinks.objects.get(status_id=request.POST['status_id'], purchase_id=request.POST['purchase_id'])
+        purchasestatuslinks.status_id = request.POST['new_status_id']
+        purchasestatuslinks.save()
+
+        return HttpResponse('{"status":"%d"}' % purchasestatuslinks.id)
+
+
     # purchases_dict = get_purchases_dict(request)  # получаем словарь словарей ... описание в cart.purchases.py
     purchases_dict = get_all_purchases_dict(request)  # словарь словарей всех закупок пользователя
     return render_to_response(template_name, locals(),
