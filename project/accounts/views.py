@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
 from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, purchaseForm, catalogForm, \
-                                    catalogProductPropertiesForm, ProductForm, MemberProfileForm, UserLoginForm, ProductImagesForm  # propertyForm
+                                    catalogProductPropertiesForm, ProductForm, MemberProfileForm, UserLoginForm, \
+                                    ProductImagesForm  # propertyForm
 from project.core.forms import ImportXLSForm
 from project.core.models import Purchase, PurchaseStatus, Catalog, Product, CatalogProductProperties, \
                                 ProductImages, ImportFiles, PurchaseStatusLinks  #, Properties
@@ -19,7 +20,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import Http404, HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from project.cart.purchases import get_purchases_dict, get_all_purchases_dict
-
+import datetime
 
 def check_organizer(func):
     """декоратор проверки профиля пользователя
@@ -205,13 +206,35 @@ def purchaseAdd(request, template_name):
     user = request.user
     message = ''
     if request.POST:
+
         form = purchaseForm(request.POST)
         if form.is_valid():
             new_purchase = form.save(user)
+
+            dates_start = request.POST.getlist('date_start')
+            dates_end = request.POST.getlist('date_end')
+            i = 0
+            for date_start in dates_start:
+                date_end = dates_end[i]
+                i += 1
+                obj = PurchaseStatusLinks()
+                obj.status_id = i
+                obj.purchase = new_purchase
+                obj.date_end = date_end
+                obj.data = request.POST['data']
+                if i == 0:
+                    obj.date_start = datetime.datetime.now()
+                    obj.active = 1
+                else:
+                    obj.date_start = date_start
+                    obj.active = 0
+                obj.save()
+
             message = u"Новая закупка «%s» успешно добавлена" % request.POST['name']
         else:
             message = u"Ошибка при добавлении закупки"
     purchase_form = purchaseForm()
+    statuses = PurchaseStatus.objects.all()
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
 

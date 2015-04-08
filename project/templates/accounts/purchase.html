@@ -28,7 +28,6 @@
 
                 <div class="col-xs-6">
 
-                    <b>ID: </b>{{ purchase.id }}
                     <br/>
                     <b>Название: </b>{{ purchase.name }}
                     <br/>
@@ -49,6 +48,10 @@
                         {% if not forloop.last %}, {% else %}{% endif %}
                     {% endfor %}
                     <br/>
+                    <b>Каталоги: </b>
+                    {% for catalog in purchase.get_catalogs %}
+                        <a href="{{ catalog.url }}">{{ catalog }}</a>{% if not forloop.last %}, {% else %}{% endif %}
+                    {% endfor %}
                     <br/>
 
                     <a class="btn btn-success" href="{{ purchase.url }}-edit">Изменить закупку</a>
