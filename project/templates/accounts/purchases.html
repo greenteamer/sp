@@ -161,13 +161,13 @@
     <script>
         (function($) {
             $(document).ready(function() {
-
                 var current_select;
                 var status_id;
                 var new_status_id;
                 var purchase_id;
-
+                var change = false;
                 $('.status').change(function(){
+                    change = false;
                     current_select = $(this);
                     purchase_id = $(this).attr('purchase_id');
                     status_id = $(this).attr('status');
@@ -179,7 +179,6 @@
                 });
 
                 $('#chandestatusmodal .submit').click(function(){
-
                     var csrftoken = $.cookie('csrftoken');
                     $.post(
                         "",             // Урл
@@ -195,14 +194,17 @@
                         );
                     function onAjaxSuccess(data){
                         console.log('получено: ' + data);
+                        current_select.attr('status', new_status_id);
+                        change = true;
                         $('#chandestatusmodal').modal('hide');
                     }  // --/- end onAjaxSuccess function
-
                 });
 
                 // Возвращаем на место селект
                 $('#chandestatusmodal').on('hide.bs.modal', function () {
-                    current_select.find('option[value="'+status_id+'"]').attr("selected", "selected");
+                    if(!change) {
+                        current_select.find('option[value="'+status_id+'"]').attr("selected", "selected");
+                    }
                 })
 
             });
