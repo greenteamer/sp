@@ -91,6 +91,7 @@ USE_L10N = True
 # MEDIA_ROOT = 'C:/webmagazinedjango/webshop/static/media/'
 # MEDIA_ROOT = os.path.join(PROJECT_PATH, 'media').replace('\\', '/')
 MEDIA_ROOT = '%s/media' % CURRPATH
+IMPORT_XLS = '%s/import_xls' % MEDIA_ROOT
 CKEDITOR_UPLOAD_PATH = '/media/uploads'
 DIRECTORY = os.path.join(CURRPATH, 'media/uploads')
 
