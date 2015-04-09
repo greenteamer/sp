@@ -213,15 +213,16 @@ def purchaseAdd(request, template_name):
 
             dates_start = request.POST.getlist('date_start')
             dates_end = request.POST.getlist('date_end')
-            i = 0
+            data = request.POST.getlist('data')
+            status_num = 1
+            i = 0   #  TODO: ПОЛУЧИТЬ ИЗ БАЗЫ АЙДИ СТАТУСОВ
             for date_start in dates_start:
                 date_end = dates_end[i]
-                i += 1
                 obj = PurchaseStatusLinks()
-                obj.status_id = i
+                obj.status_id = status_num
                 obj.purchase = new_purchase
                 obj.date_end = date_end
-                obj.data = request.POST['data']
+                obj.data = data[i]
                 if i == 0:
                     obj.date_start = datetime.datetime.now()
                     obj.active = 1
@@ -229,12 +230,14 @@ def purchaseAdd(request, template_name):
                     obj.date_start = date_start
                     obj.active = 0
                 obj.save()
+                i += 1
+                status_num += 1
 
             message = u"Новая закупка «%s» успешно добавлена" % request.POST['name']
         else:
             message = u"Ошибка при добавлении закупки"
     purchase_form = purchaseForm()
-    statuses = PurchaseStatus.objects.all()
+    statuses = PurchaseStatus.objects.all()  # все статусы
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
 
@@ -259,7 +262,19 @@ def purchase(request, purchase_id, template_name, edit=False):
                     message = u"Закупка «%s» успешно изменена" % request.POST['name']
                 else:
                     message = u"Ошибка при изменении закупки"
-            purchase_form = purchaseForm(instance=purchase) # заполненная форма текущей закупки
+            purchase_form = purchaseForm(instance=purchase)  # заполненная форма текущей закупки
+            # purchase_statuses = PurchaseStatus.objects.all()  # все статусы
+
+            # При создании закупки должны быть созданы все статусы. их вот и выдираем из базы.
+            sql = 'SELECT core_purchasestatus.id, core_purchasestatus.status_name, core_purchasestatuslinks.id as links_id, core_purchasestatuslinks.date_start, core_purchasestatuslinks.date_end, core_purchasestatuslinks.data \
+            FROM core_purchasestatus \
+            LEFT JOIN core_purchasestatuslinks \
+            ON core_purchasestatus.id = core_purchasestatuslinks.status_id \
+            WHERE core_purchasestatuslinks.purchase_id = %s '
+            # ORDER BY core_purchasestatus.status_priority DESC'  # сортировка по приоритету статуса
+
+            statuses = PurchaseStatus.objects.raw(sql, [purchase_id])
+
             return render_to_response(template_name, locals(), context_instance=RequestContext(request))
         except ObjectDoesNotExist:
             raise Http404
