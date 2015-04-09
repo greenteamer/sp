@@ -166,8 +166,8 @@ class Product(models.Model):
     def get_all_image(self):
         return ProductImages.objects.filter(p_image_product=self.id)
 
-    def get_properties(self):
-        return Properties.objects.get(properties_product=self.id)
+    # def get_properties(self):
+    #     return Properties.objects.filter(properties_product=self.id)
 
 
 class ProductImages(models.Model):
@@ -205,6 +205,14 @@ class Properties(models.Model):
 
     def __unicode__(self):
         return self.properties_value
+
+
+class ImportFiles(models.Model):
+    file = models.FileField(verbose_name=u'Файл для импорта товаров в каталог', upload_to='import_xls')
+    import_catalog = models.ForeignKey(Catalog)
+
+    def __unicode__(self):
+        return self.import_catalog.catalog_name
 
 
 

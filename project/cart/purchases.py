@@ -27,3 +27,14 @@ def get_purchases_dict(request):
                 purchase_dict.update({catalog: list_items})
         purchases_dict.update({purchase: purchase_dict})
     return purchases_dict
+
+
+def get_all_purchases_dict(request):
+    profile = getProfile(request.user)
+    purchases_dict = {}
+    for purchase in Purchase.objects.filter(organizerProfile=profile):
+        purchase_dict = {}
+        for catalog in Catalog.objects.filter(catalog_purchase=purchase):
+            purchase_dict.update({catalog: Product.objects.filter(catalog=catalog)})
+        purchases_dict.update({purchase: purchase_dict})
+    return purchases_dict
