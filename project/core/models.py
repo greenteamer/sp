@@ -20,7 +20,7 @@ class CommonActiveManager(models.Manager):
 
 class Category(MPTTModel):
     """Класс для категорий товаров"""
-    name = models.CharField(_(u'Name'), max_length=50, unique=True)
+    name = models.CharField(_(u'Name'), max_length=50, unique=False)
     slug = models.SlugField(_(u'Slug'), max_length=50, unique=True,
                             help_text=_(u'Slug for product url created from name.'))
     # "Чистые" ссылки для продуктов формирующиеся из названия
@@ -213,6 +213,3 @@ class ImportFiles(models.Model):
 
     def __unicode__(self):
         return self.import_catalog.catalog_name
-
-
-
