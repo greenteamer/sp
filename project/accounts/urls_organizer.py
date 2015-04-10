@@ -12,7 +12,7 @@ urlpatterns = patterns('project.accounts.views',
         {'template_name': 'accounts/purchase_add.html'},
         name='purchaseAdd'),
 
-    url(r'^purchase-(\d+)/$', 'purchase',
+    url(r'^purchase-(?P<purchase_id>\d+)/$', 'purchase',
         {'template_name': 'accounts/purchase.html'},
         name='purchase'),
 

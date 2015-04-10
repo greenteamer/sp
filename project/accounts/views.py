@@ -22,10 +22,15 @@ from project.cart.purchases import get_purchases_dict, get_all_purchases_dict
 
 def check_organizer(func):
     """декоратор проверки профиля пользователя
-    принимает пользователя , проверяет и возвращает вьюху"""
+    принимает пользователя , проверяет и возвращает вьюху
+    purchase-id - необходимо присутствие именованной переменной во views для проверки владельца закупки"""
     def wrapper(request, *args, **kwargs):
         if request.user.is_authenticated():
             profile = getProfile(request.user)
+            try:
+                purchase_id = kwargs['purchase_id']
+            except:
+                purchase_id = None
             if profile is None:
                 messages.info(request, "Пожалуйста заполните Ваш профиль")
                 return redirect('/profile/populate-profile/')
@@ -35,7 +40,20 @@ def check_organizer(func):
             elif not isinstance(profile, OrganizerProfile):
                 messages.info(request, "Вы не являетесь организаотором закупок")
                 return redirect('/profile/')
+            elif purchase_id:  # проверка является ли профайл владельцем закупки
+                try:
+                    purchase_test = Purchase.objects.get(id=kwargs['purchase_id'])
+                    purchase_set = profile.purchase_set.all()
+                    if purchase_test in purchase_set:
+                        return func(request, *args, **kwargs)
+                    else:
+                        messages.info(request, "Вы не являетесь вледельцем закупки")
+                        return redirect('/profile/')
+                except:
+                    messages.info(request, "Вы не являетесь вледельцем закупки")
+                    return redirect('/profile/')
             else:
+                # возвращаем наконец функцию
                 return func(request, *args, **kwargs)
         else:
             return HttpResponseRedirect('/profile/registration/')
@@ -90,6 +108,7 @@ def populateProfileView(request, template_name):
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
 
+
 #регистрация пользователя
 def registrationView(request, template_name):
     if request.method == 'POST':
@@ -132,6 +151,7 @@ def registrationView(request, template_name):
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
 
+
 #страница входа для зарегистрированного пользователя
 def loginView(request, template_name):
     form = UserLoginForm()
@@ -155,6 +175,7 @@ def loginView(request, template_name):
             })
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
+
 
 def logoutView(request, template_name):
     user = request.user
@@ -205,12 +226,7 @@ def purchaseAdd(request, template_name):
 
 # Просмотр или редактирование одной конкретной закупки (по id)
 @check_organizer
-def purchase(request, purchase_id, template_name, edit=False):
-    """ проверяем является ли он владельцем закупки """
-    profile = checkOrganizerProfile(request.user)
-    if not Purchase.objects.get(id=purchase_id) in profile.purchase_set.all():
-        messages.info(request, "Вы не являетесь владельцем закупки")
-        return HttpResponseRedirect(urlresolvers.reverse('profileView'))
+def purchase(request, template_name, purchase_id, edit=False):
     message = ''
     if edit is True:  # если передан парамерт edit равный True, то редактируем закупку
         try:
@@ -243,11 +259,6 @@ def purchase(request, purchase_id, template_name, edit=False):
 # Просмотр всех каталогов для текущей закупки
 @check_organizer
 def catalogs(request, purchase_id, template_name):
-    profile = checkOrganizerProfile(request.user)
-    if not Purchase.objects.get(id=purchase_id) in profile.purchase_set.all():
-        messages.info(request, "Вы не являетесь владельцем закупки")
-        return HttpResponseRedirect(urlresolvers.reverse('profileView'))
-    message = ''
     try:
         purchase = Purchase.objects.get(id=purchase_id)
         catalogs = Catalog.objects.filter(catalog_purchase=purchase_id)
@@ -264,10 +275,6 @@ def catalogs(request, purchase_id, template_name):
 def catalogAdd(request, purchase_id, template_name):
     user = request.user
     profile = checkOrganizerProfile(request.user)
-    if not Purchase.objects.get(id=purchase_id) in profile.purchase_set.all():
-        messages.info(request, "Вы не являетесь владельцем закупки")
-        return HttpResponseRedirect(urlresolvers.reverse('profileView'))
-    message = ''
     if request.POST:
         catalog_form = catalogForm(request.POST)
         # catalogProductProperties_form = catalogProductPropertiesForm(request.POST)
@@ -317,9 +324,7 @@ def getNewCatalogProductPropertiesFormBlock(request, template_name):
 	 #    <input class="form-control" name="cpp_values" placeholder="Введите возможные значения для свойства через символ &quot;;&quot;" type="text"> \
     #     <hr/>'
     catalogProductProperties_form = catalogProductPropertiesForm()
-
-    #
-    return HttpResponse()
+    # return HttpResponse()
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
 
@@ -331,9 +336,6 @@ def getNewCatalogProductPropertiesFormBlock(request, template_name):
 def catalog(request, purchase_id, catalog_id, template_name):
     """ проверяем пользователя и его профайл организатора"""
     profile = checkOrganizerProfile(request.user)
-    if not Purchase.objects.get(id=purchase_id) in profile.purchase_set.all():
-        messages.info(request, "Вы не являетесь владельцем закупки")
-        return HttpResponseRedirect(urlresolvers.reverse('profileView'))
     try:
         purchase = Purchase.objects.get(id=purchase_id)
         catalog = Catalog.objects.get(id=catalog_id)
@@ -399,9 +401,9 @@ def catalog(request, purchase_id, catalog_id, template_name):
 def products(request, purchase_id, catalog_id, template_name):
     """ проверяем пользователя и его профайл организатора"""
     profile = checkOrganizerProfile(request.user)
-    if not Purchase.objects.get(id=purchase_id) in profile.purchase_set.all():
-        messages.info(request, "Вы не являетесь владельцем закупки")
-        return HttpResponseRedirect(urlresolvers.reverse('profileView'))
+    # if not Purchase.objects.get(id=purchase_id) in profile.purchase_set.all():
+    #     messages.info(request, "Вы не являетесь владельцем закупки")
+    #     return HttpResponseRedirect(urlresolvers.reverse('profileView'))
     try:
         user = request.user
         purchase = Purchase.objects.get(id=purchase_id)
@@ -435,10 +437,7 @@ def products(request, purchase_id, catalog_id, template_name):
 @check_organizer
 def product(request, purchase_id, catalog_id, product_id, template_name, edit=False):
     user = request.user
-    profile = checkOrganizerProfile(request.user)
-    if not Purchase.objects.get(id=purchase_id) in profile.purchase_set.all():
-        messages.info(request, "Вы не являетесь владельцем закупки")
-        return HttpResponseRedirect(urlresolvers.reverse('profileView'))
+    # profile = checkOrganizerProfile(request.user)
     message = ''
 
     if edit == True:  # если передан парамерт edit равный True, то редактируем товар
@@ -534,10 +533,6 @@ def productAdd(request, purchase_id, catalog_id, template_name):
         message = ''
         user = request.user
         profile = checkOrganizerProfile(request.user)
-        if not Purchase.objects.get(id=purchase_id) in profile.purchase_set.all():
-            messages.info(request, "Вы не являетесь владельцем закупки")
-            return HttpResponseRedirect(urlresolvers.reverse('profileView'))
-
         if request.POST:
             product_form = ProductForm(request.POST)
             product_image_form = ProductImagesForm(request.POST, request.FILES)
