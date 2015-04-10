@@ -36,13 +36,24 @@
                 </div><!-- /.col -->
 
                 <div class="col-xs-5">
-                    <h3>Условия закупки</h3>
-                    <b>Предоплата: </b> {{ purchase.prepay }}%
-                    <br/>
-                    <b>Процент организатора: </b>{{ purchase.percentage }}%
-                    <br/>
-                    <b>Способы оплаты:</b> {{ purchase.paymethods }}
-                    <br/>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h3>Условия закупки</h3>
+                            <b>Предоплата: </b> {{ purchase.prepay }}%
+                            <br/>
+                            <b>Процент организатора: </b>{{ purchase.percentage }}%
+                            <br/>
+                            <b>Способы оплаты:</b> {{ purchase.paymethods }}
+                            <br/>
+                        </div>
+                        <div class="col-xs-12">
+                            <h3>Каталоги закупки</h3>
+                            {% for catalog in purchase.get_catalogs %}
+                                <a href="{{ catalog.url_core }}">{{ catalog.catalog_name }}</a>
+                            {% endfor %}
+
+                        </div>
+                    </div>
 
                 </div><!-- /.col -->
 

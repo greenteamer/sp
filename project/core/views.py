@@ -68,9 +68,15 @@ def categories(request, template_name):
 def coreCategory(request, category_slug, template_name):
     try:
         category_id = Category.objects.get(slug=category_slug)
+        all_categories = Category.objects.filter(parent=category_id)
+        purchases = []
+        if len(all_categories)>0:
+            for category in all_categories:
+                purchases.extend(Purchase.objects.filter(categories=category))
+        else:
+            purchases = Purchase.objects.filter(categories=category_id)
     except ObjectDoesNotExist:
-            raise Http404
-    purchases = Purchase.objects.filter(categories=category_id)
+        raise Http404
     return render_to_response(template_name, locals(),
                             context_instance=RequestContext(request))
 

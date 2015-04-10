@@ -52,7 +52,11 @@ class Category(MPTTModel):
 
     def __unicode__(self):
         # return self.name
-        return '%s%s' % ('--' * self.level, self.name)
+        try:
+            return "%s-%s" % ('--' * self.level, self.parent.name, self.name)
+        except:
+            return '%s%s' % ('--' * self.level, self.name)
+            # return self.name
 
     @permalink
     def get_absolute_url(self):
