@@ -22,6 +22,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from project.cart.purchases import get_purchases_dict, get_all_purchases_dict
 import datetime
 
+
 def check_organizer(func):
     """декоратор проверки профиля пользователя
     принимает пользователя , проверяет и возвращает вьюху
