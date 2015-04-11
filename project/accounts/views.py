@@ -11,6 +11,7 @@ from project.accounts.models import OrganizerProfile, getProfile, repopulateProf
 from django.contrib import auth
 from django.contrib import messages
 import xlrd
+from excel_response import ExcelResponse
 from django.template import RequestContext
 from django.core import urlresolvers
 from django.http import HttpResponseRedirect
@@ -44,17 +45,17 @@ def check_organizer(func):
                 messages.info(request, "Вы не являетесь организаотором закупок")
                 return redirect('/profile/')
             elif purchase_id:  # проверка является ли профайл владельцем закупки
-                try:
-                    purchase_test = Purchase.objects.get(id=kwargs['purchase_id'])
-                    purchase_set = profile.purchase_set.all()
-                    if purchase_test in purchase_set:
-                        return func(request, *args, **kwargs)
-                    else:
-                        messages.info(request, "Вы не являетесь вледельцем закупки")
-                        return redirect('/profile/')
-                except:
+            # try:
+                purchase_test = Purchase.objects.get(id=kwargs['purchase_id'])
+                purchase_set = profile.purchase_set.all()
+                if purchase_test in purchase_set:
+                    return func(request, *args, **kwargs)
+                else:
                     messages.info(request, "Вы не являетесь вледельцем закупки")
                     return redirect('/profile/')
+            # except:
+            #     messages.info(request, "Вы не являетесь вледельцем закупки")
+            #     return redirect('/profile/')
             else:
                 # возвращаем наконец функцию
                 return func(request, *args, **kwargs)
@@ -388,60 +389,72 @@ def getNewCatalogProductPropertiesFormBlock(request, template_name):
 def catalog(request, purchase_id, catalog_id, template_name):
     """ проверяем пользователя и его профайл организатора"""
     profile = checkOrganizerProfile(request.user)
-    try:
-        purchase = Purchase.objects.get(id=purchase_id)
-        catalog = Catalog.objects.get(id=catalog_id)
-        catalog_product_properties = CatalogProductProperties.objects.filter(cpp_catalog=catalog_id)
-        products = catalog.get_products()
-        for product in products:
-            product.property = product.property.split(';')  # для более читаемого вида
-        if request.method == 'POST':
-            # импорт товаров через xml
-            form = ImportXLSForm(request.POST, request.FILES)
-            if form.is_valid():
-                form.save()
-                file_name = '%s/%s' % (IMPORT_XLS, request.FILES['file'].name)
-                rb = xlrd.open_workbook(file_name, formatting_info=True)
-                sheet = rb.sheet_by_index(0)
-                objects_dict = {}
-                for colnum in range(sheet.ncols):
-                    col = sheet.col_values(colnum)
-                    """ с помощью метода pop() извлекаем 1 эллемент колонки и используем его как ключ, удаляя его
-                    из последовательности значения при этом - список всех элементов колонки кроме первого """
-                    objects_dict.update({col.pop(0): col})
-                for rownum in range(sheet.nrows):
-                    row = sheet.row_values(rownum)
-                    if rownum != 0:
-                        new_product = Product()
-                        try:
-                            test_sku = int(objects_dict['sku'][rownum-1])
-                            if Product.objects.filter(catalog=catalog, sku=test_sku):
-                                continue
-                            # for test_prod in exist_products:
-                                # if test_prod in Product.objects.filter(catalog=catalog):
-                                #     continue  # прерываем итерацию и создание товара если нашелся SKU в каталоге
-                        except:
-                            pass
-                        new_product.sku = objects_dict['sku'][rownum-1]
-                        new_product.catalog = catalog
-                        new_product.description = objects_dict['description'][rownum-1]
-                        new_product.product_name = objects_dict['product_name'][rownum-1]
-                        new_product.property = objects_dict['property'][rownum-1]
-                        new_product.price = objects_dict['price'][rownum-1]
-                        new_product.save()
-                        new_image = ProductImages()
-                        new_image.image = 'product/04_small.jpg'
-                        new_image.p_image_product = new_product
-                        new_image.save()
-                return HttpResponseRedirect(catalog.url())
-        else:
-            instance_form = ImportFiles.objects.create(import_catalog=catalog)
-            form = ImportXLSForm(instance=instance_form)
-            new_product = Product()
+    # try:
+    purchase = Purchase.objects.get(id=purchase_id)
+    catalog = Catalog.objects.get(id=catalog_id)
+    catalog_product_properties = CatalogProductProperties.objects.filter(cpp_catalog=catalog_id)
+    products = catalog.get_products()
+    for product in products:
+        product.property = product.property.split(';')  # для более читаемого вида
+    if request.method == 'POST' and 'import' in request.POST:
+        # импорт товаров через xml
+        form = ImportXLSForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            file_name = '%s/%s' % (IMPORT_XLS, request.FILES['file'].name)
+            rb = xlrd.open_workbook(file_name, formatting_info=True)
+            sheet = rb.sheet_by_index(0)
+            objects_dict = {}
+            for colnum in range(sheet.ncols):
+                col = sheet.col_values(colnum)
+                """ с помощью метода pop() извлекаем 1 эллемент колонки и используем его как ключ, удаляя его
+                из последовательности значения при этом - список всех элементов колонки кроме первого """
+                objects_dict.update({col.pop(0): col})
+            for rownum in range(sheet.nrows):
+                row = sheet.row_values(rownum)
+                if rownum != 0:
+                    new_product = Product()
+                    try:
+                        test_sku = int(objects_dict['sku'][rownum-1])
+                        if Product.objects.filter(catalog=catalog, sku=test_sku):
+                            continue
+                        # for test_prod in exist_products:
+                            # if test_prod in Product.objects.filter(catalog=catalog):
+                            #     continue  # прерываем итерацию и создание товара если нашелся SKU в каталоге
+                    except:
+                        pass
+                    new_product.sku = objects_dict['sku'][rownum-1]
+                    new_product.catalog = catalog
+                    new_product.description = objects_dict['description'][rownum-1]
+                    new_product.product_name = objects_dict['product_name'][rownum-1]
+                    new_product.property = objects_dict['property'][rownum-1]
+                    new_product.price = objects_dict['price'][rownum-1]
+                    new_product.save()
+                    new_image = ProductImages()
+                    new_image.image = 'product/04_small.jpg'
+                    new_image.p_image_product = new_product
+                    new_image.save()
+            return HttpResponseRedirect(catalog.url())
+    elif request.method == 'POST' and 'export' in request.POST:
+        data = [[u'sku', u'description', u'price', u'product_name', u'catalog', u'property']]
+        for product_item in catalog.get_products():
+            data.append([product_item.sku, product_item.description, product_item.price,
+                         product_item.product_name, product_item.catalog.id, product_item.property])
+        return ExcelResponse(data, 'catalog_example')
+    elif request.method == 'POST' and 'del_product' in request.POST:  # удаление продукта
+        p = Product.objects.get(id=request.POST['product'])
+        products = set(products) ^ set([p, ])  # преобразуем в set и делаем симметричкскую разность
+        p.delete()
         return render_to_response(template_name, locals(),
-                                  context_instance=RequestContext(request))
-    except ObjectDoesNotExist:
-            raise Http404
+                              context_instance=RequestContext(request))
+    else:
+        instance_form = ImportFiles.objects.create(import_catalog=catalog)
+        form = ImportXLSForm(instance=instance_form)
+        # new_product = Product()
+    return render_to_response(template_name, locals(),
+                              context_instance=RequestContext(request))
+    # except ObjectDoesNotExist:
+    #         raise Http404
 
 # __ // Каталоги __
 

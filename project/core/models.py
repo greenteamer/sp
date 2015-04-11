@@ -142,7 +142,7 @@ class PurchaseStatusLinks(models.Model):
 
 
 class Catalog(models.Model):
-    catalog_name = models.CharField(max_length=100, verbose_name=u'Название каталога')
+    catalog_name = models.CharField(max_length=100, verbose_name=u'Название каталога', unique=False)
     catalog_purchase = models.ForeignKey(Purchase)
     created_at = models.DateTimeField(_(u'Created at'), null=True, auto_now_add=True)
     updated_at = models.DateTimeField(_(u'Updated at'), null=True, auto_now=True)
@@ -223,7 +223,7 @@ class CatalogProductProperties(models.Model):
         return self.cpp_name
 
     def save(self):
-        self.cpp_slug = translit(self.cpp_name).lower()
+        self.cpp_slug = translit(self.cpp_name).lower() + '-cat-' + str(self.cpp_catalog.id)
         super(CatalogProductProperties, self).save()
 
 
