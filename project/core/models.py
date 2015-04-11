@@ -20,7 +20,7 @@ class CommonActiveManager(models.Manager):
 
 class Category(MPTTModel):
     """Класс для категорий товаров"""
-    name = models.CharField(_(u'Name'), max_length=50, unique=True)
+    name = models.CharField(_(u'Name'), max_length=50, unique=False)
     slug = models.SlugField(_(u'Slug'), max_length=50, unique=True,
                             help_text=_(u'Slug for product url created from name.'))
     # "Чистые" ссылки для продуктов формирующиеся из названия
@@ -210,7 +210,7 @@ class ProductImages(models.Model):
 
 
 class CatalogProductProperties(models.Model):
-    cpp_name = models.CharField(max_length=100, verbose_name=u'Свойство товара в каталоге')
+    cpp_name = models.CharField(max_length=100, verbose_name=u'Свойство товара в каталоге', unique=False)
     cpp_slug = models.CharField(null=True, max_length=255, blank=True)
     cpp_values = models.CharField(max_length=255, verbose_name=u'Возможные значения')
     cpp_catalog = models.ForeignKey(Catalog)
@@ -229,10 +229,10 @@ class CatalogProductProperties(models.Model):
 #     properties_value = models.CharField(max_length=100, verbose_name=u'Значения свойства товара')
 #     properties_product = models.ForeignKey(Product)
 #     properties_catalogProductProperties = models.ForeignKey(CatalogProductProperties)
-# 
+#
 #     def __unicode__(self):
 #         return self.properties_value
-# 
+#
 
 class ImportFiles(models.Model):
     file = models.FileField(verbose_name=u'Файл для импорта товаров в каталог', upload_to='import_xls')
