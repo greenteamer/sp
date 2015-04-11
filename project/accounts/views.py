@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
 from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, purchaseForm, catalogForm, \
-                                    catalogProductPropertiesForm, ProductForm, MemberProfileForm, UserLoginForm, ProductImagesForm
+                                    catalogProductPropertiesForm, ProductForm, MemberProfileForm, UserLoginForm, \
+                                    ProductImagesForm  # propertyForm
 from project.core.forms import ImportXLSForm
-from project.core.models import Purchase, Catalog, Product, CatalogProductProperties, Properties, ProductImages, ImportFiles
+from project.core.models import Purchase, PurchaseStatus, Catalog, Product, CatalogProductProperties, \
+                                ProductImages, ImportFiles, PurchaseStatusLinks  #, Properties
 from django.shortcuts import render, render_to_response, redirect
 from project.accounts.models import OrganizerProfile, getProfile, repopulateProfile
 from django.contrib import auth
@@ -18,7 +20,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import Http404, HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from project.cart.purchases import get_purchases_dict, get_all_purchases_dict
-
+import datetime
 
 def check_organizer(func):
     """декоратор проверки профиля пользователя
@@ -201,6 +203,18 @@ def logoutView(request, template_name):
 # Просмотр всех закупок
 @check_organizer
 def purchases(request, template_name):
+    statuses = PurchaseStatus.objects.all()
+
+    if 'ajax' in request.POST:
+
+        # purchasestatuslinks = PurchaseStatusLinks.objects.get(status_id=2, purchase_id=1)
+        purchasestatuslinks = PurchaseStatusLinks.objects.get(status_id=request.POST['status_id'], purchase_id=request.POST['purchase_id'])
+        purchasestatuslinks.status_id = request.POST['new_status_id']
+        purchasestatuslinks.save()
+
+        return HttpResponse('{"status":"%d"}' % purchasestatuslinks.id)
+
+
     # purchases_dict = get_purchases_dict(request)  # получаем словарь словарей ... описание в cart.purchases.py
     purchases_dict = get_all_purchases_dict(request)  # словарь словарей всех закупок пользователя
     return render_to_response(template_name, locals(),
@@ -213,13 +227,38 @@ def purchaseAdd(request, template_name):
     user = request.user
     message = ''
     if request.POST:
+
         form = purchaseForm(request.POST)
         if form.is_valid():
             new_purchase = form.save(user)
+
+            dates_start = request.POST.getlist('date_start')
+            dates_end = request.POST.getlist('date_end')
+            data = request.POST.getlist('data')
+            status_num = 1
+            i = 0   #  TODO: ПОЛУЧИТЬ ИЗ БАЗЫ АЙДИ СТАТУСОВ
+            for date_start in dates_start:
+                date_end = dates_end[i]
+                obj = PurchaseStatusLinks()
+                obj.status_id = status_num
+                obj.purchase = new_purchase
+                obj.date_end = date_end
+                obj.data = data[i]
+                if i == 0:
+                    obj.date_start = datetime.datetime.now()
+                    obj.active = 1
+                else:
+                    obj.date_start = date_start
+                    obj.active = 0
+                obj.save()
+                i += 1
+                status_num += 1
+
             message = u"Новая закупка «%s» успешно добавлена" % request.POST['name']
         else:
             message = u"Ошибка при добавлении закупки"
     purchase_form = purchaseForm()
+    statuses = PurchaseStatus.objects.all()  # все статусы
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
 
@@ -239,7 +278,19 @@ def purchase(request, template_name, purchase_id, edit=False):
                     message = u"Закупка «%s» успешно изменена" % request.POST['name']
                 else:
                     message = u"Ошибка при изменении закупки"
-            purchase_form = purchaseForm(instance=purchase) # заполненная форма текущей закупки
+            purchase_form = purchaseForm(instance=purchase)  # заполненная форма текущей закупки
+            # purchase_statuses = PurchaseStatus.objects.all()  # все статусы
+
+            # При создании закупки должны быть созданы все статусы. их вот и выдираем из базы.
+            sql = 'SELECT core_purchasestatus.id, core_purchasestatus.status_name, core_purchasestatuslinks.id as links_id, core_purchasestatuslinks.date_start, core_purchasestatuslinks.date_end, core_purchasestatuslinks.data \
+            FROM core_purchasestatus \
+            LEFT JOIN core_purchasestatuslinks \
+            ON core_purchasestatus.id = core_purchasestatuslinks.status_id \
+            WHERE core_purchasestatuslinks.purchase_id = %s '
+            # ORDER BY core_purchasestatus.status_priority DESC'  # сортировка по приоритету статуса
+
+            statuses = PurchaseStatus.objects.raw(sql, [purchase_id])
+
             return render_to_response(template_name, locals(), context_instance=RequestContext(request))
         except ObjectDoesNotExist:
             raise Http404

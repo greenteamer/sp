@@ -49,7 +49,7 @@
                 <div class="col-xs-12">
                     <div class="row">
                         {% for product in catalog.get_products %}
-                            <div class="col-xs-12 col-md-4 item">
+                            <div class="col-xs-12 col-md-4 product-item">
                                 <img style="" src="{% cropped_thumbnail product.get_image "cropping" scale=1 %}">
 {#                                <img src="{{ product.image }}" alt=""/>#}
                                 {{ product.product_name }}
@@ -61,6 +61,21 @@
                                 {% if product.sku %}
                                     {{ product.sku }}
                                 {% endif %}
+                                <br/>
+                                <div class="properties">
+                                    <b>Свойства:</b> <br/>
+                                    {{ property_form }}
+                                </div>
+                                <br/>
+                                <div id="{{ product.id }}" class="quantity">
+                                    <i class="btn-mini fa fa-minus-square minus" onselectstart="return false"></i>
+                                    <input name="quantity{{ product.id }}" maxlength="2" id="id_quantity{{ product.id }}" type="text" class="product_quantity" value="1" size="1">
+                                    <i class="btn-mini fa fa-plus-square plus" onselectstart="return false"></i>
+                                </div>
+
+                                <button class="btn btn-primary add_to_cart animation" product-id="{{ product.id }}">В корзину</button>
+
+
                                 <br/>
                                 <a class="btn btn-default" href="{{ product.url_core }}">Подробнее</a>
                             </div>
@@ -74,4 +89,116 @@
     </div><!-- /.content-wrapper -->
 
 {% endblock %}
+
+
+
+{% block page_js %}
+{#    <script src='{{ STATIC_URL }}AdminLte/plugins/fastclick/fastclick.min.js'></script>#}
+{#    <script src="{{ STATIC_URL }}AdminLte/dist/js/app.min.js" type="text/javascript"></script>#}
+{#    <script src="{{ STATIC_URL }}AdminLte/dist/js/demo.js" type="text/javascript"></script>#}
+    <script src='{{ STATIC_URL }}js/jquery.cookie.js'></script>
+
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+
+{#          TODO: Средствами джанго сделать уникальный name у каждой группы свойств; и у каждой группы выбран один элемент #}
+            // Извращения
+            all_properties = $('.properties ul');
+            all_properties.each(function(i, elem){
+                $(this).find('input').attr('name', $(this).find('input').attr('name') + i).attr('checked', 'checked');
+            });
+
+
+
+            //по нажатию на + или - меняем значение в поле quantity
+            $('.plus').click(function (){
+                var current_q = $(this).parent(".quantity").children(".product_quantity").val();
+                var current_quantity = parseInt(current_q) + 1;
+                $(this).parent(".quantity").children(".product_quantity").attr("value", current_quantity);
+            });
+            $('.minus').click(function (){
+                var current_q = $(this).parent(".quantity").children(".product_quantity").val();
+                if (parseInt(current_q)>1){
+                    var current_quantity = parseInt(current_q) - 1;
+                    $(this).parent(".quantity").children(".product_quantity").attr("value", current_quantity);
+                }
+            });
+
+
+            // добавление в корзину
+            $(".add_to_cart").click(function (){
+                var product_item = $(this).parents('.product-item');
+                var product_properties = '';
+                var checked_input = product_item.find('.properties input:checked');
+                var len = checked_input.length;
+                checked_input.each(function (i, elem) {
+                    if (i != len - 1) {
+                        product_properties += elem.value + ',';
+                    }else{
+                        product_properties += elem.value;
+                    }
+                });
+                console.log('Свойства: ' + product_properties);
+                var product_id = $(this).attr("product-id");
+                var quantity = product_item.find('.product_quantity').val();
+                var csrftoken = $.cookie('csrftoken');
+                $.post(
+                    ".",
+                    {
+                        ajax: 1,
+                        csrfmiddlewaretoken: csrftoken,
+                        product: product_id,
+                        quantity: quantity,
+                        product_properties: product_properties
+                    },
+                    onAjaxSuccess
+                );
+                function onAjaxSuccess(data){
+                    console.log('получено: ' + data);
+                    var result = $.parseJSON(data);
+                    if(result.status == 'ok'){
+                        var cart_item = $('#cart_item_' + result.cart_item_id);
+                        if(cart_item.length) {  // такой товар в корзине уже есть
+                            // исправляем цифры количества товара в корзине
+                            cart_item.find('.product_quantity').text(parseInt(cart_item.find('.product_quantity').text()) + parseInt(result.quantity));
+                            full_count_product = $('.full_count_product');
+                            full_count_product.text( parseInt($(full_count_product[0]).text()) + parseInt(result.quantity) );
+                            alert('Товар в корзине успешно обновлен');
+                        }else{  // Значит элемент новый
+                            $('#cart_item_menu').append('<li class="cart_item" id="cart_item_' + result.cart_item_id + '"> \
+                                    <div class="pull-left"> \
+                                          <img src="'+ result.product_image +'" width="50" height="50"> \
+                                    </div> \
+                                    <a style="padding:0 10px;" href="'+ result.product_url +'"> \
+                                        <span class="product_quantity label label-success pull-right">' + result.quantity +'</span> \
+                                        <h4 class="product_name" style="max-width: 80%;">'+ result.product_name +'</h4> \
+                                        <p class="product_properties">' + result.properties + '</p> \
+                                    </a> \
+                                </li>');
+                            full_count_product = $('.full_count_product');
+                            full_count_product.text( parseInt($(full_count_product[0]).text()) + parseInt(result.quantity) );
+                            alert('Товар успешно добавлен в корзину');
+{#                                console.log('new element');#}
+                        }
+                    }else if (result.status == 'no'){
+                        alert('Не найдено товара с такими свойствами');
+                    }else{
+                        alert('Не известная ошибка');
+                    }
+
+                }  // --/- end onAjaxSuccess function
+            });
+
+
+
+
+        });
+    })(jQuery);
+</script>
+
+{% endblock %}
+
+
 
