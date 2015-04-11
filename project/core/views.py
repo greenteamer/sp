@@ -53,26 +53,29 @@ def viewProduct(request, template_name="core/viewproduct.html"):
                                    'where core_product.id = core_productimages.p_image_product_id')
     product_images = ProductImages.objects.all()
     product = Product.objects.order_by('-id')[0]
-    return render_to_response(template_name, locals(),
-                              context_instance=RequestContext(request))
+    return render_to_response(template_name, locals(), context_instance=RequestContext(request))
 
 
 @check_profile
 def categories(request, template_name):
-    return render_to_response(template_name, locals(),
-                            context_instance=RequestContext(request))
-
+    return render_to_response(template_name, locals(), context_instance=RequestContext(request))
 
 # Страница категории
 @check_profile
 def coreCategory(request, category_slug, template_name):
     try:
         category_id = Category.objects.get(slug=category_slug)
+        all_categories = Category.objects.filter(parent=category_id)
+        if len(all_categories) > 0:
+            purchases = set()
+            for category in all_categories:
+                purchases_set = set(Purchase.objects.filter(categories=category))
+                purchases = purchases | purchases_set
+        else:
+            purchases = Purchase.objects.filter(categories=category_id)
     except ObjectDoesNotExist:
-            raise Http404
-    purchases = Purchase.objects.filter(categories=category_id)
-    return render_to_response(template_name, locals(),
-                            context_instance=RequestContext(request))
+        raise Http404
+    return render_to_response(template_name, locals(), context_instance=RequestContext(request))
 
 
 # Просмотр или редактирование одной конкретной закупки (по id)
@@ -93,93 +96,78 @@ def corePurchase(request, purchase_id, template_name):
     except ObjectDoesNotExist:
         raise Http404
 
-    return render_to_response(template_name, locals(),
-                                  context_instance=RequestContext(request))
+    return render_to_response(template_name, locals(), context_instance=RequestContext(request))
 
 
 # Просмотр каталога
 @check_profile
 def coreCatalog(request, purchase_id, catalog_id, template_name):  # TODO: реализовать ajax добавление в корзину
     try:
+
+        if 'ajax' in request.POST:
+            ajax = request.POST['ajax']
+            # Добавление в корзину по аяксу
+            if ajax != False:
+                product = Product.objects.get(id=request.POST['product'])
+                product_properties = product.property   # все возможные свойства Этого товара
+                if request.POST['product_properties'] in product_properties and request.POST['product_properties'] != '':
+                    # если выбранные св-ва есть в товаре
+                    cart_item = CartItem(product=product)
+                    form = CartItemForm(request.POST or None, instance=cart_item)
+                    if form.is_valid():
+                        cart_item = add_to_cart(request)    # Добавление в корзину
+                        image = product.get_image()
+                        ajax_return = '{"status":"ok", "cart_item_id":"%d", "quantity":"%s", "properties":"%s", "product_name":"%s", "product_image":"%s", "product_url":"%s"}' % \
+                                      (cart_item['id'], cart_item['quantity'], cart_item['properties'], product.product_name, image.url(), product.url_core())
+                    else:
+                        ajax_return = '{"status":"error"}'
+                    return HttpResponse(ajax_return)
+                else:
+                    return HttpResponse('{"status":"no"}')
+
+
         purchase = Purchase.objects.get(id=purchase_id)
         catalog = Catalog.objects.get(id=catalog_id)
+        property_form = propertyForm(catalog_id)
 
         # catalog_product_properties = CatalogProductProperties.objects.filter(cpp_catalog=catalog_id)
         # catalogs = Catalog.objects.all()
-        return render_to_response(template_name, locals(),
-                                  context_instance=RequestContext(request))
+        return render_to_response(template_name, locals(), context_instance=RequestContext(request))
     except ObjectDoesNotExist:
             raise Http404
 
 
 # Просмотр товара
 @check_profile
-def coreProduct(request, purchase_id, catalog_id, product_id, template_name):  # TODO: реализовать ajax добавление в корзину
+def coreProduct(request, purchase_id, catalog_id, product_id, template_name):
     try:
-
-        try:
+        if 'ajax' in request.POST:
             ajax = request.POST['ajax']
-        except:
-            ajax = False
-
-        # Добавление в корзину по аяксу
-        if ajax != False:
-            product = Product.objects.get(id=request.POST['product'])
-            product_properties = product.property   # все возможные свойства Этого товара
-            if request.POST['product_properties'] in product_properties and request.POST['product_properties'] != '':
-                # если выбранные св-ва есть в товаре
-                cart_item = CartItem(product=product)
-                form = CartItemForm(request.POST or None, instance=cart_item)
-                if form.is_valid():
-                    cart_item = add_to_cart(request)    # Добавление в корзину
-                    ajax_return = '{"status":"ok", "cart_item_id":"%d", "quantity":"%s", "properties":"%s"}' % (cart_item['id'], cart_item['quantity'], cart_item['properties'])
+            # Добавление в корзину по аяксу
+            if ajax is not False:
+                product = Product.objects.get(id=request.POST['product'])
+                product_properties = product.property   # все возможные свойства Этого товара
+                if request.POST['product_properties'] in product_properties and request.POST['product_properties'] != '':
+                    # если выбранные св-ва есть в товаре
+                    cart_item = CartItem(product=product)
+                    form = CartItemForm(request.POST or None, instance=cart_item)
+                    if form.is_valid():
+                        cart_item = add_to_cart(request)    # Добавление в корзину
+                        ajax_return = '{"status":"ok", "cart_item_id":"%d", "quantity":"%s", "properties":"%s"}' % (cart_item['id'], cart_item['quantity'], cart_item['properties'])
+                    else:
+                        ajax_return = '{"status":"error"}'
+                    return HttpResponse(ajax_return)
                 else:
-                    ajax_return = '{"status":"error"}'
-                return HttpResponse(ajax_return)
-            else:
-                return HttpResponse('{"status":"no"}')
+                    return HttpResponse('{"status":"no"}')
 
         product = Product.objects.get(id=product_id)
         property_form = propertyForm(catalog_id)
         images = ProductImages.objects.filter(p_image_product=product_id)
         cart_item = CartItem(product=product)
-        form = CartItemForm(request.POST or None, instance=cart_item)
-        if form.is_valid():
+        cart_form = CartItemForm(request.POST or None, instance=cart_item)
+        if cart_form.is_valid():
             add_to_cart(request)
         return render_to_response(template_name, locals(),
                                   context_instance=RequestContext(request))
     except ObjectDoesNotExist:
             raise Http404
-
-
-
-
-
-
-
-
-
-# страница для обработки ajax запросов
-def ajaxquery(request):
-
-    # TODO: удалить эту вьюху нафиг
-    product = Product.objects.get(id=request.GET['product_id'])
-    product_properties = product.property
-    if request.GET['product_properties'] in product_properties and request.GET['product_properties'] != '':
-        return HttpResponse('ok')
-    else:
-        return HttpResponse('no')
-
-    # return HttpResponse(product_properties)
-
-
-
-
-
-# def checkOrganizerProfile(user):
-#     try:
-#         profile = OrganizerProfile.objects.get(user=user)
-#         if profile.is_checked():
-#             return profile
-#     except:
-#         return None
