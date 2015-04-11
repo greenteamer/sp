@@ -23,6 +23,8 @@
                     <br/>
                     <b>Название закупки: </b>{{ purchase.name }}
                     <br/>
+                    <b>Текущий статус: </b> {{ purchase.get_current_status }}
+                    <br/>
                     <b>Описание:</b>{{ purchase.description }}
                     <br/>
                     {% if purchase.get_catalogs %}

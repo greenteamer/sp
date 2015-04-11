@@ -107,8 +107,32 @@ def corePurchase(request, purchase_id, template_name):
 @check_profile
 def coreCatalog(request, purchase_id, catalog_id, template_name):  # TODO: реализовать ajax добавление в корзину
     try:
+
+        if 'ajax' in request.POST:
+            ajax = request.POST['ajax']
+            # Добавление в корзину по аяксу
+            if ajax != False:
+                product = Product.objects.get(id=request.POST['product'])
+                product_properties = product.property   # все возможные свойства Этого товара
+                if request.POST['product_properties'] in product_properties and request.POST['product_properties'] != '':
+                    # если выбранные св-ва есть в товаре
+                    cart_item = CartItem(product=product)
+                    form = CartItemForm(request.POST or None, instance=cart_item)
+                    if form.is_valid():
+                        cart_item = add_to_cart(request)    # Добавление в корзину
+                        image = product.get_image()
+                        ajax_return = '{"status":"ok", "cart_item_id":"%d", "quantity":"%s", "properties":"%s", "product_name":"%s", "product_image":"%s", "product_url":"%s"}' % \
+                                      (cart_item['id'], cart_item['quantity'], cart_item['properties'], product.product_name, image.url(), product.url_core())
+                    else:
+                        ajax_return = '{"status":"error"}'
+                    return HttpResponse(ajax_return)
+                else:
+                    return HttpResponse('{"status":"no"}')
+
+
         purchase = Purchase.objects.get(id=purchase_id)
         catalog = Catalog.objects.get(id=catalog_id)
+        property_form = propertyForm(catalog_id)
 
         # catalog_product_properties = CatalogProductProperties.objects.filter(cpp_catalog=catalog_id)
         # catalogs = Catalog.objects.all()
@@ -120,37 +144,35 @@ def coreCatalog(request, purchase_id, catalog_id, template_name):  # TODO: ре�
 
 # Просмотр товара
 @check_profile
-def coreProduct(request, purchase_id, catalog_id, product_id, template_name):  # TODO: реализовать ajax добавление в корзину
+def coreProduct(request, purchase_id, catalog_id, product_id, template_name):
     try:
 
-        try:
+        if 'ajax' in request.POST:
             ajax = request.POST['ajax']
-        except:
-            ajax = False
-
-        # Добавление в корзину по аяксу
-        if ajax != False:
-            product = Product.objects.get(id=request.POST['product'])
-            product_properties = product.property   # все возможные свойства Этого товара
-            if request.POST['product_properties'] in product_properties and request.POST['product_properties'] != '':
-                # если выбранные св-ва есть в товаре
-                cart_item = CartItem(product=product)
-                form = CartItemForm(request.POST or None, instance=cart_item)
-                if form.is_valid():
-                    cart_item = add_to_cart(request)    # Добавление в корзину
-                    ajax_return = '{"status":"ok", "cart_item_id":"%d", "quantity":"%s", "properties":"%s"}' % (cart_item['id'], cart_item['quantity'], cart_item['properties'])
+            # Добавление в корзину по аяксу
+            if ajax != False:
+                product = Product.objects.get(id=request.POST['product'])
+                product_properties = product.property   # все возможные свойства Этого товара
+                if request.POST['product_properties'] in product_properties and request.POST['product_properties'] != '':
+                    # если выбранные св-ва есть в товаре
+                    cart_item = CartItem(product=product)
+                    form = CartItemForm(request.POST or None, instance=cart_item)
+                    if form.is_valid():
+                        cart_item = add_to_cart(request)    # Добавление в корзину
+                        ajax_return = '{"status":"ok", "cart_item_id":"%d", "quantity":"%s", "properties":"%s"}' % (cart_item['id'], cart_item['quantity'], cart_item['properties'])
+                    else:
+                        ajax_return = '{"status":"error"}'
+                    return HttpResponse(ajax_return)
                 else:
-                    ajax_return = '{"status":"error"}'
-                return HttpResponse(ajax_return)
-            else:
-                return HttpResponse('{"status":"no"}')
+                    return HttpResponse('{"status":"no"}')
+
 
         product = Product.objects.get(id=product_id)
         property_form = propertyForm(catalog_id)
         images = ProductImages.objects.filter(p_image_product=product_id)
         cart_item = CartItem(product=product)
-        form = CartItemForm(request.POST or None, instance=cart_item)
-        if form.is_valid():
+        cart_form = CartItemForm(request.POST or None, instance=cart_item)
+        if cart_form.is_valid():
             add_to_cart(request)
         return render_to_response(template_name, locals(),
                                   context_instance=RequestContext(request))
@@ -159,24 +181,6 @@ def coreProduct(request, purchase_id, catalog_id, product_id, template_name):  #
 
 
 
-
-
-
-
-
-
-# страница для обработки ajax запросов
-def ajaxquery(request):
-
-    # TODO: удалить эту вьюху нафиг
-    product = Product.objects.get(id=request.GET['product_id'])
-    product_properties = product.property
-    if request.GET['product_properties'] in product_properties and request.GET['product_properties'] != '':
-        return HttpResponse('ok')
-    else:
-        return HttpResponse('no')
-
-    # return HttpResponse(product_properties)
 
 
 
