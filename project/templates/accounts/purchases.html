@@ -1,6 +1,38 @@
 {% extends "core_main.html" %}
 
 {% block content %}
+<!-- Модальное окно подтверждения смены статуса закупки -->
+<div class="modal fade" id="chandestatusmodal" tabindex="-1" role="dialog" aria-labelledby="chandestatusmodalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+            <h4 class="modal-title" id="chandestatusmodalLabel">
+               Изменить статус закупки
+            </h4>
+         </div>
+         <div class="modal-body">
+             <h3>Вы действительно хотите изменить статус закупки?</h3>
+{#             <h5>Выберите сроки действия статуса</h5>#}
+{#             <label for="date_start">Дата начала</label>#}
+{#             <input type="text" id="date_start" name="date_start"/>#}
+{#             <label for="date_end">Дата окончания</label>#}
+{#             <input type="text" id="date_end" name="date_end"/>#}
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close
+            </button>
+            <button type="button" class="btn btn-primary submit">
+               Применить изменения
+            </button>
+         </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+
       <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -49,10 +81,14 @@
                                 <i class="ion ion-clipboard"></i>
                                 <h3 class="box-title"><b><a href="/profile/organizer/purchase-{{ purchase.id }}">{{ purchase.name }}</a></b> - {{ purchase.created_at }}</h3>
                                 <div class="box-tools pull-right">
-                                    <select name="status" id="status">
-                                        <option value="">В работе</option>
-                                        <option value="">На оплате</option>
-                                        <option value="">Закрыта</option>
+                                    <select purchase_id="{{ purchase.id }}" status="{{ purchase.get_current_status.id }}" name="status" class="status">
+                                        {% for status in statuses %}
+                                            <option value="{{ status.id }}"
+                                            {% if status.status_name ==  purchase.get_current_status.status_name %}
+                                                selected="selected"
+                                            {% endif %}
+                                            >{{ status }}</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
                             </div><!-- /.box-header -->
@@ -113,10 +149,72 @@
         <div class="clearfix"></div>
     </div><!-- /.content-wrapper -->
 
+
+
+
+
 {% endblock %}
 
 
 
+
+{% block page_js %}
+    <script src='{{ STATIC_URL }}js/jquery.cookie.js'></script>
+
+    <script>
+        (function($) {
+            $(document).ready(function() {
+                var current_select;
+                var status_id;
+                var new_status_id;
+                var purchase_id;
+                var change = false;
+                $('.status').change(function(){
+                    change = false;
+                    current_select = $(this);
+                    purchase_id = $(this).attr('purchase_id');
+                    status_id = $(this).attr('status');
+                    new_status_id = $(this).val();
+                    console.log('purchase_id: ' + purchase_id + '; status: ' + status_id + '; new_status: ' + new_status_id);
+                    if (status_id != new_status_id) {
+                        $('#chandestatusmodal').modal();
+                    }
+                });
+
+                $('#chandestatusmodal .submit').click(function(){
+                    var csrftoken = $.cookie('csrftoken');
+                    $.post(
+                        "",             // Урл
+                        {
+                            action: 'change_status',
+                            ajax: 1,
+                            purchase_id: purchase_id,
+                            status_id: status_id,
+                            new_status_id: new_status_id,
+                            csrfmiddlewaretoken: csrftoken
+                        },
+                        onAjaxSuccess
+                        );
+                    function onAjaxSuccess(data){
+                        console.log('получено: ' + data);
+                        current_select.attr('status', new_status_id);
+                        change = true;
+                        $('#chandestatusmodal').modal('hide');
+                    }  // --/- end onAjaxSuccess function
+                });
+
+                // Возвращаем на место селект
+                $('#chandestatusmodal').on('hide.bs.modal', function () {
+                    if(!change) {
+                        current_select.find('option[value="'+status_id+'"]').attr("selected", "selected");
+                    }
+                })
+
+            });
+        })(jQuery);
+    </script>
+
+{% endblock %}
 
 
 

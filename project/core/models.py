@@ -41,7 +41,6 @@ class Category(MPTTModel):
     active = CommonActiveManager()
 
     class Meta:
-        # db_table = 'categories'
         ordering = ['-created_at']
         verbose_name_plural = _(u'Категории')
 
@@ -69,6 +68,8 @@ def get_next_status_priority():
     except:
         return 0
 
+
+# Статусы закупок
 class PurchaseStatus(models.Model):
     status_name = models.CharField(max_length=50, verbose_name=u'Статус закупки')
     status_description = models.TextField(verbose_name=u'Описание статуса закупки', blank=True, null=True)
@@ -78,6 +79,7 @@ class PurchaseStatus(models.Model):
     class Meta:
         ordering = ['status_priority']
         verbose_name_plural = _(u'Статусы закупок')
+
     def __unicode__(self):
         return self.status_name
 
@@ -89,26 +91,50 @@ class Purchase(models.Model):
     created_at = models.DateTimeField(_(u'Created at'), null=True, auto_now_add=True)
     updated_at = models.DateTimeField(_(u'Updated at'), null=True, auto_now=True)
     # purchase_status = models.ForeignKey(PurchaseStatus, verbose_name=u'Статус закупки', default=PurchaseStatus.objects.order_by('-status_priority')[0] )
-    purchase_status = models.ForeignKey(PurchaseStatus, verbose_name=u'Статус закупки', null=True, blank=True)
-    # purchase_status = models.ForeignKey(PurchaseStatus, verbose_name=u'Статус закупки')
+    # purchase_status = models.ForeignKey(PurchaseStatus, verbose_name=u'Статус закупки', null=True, blank=True)
     prepay = models.IntegerField(verbose_name=u'Предоплата', help_text=u'Отмечается в процентах', default=100)
     percentage = models.IntegerField(verbose_name=u'Процент организатора', help_text=u'Отмечается в процентах', default=15)
     paymethods = models.TextField(u'Способы оплаты', default=u'Не указано')
     categories = models.ManyToManyField(Category, verbose_name=_(u'Categories'),
                                         help_text=_(u'Категории для этой закупки'))
+
+    class Meta:
+        verbose_name_plural = _(u'Закупки')
+
     def __unicode__(self):
         return self.name
 
     # def get_categories:
     #     return Category.objects.filter()
 
+    def get_current_status(self):
+        status = PurchaseStatusLinks.objects.get(purchase=self.id, active=True)
+        return status.status
+
     def get_catalogs(self):
         return Catalog.objects.filter(catalog_purchase=self.id)
 
     def url(self):
         return '/profile/organizer/purchase-%s' % self.id
+
     def url_core(self):
         return '/purchase-%s' % self.id
+
+
+# связи между закупками и статусами закупок
+class PurchaseStatusLinks(models.Model):
+    status = models.ForeignKey(PurchaseStatus, verbose_name=_(u'Статус'))
+    purchase = models.ForeignKey(Purchase, verbose_name=_(u'Закупка'))
+    date_start = models.DateTimeField(verbose_name=u'Дата начала действия статуса', null=True)
+    date_end = models.DateTimeField(verbose_name=u'Дата окончания действия статуса', null=True)
+    data = models.TextField(verbose_name=u'Описание. Дополнительные данные', null=True, blank=True)
+    active = models.BooleanField(verbose_name=u'Текущий статус', default=False)
+
+    class Meta:
+        verbose_name_plural = _(u'Закупка -> Статус')
+
+    def __unicode__(self):
+        return self.status.status_name
 
 
 class Catalog(models.Model):
@@ -167,7 +193,7 @@ class Product(models.Model):
         return ProductImages.objects.filter(p_image_product=self.id)
 
     # def get_properties(self):
-    #     return Properties.objects.filter(properties_product=self.id)
+    #     return Properties.objects.get(properties_product=self.id)
 
 
 class ProductImages(models.Model):
@@ -184,11 +210,11 @@ class ProductImages(models.Model):
 
 
 class CatalogProductProperties(models.Model):
-    cpp_name = models.CharField(max_length=100, verbose_name=u'Свойство товара в каталоге', unique=True)
+    cpp_name = models.CharField(max_length=100, verbose_name=u'Свойство товара в каталоге')
     cpp_slug = models.CharField(null=True, max_length=255, blank=True)
     cpp_values = models.CharField(max_length=255, verbose_name=u'Возможные значения')
     cpp_catalog = models.ForeignKey(Catalog)
-    cpp_purchase = models.ForeignKey(Purchase)  # зачем привязка к закупке если есть привязка к каталогу?..
+    # cpp_purchase = models.ForeignKey(Purchase)  # зачем привязка к закупке если есть привязка к каталогу?..
 
     def __unicode__(self):
         return self.cpp_name
@@ -198,14 +224,15 @@ class CatalogProductProperties(models.Model):
         super(CatalogProductProperties, self).save()
 
 
-class Properties(models.Model):
-    properties_value = models.CharField(max_length=100, verbose_name=u'Значения свойства товара')
-    properties_product = models.ForeignKey(Product)
-    properties_catalogProductProperties = models.ForeignKey(CatalogProductProperties)
 
-    def __unicode__(self):
-        return self.properties_value
-
+# class Properties(models.Model):
+#     properties_value = models.CharField(max_length=100, verbose_name=u'Значения свойства товара')
+#     properties_product = models.ForeignKey(Product)
+#     properties_catalogProductProperties = models.ForeignKey(CatalogProductProperties)
+# 
+#     def __unicode__(self):
+#         return self.properties_value
+# 
 
 class ImportFiles(models.Model):
     file = models.FileField(verbose_name=u'Файл для импорта товаров в каталог', upload_to='import_xls')

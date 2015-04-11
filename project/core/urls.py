@@ -30,14 +30,13 @@ urlpatterns = patterns('project.core.views',
 		{'template_name': 'core/core_catalog.html'},
 		name='coreCatalog'),
     url(r'^purchase-(?P<purchase_id>\d+)/catalog-(?P<catalog_id>\d+)/product-(?P<product_id>\d+)/$', 'coreProduct',
-		{'template_name': 'core/coreProduct.html'},
+		{'template_name': 'core/core_product.html'},
 		name='coreProduct'),
 
 
-
-    # страница для обработки ajax запросов
-    url(r'^ajaxquery/$', 'ajaxquery', name='ajaxquery'),
-
+    # # страница для обработки ajax запросов
+    # url(r'^ajaxquery/$', 'ajaxquery', name='ajaxquery'),
+    #
 
     # Страницы сайта
     # url(r'^(?P<slug>[-\w]+)/$', 'page_view',

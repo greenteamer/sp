@@ -25,9 +25,9 @@ class PurchaseStatusAdmin(admin.ModelAdmin):
     list_display = ['id', 'status_name', 'status_description', 'status_icon', 'status_priority']
     list_filter = ['status_name', 'status_priority']
 
-class PropertiesInline(admin.StackedInline):
-    model = Properties
-    extra = 1
+# class PropertiesInline(admin.StackedInline):
+#     model = Properties
+#     extra = 1
 
 class ProductImagesInline(ImageCroppingMixin, admin.StackedInline):
     model = ProductImages
@@ -44,16 +44,16 @@ class ProductAdmin(ImportExportActionModelAdmin):
     #     (u'Основная информация', {'fields':['name','slug','body']}),
     #     (u'Специальная информация', {'fields': ['special_image','special_body']}),
     # ]
-    inlines = [PropertiesInline, ProductImagesInline]
-    pass
+    inlines = [ProductImagesInline]  # PropertiesInline
     # prepopulated_fields = {'slug':('name',)}
 
 
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductImages)
-admin.site.register(Properties)
+# admin.site.register(Properties)
 admin.site.register(Catalog)
 admin.site.register(CatalogProductProperties)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Purchase)
 admin.site.register(PurchaseStatus, PurchaseStatusAdmin)
+admin.site.register(PurchaseStatusLinks)
