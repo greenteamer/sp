@@ -68,17 +68,20 @@
 {#                                                <th scope="col">Кол-во заказов</th>#}
                                                 <th scope="col"></th>
                                                 <th scope="col"></th>
-                                                <th scope="col">Импорт товаров</th>
-                                                <th scope="col">Экспорт заказов</th>
+{#                                                <th scope="col">Импорт товаров</th>#}
+{#                                                <th scope="col">Экспорт заказов</th>#}
                                             </tr>
                                         </thead>
-                                        <tfoot>
-                                            <tr>
-                                                <th colspan="5">Стоимость товаров:</th>
-                                                <th></th>
-                                                <th>100500 р.</th>
-                                            </tr>
-                                        </tfoot>
+{#                                        <tfoot>#}
+{#                                            <tr>#}
+{#                                                <th colspan="5">Стоимость товаров:</th>#}
+{#                                                <th></th>#}
+{#                                                <th></th>#}
+{#                                                <th></th>#}
+{#                                                <th></th>#}
+{#                                                <th>100500 р.</th>#}
+{#                                            </tr>#}
+{#                                        </tfoot>#}
                                         <tbody>
                                             {% for catalog, list in dict.items %}
                                                 <tr>
@@ -87,8 +90,8 @@
                                                     <td>{{ list|length }}</td>
                                                     <td><a href="{{ catalog.url }}"><button class="btn btn-block btn-success btn-sm"><i class="fa fa-pencil"></i> <span>Редактировать каталог</span></button></a></td>
                                                     <td><a href="{{ catalog.url }}/product-add/"><button class="btn btn-block btn-warning btn-sm" name="add_product"><i class="fa fa-plus"></i> <span>Добавить товар</span></button></td>
-                                                    <td><button class="btn btn-block btn-primary btn-sm" name="add_product"><i class="fa fa-download"></i> <span>Импорт XLS</span></button></td>
-                                                    <td><button class="btn btn-block btn-primary btn-sm" name="add_product"><i class="fa fa-upload"></i> <span>Экспорт XLS</span></button></td>
+{#                                                    <td><button class="btn btn-block btn-primary btn-sm" name="add_product"><i class="fa fa-download"></i> <span>Импорт XLS</span></button></td>#}
+{#                                                    <td><button class="btn btn-block btn-primary btn-sm" name="add_product"><i class="fa fa-upload"></i> <span>Экспорт XLS</span></button></td>#}
                                                 </tr>
                                             {% endfor %}
                                         </tbody>
@@ -96,8 +99,8 @@
                                 </div>
                             </div><!-- /.box-body -->
                             <div class="box-footer clearfix no-border">
-                                <button style="margin-left: 10px;" class="btn btn-default pull-right"><i class="fa fa-pencil-square-o"></i> Редактировать Закупку</button>
-                                <button class="btn btn-default pull-right"><i class="fa fa-plus-square-o"></i> Добавить каталог</button>
+                                <a href="{{ purchase.url }}-edit"><button style="margin-left: 10px;" class="btn btn-default pull-right"><i class="fa fa-pencil-square-o"></i> Редактировать Закупку</button></a>
+                                <a href="{{ purchase.url }}/catalog-add"><button class="btn btn-default pull-right"><i class="fa fa-plus-square-o"></i> Добавить каталог</button></a>
                             </div>
                         </div>
 
