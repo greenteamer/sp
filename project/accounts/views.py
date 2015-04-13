@@ -283,7 +283,7 @@ def purchase(request, template_name, purchase_id, edit=False):
             purchase_form = purchaseForm(instance=purchase)  # заполненная форма текущей закупки
             # purchase_statuses = PurchaseStatus.objects.all()  # все статусы
 
-            # При создании закупки должны быть созданы все статусы. их вот и выдираем из базы.
+            # При создании закупки должны быть созданы все статусы. выдираем их из базы со всеми параметрами
             sql = 'SELECT core_purchasestatus.id, core_purchasestatus.status_name, core_purchasestatuslinks.id as links_id, core_purchasestatuslinks.date_start, core_purchasestatuslinks.date_end, core_purchasestatuslinks.data \
             FROM core_purchasestatus \
             LEFT JOIN core_purchasestatuslinks \
