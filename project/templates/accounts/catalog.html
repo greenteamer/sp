@@ -2,7 +2,7 @@
 
 {% block content %}
       <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
+    <div class="content-wrapper" xmlns="http://www.w3.org/1999/html">
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>Просмотр каталога</h1>
@@ -71,8 +71,23 @@
                                                         {{ property }}
                                                     {% endfor %}
                                                 </td>
-                                                <td><a href="{{ product.url }}-edit/"><button style=" width: 150px;" class="btn btn-block btn-success btn-sm"><i class="fa fa-pencil"></i> <span>Редактировать товар</span></button></a></td>
-                                                <td><a href="{{ product.url }}/product-add/"><button style=" width: 150px;" class="btn btn-block btn-danger btn-sm" name="add_product"><i class="fa fa-archive"></i> <span>Удалить товар</span></button></td>
+                                                <td>
+                                                    <a href="{{ product.url }}-edit/">
+                                                        <button style=" width: 150px;" class="btn btn-block btn-success btn-sm">
+                                                            <i class="fa fa-pencil"></i>
+                                                            <span>Редактировать товар</span>
+                                                        </button>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <form action="." method="post">{% csrf_token %}
+                                                        <input type="text" class="hidden" name="product" value="{{ product.id }}"/>
+                                                        <button style=" width: 150px;" class="btn btn-block btn-danger btn-sm" name="del_product">
+                                                            <i class="fa fa-archive"></i>
+                                                            <span>Удалить товар</span>
+                                                        </button>
+                                                    </form>
+                                                </td>
                                             </tr>
                                         {% endfor %}
                                     </tbody>
@@ -86,8 +101,10 @@
                                 <div class="box-header" data-toggle="tooltip" title="" data-original-title="Добавить товары с помощью xml файла">
                                     <h3 class="box-title">Импорт товаров в каталог</h3>
                                     <div class="box-tools pull-right">
-{#                                        <button class="btn btn-primary btn-xs" data-widget="collapse"><i class="fa fa-minus"></i></button>#}
-{#                                        <button class="btn btn-primary btn-xs" data-widget="remove"><i class="fa fa-times"></i></button>#}
+                                        <form class="form_export" action="." method="post">{% csrf_token %}
+                                            <input type="text" class="hidden" name="catalog" value="{{ catalog.id }}"/>
+                                            <button style="margin-top: 5px; display: block; color: #3c8dbc" type="submit" name="export"><i class="fa fa-download"></i> <span>Скачать образец</span></button>
+                                        </form>
                                     </div>
                                 </div>
                                 <div class="box-body">
@@ -96,7 +113,7 @@
                                             {{ form.import_catalog.as_hidden }}
                                             {{ form.file }}
                                         </div>
-                                        <button style="margin-left: 0px;" type="submit" class="btn btn-success" name="import"><i class="fa fa-download"></i> <span>Импорт XLS</span></button>
+                                        <button style="margin-left: 0px;" type="submit" class="btn btn-success" name="import"><i class="fa fa-upload"></i> <span>Импорт XLS</span></button>
                                     </form>
                                 </div><!-- /.box-body -->
                                 <div class="box-footer">
