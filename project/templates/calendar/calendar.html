@@ -1,0 +1,137 @@
+{% extends "core_main.html" %}
+{% load category_tags %}
+
+{% block content %}
+      <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>Главная страница</h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
+                <li class="active">все закупки</li>
+            </ol>
+        </section>
+        <!-- Main content -->
+        <section class="invoice">
+            <!-- Table row -->
+            <div class="row">
+
+                <div class="col-xs-12">
+{#                    {% for status in statuses_list %}#}
+{#                        <div class="test">#}
+{#                            {% for key, value in status.items %}#}
+{#                                <p>{{ key }}: {{ value }}</p>#}
+{#                            {% endfor %}#}
+{#                        </div>#}
+{#                        <br/>#}
+{#                    {% endfor %}#}
+{##}
+{#                    <br/>#}
+{#                    {% for status in statuses %}#}
+{#                        <div class="test">#}
+{#                            <p>name: {{ status.purchase.name }} - {{ status.status.status_name }}</p>#}
+{#                            <p>start: {{ status.eventdate_start }}</p>#}
+{#                            <p>end: {{ status.eventdate_end }}</p>#}
+{#                        </div>#}
+{#                    {% endfor %}#}
+
+                    <div id='calendar'></div>   
+
+                    <div class="modal fade bs-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><img
+                                            src="{{ STATIC_URL }}images/images.png" alt=""/></span></button>
+                                    <h4 class="modal-title">Modal Default</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="p_date pull-right"></div>
+                                    <div class="text"></div>
+                                    <div class="items"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                                    <a class="purchase_link" href=""><button type="button" class="btn btn-primary">Смотреть закупку</button></a>
+                                </div>
+                            </div><!-- /.modal-content -->
+                        </div><!-- /.modal-dialog -->
+                    </div><!-- /.modal -->
+
+
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+
+        </section><!-- /.content -->
+        <div class="clearfix"></div>
+    </div><!-- /.content-wrapper -->
+
+{% endblock %}
+
+{% block page_js %}
+    <script src='{{ STATIC_URL }}js/jquery.cookie.js'></script>
+    <!-- calendar -->
+    <link href="{{ STATIC_URL }}fullcalendar/fullcalendar.min.css" rel="stylesheet" type="text/css" />
+    <script src="{{ STATIC_URL }}fullcalendar/lib/moment.min.js"></script>
+    <script src="{{ STATIC_URL }}fullcalendar/fullcalendar.min.js"></script>
+    <!-- fancybox -->
+    <link href="{{ STATIC_URL }}fancybox/source/jquery.fancybox.css" rel="stylesheet" type="text/css" />
+    <script src="{{ STATIC_URL }}fancybox/source/jquery.fancybox.pack.js"></script>
+
+    <!-- custom script -->
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            var date = new Date();
+            var d = date.getDate();
+            var m = date.getMonth();
+            var y = date.getFullYear();
+
+            $('#calendar').fullCalendar({
+                editable: false,
+                firstDay: 1,
+                monthNames: ['Январь','Февраль','Март','Апрель','Май','οюнь','οюль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
+                monthNamesShort: ['Янв.','Фев.','Март','Апр.','Май','οюнь','οюль','Авг.','Сент.','Окт.','Ноя.','Дек.'],
+                dayNames: ["Воскресенье","Понедельник","Вторник","Среда","Четверг","Пятница","Суббота"],
+                dayNamesShort: ["ВС","ПН","ВТ","СР","ЧТ","ПТ","СБ"],
+                buttonText: {
+                    prev: "Назад",
+                    next: "Вперед",
+                    prevYear: "&nbsp;&lt;&lt;&nbsp;",
+                    nextYear: "&nbsp;&gt;&gt;&nbsp;",
+                    today: "Сегодня",
+                    month: "Месяц",
+                    week: "Неделя",
+                    day: "День"
+                },
+                events: {{ statuses_json|safe }}
+            });
+            $(".fc-event").click(function (){
+{#                var text = $(this).children(".fc-time").html();#}
+                var text = $(this).find('.fc-title').html();
+{#                alert(text);#}
+                csrftoken = $.cookie('csrftoken');
+{#                alert("ok");#}
+                $.post(
+                    "/calendar/", // урл
+                    {
+                        csrfmiddlewaretoken: csrftoken,
+                        text: text
+                    },
+                    onAjaxSuccess
+                );
+                function onAjaxSuccess(data) {
+                    $(".modal-body").find(".text").html(data.html_body);
+                    $(".modal-title").html(data.html_title);
+                    $(".p_date").html(data.html_date);
+                    $(".items").html(data.list_html)
+                    $(".purchase_link").attr("href", data.html_href);
+                    $('#myModal').modal('show');
+                }
+{#                $(".modal-body").html("Hello");#}
+            });
+        });
+    </script>
+
+{% endblock %}
