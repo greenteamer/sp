@@ -45,3 +45,6 @@ python ../manage.py loaddata __initial_data.json
         if rownum == 0:
             for c_el in row:
                 keys.append(c_el)
+
+#  пример загрузк фикстуры
+python ../manage.py loaddata ../new.json

@@ -5,30 +5,30 @@ from django.conf.urls import patterns, include, url
 urlpatterns = patterns('project.core.views',
 
     url(r'^viewproduct/$', 'viewProduct',
-		{'template_name': 'core/viewproduct.html'},
-		name='viewproduct'),
+        {'template_name': 'core/viewproduct.html'},
+        name='viewproduct'),
 
     # страница категорий
     url(r'^categories/$', 'categories',
-		{'template_name': 'core/core_categories.html'},
-		name='categories'),
+        {'template_name': 'core/core_categories.html'},
+        name='categories'),
 
 
     # страница одной категории
     url(r'^category-(?P<category_slug>[-\w]+)/$', 'coreCategory',
-		{'template_name': 'core/core_category.html'},
-		name='category'),
+        {'template_name': 'core/core_category.html'},
+        name='category'),
 
     # Главная страница
     url(r'^$', 'index_view',
-		{'template_name': 'core/index.html'},
-		name='catalog_home'),
+        {'template_name': 'core/index.html'},
+        name='catalog_home'),
     url(r'^purchase-(\d+)/$', 'corePurchase',
-		{'template_name': 'core/core_purchase.html'},
-		name='corePurchase'),
+        {'template_name': 'core/core_purchase.html'},
+        name='corePurchase'),
     url(r'^purchase-(?P<purchase_id>\d+)/catalog-(?P<catalog_id>\d+)/$', 'coreCatalog',
-		{'template_name': 'core/core_catalog.html'},
-		name='coreCatalog'),
+        {'template_name': 'core/core_catalog.html'},
+        name='coreCatalog'),
     url(r'^purchase-(?P<purchase_id>\d+)/catalog-(?P<catalog_id>\d+)/product-(?P<product_id>\d+)/$', 'coreProduct',
 		{'template_name': 'core/core_product.html'},
 		name='coreProduct'),
