@@ -10,3 +10,7 @@
 #core_catalog .item img{
     width: 100%;
 }
+.form_export button {
+    border: none;
+    background: none;
+}

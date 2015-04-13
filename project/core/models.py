@@ -20,7 +20,7 @@ class CommonActiveManager(models.Manager):
 
 class Category(MPTTModel):
     """Класс для категорий товаров"""
-    name = models.CharField(_(u'Name'), max_length=50, unique=True)
+    name = models.CharField(_(u'Name'), max_length=50, unique=False)
     slug = models.SlugField(_(u'Slug'), max_length=50, unique=True,
                             help_text=_(u'Slug for product url created from name.'))
     # "Чистые" ссылки для продуктов формирующиеся из названия
@@ -51,7 +51,11 @@ class Category(MPTTModel):
 
     def __unicode__(self):
         # return self.name
-        return '%s%s' % ('--' * self.level, self.name)
+        try:
+            return "%s-%s" % ('--' * self.level, self.parent.name, self.name)
+        except:
+            return '%s%s' % ('--' * self.level, self.name)
+            # return self.name
 
     @permalink
     def get_absolute_url(self):
@@ -108,7 +112,8 @@ class Purchase(models.Model):
     #     return Category.objects.filter()
 
     def get_current_status(self):
-        return PurchaseStatusLinks.objects.get(purchase=self.id, active=True)
+        status = PurchaseStatusLinks.objects.get(purchase=self.id, active=True)
+        return status.status
 
     def get_catalogs(self):
         return Catalog.objects.filter(catalog_purchase=self.id)
@@ -137,7 +142,7 @@ class PurchaseStatusLinks(models.Model):
 
 
 class Catalog(models.Model):
-    catalog_name = models.CharField(max_length=100, verbose_name=u'Название каталога')
+    catalog_name = models.CharField(max_length=100, verbose_name=u'Название каталога', unique=False)
     catalog_purchase = models.ForeignKey(Purchase)
     created_at = models.DateTimeField(_(u'Created at'), null=True, auto_now_add=True)
     updated_at = models.DateTimeField(_(u'Updated at'), null=True, auto_now=True)
@@ -209,17 +214,16 @@ class ProductImages(models.Model):
 
 
 class CatalogProductProperties(models.Model):
-    cpp_name = models.CharField(max_length=100, verbose_name=u'Свойство товара в каталоге', unique=True)
+    cpp_name = models.CharField(max_length=100, verbose_name=u'Свойство товара в каталоге', unique=False)
     cpp_slug = models.CharField(null=True, max_length=255, blank=True)
     cpp_values = models.CharField(max_length=255, verbose_name=u'Возможные значения')
     cpp_catalog = models.ForeignKey(Catalog)
-    cpp_purchase = models.ForeignKey(Purchase)  # зачем привязка к закупке если есть привязка к каталогу?..
 
     def __unicode__(self):
         return self.cpp_name
 
     def save(self):
-        self.cpp_slug = translit(self.cpp_name).lower()
+        self.cpp_slug = translit(self.cpp_name).lower() + '-cat-' + str(self.cpp_catalog.id)
         super(CatalogProductProperties, self).save()
 
 
@@ -228,10 +232,10 @@ class CatalogProductProperties(models.Model):
 #     properties_value = models.CharField(max_length=100, verbose_name=u'Значения свойства товара')
 #     properties_product = models.ForeignKey(Product)
 #     properties_catalogProductProperties = models.ForeignKey(CatalogProductProperties)
-# 
+#
 #     def __unicode__(self):
 #         return self.properties_value
-# 
+#
 
 class ImportFiles(models.Model):
     file = models.FileField(verbose_name=u'Файл для импорта товаров в каталог', upload_to='import_xls')
@@ -239,6 +243,3 @@ class ImportFiles(models.Model):
 
     def __unicode__(self):
         return self.import_catalog.catalog_name
-
-
-
