@@ -95,7 +95,7 @@
                 });
 
                 var date_inputs = $('input.date');
-
+{% comment %}
                 $('#submit_purchase_add').click(function(){
                     var emptyval = false;
                     date_inputs.each(function (i, elem) {
@@ -108,7 +108,7 @@
                     if (emptyval) {
                         return false;
                     }
-                });
+                });{% endcomment %}
 
             });
         })(jQuery);
