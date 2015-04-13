@@ -97,19 +97,19 @@
 
                 var date_inputs = $('input.date');
 
-                $('#submit_purchase_add').click(function(){
-                    var emptyval = false;
-                    date_inputs.each(function (i, elem) {
-                        if (elem.value == '') {
-                            alert('Заполенны не все даты');
-                            emptyval = true;
-                            return false;
-                        }
-                    });
-                    if (emptyval) {
-                        return false;
-                    }
-                });
+{#                $('#submit_purchase_add').click(function(){#}
+{#                    var emptyval = false;#}
+{#                    date_inputs.each(function (i, elem) {#}
+{#                        if (elem.value == '') {#}
+{#                            alert('Заполенны не все даты');#}
+{#                            emptyval = true;#}
+{#                            return false;#}
+{#                        }#}
+{#                    });#}
+{#                    if (emptyval) {#}
+{#                        return false;#}
+{#                    }#}
+{#                });#}
 
             });
         })(jQuery);
