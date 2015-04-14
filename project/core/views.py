@@ -53,26 +53,29 @@ def viewProduct(request, template_name="core/viewproduct.html"):
                                    'where core_product.id = core_productimages.p_image_product_id')
     product_images = ProductImages.objects.all()
     product = Product.objects.order_by('-id')[0]
-    return render_to_response(template_name, locals(),
-                              context_instance=RequestContext(request))
+    return render_to_response(template_name, locals(), context_instance=RequestContext(request))
 
 
 @check_profile
 def categories(request, template_name):
-    return render_to_response(template_name, locals(),
-                            context_instance=RequestContext(request))
-
+    return render_to_response(template_name, locals(), context_instance=RequestContext(request))
 
 # Страница категории
 @check_profile
 def coreCategory(request, category_slug, template_name):
     try:
         category_id = Category.objects.get(slug=category_slug)
+        all_categories = Category.objects.filter(parent=category_id)
+        if len(all_categories) > 0:
+            purchases = set()
+            for category in all_categories:
+                purchases_set = set(Purchase.objects.filter(categories=category))
+                purchases = purchases | purchases_set
+        else:
+            purchases = Purchase.objects.filter(categories=category_id)
     except ObjectDoesNotExist:
-            raise Http404
-    purchases = Purchase.objects.filter(categories=category_id)
-    return render_to_response(template_name, locals(),
-                            context_instance=RequestContext(request))
+        raise Http404
+    return render_to_response(template_name, locals(), context_instance=RequestContext(request))
 
 
 # Просмотр или редактирование одной конкретной закупки (по id)
@@ -93,8 +96,7 @@ def corePurchase(request, purchase_id, template_name):
     except ObjectDoesNotExist:
         raise Http404
 
-    return render_to_response(template_name, locals(),
-                                  context_instance=RequestContext(request))
+    return render_to_response(template_name, locals(), context_instance=RequestContext(request))
 
 
 # Просмотр каталога
@@ -130,8 +132,7 @@ def coreCatalog(request, purchase_id, catalog_id, template_name):  # TODO: ре�
 
         # catalog_product_properties = CatalogProductProperties.objects.filter(cpp_catalog=catalog_id)
         # catalogs = Catalog.objects.all()
-        return render_to_response(template_name, locals(),
-                                  context_instance=RequestContext(request))
+        return render_to_response(template_name, locals(), context_instance=RequestContext(request))
     except ObjectDoesNotExist:
             raise Http404
 
@@ -140,11 +141,10 @@ def coreCatalog(request, purchase_id, catalog_id, template_name):  # TODO: ре�
 @check_profile
 def coreProduct(request, purchase_id, catalog_id, product_id, template_name):
     try:
-
         if 'ajax' in request.POST:
             ajax = request.POST['ajax']
             # Добавление в корзину по аяксу
-            if ajax != False:
+            if ajax is not False:
                 product = Product.objects.get(id=request.POST['product'])
                 product_properties = product.property   # все возможные свойства Этого товара
                 if request.POST['product_properties'] in product_properties and request.POST['product_properties'] != '':
@@ -160,7 +160,6 @@ def coreProduct(request, purchase_id, catalog_id, product_id, template_name):
                 else:
                     return HttpResponse('{"status":"no"}')
 
-
         product = Product.objects.get(id=product_id)
         property_form = propertyForm(catalog_id)
         images = ProductImages.objects.filter(p_image_product=product_id)
@@ -172,18 +171,3 @@ def coreProduct(request, purchase_id, catalog_id, product_id, template_name):
                                   context_instance=RequestContext(request))
     except ObjectDoesNotExist:
             raise Http404
-
-
-
-
-
-
-
-
-# def checkOrganizerProfile(user):
-#     try:
-#         profile = OrganizerProfile.objects.get(user=user)
-#         if profile.is_checked():
-#             return profile
-#     except:
-#         return None

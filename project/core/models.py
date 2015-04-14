@@ -51,7 +51,11 @@ class Category(MPTTModel):
 
     def __unicode__(self):
         # return self.name
-        return '%s%s' % ('--' * self.level, self.name)
+        try:
+            return "%s-%s" % ('--' * self.level, self.parent.name, self.name)
+        except:
+            return '%s%s' % ('--' * self.level, self.name)
+            # return self.name
 
     @permalink
     def get_absolute_url(self):
@@ -120,6 +124,17 @@ class Purchase(models.Model):
     def url_core(self):
         return '/purchase-%s' % self.id
 
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        from project.notifications.models import Notification
+        n = Notification()
+        n.name = u'Изменена закупка %s' % self.name
+        n.description = u'Пожалуйста, удостоверьтесь что Вас по-прежнему страивают ' \
+                        u'условия закупки http://127.0.0.1:8000%s' % self.url_core()
+        n.choice = 'purchase'
+        n.users_list = n.purchase_choice(self)
+        n.save()
+        return super(Purchase, self).save(force_insert, force_update, using)
+
 
 # связи между закупками и статусами закупок
 class PurchaseStatusLinks(models.Model):
@@ -136,9 +151,21 @@ class PurchaseStatusLinks(models.Model):
     def __unicode__(self):
         return self.status.status_name
 
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if self.active is True:
+            from project.notifications.models import Notification
+            n = Notification()
+            n.name = u'Изменен статус закупки %s' % self.purchase.name
+            n.description = u'Пожалуйста, удостоверьтесь что Вас по-прежнему страивают ' \
+                            u'условия закупки http://127.0.0.1:8000%s' % self.purchase.url_core()
+            n.choice = 'status'
+            n.users_list = n.status_choice(self)
+            n.save()
+        return super(Purchase, self).save(force_insert, force_update, using)
+
 
 class Catalog(models.Model):
-    catalog_name = models.CharField(max_length=100, verbose_name=u'Название каталога')
+    catalog_name = models.CharField(max_length=100, verbose_name=u'Название каталога', unique=False)
     catalog_purchase = models.ForeignKey(Purchase)
     created_at = models.DateTimeField(_(u'Created at'), null=True, auto_now_add=True)
     updated_at = models.DateTimeField(_(u'Updated at'), null=True, auto_now=True)
@@ -214,13 +241,12 @@ class CatalogProductProperties(models.Model):
     cpp_slug = models.CharField(null=True, max_length=255, blank=True)
     cpp_values = models.CharField(max_length=255, verbose_name=u'Возможные значения')
     cpp_catalog = models.ForeignKey(Catalog)
-    # cpp_purchase = models.ForeignKey(Purchase)  # зачем привязка к закупке если есть привязка к каталогу?..
 
     def __unicode__(self):
         return self.cpp_name
 
     def save(self):
-        self.cpp_slug = translit(self.cpp_name).lower()
+        self.cpp_slug = translit(self.cpp_name).lower() + '-cat-' + str(self.cpp_catalog.id)
         super(CatalogProductProperties, self).save()
 
 
@@ -240,6 +266,3 @@ class ImportFiles(models.Model):
 
     def __unicode__(self):
         return self.import_catalog.catalog_name
-
-
-

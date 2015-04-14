@@ -10,3 +10,38 @@
 #core_catalog .item img{
     width: 100%;
 }
+.form_export button {
+    border: none;
+    background: none;
+}
+.example-modal .modal {
+    position: relative;
+    top: auto;
+    bottom: auto;
+    right: auto;
+    left: auto;
+    display: block;
+    z-index: 1;
+}
+.example-modal .modal {
+    background: transparent!important;
+}
+button.close.pull-right {
+    margin-left: 20px;
+}
+.modal-dialog.modal-lg{
+    margin: 0;
+    height: 100%;
+}
+.modal-dialog.modal-lg .modal-content {
+    height: 100%;
+}
+.modal-dialog.modal-lg .modal-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+.close span img {
+    height: 30px;
+    width: auto;
+}
