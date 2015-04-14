@@ -58,8 +58,13 @@
             {% block body_sidebar %}
             {% endblock %}
 
-            {% block content %}
-            {% endblock %}
+            {% if 'forum' in request.path %}
+                {% block forum_content %}
+                {% endblock %}
+            {% else %}
+                {% block content %}
+                {% endblock %}
+            {% endif %}
 
             {% block footer %}
             {% endblock %}
