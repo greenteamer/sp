@@ -390,9 +390,16 @@ def catalog(request, purchase_id, catalog_id, template_name):
     """ проверяем пользователя и его профайл организатора"""
     profile = checkOrganizerProfile(request.user)
     # try:
-    purchase = Purchase.objects.get(id=purchase_id)
-    catalog = Catalog.objects.get(id=catalog_id)
-    catalog_product_properties = CatalogProductProperties.objects.filter(cpp_catalog=catalog_id)
+    # 3 запроса к базе
+    # purchase = Purchase.objects.get(id=purchase_id)
+    # catalog = Catalog.objects.get(id=catalog_id)
+    # catalog_product_properties = CatalogProductProperties.objects.filter(cpp_catalog=catalog_id)
+
+    # 1 запрос к базе
+    catalog_product_properties = CatalogProductProperties.objects.select_related().filter(cpp_catalog=catalog_id)
+    catalog = catalog_product_properties[1].cpp_catalog
+    purchase = catalog.catalog_purchase
+
     products = catalog.get_products()
     for product in products:
         product.property = product.property.split(';')  # для более читаемого вида
