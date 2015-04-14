@@ -296,7 +296,11 @@ def purchase(request, template_name, purchase_id, edit=False):
                             date_end = datetime.datetime.strptime(dates_end[i], '%Y-%m-%d')
                         except:
                             date_end = None
-                        PurchaseStatusLinks.objects.filter(purchase=purchase, status=status).update(date_start=date_start, date_end=date_end, data=data[i])
+                        # Проверяем выставлена ли активность этого статуса
+                        if int(request.POST['active']) != status.id:
+                            PurchaseStatusLinks.objects.filter(purchase=purchase, status=status).update(date_start=date_start, date_end=date_end, data=data[i], active=0)
+                        else:
+                            PurchaseStatusLinks.objects.filter(purchase=purchase, status=status).update(date_start=date_start, date_end=date_end, data=data[i], active=1)
                         i += 1
 
                     message = u"Закупка «%s» успешно изменена" % request.POST['name']
@@ -305,7 +309,7 @@ def purchase(request, template_name, purchase_id, edit=False):
             purchase_form = purchaseForm(instance=purchase)  # заполненная форма текущей закупки
 
             # При создании закупки должны быть созданы все статусы. выдираем их из базы со всеми параметрами
-            sql = 'SELECT core_purchasestatus.id, core_purchasestatus.status_name, core_purchasestatuslinks.id as links_id, core_purchasestatuslinks.date_start, core_purchasestatuslinks.date_end, core_purchasestatuslinks.data \
+            sql = 'SELECT core_purchasestatus.id, core_purchasestatus.status_name, core_purchasestatuslinks.id as links_id, core_purchasestatuslinks.date_start, core_purchasestatuslinks.date_end, core_purchasestatuslinks.data, core_purchasestatuslinks.active \
             FROM core_purchasestatus \
             LEFT JOIN core_purchasestatuslinks \
             ON core_purchasestatus.id = core_purchasestatuslinks.status_id \
