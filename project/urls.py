@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     url(r'^pristroy', include('project.pristroy.urls')),
     url(r'^', include('project.core.urls')),
     url(r'^', include('project.cart.urls')),
+    url(r'^', include('project.calendar_js.urls')),
     url(r'^profile/', include('project.accounts.urls')),
 )
 
