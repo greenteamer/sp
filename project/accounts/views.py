@@ -208,14 +208,10 @@ def purchases(request, template_name):
     statuses = PurchaseStatus.objects.all()
 
     if 'ajax' in request.POST:
+        PurchaseStatusLinks.objects.filter(purchase_id=request.POST['purchase_id'], status_id=request.POST['status_id']).update(active=0)
+        PurchaseStatusLinks.objects.filter(purchase_id=request.POST['purchase_id'], status_id=request.POST['new_status_id']).update(active=1)
 
-        # purchasestatuslinks = PurchaseStatusLinks.objects.get(status_id=2, purchase_id=1)
-        purchasestatuslinks = PurchaseStatusLinks.objects.get(status_id=request.POST['status_id'], purchase_id=request.POST['purchase_id'])
-        purchasestatuslinks.status_id = request.POST['new_status_id']
-        purchasestatuslinks.save()
-
-        return HttpResponse('{"status":"%d"}' % purchasestatuslinks.id)
-
+        return HttpResponse('{"status":"ok"}')
 
     # purchases_dict = get_purchases_dict(request)  # получаем словарь словарей ... описание в cart.purchases.py
     purchases_dict = get_all_purchases_dict(request)  # словарь словарей всех закупок пользователя
@@ -228,21 +224,32 @@ def purchases(request, template_name):
 def purchaseAdd(request, template_name):
     user = request.user
     message = ''
+    statuses = PurchaseStatus.objects.all()  # все статусы
     if request.POST:
 
         form = purchaseForm(request.POST)
         if form.is_valid():
             new_purchase = form.save(user)
+            form.save_m2m()
 
             dates_start = request.POST.getlist('date_start')
             dates_end = request.POST.getlist('date_end')
             data = request.POST.getlist('data')
-            status_num = 1
-            i = 0   #  TODO: ПОЛУЧИТЬ ИЗ БАЗЫ АЙДИ СТАТУСОВ
-            for date_start in dates_start:
-                date_end = dates_end[i]
+
+            #  TODO: переписать с оптимизацией сохранения. чтобы был один запрос (insert) к бд.
+            i = 0
+            for status in statuses:
+                #        A if условие else B - Краткая форма.
+                try:
+                    date_start = datetime.datetime.strptime(dates_start[i], '%Y-%m-%d')
+                except:
+                    date_start = None
+                try:
+                    date_end = datetime.datetime.strptime(dates_end[i], '%Y-%m-%d')
+                except:
+                    date_end = None
                 obj = PurchaseStatusLinks()
-                obj.status_id = status_num
+                obj.status = status
                 obj.purchase = new_purchase
                 obj.date_end = date_end
                 obj.data = data[i]
@@ -254,13 +261,11 @@ def purchaseAdd(request, template_name):
                     obj.active = 0
                 obj.save()
                 i += 1
-                status_num += 1
 
             message = u"Новая закупка «%s» успешно добавлена" % request.POST['name']
         else:
             message = u"Ошибка при добавлении закупки"
     purchase_form = purchaseForm()
-    statuses = PurchaseStatus.objects.all()  # все статусы
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
 
@@ -273,18 +278,38 @@ def purchase(request, template_name, purchase_id, edit=False):
         try:
             purchase = Purchase.objects.get(id=purchase_id)  # получаем экземпляр Закупки по id
             if request.POST:
-                form = purchaseForm(request.POST)
+                form = purchaseForm(request.POST, instance=purchase)
                 if form.is_valid():
-                    purchase.name = request.POST['name']
-                    purchase.save()
+                    form.save(request.user)
+                    form.save_m2m()
+                    dates_start = request.POST.getlist('date_start')
+                    dates_end = request.POST.getlist('date_end')
+                    data = request.POST.getlist('data')
+                    statuses = PurchaseStatus.objects.all()  # все статусы
+                    i = 0
+                    for status in statuses:
+                        try:
+                            date_start = datetime.datetime.strptime(dates_start[i], '%Y-%m-%d')
+                        except:
+                            date_start = None
+                        try:
+                            date_end = datetime.datetime.strptime(dates_end[i], '%Y-%m-%d')
+                        except:
+                            date_end = None
+                        # Проверяем выставлена ли активность этого статуса
+                        if int(request.POST['active']) != status.id:
+                            PurchaseStatusLinks.objects.filter(purchase=purchase, status=status).update(date_start=date_start, date_end=date_end, data=data[i], active=0)
+                        else:
+                            PurchaseStatusLinks.objects.filter(purchase=purchase, status=status).update(date_start=date_start, date_end=date_end, data=data[i], active=1)
+                        i += 1
+
                     message = u"Закупка «%s» успешно изменена" % request.POST['name']
                 else:
                     message = u"Ошибка при изменении закупки"
             purchase_form = purchaseForm(instance=purchase)  # заполненная форма текущей закупки
-            # purchase_statuses = PurchaseStatus.objects.all()  # все статусы
 
-            # При создании закупки должны быть созданы все статусы. их вот и выдираем из базы.
-            sql = 'SELECT core_purchasestatus.id, core_purchasestatus.status_name, core_purchasestatuslinks.id as links_id, core_purchasestatuslinks.date_start, core_purchasestatuslinks.date_end, core_purchasestatuslinks.data \
+            # При создании закупки должны быть созданы все статусы. выдираем их из базы со всеми параметрами
+            sql = 'SELECT core_purchasestatus.id, core_purchasestatus.status_name, core_purchasestatuslinks.id as links_id, core_purchasestatuslinks.date_start, core_purchasestatuslinks.date_end, core_purchasestatuslinks.data, core_purchasestatuslinks.active \
             FROM core_purchasestatus \
             LEFT JOIN core_purchasestatuslinks \
             ON core_purchasestatus.id = core_purchasestatuslinks.status_id \
