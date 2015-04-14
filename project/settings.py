@@ -66,8 +66,8 @@ TIME_ZONE = 'Europe/Moscow'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
-# LANGUAGE_CODE = 'ru'
+# LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
 ugettext = lambda s: s
 
@@ -300,5 +300,6 @@ except ImportError:
     pass
 
 
-
+PYBB_ATTACHMENT_ENABLE = True
+PYBB_DEFAULT_TITLE = 'Форум сайта совместных покупок'
 # PYBB_PERMISSION_HANDLER = "project.core.pybbm_custom.MyPermissionHandler"  зараза не работает
