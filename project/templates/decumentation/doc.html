@@ -1,0 +1,132 @@
+{% extends "main.html" %}
+{% load menu_tags %}
+
+{% block page_css %}
+    <!-- Theme style -->
+    <link href="{{ STATIC_URL }}AdminLte/dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{ STATIC_URL }}AdminLte/dist/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block body %}
+    <body class="skin-blue">
+{% endblock %}
+
+{% block template_name %}
+{% endblock %}
+
+    {% block start_wrapper %}
+        <div class="wrapper">
+    {% endblock %}
+
+        {% block body_header %}
+            {% coreTopMenu request %}
+        {% endblock %}
+
+        {% block body_sidebar %}
+            <aside class="main-sidebar">
+                        <!-- sidebar: style can be found in sidebar.less -->
+                <section class="sidebar">
+                    <!-- Sidebar user panel -->
+                    <div class="user-panel">
+                            <div class="pull-left image">
+                                <img src="/media/{{ profile.icon }}" class="img-circle" alt="Ваше фото" />
+                            </div>
+                            <div class="pull-left info">
+                                <p>{{ profile.firstName }} <small>{{ profile.lastName }}</small></p>
+                                <a href="#"><i class="fa fa-circle text-success"></i> В сети</a>
+                            </div>
+                    </div>
+                    <!-- search form -->
+                    <form action="#" method="get" class="sidebar-form">
+                        <div class="input-group">
+                            <input type="text" name="q" class="form-control" placeholder="Искать..."/>
+                            <span class="input-group-btn">
+                                <button type='submit' name='seach' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                    <!-- /.search form -->
+                    <!-- sidebar menu: : style can be found in sidebar.less -->
+                    <ul class="sidebar-menu">
+                        <li class="header">Навигация по документации</li>
+
+                        {% for doc in docs %}
+                            <li class="active">
+{#                               <a href="#introduction"><i class="fa fa-circle-o"></i> Introduction</a>#}
+                                <a href="#section{{ doc.id }}"> {{ doc.name }}</a>
+                            </li>
+                        {% endfor %}
+
+{#                        <li>#}
+{#                            <a href="/">#}
+{#                                <i class="fa fa-th"></i> <span>Смотреть все закупки</span>#}
+{#                            </a>#}
+{#                        </li>#}
+{#                        <li>#}
+{#                            <a href="/calendar">#}
+{#                                <i class="fa fa-calendar"></i> <span>Календарь</span>#}
+{#                                <small class="label pull-right bg-red">3</small>#}
+{#                            </a>#}
+{#                        </li>#}
+{#                        <li class="treeview">#}
+{#                            <a href="#">#}
+{#                                <i class="fa fa-table"></i> <span>Информация</span>#}
+{#                            </a>#}
+{#                        </li>#}
+{#                        <li><a href=""><i class="fa fa-book"></i> Документация</a></li>#}
+                    </ul>
+                </section>
+                    <!-- /.sidebar -->
+            </aside>
+
+        {% endblock %}
+
+
+        {% block message %}
+        {% endblock %}
+
+
+        {% block content %}
+            <div class="content-wrapper" xmlns="http://www.w3.org/1999/html">
+                <section class="content-header">
+                    <h1>Документация</h1>
+                    <ol class="breadcrumb">
+                        <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
+                        <li class="active">документация</li>
+                    </ol>
+                </section>
+
+                {% for doc in docs %}
+                    <section style="padding-left: 15px;" id="section{{ doc.id }}">
+                        <h2 class="page-header"><span>{{ doc.name }}</span></h2>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <p>{{ doc.description|safe }}</p>
+                            </div>
+                        </div><!-- /.row -->
+                    </section><!-- /.content -->
+                {% endfor %}
+
+
+                <div class="clearfix"></div>
+            </div><!-- /.content-wrapper -->
+
+        {% endblock %}
+
+        {% block footer %}
+            <footer class="main-footer no-print">
+                <div class="pull-right hidden-xs">
+                  <b>Version</b> 2.0
+                </div>
+                <strong>Copyright &copy; 2015 <a href="http://forward70.ru">Forward Studio</a>.</strong> All rights reserved.
+            </footer>
+        {% endblock %}
+
+    {% block end_wrapper %}
+        </div><!-- ./wrapper -->
+    {% endblock %}
+
+{#{% block page_js %}#}
+{#{% endblock %}#}
+
+
