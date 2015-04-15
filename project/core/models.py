@@ -118,6 +118,13 @@ class Purchase(models.Model):
     def get_catalogs(self):
         return Catalog.objects.filter(catalog_purchase=self.id)
 
+    def counts(self):
+        c = {"catalogs": Catalog.objects.filter(catalog_purchase=self.id).count(),
+             "orders": 0,       # TODO: Настроить подсчет!
+             "member": 0        # Настроить подсчет
+             }
+        return c
+
     def url(self):
         return '/profile/organizer/purchase-%s' % self.id
 
