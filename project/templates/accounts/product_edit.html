@@ -1,4 +1,4 @@
-{% extends "sub_main.html" %}
+{% extends "core_main.html" %}
 
 {% block page_css %}
     <!-- Theme style -->
@@ -22,24 +22,6 @@
                 <li class="active">Отредактировать товар</li>
             </ol>
         </section>
-
-        {% if not profile %}
-            <div class="pad margin no-print">
-                <div class="callout callout-info" style="margin-bottom: 0!important;">
-                    <h4><i class="fa fa-info"></i> Записочка</h4>
-                    Для того что бы работать организатором в SP Mooscow, вам необходимо заполнить личные данные, после этого Ваша учетная запись будет рассмотренна админимтратором и ей будет присвоен соответствующий статус
-                </div>
-            </div>
-        {% endif %}
-
-        {% if message %}
-            <div class="pad margin no-print">
-                <div class="callout callout-info" style="margin-bottom: 0!important;">
-                    <h4><i class="fa fa-info"></i> Поздравляем</h4>
-                    {{ message }}
-                </div>
-            </div>
-        {% endif %}
 
         <!-- Main content -->
         <section class="invoice">

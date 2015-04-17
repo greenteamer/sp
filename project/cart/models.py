@@ -6,6 +6,7 @@ from project.core.models import Product
 from project.accounts.models import OrganizerProfile, MemberProfile
 from django.contrib.auth.models import User
 
+
 class CartItem(models.Model):  # TODO: добавить profile_member и profile_organizer
     cart_id = models.CharField(max_length=50)
     date_added = models.DateTimeField(auto_now_add=True)
