@@ -8,13 +8,7 @@
 
 <hr/>
 
-
-
-
-
 {% categories_tree request %}
-
-
 
 {% for product_image in product_images %}
     {% thumbnail product_image.image "1000" as big %}
@@ -27,8 +21,6 @@
 
 <hr/>
 <h1>Все товары:</h1>
-
-
 
 <div class="products">
     {% for product in products %}
