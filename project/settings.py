@@ -15,6 +15,8 @@ PROJECT_PATH = os.path.abspath(os.path.dirname(__file__).decode('utf-8')).replac
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 ROOT_URLCONF = 'project.urls'
 
+DATA_IMPORTER_EXCEL_DECODER = 'cp1252'
+DATA_IMPORTER_DECODER = 'UTF-8'
 
 THUMBNAIL_PROCESSORS = (
     'image_cropping.thumbnail_processors.crop_corners',
@@ -64,8 +66,8 @@ TIME_ZONE = 'Europe/Moscow'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
-# LANGUAGE_CODE = 'ru'
+# LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
 ugettext = lambda s: s
 
@@ -89,6 +91,7 @@ USE_L10N = True
 # MEDIA_ROOT = 'C:/webmagazinedjango/webshop/static/media/'
 # MEDIA_ROOT = os.path.join(PROJECT_PATH, 'media').replace('\\', '/')
 MEDIA_ROOT = '%s/media' % CURRPATH
+IMPORT_XLS = '%s/import_xls' % MEDIA_ROOT
 CKEDITOR_UPLOAD_PATH = '/media/uploads'
 DIRECTORY = os.path.join(CURRPATH, 'media/uploads')
 
@@ -297,5 +300,6 @@ except ImportError:
     pass
 
 
-
+PYBB_ATTACHMENT_ENABLE = True
+PYBB_DEFAULT_TITLE = 'Форум сайта совместных покупок'
 # PYBB_PERMISSION_HANDLER = "project.core.pybbm_custom.MyPermissionHandler"  зараза не работает

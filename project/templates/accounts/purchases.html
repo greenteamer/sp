@@ -1,6 +1,38 @@
 {% extends "core_main.html" %}
 
 {% block content %}
+<!-- Модальное окно подтверждения смены статуса закупки -->
+<div class="modal fade" id="chandestatusmodal" tabindex="-1" role="dialog" aria-labelledby="chandestatusmodalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+            <h4 class="modal-title" id="chandestatusmodalLabel">
+               Изменить статус закупки
+            </h4>
+         </div>
+         <div class="modal-body">
+             <h3>Вы действительно хотите изменить статус закупки?</h3>
+{#             <h5>Выберите сроки действия статуса</h5>#}
+{#             <label for="date_start">Дата начала</label>#}
+{#             <input type="text" id="date_start" name="date_start"/>#}
+{#             <label for="date_end">Дата окончания</label>#}
+{#             <input type="text" id="date_end" name="date_end"/>#}
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close
+            </button>
+            <button type="button" class="btn btn-primary submit">
+               Применить изменения
+            </button>
+         </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+
       <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -27,14 +59,89 @@
             <!-- Table row -->
             <div class="row">
 
-                <div class="col-xs-6">
+{#                {{ list_obj }}#}
+                {% for item_list in list_obj %}
+                    Список полей: <br/>
+                    {{ item_list }}<br/>
+                    Расшифровка: <br/>
+                    {% for item in item_list %}
+                        <span>{{ item }} </span>
+                    {% endfor %}
+                    <br/>
+                    <br/>
+                {% endfor %}
 
-                    <ul>
-                        {% for purchase in profile.getOrganizerPurchases %}
-                            <li><a href="/profile/organizer/purchase-{{ purchase.id }}">{{ purchase.name }}</a></li>
-                        {% endfor %}
-                    </ul>
 
+                <div class="col-xs-12">
+                {% if purchases_dict %}
+                    {% for purchase, dict in purchases_dict.items %}
+
+                        <div class="box box-primary">
+                            <div class="box-header ui-sortable-handle" style="cursor: move;">
+                                <i class="ion ion-clipboard"></i>
+                                <h3 class="box-title"><b><a href="/profile/organizer/purchase-{{ purchase.id }}">{{ purchase.name }}</a></b> - {{ purchase.created_at }}</h3>
+                                <div class="box-tools pull-right">
+                                    <select purchase_id="{{ purchase.id }}" status="{{ purchase.get_current_status.id }}" name="status" class="status">
+                                        {% for status in statuses %}
+                                            <option value="{{ status.id }}"
+                                            {% if status.status_name ==  purchase.get_current_status.status_name %}
+                                                selected="selected"
+                                            {% endif %}
+                                            >{{ status }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div><!-- /.box-header -->
+                            <div class="box-body">
+                                <p>{{ purchase.description|truncatewords:60|safe }}</p>
+                                <hr/>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Каталог</th>
+                                                <th scope="col">Кол-во товаров</th>
+{#                                                <th scope="col">Кол-во заказов</th>#}
+                                                <th scope="col"></th>
+                                                <th scope="col"></th>
+{#                                                <th scope="col">Импорт товаров</th>#}
+{#                                                <th scope="col">Экспорт заказов</th>#}
+                                            </tr>
+                                        </thead>
+{#                                        <tfoot>#}
+{#                                            <tr>#}
+{#                                                <th colspan="5">Стоимость товаров:</th>#}
+{#                                                <th></th>#}
+{#                                                <th></th>#}
+{#                                                <th></th>#}
+{#                                                <th></th>#}
+{#                                                <th>100500 р.</th>#}
+{#                                            </tr>#}
+{#                                        </tfoot>#}
+                                        <tbody>
+                                            {% for catalog, list in dict.items %}
+                                                <tr>
+                                                    <td><a href="{{ catalog.url }}">{{ catalog.catalog_name }}</a></td>
+{#                                                    <td>{{ catalog.get_products_count }}</td>#}
+                                                    <td>{{ list|length }}</td>
+                                                    <td><a href="{{ catalog.url }}"><button class="btn btn-block btn-success btn-sm"><i class="fa fa-pencil"></i> <span>Редактировать каталог</span></button></a></td>
+                                                    <td><a href="{{ catalog.url }}/product-add/"><button class="btn btn-block btn-warning btn-sm" name="add_product"><i class="fa fa-plus"></i> <span>Добавить товар</span></button></td>
+{#                                                    <td><button class="btn btn-block btn-primary btn-sm" name="add_product"><i class="fa fa-download"></i> <span>Импорт XLS</span></button></td>#}
+{#                                                    <td><button class="btn btn-block btn-primary btn-sm" name="add_product"><i class="fa fa-upload"></i> <span>Экспорт XLS</span></button></td>#}
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div><!-- /.box-body -->
+                            <div class="box-footer clearfix no-border">
+                                <a href="{{ purchase.url }}-edit"><button style="margin-left: 10px;" class="btn btn-default pull-right"><i class="fa fa-pencil-square-o"></i> Редактировать Закупку</button></a>
+                                <a href="{{ purchase.url }}/catalog-add"><button class="btn btn-default pull-right"><i class="fa fa-plus-square-o"></i> Добавить каталог</button></a>
+                            </div>
+                        </div>
+
+                    {% endfor %}
+                {% endif %}
                 </div><!-- /.col -->
             </div><!-- /.row -->
 
@@ -42,5 +149,74 @@
         <div class="clearfix"></div>
     </div><!-- /.content-wrapper -->
 
+
+
+
+
 {% endblock %}
+
+
+
+
+{% block page_js %}
+    <script src='{{ STATIC_URL }}js/jquery.cookie.js'></script>
+
+    <script>
+        (function($) {
+            $(document).ready(function() {
+                var current_select;
+                var status_id;
+                var new_status_id;
+                var purchase_id;
+                var change = false;
+                $('.status').change(function(){
+                    change = false;
+                    current_select = $(this);
+                    purchase_id = $(this).attr('purchase_id');
+                    status_id = $(this).attr('status');
+                    new_status_id = $(this).val();
+                    console.log('purchase_id: ' + purchase_id + '; status: ' + status_id + '; new_status: ' + new_status_id);
+                    if (status_id != new_status_id) {
+                        $('#chandestatusmodal').modal();
+                    }
+                });
+
+                $('#chandestatusmodal .submit').click(function(){
+                    var csrftoken = $.cookie('csrftoken');
+                    $.post(
+                        "",             // Урл
+                        {
+                            action: 'change_status',
+                            ajax: 1,
+                            purchase_id: purchase_id,
+                            status_id: status_id,
+                            new_status_id: new_status_id,
+                            csrfmiddlewaretoken: csrftoken
+                        },
+                        onAjaxSuccess
+                        );
+                    function onAjaxSuccess(data){
+                        console.log('получено: ' + data);
+                        current_select.attr('status', new_status_id);
+                        change = true;
+                        $('#chandestatusmodal').modal('hide');
+                    }  // --/- end onAjaxSuccess function
+                });
+
+                // Возвращаем на место селект
+                $('#chandestatusmodal').on('hide.bs.modal', function () {
+                    if(!change) {
+                        current_select.find('option[value="'+status_id+'"]').attr("selected", "selected");
+                    }
+                })
+
+            });
+        })(jQuery);
+    </script>
+
+{% endblock %}
+
+
+
+
 

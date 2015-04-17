@@ -58,8 +58,13 @@
             {% block body_sidebar %}
             {% endblock %}
 
-            {% block content %}
-            {% endblock %}
+            {% if 'forum' in request.path %}
+                {% block forum_content %}
+                {% endblock %}
+            {% else %}
+                {% block content %}
+                {% endblock %}
+            {% endif %}
 
             {% block footer %}
             {% endblock %}
@@ -73,8 +78,8 @@
 {#          $.widget.bridge('uibutton', $.ui.button);#}
 {#        </script>#}
         <script src="{{ STATIC_URL }}AdminLte/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-
-
+        <script src='{{ STATIC_URL }}AdminLte/plugins/fastclick/fastclick.min.js'></script>
+        <script src="{{ STATIC_URL }}AdminLte/dist/js/app.min.js" type="text/javascript"></script>
 
         {% block page_js %}
             {#        <script src="{{ STATIC_URL }}AdminLte/plugins/sparkline/jquery.sparkline.min.js" type="text/javascript"></script>#}

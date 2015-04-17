@@ -35,19 +35,33 @@
         <section class="invoice">
             <!-- Table row -->
             <div class="row">
-
-                <div class="col-xs-12 col-md-6">
-
-                    <!-- form start -->
-                    <form action="" method="post">
+                <form action="" method="post">
+                    <div class="col-xs-12 col-md-6">
+                        <h4>Данные закупки</h4>
                         {% csrf_token %}
                         {{ purchase_form.as_p }}
-                        <div class="box-footer">
-                            <button type="submit" class="btn btn-primary">Отправить</button>
-                        </div>
-                    </form>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <h4>Статусы закупки</h4>
 
-                </div><!-- /.col -->
+                        {% for status in statuses %}
+                            <div class="status" id="status-{{ status.id }}" style="overflow: hidden;">
+                                <b>{{ status.status_name }}</b><br/>
+                                <div style="float:left;width:30%;">
+                                    <input placeholder="Дата начала статуса" type="text" name="date_start" class="form-control date"  id="date_start_{{ status.id }}" style="margin-bottom: 8px; width:100%;"/>
+                                    <input placeholder="Дата окончания статуса" type="text" name="date_end" class="form-control date" id="date_end_{{ status.id }}" style="width:100%;"/>
+                                </div>
+                                <textarea placeholder="Дополнительная информация" class="form-control" name="data" rows="3" style="width:60%;float: right;"></textarea>
+                            </div>
+                            <hr/>
+                        {% endfor %}
+                    </div><!-- /.col -->
+                    <div class="col-xs-12">
+                        <div class="box-footer">
+                            <button id="submit_purchase_add" type="submit" class="btn btn-primary">Отправить</button>
+                        </div>
+                    </div><!-- /.col -->
+                </form>
             </div><!-- /.row -->
 
         </section><!-- /.content -->
@@ -55,3 +69,51 @@
     </div><!-- /.content-wrapper -->
 
 {% endblock %}
+
+
+
+{% block page_js %}
+    <link href="{{ STATIC_URL }}jquery-ui-1.11.4.custom/jquery-ui.css" rel="stylesheet" type="text/css" />
+    <script src="{{ STATIC_URL }}jquery-ui-1.11.4.custom/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}jquery-ui-1.11.4.custom/datepicker-ru.js" type="text/javascript"></script>
+
+{#    <script src='{{ STATIC_URL }}js/jquery.cookie.js'></script>#}
+
+    <script>
+        (function($) {
+            $(document).ready(function() {
+
+{#                $('#date_start_1').attr('value','Сейчас').attr('disabled','disabled');#}
+
+                $.datepicker.setDefaults($.datepicker.regional['ru']);
+
+                // Подключаем календарь
+                $( ".date" ).datepicker({
+                    firstDay: 1,
+                    dateFormat: 'yy-mm-dd',
+                    showOtherMonths: true,
+                    selectOtherMonths: true
+                });
+
+                var date_inputs = $('input.date');
+
+{#                $('#submit_purchase_add').click(function(){#}
+{#                    var emptyval = false;#}
+{#                    date_inputs.each(function (i, elem) {#}
+{#                        if (elem.value == '') {#}
+{#                            alert('Заполенны не все даты');#}
+{#                            emptyval = true;#}
+{#                            return false;#}
+{#                        }#}
+{#                    });#}
+{#                    if (emptyval) {#}
+{#                        return false;#}
+{#                    }#}
+{#                });#}
+
+            });
+        })(jQuery);
+    </script>
+
+{% endblock %}
+
