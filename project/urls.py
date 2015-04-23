@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     url(r'^', include('project.core.urls')),
     url(r'^', include('project.cart.urls')),
     url(r'^', include('project.calendar_js.urls')),
+    url(r'^', include('project.documentation.urls')),
     url(r'^profile/', include('project.accounts.urls')),
 )
 

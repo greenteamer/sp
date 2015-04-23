@@ -247,7 +247,8 @@ INSTALLED_APPS = (
     'image_cropping',
     'easy_thumbnails',
     'import_export',
-    'project.notifications'
+    'project.notifications',
+    'project.documentation'
 )
 
 FILEBROWSER_MEDIA_ROOT = MEDIA_ROOT
