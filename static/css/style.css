@@ -1,3 +1,9 @@
+.modal-width-90{
+width: 90%;
+}
+
+
+
 .content-header>ol.breadcrumb {
     position: relative;
     float: none;
@@ -73,10 +79,22 @@ overflow: overlay;
 margin-bottom: 20px;
 border: 1px solid #eee;
 }
+.product-item-modal{
+height: auto;
+overflow: auto;
+}
 .product-item img {
 width: 100%;
 height: auto;
 }
+
+.product-item .images .image {
+width: 50%;
+height: auto;
+float: left;
+border: 1px solid #eee;
+}
+
 .product-item ul{
 overflow: hidden;
 position: relative;
@@ -99,6 +117,13 @@ background: rgba(255, 255, 255, 0.5);
 border: none;
 margin-bottom: -42px;
 z-index: 1;
+}
+.modal .buttons_wrap {
+position: fixed;
+padding: 9px 10px;
+border-radius: 3px;
+right: 15px;
+top: 10%;
 }
 .product-item .buttons_wrap .link_more {
 float: left;
