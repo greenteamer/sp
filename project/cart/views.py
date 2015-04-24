@@ -22,6 +22,9 @@ def cartView(request, template_name):
         if postdata.has_key('update'):
             update_cart(request)
     cart_items = get_cart_items(request)
+    cart_subtotal = 0
+    for cart_item in cart_items:
+        cart_subtotal = cart_subtotal + cart_item.total_price()
     return render_to_response(template_name, locals(), context_instance=RequestContext(request))
 
 
