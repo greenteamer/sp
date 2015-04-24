@@ -10,6 +10,25 @@
 {% endblock %}
 
 {% block content %}
+
+    <!-- Модальное окно уведомления о заказе товара  -->
+<div class="modal fade" id="addtocartdonemodal" tabindex="-1" role="dialog" aria-hidden="true" style="z-index:1050">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+         </div>
+         <div class="modal-body">
+             <h3 style="text-align: center;">Покупка</h3>
+         </div>
+      </div>
+    </div>
+</div>
+
+
+
       <!-- Content Wrapper. Contains page content -->
     <div id="core_catalog" class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -93,12 +112,10 @@
     </div><!-- /.content-wrapper -->
 
 
-<a data-toggle="modal" data-target="#ViewOneProduct" href="#">Показать все</a>
 
-<div class="modal fade bs-example-modal-lg" id="ViewOneProduct" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade bs-example-modal-lg" id="ViewOneProduct" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-width-90">
         <div class="modal-content" style="overflow:overlay;">
-
 
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -121,6 +138,8 @@
     (function($) {
         $(document).ready(function() {
 
+
+
             var csrftoken = $.cookie('csrftoken');
             var ViewOneProduct = $('#ViewOneProduct');
             $(document).on('click', '.add_to_cart', add_to_cart);
@@ -133,7 +152,7 @@
                     },
                     function(data){
                         ViewOneProduct.find('.modal-content').html(data);
-                        ViewOneProduct.find('input').attr('checked', 'checked');
+                        ViewOneProduct.find('input').attr('checked', 'checked'); // делаем выбранный последний радио в каждом свойстве
                         $('input').iCheck({
                             radioClass: 'iradio_square-blue',
                             increaseArea: '20%' // optional
@@ -183,7 +202,9 @@
                             cart_item.find('.product_quantity').text(parseInt(cart_item.find('.product_quantity').text()) + parseInt(result.quantity));
                             full_count_product = $('.full_count_product');
                             full_count_product.text(parseInt($(full_count_product[0]).text()) + parseInt(result.quantity));
-                            alert('Товар в корзине успешно обновлен');
+{#                            alert('Товар в корзине успешно обновлен');#}
+                            $('#addtocartdonemodal .modal-body h3').html('Товар в корзине успешно обновлен');
+                            $('#addtocartdonemodal').modal();
                         } else {  // Значит элемент новый
                             $('#cart_item_menu').append('<li class="cart_item" id="cart_item_' + result.cart_item_id + '"> \
                                     <div class="pull-left"> \
@@ -197,13 +218,19 @@
                                 </li>');
                             full_count_product = $('.full_count_product');
                             full_count_product.text(parseInt($(full_count_product[0]).text()) + parseInt(result.quantity));
-                            alert('Товар успешно добавлен в корзину');
-                                                            console.log('new element');
+{#                            alert('Товар успешно добавлен в корзину');#}
+                            $('#addtocartdonemodal .modal-body h3').html('Товар успешно добавлен в корзину');
+                            $('#addtocartdonemodal').modal();
                         }
+
                     } else if (result.status == 'no') {
-                        alert('Не найдено товара с такими свойствами');
+                        $('#addtocartdonemodal .modal-body h3').html('Не найдено товара с такими свойствами');
+                        $('#addtocartdonemodal').modal();
+{#                        alert('Не найдено товара с такими свойствами');#}
                     } else {
-                        alert('Не известная ошибка');
+                        $('#addtocartdonemodal .modal-body h3').html('Не известная ошибка');
+                        $('#addtocartdonemodal').modal();
+{#                        alert('Не известная ошибка');#}
                     }
 
                 }

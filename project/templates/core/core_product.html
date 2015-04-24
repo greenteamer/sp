@@ -22,6 +22,24 @@
 {% endblock %}
 
 {% block content %}
+
+    <!-- Модальное окно уведомления о заказе товара  -->
+<div class="modal fade" id="addtocartdonemodal" tabindex="-1" role="dialog" aria-hidden="true" style="z-index:1050">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+         </div>
+         <div class="modal-body">
+             <h3 style="text-align: center;">Покупка</h3>
+         </div>
+      </div>
+    </div>
+</div>
+
+
       <!-- Content Wrapper. Contains page content -->
     <div id="core_product" class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -48,11 +66,7 @@
             <!-- Table row -->
             <div class="row">
 
-                <div class="col-xs-12">
 
-
-
-                </div><!-- /.col -->
                 <div class="col-xs-6">
                     <p>
                         <label>Описание:</label>
@@ -105,13 +119,9 @@
                         {% endfor %}
                     </div>
 
-{#                    <img src="{{ MEDIA_URL }}{{ product.get_image.image }}" width="100%" height="auto" alt=""/>#}
-{#                    <img src="{{ MEDIA_URL }}{{ product.get_image.image }}" width="100px"  data-zoom-image="{{ MEDIA_URL }}{{ product.get_image.image }}"/>#}
 {#                    {% for image in images %}#}
 {#                        <img style="" src="{% cropped_thumbnail image "cropping" scale=1 %}">#}
 {#                    {% endfor %}#}
-
-
 
                 </div>
 
@@ -133,6 +143,8 @@
     <script>
         (function($) {
             $(document).ready(function() {
+
+                $('#core_product input').attr('checked', 'checked'); // делаем выбранный последний радио в каждом свойстве
 
                 $('input').iCheck({
                     checkboxClass: 'icheckbox_square-blue',
@@ -178,9 +190,9 @@
                                 cart_item.find('.product_quantity').text(parseInt(cart_item.find('.product_quantity').text()) + parseInt(result.quantity));
                                 full_count_product = $('.full_count_product');
                                 full_count_product.text( parseInt($(full_count_product[0]).text()) + parseInt(result.quantity) );
-                                alert('Товар в корзине успешно обновлен');
+                                $('#addtocartdonemodal .modal-body h3').html('Товар в корзине успешно обновлен');
+                                $('#addtocartdonemodal').modal();
                             }else{  // Значит элемент новый
-
                                 $('#cart_item_menu').append('<li class="cart_item" id="cart_item_' + result.cart_item_id + '"> \
                                         <div class="pull-left"> \
                                               <img src="{{ product.get_image.url }}" width="50" height="50"> \
@@ -193,13 +205,15 @@
                                     </li>');
                                 full_count_product = $('.full_count_product');
                                 full_count_product.text( parseInt($(full_count_product[0]).text()) + parseInt(result.quantity) );
-                                alert('Товар успешно добавлен в корзину');
-{#                                console.log('new element');#}
+                                $('#addtocartdonemodal .modal-body h3').html('Товар успешно добавлен в корзину');
+                                $('#addtocartdonemodal').modal();
                             }
                         }else if (result.status == 'no'){
-                            alert('Не найдено товара с такими свойствами');
+                            $('#addtocartdonemodal .modal-body h3').html('Не найдено товара с такими свойствами');
+                            $('#addtocartdonemodal').modal();
                         }else{
-                            alert('Не известная ошибка');
+                            $('#addtocartdonemodal .modal-body h3').html('Не известная ошибка');
+                            $('#addtocartdonemodal').modal();
                         }
 
                     }  // --/- end onAjaxSuccess function
