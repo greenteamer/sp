@@ -54,10 +54,12 @@ def calendarView(request, template_name="catalog/index.html"):
                 pass
         statuses_list = []
         for status in statuses:
-            status.eventdate_start = datetime.datetime(status.date_start.year, status.date_start.month, status.date_start.day,
-                                          status.date_start.hour, status.date_start.minute)
-            status.eventdate_end = datetime.datetime(status.date_end.year, status.date_end.month, status.date_end.day,
-                                          status.date_end.hour, status.date_end.minute)
+            # status.eventdate_start = datetime.datetime(status.date_start.year, status.date_start.month, status.date_start.day,
+            #                               status.date_start.hour, status.date_start.minute)
+            # status.eventdate_end = datetime.datetime(status.date_end.year, status.date_end.month, status.date_end.day,
+            #                               status.date_end.hour, status.date_end.minute)
+            status.eventdate_start = status.date_start
+            status.eventdate_end = status.date_end
             statuses_list.append(
                 {
                     'title': "%s" % status.purchase.name,

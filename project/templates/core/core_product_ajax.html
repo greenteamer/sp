@@ -1,0 +1,62 @@
+{% load thumbnail %}
+
+
+<div class="modal-header">
+    <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><img
+            src="/static/images/images.png" alt=""/></span></button>
+    <h4 class="modal-title">{{ product.product_name }} &nbsp;&nbsp;<span style="background: rgb(253, 252, 185);padding: 7px;">[{{ product.price }} руб.]</span></h4>
+</div>
+<div class="modal-body product-item product-item-modal">
+
+
+    <div class="buttons_wrap">
+        <div class="add_to_cart_wrapper">
+            <div id="{{ product.id }}" class="quantity">
+                <i class="btn-mini fa fa-minus-square minus" onselectstart="return false"></i>
+                <input name="quantity{{ product.id }}" maxlength="2" id="id_quantity{{ product.id }}" type="text" class="product_quantity" value="1" size="1">
+                <i class="btn-mini fa fa-plus-square plus" onselectstart="return false"></i>
+            </div>
+            <button class="btn btn-primary add_to_cart animation" product-id="{{ product.id }}" >В корзину</button>
+        </div>
+    </div>
+
+    <div class="col-xs-12">
+        <a href="{{ product.url_core }}" class="btn btn-default" style="margin-bottom:20px;" target="_blank">Открыть товар на отдельной странице</a>
+    </div>
+    <div class="col-md-7">
+        <div class="images">
+            {% for image in images %}
+                <div class="image">
+                    {% thumbnail image.image "320x200" crop="60% center" as im %}
+                        <a class="fancybox" rel="gallery1" href="{{ image.image.url }}" title="{{ product.product_name }}">
+                            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" />
+                        </a>
+                    {% empty %}
+                        <img class="center-block" src="{{ MEDIA_URL }}accounts/images/no_image-128.png" width="auto" style="height: 70px;" alt=""/>
+                    {% endthumbnail %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="col-md-5">
+
+        <div class="properties">
+            {{ property_form }}
+        </div>
+
+        <div class="description">
+            {{ product.description}}
+        </div>
+
+    </div>
+
+</div>
+
+{#<div class="modal-footer">#}
+{#    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>#}
+{#</div>#}
+
+
+
+

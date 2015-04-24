@@ -2,10 +2,10 @@
 #!/usr/bin/env python
 from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, purchaseForm, catalogForm, \
                                     catalogProductPropertiesForm, ProductForm, MemberProfileForm, UserLoginForm, \
-                                    ProductImagesForm  # propertyForm
+                                    ProductImagesForm
 from project.core.forms import ImportXLSForm
 from project.core.models import Purchase, PurchaseStatus, Catalog, Product, CatalogProductProperties, \
-                                ProductImages, ImportFiles, PurchaseStatusLinks  #, Properties
+                                ProductImages, ImportFiles, PurchaseStatusLinks
 from django.shortcuts import render, render_to_response, redirect
 from project.accounts.models import OrganizerProfile, getProfile, repopulateProfile
 from django.contrib import auth
@@ -377,15 +377,6 @@ def catalogAdd(request, purchase_id, template_name):
             message = u"Новый каталог «%s» успешно добавлен. <br/> Добавить еще: " % request.POST['catalog_name']
         else:
             message = u"Ошибка при добавлении каталога"
-        #
-        # if catalog_form.is_valid() and catalogProductProperties_form.is_valid():
-        #     new_catalogProductProperties = catalogProductProperties_form.save(commit=False)
-        #     new_catalogProductProperties.cpp_catalog = catalog_form.save(purchase_id)  # каталог сохраняется для нужной закупки - переопределена ф-я save, возвращает созданный объект каталога
-        #     new_catalogProductProperties.cpp_purchase = Purchase.objects.get(id=purchase_id)
-        #     new_catalogProductProperties.save()
-        #     message = u"Новый каталог «%s» успешно добавлен. <br/> Добавить еще: " % request.POST['catalog_name']
-        # else:
-        #     message = u"Ошибка при добавлении каталога"
 
     catalog_form = catalogForm()
     catalogProductProperties_form = catalogProductPropertiesForm()
@@ -560,21 +551,6 @@ def product(request, purchase_id, catalog_id, product_id, template_name, edit=Fa
                     except:
                         product_image_form.save(product_id)
 
-                # Сохранение свойств в старом формате. Удалить если все норм работает.
-                # Properties.objects.filter(properties_product_id=product_id).delete()
-                #
-                # properties = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
-                # for property in properties:
-                #     try:
-                #         if request.POST[property.cpp_slug] is not None:
-                #             new_properties = Properties()
-                #             new_properties.properties_value = request.POST[property.cpp_slug]  #request.POST['tsvet']
-                #             new_properties.properties_product = product
-                #             new_properties.properties_catalogProductProperties = CatalogProductProperties.objects.get(cpp_slug=property.cpp_slug)
-                #             new_properties.save()
-                #     except:
-                #         continue
-
                 message = u"Новый товар %s успешно отредактирован." % request.POST['product_name']
             else:
                 message = u"Ошибка при изменении товара"
@@ -607,15 +583,6 @@ def product(request, purchase_id, catalog_id, product_id, template_name, edit=Fa
             # указанные свойства товара
             product_properties = product.property.split(";")
 
-            # properties = get_propeties(catalog_id, 'list')  # получим все возможные свойства для товаров этой категории
-
-            # старый вывод:
-            # properties = Properties.objects.filter(properties_product=product_id)  # получим все свойства для этого товара
-            # all_properties = {}
-            # for property in properties:
-            #     current_catalog_product_properties = CatalogProductProperties.objects.get(id=property.properties_catalogProductProperties_id)
-            #     all_properties.update({current_catalog_product_properties.cpp_name: property.properties_value.split(";")})  # формируется словарь вида {имя_свойства: значения_распарсенные_в_список}
-
 
             return render_to_response(template_name, locals(),
                                           context_instance=RequestContext(request))
@@ -638,19 +605,6 @@ def productAdd(request, purchase_id, catalog_id, template_name):
                 property = ';'.join(properties)            # u'34,green,41;34,green,42;34,green,43;34,blue,41;34,blue,42'
                 new_product = product_form.save(catalog_id, property)
                 product_image_form.save(new_product.id)
-
-                # Сохранение свойств в старом формате. Удалить если все норм работает.
-                # properties = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
-                # for property in properties:
-                #     try:
-                #         if request.POST[property.cpp_slug] is not None:
-                #             new_properties = Properties()
-                #             new_properties.properties_value = request.POST[property.cpp_slug]  # request.POST['tsvet']
-                #             new_properties.properties_product = new_product
-                #             new_properties.properties_catalogProductProperties = CatalogProductProperties.objects.get(cpp_slug=property.cpp_slug)
-                #             new_properties.save()
-                #     except:
-                #         continue
 
                 message = u"Новый товар %s успешно добавлен." % request.POST['product_name']
             else:
