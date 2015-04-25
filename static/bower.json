@@ -1,0 +1,19 @@
+{
+  "name": "static",
+  "version": "0.0.0",
+  "homepage": "https://github.com/greenteamer/sp",
+  "authors": [
+    "greenteamer <greenteamer@bk.ru>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.3"
+  }
+}
