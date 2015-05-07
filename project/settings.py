@@ -251,7 +251,7 @@ INSTALLED_APPS = (
     'project.documentation',
     'tastypie',
     'crispy_forms',
-    'debug_toolbar',
+    # 'debug_toolbar',
 )
 
 FILEBROWSER_MEDIA_ROOT = MEDIA_ROOT
