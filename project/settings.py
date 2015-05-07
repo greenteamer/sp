@@ -121,7 +121,7 @@ STATICFILES_DIRS = (
 	# Always use forward slashes, even on Windows.
 	# Don't forget to use absolute paths, not relative paths.
 	os.path.join(CURRPATH, 'static').replace('\\', '/'),
-	os.path.join(CURRPATH, 'static/media').replace('\\', '/'),
+	# os.path.join(CURRPATH, 'static/media').replace('\\', '/'),
 )
 
 # List of finder classes that know how to find static files in
@@ -199,6 +199,8 @@ SOUTH_MIGRATION_MODULES = {
     # 'sitetree': 'sitetree.south_migrations',
 }
 
+# DEBUG_TOOLBAR_PATCH_SETTINGS = False
+
 INPLACEEDIT_DISABLE_CLICK = False # "разрешаем сохранять изменения нажатием Enter"
 THUMBNAIL_DEBUG = True
 INPLACEEDIT_EVENT = "click" # "событие для вызова редактирования"
@@ -251,6 +253,7 @@ INSTALLED_APPS = (
     'project.documentation',
     'tastypie',
     'crispy_forms',
+    'debug_toolbar',
 )
 
 FILEBROWSER_MEDIA_ROOT = MEDIA_ROOT

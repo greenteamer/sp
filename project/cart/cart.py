@@ -33,7 +33,7 @@ def _generate_cart_id():
 
 def get_cart_items(request):
     cart_items = CartItem.objects.filter(user=request.user)
-    cart_items.full_count = 0
+    cart_items.full_count = 0  # считаем колличество товаров для отображения в верхнем меню
     for item in cart_items:
         cart_items.full_count = cart_items.full_count + item.quantity
     return cart_items

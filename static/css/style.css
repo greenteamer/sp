@@ -169,3 +169,10 @@ margin-top: 42px;
 .btn-primary:not(.btn-link):not(.btn-flat) {
     padding: 8px 25px;
 }
+.table>tbody>tr>td,
+.table>thead>tr>th,
+.table>thead:first-child>tr:first-child>th{
+    border: 1px solid #BDBDBD;
+    border-top: 1px solid #BDBDBD;
+    border-bottom: 1px solid #BDBDBD;
+}
