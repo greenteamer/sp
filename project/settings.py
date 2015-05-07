@@ -248,7 +248,9 @@ INSTALLED_APPS = (
     'easy_thumbnails',
     'import_export',
     'project.notifications',
-    'project.documentation'
+    'project.documentation',
+    'tastypie',
+    'crispy_forms',
 )
 
 FILEBROWSER_MEDIA_ROOT = MEDIA_ROOT
