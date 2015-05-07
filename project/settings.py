@@ -199,8 +199,6 @@ SOUTH_MIGRATION_MODULES = {
     # 'sitetree': 'sitetree.south_migrations',
 }
 
-# DEBUG_TOOLBAR_PATCH_SETTINGS = False
-
 INPLACEEDIT_DISABLE_CLICK = False # "разрешаем сохранять изменения нажатием Enter"
 THUMBNAIL_DEBUG = True
 INPLACEEDIT_EVENT = "click" # "событие для вызова редактирования"
