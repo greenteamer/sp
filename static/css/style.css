@@ -54,7 +54,10 @@ button.close.pull-right {
     margin-top: 2px;
     z-index: -1;
 }
-
+.navbar .navbar-nav>li>a {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
 
 
 
@@ -160,4 +163,9 @@ margin-left: 315px;
 }
 .col-md-12.product-item .properties {
 margin-top: 42px;
+}
+
+
+.btn-primary:not(.btn-link):not(.btn-flat) {
+    padding: 8px 25px;
 }
