@@ -77,6 +77,7 @@ def profileView(request, template_name):
 
 def populateProfileView(request, template_name):
     user = request.user
+    # profile = getProfile(user)
     form = OrganizerProfileForm()
     if user.is_authenticated():
         profile = getProfile(user)
