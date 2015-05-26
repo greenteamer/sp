@@ -1,6 +1,7 @@
 {% extends "core_main.html" %}
 {% load thumbnail %}
 {% load cropping %}
+{% load staticfiles %}
 
 {% block page_css %}
     <!-- Theme style -->
@@ -21,16 +22,6 @@
             </ol>
             <h1>Просмотр каталога "{{ catalog.catalog_name }}" закупки - {{ purchase.name }}</h1>
         </section>
-
-        {% if not profile %}
-            <div class="pad margin no-print">
-                <div class="callout callout-info" style="margin-bottom: 0!important;">
-                    <h4><i class="fa fa-info"></i> Записочка</h4>
-                    Для того что бы работать организатором в SP Mooscow, вам необходимо заполнить личные данные, после этого Ваша учетная запись будет рассмотренна админимтратором и ей будет присвоен соответствующий статус
-                </div>
-            </div>
-        {% endif %}
-
 
         <!-- Main content -->
         <section class="invoice">
@@ -58,6 +49,7 @@
                                 <div class="buttons_wrap">
                                     <div class="link_more">
                                         <a class="btn btn-primary" href="{{ product.url_core }}">Подробнее</a>
+                                        {# <a id="modal_callback" class="btn btn-primary" data-toggle="modal" data-target="#showProduct{{ product.id }}" href="#">Подробнее</a> #}
                                     </div>
                                     <div class="add_to_cart_wrapper">
                                         <div id="{{ product.id }}" class="quantity">
@@ -85,16 +77,42 @@
                                 </div>
 
 {#                                {{ product.description|truncatewords:15|safe }}#}
-                                {{ product.description}}
+                                {{ product.description | truncatewords:25 | safe}}
 
 {#                                {% if product.sku %}#}
 {#                                    {{ product.sku }}#}
 {#                                {% endif %}#}
 
                             </div>
+                            <div class="modal fade bs-example-modal-lg" id="showProduct{{ product.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><img
+                                                    src="{{ STATIC_URL }}images/images.png" alt=""/></span></button>
+                                            <h4 class="modal-title">{{ product.product_name }}</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="p_date pull-right"></div>
+                                            <div class="price">{{ product.price }} руб.</div>
+                                            <div class="text">{{ product.description }}</div>
+
+                                            <div class="items"></div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                                            <a class="purchase_link" href=""><button type="button" class="btn btn-primary">Перейти на страницу товара</button></a>
+                                        </div>
+                                    </div><!-- /.modal-content -->
+                                </div><!-- /.modal-dialog -->
+                            </div><!-- /.modal -->
                         {% endfor %}
                     </div>
                 </div>
+                
+                {# для приложения REACT #}
+                {# <div id="modal_product"></div>                 #}
+
             </div><!-- /.row -->
 
         </section><!-- /.content -->
@@ -112,6 +130,8 @@
 <script>
     (function($) {
         $(document).ready(function() {
+
+
 
 {#          TODO: Средствами джанго сделать уникальный name у каждой группы свойств; и у каждой группы выбран один элемент; удаление for у label #}
             // Извращения
@@ -228,6 +248,10 @@
 </script>
 
 {% endblock %}
-
+{% block react %}    
+    {# // <script src="{% static 'app/vendor/react/react.js' %}"></script> #}
+    {# // <script src="{% static 'app/catalog/main_catalog.js' %}"></script> #}
+    {# // <script src="{% static 'app/catalog/show_product.js' %}"></script> #}    
+{% endblock %}      
 
 

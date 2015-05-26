@@ -121,7 +121,7 @@ STATICFILES_DIRS = (
 	# Always use forward slashes, even on Windows.
 	# Don't forget to use absolute paths, not relative paths.
 	os.path.join(CURRPATH, 'static').replace('\\', '/'),
-	os.path.join(CURRPATH, 'static/media').replace('\\', '/'),
+	# os.path.join(CURRPATH, 'static/media').replace('\\', '/'),
 )
 
 # List of finder classes that know how to find static files in
@@ -247,7 +247,11 @@ INSTALLED_APPS = (
     'image_cropping',
     'easy_thumbnails',
     'import_export',
-    'project.notifications'
+    'project.notifications',
+    'project.documentation',
+    'tastypie',
+    'crispy_forms',
+    # 'debug_toolbar',
 )
 
 FILEBROWSER_MEDIA_ROOT = MEDIA_ROOT

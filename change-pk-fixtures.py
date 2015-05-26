@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
-import sys
 import argparse
 
 
-def createParser ():
+def createParser():
     parser = argparse.ArgumentParser()
-    parser.add_argument ('-f', '--file')
- 
+    parser.add_argument('-f', '--file')
+
     return parser
 
 

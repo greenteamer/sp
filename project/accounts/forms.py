@@ -61,14 +61,24 @@ class UserRegistrationForm(forms.ModelForm):
     username = forms.RegexField(label=_("Username"), max_length=100,
         regex=r'^[\w.@+-]+$',
         error_messages = {'invalid': "Это значение может состоять из латинских букв, цифр и знаков @/./+/-/_."},
-        widget=forms.TextInput(attrs={'placeholder': 'Ваше Имя', 'class': 'form-control'}),
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Ваш логин на анг.',
+            'class': 'form-control floating-label',
+            'id': 'focusedInput'
+            # 'data-hint': 'Например: supersaler'
+        }),
     )
     email = forms.EmailField(
         label=_("Email"),
         error_messages = {'invalid': "Введите корректный e-mail адрес"},
-        widget=forms.TextInput(attrs={'placeholder': 'Ваш e-mail', 'class': 'form-control'}),)
+        widget=forms.TextInput(attrs={'placeholder': 'Ваш e-mail',
+                                      'class': 'form-control floating-label'
+                                      }),)
     password1 = forms.CharField(label=_("Password"),
-                                widget=forms.PasswordInput(attrs={'placeholder': 'Введите пароль', 'class': 'form-control'}))
+                                widget=forms.PasswordInput(attrs={'placeholder': 'Введите пароль',
+                                                                  'class': 'form-control',
+                                                                  'class': 'form-control floating-label',
+                                                                  }))
 
     class Meta:
         model = User
