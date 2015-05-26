@@ -22,6 +22,24 @@
 {% endblock %}
 
 {% block content %}
+
+    <!-- Модальное окно уведомления о заказе товара  -->
+<div class="modal fade" id="addtocartdonemodal" tabindex="-1" role="dialog" aria-hidden="true" style="z-index:1050">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+         </div>
+         <div class="modal-body">
+             <h3 style="text-align: center;">Покупка</h3>
+         </div>
+      </div>
+    </div>
+</div>
+
+
       <!-- Content Wrapper. Contains page content -->
     <div id="core_product" class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -31,7 +49,7 @@
                 <li class="active">{{ purchase.name }}</li>
                 <li>{{ catalog.catalog_name }}</li>
             </ol>
-            <h1>Просмотр каталога "{{ catalog.catalog_name }}" закупки - {{ purchase.name }}</h1>
+            <h1>{{ product.product_name }}</h1>
         </section>
 
         {% if message %}
@@ -48,12 +66,7 @@
             <!-- Table row -->
             <div class="row">
 
-                <div class="col-xs-12">
 
-                    <h2>{{ product.product_name }}</h2>
-
-
-                </div><!-- /.col -->
                 <div class="col-xs-6">
                     <p>
                         <label>Описание:</label>
@@ -91,7 +104,21 @@
                 </div>
 
                 <div class="col-xs-6">
-                    <img src="{{ MEDIA_URL }}{{ product.get_image.image }}" width="100%" height="auto" alt=""/>
+
+                    <div class="images">
+                        {% for image in images %}
+                            <div class="image">
+                                {% thumbnail image.image "320x200" crop="60% center" as im %}
+                                    <a class="fancybox" rel="gallery1" href="{{ image.image.url }}" title="{{ product.product_name }}">
+                                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" />
+                                    </a>
+                                {% empty %}
+                                    <img class="center-block" src="{{ MEDIA_URL }}accounts/images/no_image-128.png" width="auto" style="height: 70px;" alt=""/>
+                                {% endthumbnail %}
+                            </div>
+                        {% endfor %}
+                    </div>
+
 {#                    {% for image in images %}#}
 {#                        <img style="" src="{% cropped_thumbnail image "cropping" scale=1 %}">#}
 {#                    {% endfor %}#}
@@ -110,10 +137,14 @@
 {% block page_js %}
     <script src="{{ STATIC_URL }}AdminLte/plugins/iCheck/icheck.min.js" type="text/javascript"></script>
     <script src='{{ STATIC_URL }}js/jquery.cookie.js'></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}fancybox/source/jquery.fancybox.js?v=2.1.5"></script>
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}fancybox/source/jquery.fancybox.css?v=2.1.5" media="screen" />
 
     <script>
         (function($) {
             $(document).ready(function() {
+
+                $('#core_product input').attr('checked', 'checked'); // делаем выбранный последний радио в каждом свойстве
 
                 $('input').iCheck({
                     checkboxClass: 'icheckbox_square-blue',
@@ -121,6 +152,7 @@
                     increaseArea: '20%' // optional
                 });
 
+                $('.fancybox').fancybox();
 
                 $('#add_to_cart').click(function () {
                     var product_properties = '';
@@ -158,9 +190,9 @@
                                 cart_item.find('.product_quantity').text(parseInt(cart_item.find('.product_quantity').text()) + parseInt(result.quantity));
                                 full_count_product = $('.full_count_product');
                                 full_count_product.text( parseInt($(full_count_product[0]).text()) + parseInt(result.quantity) );
-                                alert('Товар в корзине успешно обновлен');
+                                $('#addtocartdonemodal .modal-body h3').html('Товар в корзине успешно обновлен');
+                                $('#addtocartdonemodal').modal();
                             }else{  // Значит элемент новый
-
                                 $('#cart_item_menu').append('<li class="cart_item" id="cart_item_' + result.cart_item_id + '"> \
                                         <div class="pull-left"> \
                                               <img src="{{ product.get_image.url }}" width="50" height="50"> \
@@ -173,13 +205,15 @@
                                     </li>');
                                 full_count_product = $('.full_count_product');
                                 full_count_product.text( parseInt($(full_count_product[0]).text()) + parseInt(result.quantity) );
-                                alert('Товар успешно добавлен в корзину');
-{#                                console.log('new element');#}
+                                $('#addtocartdonemodal .modal-body h3').html('Товар успешно добавлен в корзину');
+                                $('#addtocartdonemodal').modal();
                             }
                         }else if (result.status == 'no'){
-                            alert('Не найдено товара с такими свойствами');
+                            $('#addtocartdonemodal .modal-body h3').html('Не найдено товара с такими свойствами');
+                            $('#addtocartdonemodal').modal();
                         }else{
-                            alert('Не известная ошибка');
+                            $('#addtocartdonemodal .modal-body h3').html('Не известная ошибка');
+                            $('#addtocartdonemodal').modal();
                         }
 
                     }  // --/- end onAjaxSuccess function
