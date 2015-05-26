@@ -46,5 +46,9 @@ python ../manage.py loaddata __initial_data.json
             for c_el in row:
                 keys.append(c_el)
 
-#  пример загрузк фикстуры
+# пример сохранения фикстуры
+python ../manage.py dumpdata --format=json core.purchasestatus > purchasestatus_data.json
+
+# пример загрузки фикстуры
 python ../manage.py loaddata ../new.json
+
