@@ -29,29 +29,23 @@
                     <!-- Sidebar user panel -->
                     <div class="user-panel">
                             <div class="pull-left image">
-                                <img src="/media/{{ profile.icon }}" class="img-circle" alt="Ваше фото" />
+                                {% if profile.icon %}
+                                    <img src="/media/{{ profile.icon }}" class="img-circle" alt="Ваше фото" />
+                                {% else %}
+                                    <i class="mdi-action-account-circle"></i>
+                                {% endif %}
                             </div>
                             <div class="pull-left info">
                                 <p>{{ profile.firstName }} <small>{{ profile.lastName }}</small></p>
                                 <a href="#"><i class="fa fa-circle text-success"></i> В сети</a>
                             </div>
-                    </div>
-                    <!-- search form -->
-                    <form action="#" method="get" class="sidebar-form">
-                        <div class="input-group">
-                            <input type="text" name="q" class="form-control" placeholder="Искать..."/>
-                            <span class="input-group-btn">
-                                <button type='submit' name='seach' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
-                            </span>
-                        </div>
-                    </form>
-                    <!-- /.search form -->
+                    </div>                
                     <!-- sidebar menu: : style can be found in sidebar.less -->
                     <ul class="sidebar-menu">
                         <li class="header">Навигация по документации</li>
 
                         {% for doc in docs %}
-                            <li class="active">
+                            <li class="doc_menu {% if forloop.counter == 1 %}active{% endif %}">
 {#                               <a href="#introduction"><i class="fa fa-circle-o"></i> Introduction</a>#}
                                 <a href="#section{{ doc.id }}"> {{ doc.name }}</a>
                             </li>
@@ -126,7 +120,17 @@
         </div><!-- ./wrapper -->
     {% endblock %}
 
-{#{% block page_js %}#}
-{#{% endblock %}#}
+{% block page_js %}
+    <script>
+    (function($){
+        $(document).ready(function(){
+            $(".doc_menu").click(function(){   
+                $('.active').removeClass('active');
+                $(this).addClass('active');
+            });
+        });
+    })(jQuery);
+    </script>
+{% endblock %}
 
 
