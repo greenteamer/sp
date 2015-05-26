@@ -13,10 +13,22 @@
 
 <div class="login-box">
     <div class="login-logo">
-        <a href="/profile"><b>Кабинет</b> SP Moscow</a>
+        <a href="/profile"><b>Кабинет</b> SP Tomsk</a>
     </div><!-- /.login-logo -->
     <div class="login-box-body">
         <p class="login-box-msg">Войдите для начала работы</p>
+        <div class="alert alert-dismissable alert-info">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <h4>Организатор</h4>
+            <p>Имя: organizer1</p>
+            <p>Пароль: test</p>
+        </div>
+        <div class="alert alert-dismissable alert-success">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <h4>Участник</h4>
+            <p>Имя: member1</p>
+            <p>Пароль: test</p>
+        </div>
         {% if error %}
             <div class="alert alert-danger alert-dismissable">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -33,13 +45,13 @@
                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
             </div>
             <div class="row">
-            <div class="col-xs-12">
-                <div class="checkbox icheck">
-                    <label>
-                        <input type="checkbox"> Запомнить меня
-                    </label>
-                </div>
-            </div><!-- /.col -->
+            {# <div class="col-xs-12"> #}
+                {# <div class="checkbox icheck"> #}
+                    {# <label> #}
+                        {# <input type="checkbox"> Запомнить меня #}
+                    {# </label> #}
+                {# </div> #}
+            {# </div><!-- /.col --> #}
                 <div class="col-xs-12">
                     <button type="submit" class="btn btn-primary btn-block btn-flat">Войти</button>
                 </div><!-- /.col -->
@@ -64,3 +76,7 @@
 
 {% block page_js %}
 {% endblock %}
+{# {% block react %}     #}
+    {# <script data-main="{% static 'app/main.js' %}" src="{% static 'app/vendor/requirejs/require.js' %}"></script> #}
+    {#<script>$.material.init()</script>#}
+{# {% endblock %}       #}

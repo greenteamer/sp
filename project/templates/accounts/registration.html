@@ -13,11 +13,16 @@
 
     <div class="register-box">
         <div class="register-logo">
-            <b>Кабинет</b> SP Moscow
+            <b>Кабинет</b> SP Tomsk
         </div>
 
         <div class="register-box-body">
             <p class="login-box-msg">Регистрация нового пользователя</p>
+            <div class="alert alert-dismissable alert-success">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <h4>Демо-Режим!</h4>
+                <p>Чтобы войти в демо режим перейдите на стрницу <a href="/profile/login/" class="alert-link">авторизации</a>.</p>
+            </div>
             {% if terms_error %}
                 <p>{{ terms_error }}</p>
             {% endif %}
