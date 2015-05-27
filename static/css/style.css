@@ -230,5 +230,9 @@ section.sidebar .mdi-action-account-circle {
     border-color: rgba(255,255,255,0.2);
 }
 
+.modal#ViewOneProduct {
+    z-index: 1049;
+}
+
 
 
