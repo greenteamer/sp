@@ -25,15 +25,15 @@
                     <br/>
                     <b>Текущий статус: </b> {{ purchase.get_current_status }}
                     <br/>
-                    <b>Описание:</b>{{ purchase.description }}
+                    <b>Описание:</b>{{ purchase.description|safe }}
                     <br/>
-                    {% if purchase.get_catalogs %}
-                        <b>Каталоги:</b>
-                        {% for catalog in purchase.get_catalogs %}
-                            <br/>
-                            <a href="{{ catalog.url_core }}">{{ catalog.catalog_name }}</a>
-                        {% endfor %}
-                    {% endif %}
+                    {# {% if purchase.get_catalogs %} #}
+                        {# <b>Каталоги:</b> #}
+                        {# {% for catalog in purchase.get_catalogs %} #}
+                            {# <br/> #}
+                            {# <a href="{{ catalog.url_core }}">{{ catalog.catalog_name }}</a> #}
+                        {# {% endfor %} #}
+                    {# {% endif %} #}
 
                 </div><!-- /.col -->
 

@@ -1,6 +1,7 @@
 {% extends "core_main.html" %}
 {% load thumbnail %}
 {% load cropping %}
+{% load staticfiles %}
 
 {% block page_css %}
     <!-- Theme style -->
@@ -95,7 +96,7 @@
                                 </div>
 
 {#                                {{ product.description|truncatewords:15|safe }}#}
-                                {{ product.description}}
+                                {{ product.description | truncatewords:25 | safe}}
 
 {#                                {% if product.sku %}#}
 {#                                    {{ product.sku }}#}
@@ -292,6 +293,10 @@
 </script>
 
 {% endblock %}
-
+{% block react %}    
+    {# // <script src="{% static 'app/vendor/react/react.js' %}"></script> #}
+    {# // <script src="{% static 'app/catalog/main_catalog.js' %}"></script> #}
+    {# // <script src="{% static 'app/catalog/show_product.js' %}"></script> #}    
+{% endblock %}      
 
 

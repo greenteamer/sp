@@ -5,13 +5,14 @@ from django.shortcuts import get_object_or_404, render_to_response, redirect
 from project.cart.cart import add_to_cart, get_cart_items, remove_from_cart, update_cart
 from project.cart.admin import CartItemResource, CartItem
 from project.cart.forms import ExportForm
-from project.cart.purchases import get_purchases_dict
+from project.cart.purchases import get_purchases_dict, get_purchases_dict_for_user
 from project.core.views import check_profile
 from project.accounts.models import getProfile
 from project.core.models import Catalog
 from import_export import resources
 from excel_response import ExcelResponse
 import datetime
+
 
 @check_profile
 def cartView(request, template_name):
@@ -22,9 +23,9 @@ def cartView(request, template_name):
         if postdata.has_key('update'):
             update_cart(request)
     cart_items = get_cart_items(request)
-    cart_subtotal = 0
-    for cart_item in cart_items:
-        cart_subtotal = cart_subtotal + cart_item.total_price()
+
+    dict = get_purchases_dict_for_user(request)
+
     return render_to_response(template_name, locals(), context_instance=RequestContext(request))
 
 

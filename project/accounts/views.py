@@ -77,6 +77,7 @@ def profileView(request, template_name):
 
 def populateProfileView(request, template_name):
     user = request.user
+    # profile = getProfile(user)
     form = OrganizerProfileForm()
     if user.is_authenticated():
         profile = getProfile(user)
@@ -413,7 +414,7 @@ def catalog(request, purchase_id, catalog_id, template_name):
 
     # 1 запрос к базе
     catalog_product_properties = CatalogProductProperties.objects.select_related().filter(cpp_catalog=catalog_id)
-    catalog = catalog_product_properties[1].cpp_catalog
+    catalog = catalog_product_properties[0].cpp_catalog
     purchase = catalog.catalog_purchase
 
     products = catalog.get_products()
