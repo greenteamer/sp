@@ -133,7 +133,7 @@ margin-bottom: -42px;
 z-index: 1;
 }
 .modal .buttons_wrap {
-/*position: fixed;*/
+position: fixed;
 padding: 9px 10px;
 border-radius: 3px;
 right: 15px;
