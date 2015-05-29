@@ -197,6 +197,16 @@ margin-top: 42px;
 .btn-primary:not(.btn-link):not(.btn-flat):hover{
     background: #357EA8;
 }
+.navbar-static-top .btn.btn-xs {
+    padding: 15px 15px;
+    margin: 0;
+    font-size: 14px;
+    background: none;
+    border: none;
+}
+.navbar-static-top .btn.btn-xs:hover {
+      box-shadow: none!important;
+}
 
 .table>tbody>tr>td,
 .table>thead>tr>th,
@@ -234,5 +244,22 @@ section.sidebar .mdi-action-account-circle {
     z-index: 1049;
 }
 
+.fa.fa-life-buoy {
+    padding-right: 5px;
+    font-size: 18px;
+}
 
-
+/*intro*/
+.introjs-fixParent {
+    position: relative;
+}
+.introjs-fixParent .introjs-showElement a {
+    color: #000!important;
+}
+li.nav-button {
+    float:left;
+    list-style:none;
+}
+.intro-menu ul {
+    min-width: 260px;
+}
