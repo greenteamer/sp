@@ -260,56 +260,55 @@ class ProductForm(ModelForm):
 
 
 
-# удалить?
 # TODO: желательно сделать выбор по умолчанию каждого из свойств.\
 #на данный момент реализованно через jquery
-# def propertyForm(catalog_id, product_id=False):
-#     """динамичная форма свойств.перечисляет свойства выбранного каталога"""
-#     cpp_obj = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
-#     list = []
-#     for cpp_object in cpp_obj:
-#         values = cpp_object.cpp_values.split(";")
-#         local_dict = {}
-#         for value in values:
-#             local_dict.update({value: cpp_object.cpp_name})
-#         list.append(local_dict)
-#
-#     # return list
-#     class DynamicPropertyForm(forms.Form):
-#
-#         def __init__(self, *args, **kwargs):
-#             super(DynamicPropertyForm, self).__init__(*args, **kwargs)
-#
-#             for dict_item in list:
-#                 list_choices = []
-#                 for key, value in dict_item.items():
-#                     list_choices.append([key, key])
-#                     name = value
-#                 slug = translit(name).lower()
-#
-#                 # if product_id is not False:
-#                 #     cpp_id = CatalogProductProperties.objects.get(
-#                 #         cpp_slug=slug)
-#                 #     try:
-#                 #         property_value = Properties.objects.get(
-#                 #             properties_catalogProductProperties_id=cpp_id,
-#                 #             properties_product_id=product_id
-#                 #         )
-#                 #         self.fields[slug] = forms.ChoiceField(
-#                 #             widget=forms.RadioSelect,
-#                 #             label=name,
-#                 #             choices=list_choices,
-#                 #             initial=property_value.properties_value
-#                 #         )
-#                 #     except:
-#                 #         self.fields[slug] = forms.ChoiceField(
-#                 #             widget=forms.RadioSelect,
-#                 #             label=name,
-#                 #             choices=list_choices
-#                 #         )
-#                 # else:
-#                 self.fields[slug] = forms.ChoiceField(
-#                     widget=forms.RadioSelect,
-#                     label=name, choices=list_choices)
-#
-#     return DynamicPropertyForm()
+def propertyForm(catalog_id, product_id=False):
+    """динамичная форма свойств.перечисляет свойства выбранного каталога"""
+    cpp_obj = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
+    list = []
+    for cpp_object in cpp_obj:
+        values = cpp_object.cpp_values.split(";")
+        local_dict = {}
+        for value in values:
+            local_dict.update({value: cpp_object.cpp_name})
+        list.append(local_dict)
+
+    # return list
+    class DynamicPropertyForm(forms.Form):
+
+        def __init__(self, *args, **kwargs):
+            super(DynamicPropertyForm, self).__init__(*args, **kwargs)
+
+            for dict_item in list:
+                list_choices = []
+                for key, value in dict_item.items():
+                    list_choices.append([key, key])
+                    name = value
+                slug = translit(name).lower()
+
+                # if product_id is not False:
+                #     cpp_id = CatalogProductProperties.objects.get(
+                #         cpp_slug=slug)
+                #     try:
+                #         property_value = Properties.objects.get(
+                #             properties_catalogProductProperties_id=cpp_id,
+                #             properties_product_id=product_id
+                #         )
+                #         self.fields[slug] = forms.ChoiceField(
+                #             widget=forms.RadioSelect,
+                #             label=name,
+                #             choices=list_choices,
+                #             initial=property_value.properties_value
+                #         )
+                #     except:
+                #         self.fields[slug] = forms.ChoiceField(
+                #             widget=forms.RadioSelect,
+                #             label=name,
+                #             choices=list_choices
+                #         )
+                # else:
+                self.fields[slug] = forms.ChoiceField(
+                    widget=forms.RadioSelect,
+                    label=name, choices=list_choices)
+
+    return DynamicPropertyForm()
