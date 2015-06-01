@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
 from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, purchaseForm, catalogForm, \
-                                    catalogProductPropertiesForm, ProductForm, MemberProfileForm, UserLoginForm, \
-                                    ProductImagesForm
+                                    catalogProductPropertiesForm, ProductForm, MemberProfileForm, UserLoginForm
 from project.core.forms import ImportXLSForm
 from project.core.models import Purchase, PurchaseStatus, Catalog, Product, CatalogProductProperties, \
                                 ProductImages, ImportFiles, PurchaseStatusLinks
@@ -535,8 +534,7 @@ def product(request, purchase_id, catalog_id, product_id, template_name, edit=Fa
 
         if request.POST:
             product_form = ProductForm(request.POST)
-            product_image_form = ProductImagesForm(request.POST, request.FILES)
-            if product_form.is_valid() and product_image_form.is_valid():
+            if product_form.is_valid():
                 product.product_name = request.POST['product_name']
                 properties = request.POST.getlist('properties')
                 product.property = ';'.join(properties)            # u'34,green,41;34,green,42;34,green,43;34,blue,41;34,blue,42'
@@ -545,26 +543,26 @@ def product(request, purchase_id, catalog_id, product_id, template_name, edit=Fa
                 product.sku = request.POST['sku']
                 product.save()
 
+                # Удаляем отмеченные файлы
+                delete_image_list = properties = request.POST.getlist('delete_image')
+                for image_id in delete_image_list:
+                    productimages_delete = ProductImages.objects.get(id=image_id).delete()
+
+                # добавляем новые файлы
                 if request.FILES:
-                    try:
-                        ProductImages.objects.get(p_image_product_id=product_id).delete()
-                        product_image_form.save(product_id)
-                    except:
-                        product_image_form.save(product_id)
+                    for f in request.FILES.getlist('file', []):
+                        productimages = ProductImages(p_image_product=product, image=f)
+                        productimages.save()
 
                 message = u"Новый товар %s успешно отредактирован." % request.POST['product_name']
             else:
                 message = u"Ошибка при изменении товара"
 
         product = Product.objects.get(id=product_id)
-        product_image_Obj = ProductImages(p_image_product_id=product_id)
-        try:
-            product_image = ProductImages.objects.get(p_image_product_id=product_id).image
-        except:
-            product_image = False
-        product_image_form = ProductImagesForm(instance=product_image_Obj)
+
+        images = product.get_all_image()
+
         product_form = ProductForm(instance=product)                    # заполненная форма текущей товара
-        # property_form = propertyForm(catalog_id, product_id)
         properties = get_propeties(catalog_id, 'list')  # получим все возможные свойства для товаров этой категории
         # указанные свойства товара
         product_properties = product.property.split(";")
@@ -579,7 +577,8 @@ def product(request, purchase_id, catalog_id, product_id, template_name, edit=Fa
             purchase = Purchase.objects.get(id=purchase_id)
             catalog = Catalog.objects.get(id=catalog_id)
             product = Product.objects.get(id=product_id)
-            product_image = ProductImages.objects.get(p_image_product_id=product_id).image
+
+            images = product.get_all_image()
 
             # указанные свойства товара
             product_properties = product.property.split(";")
@@ -600,20 +599,21 @@ def productAdd(request, purchase_id, catalog_id, template_name):
         profile = checkOrganizerProfile(request.user)
         if request.POST:
             product_form = ProductForm(request.POST)
-            product_image_form = ProductImagesForm(request.POST, request.FILES)
-            if product_form.is_valid() and product_image_form.is_valid():
+
+            if product_form.is_valid():
                 properties = request.POST.getlist('properties')
-                property = ';'.join(properties)            # u'34,green,41;34,green,42;34,green,43;34,blue,41;34,blue,42'
+                property = ';'.join(properties)          # u'34,green,41;34,green,42;34,green,43;34,blue,41;34,blue,42'
                 new_product = product_form.save(catalog_id, property)
-                product_image_form.save(new_product.id)
+                if request.FILES:
+                    for f in request.FILES.getlist('file', []):
+                        productimages = ProductImages(p_image_product=new_product, image=f)
+                        productimages.save()
 
                 message = u"Новый товар %s успешно добавлен." % request.POST['product_name']
             else:
                 message = u"Ошибка при добавлении товара"
 
         product_form = ProductForm
-        # property_form = propertyForm(catalog_id)      # Старая форма свойств. Удалить
-        product_image_form = ProductImagesForm()
 
         properties = get_propeties(catalog_id, 'list')    # получим все возможные свойства для товаров этой категории
 
