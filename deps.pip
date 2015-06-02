@@ -20,7 +20,6 @@ django-autoslug==1.7.2
 django-bootstrap3==5.1.1
 django-ckeditor==4.4.7
 django-coverage==1.2.4
-django-crispy-forms==1.4.0
 django-excel-response==1.0
 django-filebrowser==3.5.7
 django-flatblocks==0.9
@@ -46,6 +45,7 @@ python-mimeparse==0.1.4
 pytz==2014.10
 six==1.9.0
 sorl-thumbnail==12.2
+sqlparse==0.1.15
 tablib==0.10.0
 tox==1.9.0
 virtualenv==12.0.7

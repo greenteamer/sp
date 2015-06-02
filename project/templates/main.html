@@ -10,6 +10,7 @@
             <link rel="stylesheet" type="text/css" href="{% static 'bower_components/bootstrap-material-design/dist/css/material.min.css' %}" />
             <link rel="stylesheet" type="text/css" href="{% static 'bower_components/bootstrap-material-design/dist/css/ripples.min.css' %}" />
             <link rel="stylesheet" type="text/css" href="{% static 'bower_components/font-awesome/css/font-awesome.min.css' %}" />
+            <link rel="stylesheet" type="text/css" href="{% static 'bower_components/intro.js/introjs.css' %}" />
         {% endblock %}
         <!-- Bootstrap 3.3.2 -->
 {#        <link href="{{ STATIC_URL }}AdminLte/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />#}
@@ -58,6 +59,16 @@
             <script type="text/javascript" src="{% static 'bower_components/bootstrap-material-design/dist/js/material.js' %}"></script>
             <script type="text/javascript" src="{% static 'bower_components/bootstrap-material-design/dist/js/ripples.js' %}"></script>
             <script type="text/javascript" src="{% static 'bower_components/json2/json2.js' %}"></script>
+            <script type="text/javascript" src="{% static 'bower_components/intro.js/minified/intro.min.js' %}"></script>    
+            <script>
+                (function($){
+                    $(document).ready(function(){
+                        $('#start_intro_top').click(function(){
+                            introJs().goToStep(1).start();    
+                        });                        
+                    });
+                })(jQuery);
+            </script>        
 {#            <script type="text/javascript" src="{% static 'bower_components/backbone-tastypie/backbone_tastypie/static/js/backbone-tastypie.js' %}"></script>#}
 {#            <script type="text/javascript" src="{% static 'bower_components/angular-ui-router/release/angular-ui-router.min.js' %}"></script>#}
 {#            <script type="text/javascript" src="{% static 'bower_components/angular-resource/angular-resource.min.js' %}"></script>#}
