@@ -106,24 +106,40 @@ def coreCatalog(request, purchase_id, catalog_id, template_name):  # TODO: ре�
 
         if 'ajax' in request.POST:
             ajax = request.POST['ajax']
-            # Добавление в корзину по аяксу
-            if ajax != False:
+
+            if ajax == 'get_product_images':
                 product = Product.objects.get(id=request.POST['product'])
-                product_properties = product.property   # все возможные свойства Этого товара
-                if request.POST['product_properties'] in product_properties and request.POST['product_properties'] != '':
-                    # если выбранные св-ва есть в товаре
-                    cart_item = CartItem(product=product)
-                    form = CartItemForm(request.POST or None, instance=cart_item)
-                    if form.is_valid():
-                        cart_item = add_to_cart(request)    # Добавление в корзину
-                        image = product.get_image()
-                        ajax_return = '{"status":"ok", "cart_item_id":"%d", "quantity":"%s", "properties":"%s", "product_name":"%s", "product_image":"%s", "product_url":"%s"}' % \
-                                      (cart_item['id'], cart_item['quantity'], cart_item['properties'], product.product_name, image.url(), product.url_core())
+                images = product.get_all_image()
+
+                result = ''
+                for image in images:
+                    result = result + '<img style="width:200px;height:auto; float:left;" src="' + image.url() + '">'
+
+                return HttpResponse(result)
+
+
+
+            if ajax == 'add_to_cart':
+                # Добавление в корзину по аяксу
+                if ajax != False:
+                    product = Product.objects.get(id=request.POST['product'])
+                    product_properties = product.property   # все возможные свойства Этого товара
+                    if request.POST['product_properties'] in product_properties and request.POST['product_properties'] != '':
+                        # если выбранные св-ва есть в товаре
+                        cart_item = CartItem(product=product)
+                        form = CartItemForm(request.POST or None, instance=cart_item)
+                        if form.is_valid():
+                            cart_item = add_to_cart(request)    # Добавление в корзину
+                            image = product.get_image()
+                            ajax_return = '{"status":"ok", "cart_item_id":"%d", "quantity":"%s", "properties":"%s", "product_name":"%s", "product_image":"%s", "product_url":"%s"}' % \
+                                          (cart_item['id'], cart_item['quantity'], cart_item['properties'], product.product_name, image.url(), product.url_core())
+                        else:
+                            ajax_return = '{"status":"error"}'
+                        return HttpResponse(ajax_return)
                     else:
-                        ajax_return = '{"status":"error"}'
-                    return HttpResponse(ajax_return)
-                else:
-                    return HttpResponse('{"status":"no"}')
+                        return HttpResponse('{"status":"no"}')
+            else:
+                return HttpResponse('no_ajax')
 
 
         purchase = Purchase.objects.get(id=purchase_id)
@@ -162,12 +178,20 @@ def coreProduct(request, purchase_id, catalog_id, product_id, template_name):
 
         product = Product.objects.get(id=product_id)
         property_form = propertyForm(catalog_id)
-        images = ProductImages.objects.filter(p_image_product=product_id)
+        # images = ProductImages.objects.filter(p_image_product=product_id)
+        images = product.get_all_image()
+
+
         cart_item = CartItem(product=product)
         cart_form = CartItemForm(request.POST or None, instance=cart_item)
         if cart_form.is_valid():
             add_to_cart(request)
-        return render_to_response(template_name, locals(),
+
+        if 'ajax' in request.GET:
+            return render_to_response('core/core_product_ajax.html', locals(),
+                                  context_instance=RequestContext(request))
+        else:
+            return render_to_response(template_name, locals(),
                                   context_instance=RequestContext(request))
     except ObjectDoesNotExist:
             raise Http404

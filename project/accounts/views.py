@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
 from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, purchaseForm, catalogForm, \
-                                    catalogProductPropertiesForm, ProductForm, MemberProfileForm, UserLoginForm, \
-                                    ProductImagesForm  # propertyForm
+                                    catalogProductPropertiesForm, ProductForm, MemberProfileForm, UserLoginForm
 from project.core.forms import ImportXLSForm
 from project.core.models import Purchase, PurchaseStatus, Catalog, Product, CatalogProductProperties, \
-                                ProductImages, ImportFiles, PurchaseStatusLinks  #, Properties
+                                ProductImages, ImportFiles, PurchaseStatusLinks
 from django.shortcuts import render, render_to_response, redirect
 from project.accounts.models import OrganizerProfile, getProfile, repopulateProfile
 from django.contrib import auth
@@ -77,6 +76,7 @@ def profileView(request, template_name):
 
 def populateProfileView(request, template_name):
     user = request.user
+    # profile = getProfile(user)
     form = OrganizerProfileForm()
     if user.is_authenticated():
         profile = getProfile(user)
@@ -377,15 +377,6 @@ def catalogAdd(request, purchase_id, template_name):
             message = u"Новый каталог «%s» успешно добавлен. <br/> Добавить еще: " % request.POST['catalog_name']
         else:
             message = u"Ошибка при добавлении каталога"
-        #
-        # if catalog_form.is_valid() and catalogProductProperties_form.is_valid():
-        #     new_catalogProductProperties = catalogProductProperties_form.save(commit=False)
-        #     new_catalogProductProperties.cpp_catalog = catalog_form.save(purchase_id)  # каталог сохраняется для нужной закупки - переопределена ф-я save, возвращает созданный объект каталога
-        #     new_catalogProductProperties.cpp_purchase = Purchase.objects.get(id=purchase_id)
-        #     new_catalogProductProperties.save()
-        #     message = u"Новый каталог «%s» успешно добавлен. <br/> Добавить еще: " % request.POST['catalog_name']
-        # else:
-        #     message = u"Ошибка при добавлении каталога"
 
     catalog_form = catalogForm()
     catalogProductProperties_form = catalogProductPropertiesForm()
@@ -422,7 +413,7 @@ def catalog(request, purchase_id, catalog_id, template_name):
 
     # 1 запрос к базе
     catalog_product_properties = CatalogProductProperties.objects.select_related().filter(cpp_catalog=catalog_id)
-    catalog = catalog_product_properties[1].cpp_catalog
+    catalog = catalog_product_properties[0].cpp_catalog
     purchase = catalog.catalog_purchase
 
     products = catalog.get_products()
@@ -543,8 +534,7 @@ def product(request, purchase_id, catalog_id, product_id, template_name, edit=Fa
 
         if request.POST:
             product_form = ProductForm(request.POST)
-            product_image_form = ProductImagesForm(request.POST, request.FILES)
-            if product_form.is_valid() and product_image_form.is_valid():
+            if product_form.is_valid():
                 product.product_name = request.POST['product_name']
                 properties = request.POST.getlist('properties')
                 product.property = ';'.join(properties)            # u'34,green,41;34,green,42;34,green,43;34,blue,41;34,blue,42'
@@ -553,41 +543,26 @@ def product(request, purchase_id, catalog_id, product_id, template_name, edit=Fa
                 product.sku = request.POST['sku']
                 product.save()
 
-                if request.FILES:
-                    try:
-                        ProductImages.objects.get(p_image_product_id=product_id).delete()
-                        product_image_form.save(product_id)
-                    except:
-                        product_image_form.save(product_id)
+                # Удаляем отмеченные файлы
+                delete_image_list = properties = request.POST.getlist('delete_image')
+                for image_id in delete_image_list:
+                    productimages_delete = ProductImages.objects.get(id=image_id).delete()
 
-                # Сохранение свойств в старом формате. Удалить если все норм работает.
-                # Properties.objects.filter(properties_product_id=product_id).delete()
-                #
-                # properties = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
-                # for property in properties:
-                #     try:
-                #         if request.POST[property.cpp_slug] is not None:
-                #             new_properties = Properties()
-                #             new_properties.properties_value = request.POST[property.cpp_slug]  #request.POST['tsvet']
-                #             new_properties.properties_product = product
-                #             new_properties.properties_catalogProductProperties = CatalogProductProperties.objects.get(cpp_slug=property.cpp_slug)
-                #             new_properties.save()
-                #     except:
-                #         continue
+                # добавляем новые файлы
+                if request.FILES:
+                    for f in request.FILES.getlist('file', []):
+                        productimages = ProductImages(p_image_product=product, image=f)
+                        productimages.save()
 
                 message = u"Новый товар %s успешно отредактирован." % request.POST['product_name']
             else:
                 message = u"Ошибка при изменении товара"
 
         product = Product.objects.get(id=product_id)
-        product_image_Obj = ProductImages(p_image_product_id=product_id)
-        try:
-            product_image = ProductImages.objects.get(p_image_product_id=product_id).image
-        except:
-            product_image = False
-        product_image_form = ProductImagesForm(instance=product_image_Obj)
+
+        images = product.get_all_image()
+
         product_form = ProductForm(instance=product)                    # заполненная форма текущей товара
-        # property_form = propertyForm(catalog_id, product_id)
         properties = get_propeties(catalog_id, 'list')  # получим все возможные свойства для товаров этой категории
         # указанные свойства товара
         product_properties = product.property.split(";")
@@ -602,19 +577,11 @@ def product(request, purchase_id, catalog_id, product_id, template_name, edit=Fa
             purchase = Purchase.objects.get(id=purchase_id)
             catalog = Catalog.objects.get(id=catalog_id)
             product = Product.objects.get(id=product_id)
-            product_image = ProductImages.objects.get(p_image_product_id=product_id).image
+
+            images = product.get_all_image()
 
             # указанные свойства товара
             product_properties = product.property.split(";")
-
-            # properties = get_propeties(catalog_id, 'list')  # получим все возможные свойства для товаров этой категории
-
-            # старый вывод:
-            # properties = Properties.objects.filter(properties_product=product_id)  # получим все свойства для этого товара
-            # all_properties = {}
-            # for property in properties:
-            #     current_catalog_product_properties = CatalogProductProperties.objects.get(id=property.properties_catalogProductProperties_id)
-            #     all_properties.update({current_catalog_product_properties.cpp_name: property.properties_value.split(";")})  # формируется словарь вида {имя_свойства: значения_распарсенные_в_список}
 
 
             return render_to_response(template_name, locals(),
@@ -632,33 +599,21 @@ def productAdd(request, purchase_id, catalog_id, template_name):
         profile = checkOrganizerProfile(request.user)
         if request.POST:
             product_form = ProductForm(request.POST)
-            product_image_form = ProductImagesForm(request.POST, request.FILES)
-            if product_form.is_valid() and product_image_form.is_valid():
-                properties = request.POST.getlist('properties')
-                property = ';'.join(properties)            # u'34,green,41;34,green,42;34,green,43;34,blue,41;34,blue,42'
-                new_product = product_form.save(catalog_id, property)
-                product_image_form.save(new_product.id)
 
-                # Сохранение свойств в старом формате. Удалить если все норм работает.
-                # properties = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
-                # for property in properties:
-                #     try:
-                #         if request.POST[property.cpp_slug] is not None:
-                #             new_properties = Properties()
-                #             new_properties.properties_value = request.POST[property.cpp_slug]  # request.POST['tsvet']
-                #             new_properties.properties_product = new_product
-                #             new_properties.properties_catalogProductProperties = CatalogProductProperties.objects.get(cpp_slug=property.cpp_slug)
-                #             new_properties.save()
-                #     except:
-                #         continue
+            if product_form.is_valid():
+                properties = request.POST.getlist('properties')
+                property = ';'.join(properties)          # u'34,green,41;34,green,42;34,green,43;34,blue,41;34,blue,42'
+                new_product = product_form.save(catalog_id, property)
+                if request.FILES:
+                    for f in request.FILES.getlist('file', []):
+                        productimages = ProductImages(p_image_product=new_product, image=f)
+                        productimages.save()
 
                 message = u"Новый товар %s успешно добавлен." % request.POST['product_name']
             else:
                 message = u"Ошибка при добавлении товара"
 
         product_form = ProductForm
-        # property_form = propertyForm(catalog_id)      # Старая форма свойств. Удалить
-        product_image_form = ProductImagesForm()
 
         properties = get_propeties(catalog_id, 'list')    # получим все возможные свойства для товаров этой категории
 

@@ -24,14 +24,18 @@ CREATE DATABASE `sp` CHARACTER SET utf8 COLLATE utf8_general_ci;
 python ../manage.py syncdb
 python ../manage.py syncdb --all
 python ../manage.py migrate pybb --fake
-python ../manage.py schemamigration core --initial
-python ../manage.py schemamigration pristroy --initial
-python ../manage.py schemamigration cart --initial
 python ../manage.py schemamigration accounts --initial
-python ../manage.py migrate core 0001 --fake
-python ../manage.py migrate pristroy 0001 --fake
-python ../manage.py migrate cart 0001 --fake
+python ../manage.py schemamigration cart --initial
+python ../manage.py schemamigration core --initial
+python ../manage.py schemamigration documentation --initial
+python ../manage.py schemamigration notifications --initial
+python ../manage.py schemamigration pristroy --initial
 python ../manage.py migrate accounts 0001 --fake
+python ../manage.py migrate cart 0001 --fake
+python ../manage.py migrate core 0001 --fake
+python ../manage.py migrate documentation 0001 --fake
+python ../manage.py migrate notifications 0001 --fake
+python ../manage.py migrate pristroy 0001 --fake
 python ../manage.py loaddata __initial_data.json
 
 # для тестирования в питон консоли
@@ -46,5 +50,9 @@ python ../manage.py loaddata __initial_data.json
             for c_el in row:
                 keys.append(c_el)
 
-#  пример загрузк фикстуры
+# пример сохранения фикстуры
+python ../manage.py dumpdata --format=json core.purchasestatus > purchasestatus_data.json
+
+# пример загрузки фикстуры
 python ../manage.py loaddata ../new.json
+
