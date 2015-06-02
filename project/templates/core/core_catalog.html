@@ -1,9 +1,35 @@
 {% extends "core_main.html" %}
 {% load thumbnail %}
 {% load cropping %}
+{% load staticfiles %}
 
+{% block page_css %}
+    <!-- Theme style -->
+    <link href="{{ STATIC_URL }}AdminLte/dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{ STATIC_URL }}AdminLte/dist/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{ STATIC_URL }}AdminLte/plugins/iCheck/square/blue.css" rel="stylesheet" type="text/css" />
+{% endblock %}
 
 {% block content %}
+
+    <!-- Модальное окно уведомления о заказе товара  -->
+<div class="modal fade" id="addtocartdonemodal" tabindex="-1" role="dialog" aria-hidden="true" style="z-index:1050">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+         </div>
+         <div class="modal-body">
+             <h3 style="text-align: center;">Покупка</h3>
+         </div>
+      </div>
+    </div>
+</div>
+
+
+
       <!-- Content Wrapper. Contains page content -->
     <div id="core_catalog" class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -16,68 +42,66 @@
             <h1>Просмотр каталога "{{ catalog.catalog_name }}" закупки - {{ purchase.name }}</h1>
         </section>
 
-        {% if not profile %}
-            <div class="pad margin no-print">
-                <div class="callout callout-info" style="margin-bottom: 0!important;">
-                    <h4><i class="fa fa-info"></i> Записочка</h4>
-                    Для того что бы работать организатором в SP Mooscow, вам необходимо заполнить личные данные, после этого Ваша учетная запись будет рассмотренна админимтратором и ей будет присвоен соответствующий статус
-                </div>
-            </div>
-        {% endif %}
-
-
         <!-- Main content -->
         <section class="invoice">
             <!-- Table row -->
             <div class="row">
 
-                <div class="col-xs-6">
+                <div class="col-xs-12">
 
-                    <b>ID: </b>{{ catalog.id }}
-                    <br/>
-                    <b>Name: </b>{{ catalog.catalog_name }}
-                    <br/>
-                    {#<a href="/profile/organizer/purchase-{{ purchase.id }}catalog-{{ catalog.id }}-edit">Изменить каталог</a>#}
-                    <br/>
-                    <ul>
-                        {% for catalog_product_property in catalog_product_properties %}
-                            <li>{{ catalog_product_property.cpp_name }}: {{ catalog_product_property.cpp_values }}</li>
-                        {% endfor %}
-                    </ul>
+                    <h2>{{ catalog.catalog_name }}</h2>
+
+                    <div class="check_view_product">
+                        <span id="view_line" style="margin-right:10px;">=</span>
+                        <span id="view_block" style="">::</span>
+                    </div>
 
                 </div><!-- /.col -->
-                <div class="col-xs-12">
+
+                <div class="col-xs-12 products">
                     <div class="row">
                         {% for product in catalog.get_products %}
                             <div class="col-xs-12 col-md-4 product-item">
-                                <img style="" src="{% cropped_thumbnail product.get_image "cropping" scale=1 %}">
-{#                                <img src="{{ product.image }}" alt=""/>#}
-                                {{ product.product_name }}
-                                <br/>
-                                {{ product.description|truncatewords:15|safe }}
-                                <br/>
-                                {{ product.price }} руб.
-                                <br/>
-                                {% if product.sku %}
-                                    {{ product.sku }}
-                                {% endif %}
-                                <br/>
+
+                                <h4 class="name">{{ product.product_name }}</h4>
+
+                                <div class="buttons_wrap">
+                                    <div class="link_more">
+{#                                        <a data-toggle="modal" data-target="#ViewOneProduct" class="btn btn-primary" href="{{ product.url_core }}">Подробнее</a>#}
+                                        <a data-toggle="modal" data-target="#ViewOneProduct" class="btn btn-primary more_product" href="#" product-id="{{ product.id }}">Подробнее</a>
+                                    </div>
+                                    <div class="add_to_cart_wrapper">
+                                        <div id="{{ product.id }}" class="quantity">
+                                            <i class="btn-mini fa fa-minus-square minus" onselectstart="return false"></i>
+                                            <input name="quantity{{ product.id }}" maxlength="2" id="id_quantity{{ product.id }}" type="text" class="product_quantity" value="1" size="1">
+                                            <i class="btn-mini fa fa-plus-square plus" onselectstart="return false"></i>
+                                        </div>
+                                        <button class="btn btn-primary add_to_cart animation" product-id="{{ product.id }}">В корзину</button>
+                                    </div>
+                                </div>
+
+                                <div class="image">
+                                    {% thumbnail product.get_image.image "320x200" crop="60% center" as im %}
+                                        <img class="center-block" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" >
+                                    {% empty %}
+                                        <img class="center-block" src="{{ MEDIA_URL }}accounts/images/no_image-128.png" width="auto" style="height: 70px;" alt=""/>
+                                    {% endthumbnail %}
+                                    <div class="price">
+                                        {{ product.price }} руб.
+                                    </div>
+                                </div>
+{#                                <img style="" src="{% cropped_thumbnail product.get_image "cropping" scale=1 %}">#}
                                 <div class="properties">
-                                    <b>Свойства:</b> <br/>
                                     {{ property_form }}
                                 </div>
-                                <br/>
-                                <div id="{{ product.id }}" class="quantity">
-                                    <i class="btn-mini fa fa-minus-square minus" onselectstart="return false"></i>
-                                    <input name="quantity{{ product.id }}" maxlength="2" id="id_quantity{{ product.id }}" type="text" class="product_quantity" value="1" size="1">
-                                    <i class="btn-mini fa fa-plus-square plus" onselectstart="return false"></i>
-                                </div>
 
-                                <button class="btn btn-primary add_to_cart animation" product-id="{{ product.id }}">В корзину</button>
+{#                                {{ product.description|truncatewords:15|safe }}#}
+                                {{ product.description | truncatewords:25 | safe}}
 
+{#                                {% if product.sku %}#}
+{#                                    {{ product.sku }}#}
+{#                                {% endif %}#}
 
-                                <br/>
-                                <a class="btn btn-default" href="{{ product.url_core }}">Подробнее</a>
                             </div>
                         {% endfor %}
                     </div>
@@ -88,47 +112,61 @@
         <div class="clearfix"></div>
     </div><!-- /.content-wrapper -->
 
+
+
+<div class="modal fade bs-example-modal-lg" id="ViewOneProduct" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-width-90">
+        <div class="modal-content" style="overflow:overlay;">
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
 {% endblock %}
 
 
 
 {% block page_js %}
-{#    <script src='{{ STATIC_URL }}AdminLte/plugins/fastclick/fastclick.min.js'></script>#}
-{#    <script src="{{ STATIC_URL }}AdminLte/dist/js/app.min.js" type="text/javascript"></script>#}
-{#    <script src="{{ STATIC_URL }}AdminLte/dist/js/demo.js" type="text/javascript"></script>#}
     <script src='{{ STATIC_URL }}js/jquery.cookie.js'></script>
+    <script src="{{ STATIC_URL }}AdminLte/plugins/iCheck/icheck.min.js" type="text/javascript"></script>
 
+	<script type="text/javascript" src="{{ STATIC_URL }}fancybox/source/jquery.fancybox.js?v=2.1.5"></script>
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}fancybox/source/jquery.fancybox.css?v=2.1.5" media="screen" />
 
 <script>
     (function($) {
         $(document).ready(function() {
 
-{#          TODO: Средствами джанго сделать уникальный name у каждой группы свойств; и у каждой группы выбран один элемент #}
-            // Извращения
-            all_properties = $('.properties ul');
-            all_properties.each(function(i, elem){
-                $(this).find('input').attr('name', $(this).find('input').attr('name') + i).attr('checked', 'checked');
+
+
+            var csrftoken = $.cookie('csrftoken');
+            var ViewOneProduct = $('#ViewOneProduct');
+            $(document).on('click', '.add_to_cart', add_to_cart);
+
+            $('.more_product').click(function(){
+                $.get(
+                    '/purchase-1/catalog-3/product-' + $(this).attr('product-id') + '/',
+                    {
+                        ajax: '1'
+                    },
+                    function(data){
+                        ViewOneProduct.find('.modal-content').html(data);
+                        ViewOneProduct.find('input').attr('checked', 'checked'); // делаем выбранный последний радио в каждом свойстве
+                        $('input').iCheck({
+                            radioClass: 'iradio_square-blue',
+                            increaseArea: '20%' // optional
+                        });
+                        $('.fancybox').fancybox();
+                    }
+                );
             });
 
 
 
-            //по нажатию на + или - меняем значение в поле quantity
-            $('.plus').click(function (){
-                var current_q = $(this).parent(".quantity").children(".product_quantity").val();
-                var current_quantity = parseInt(current_q) + 1;
-                $(this).parent(".quantity").children(".product_quantity").attr("value", current_quantity);
-            });
-            $('.minus').click(function (){
-                var current_q = $(this).parent(".quantity").children(".product_quantity").val();
-                if (parseInt(current_q)>1){
-                    var current_quantity = parseInt(current_q) - 1;
-                    $(this).parent(".quantity").children(".product_quantity").attr("value", current_quantity);
-                }
-            });
+            function add_to_cart() {
 
-
-            // добавление в корзину
-            $(".add_to_cart").click(function (){
                 var product_item = $(this).parents('.product-item');
                 var product_properties = '';
                 var checked_input = product_item.find('.properties input:checked');
@@ -136,7 +174,7 @@
                 checked_input.each(function (i, elem) {
                     if (i != len - 1) {
                         product_properties += elem.value + ',';
-                    }else{
+                    } else {
                         product_properties += elem.value;
                     }
                 });
@@ -145,52 +183,108 @@
                 var quantity = product_item.find('.product_quantity').val();
                 var csrftoken = $.cookie('csrftoken');
                 $.post(
-                    ".",
-                    {
-                        ajax: 1,
-                        csrfmiddlewaretoken: csrftoken,
-                        product: product_id,
-                        quantity: quantity,
-                        product_properties: product_properties
-                    },
-                    onAjaxSuccess
+                        ".",
+                        {
+                            ajax: 'add_to_cart',
+                            csrfmiddlewaretoken: csrftoken,
+                            product: product_id,
+                            quantity: quantity,
+                            product_properties: product_properties
+                        },
+                        onAjaxSuccess
                 );
-                function onAjaxSuccess(data){
+                function onAjaxSuccess(data) {
                     console.log('получено: ' + data);
                     var result = $.parseJSON(data);
-                    if(result.status == 'ok'){
+                    if (result.status == 'ok') {
                         var cart_item = $('#cart_item_' + result.cart_item_id);
-                        if(cart_item.length) {  // такой товар в корзине уже есть
+                        if (cart_item.length) {  // такой товар в корзине уже есть
                             // исправляем цифры количества товара в корзине
                             cart_item.find('.product_quantity').text(parseInt(cart_item.find('.product_quantity').text()) + parseInt(result.quantity));
-                            full_count_product = $('.full_count_product');
-                            full_count_product.text( parseInt($(full_count_product[0]).text()) + parseInt(result.quantity) );
-                            alert('Товар в корзине успешно обновлен');
-                        }else{  // Значит элемент новый
+                            full_count_product = $('.full_count_product');
+                            full_count_product.text(parseInt($(full_count_product[0]).text()) + parseInt(result.quantity));
+{#                            alert('Товар в корзине успешно обновлен');#}
+                            $('#addtocartdonemodal .modal-body h3').html('Товар в корзине успешно обновлен');
+                            $('#addtocartdonemodal').modal();
+                        } else {  // Значит элемент новый
                             $('#cart_item_menu').append('<li class="cart_item" id="cart_item_' + result.cart_item_id + '"> \
                                     <div class="pull-left"> \
-                                          <img src="'+ result.product_image +'" width="50" height="50"> \
+                                          <img src="' + result.product_image + '" width="50" height="50"> \
                                     </div> \
-                                    <a style="padding:0 10px;" href="'+ result.product_url +'"> \
-                                        <span class="product_quantity label label-success pull-right">' + result.quantity +'</span> \
-                                        <h4 class="product_name" style="max-width: 80%;">'+ result.product_name +'</h4> \
+                                    <a style="padding:0 10px;" href="' + result.product_url + '"> \
+                                        <span class="product_quantity label label-success pull-right">' + result.quantity + '</span> \
+                                        <h4 class="product_name" style="max-width: 80%;">' + result.product_name + '</h4> \
                                         <p class="product_properties">' + result.properties + '</p> \
                                     </a> \
                                 </li>');
                             full_count_product = $('.full_count_product');
-                            full_count_product.text( parseInt($(full_count_product[0]).text()) + parseInt(result.quantity) );
-                            alert('Товар успешно добавлен в корзину');
-{#                                console.log('new element');#}
+                            full_count_product.text(parseInt($(full_count_product[0]).text()) + parseInt(result.quantity));
+{#                            alert('Товар успешно добавлен в корзину');#}
+                            $('#addtocartdonemodal .modal-body h3').html('Товар успешно добавлен в корзину');
+                            $('#addtocartdonemodal').modal();
                         }
-                    }else if (result.status == 'no'){
-                        alert('Не найдено товара с такими свойствами');
-                    }else{
-                        alert('Не известная ошибка');
+
+                    } else if (result.status == 'no') {
+                        $('#addtocartdonemodal .modal-body h3').html('Не найдено товара с такими свойствами');
+                        $('#addtocartdonemodal').modal();
+{#                        alert('Не найдено товара с такими свойствами');#}
+                    } else {
+                        $('#addtocartdonemodal .modal-body h3').html('Не известная ошибка');
+                        $('#addtocartdonemodal').modal();
+{#                        alert('Не известная ошибка');#}
                     }
 
-                }  // --/- end onAjaxSuccess function
+                }
+
+            }
+
+
+
+
+{#          TODO: Средствами джанго сделать уникальный name у каждой группы свойств; и у каждой группы выбран один элемент; удаление for у label #}
+            // Извращения
+            all_properties = $('.properties ul');
+            all_properties.each(function(i, elem){
+                //уникальный name у каждой группы свойств; и у каждой группы выбран один элемент
+                $(this).find('input').attr('name', $(this).find('input').attr('name') + i).attr('checked', 'checked');
+                // уникальный label  у каждой группы свойств
+            });
+            $('.properties').find('label').removeAttr("for");
+
+
+            // виды отображения товара на странице
+            $('#view_block').click(function (){
+                $('.product-item').removeClass('col-md-12').addClass('col-md-4');
+            });
+            $('#view_line').click(function (){
+                $('.product-item').removeClass('col-md-4').addClass('col-md-12');
             });
 
+
+
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue',
+                increaseArea: '20%' // optional
+            });
+
+            $('body').on('click', '.plus', plus);
+            $('body').on('click', '.minus', minus);
+
+            //по нажатию на + или - меняем значение в поле quantity
+
+            function plus(){
+                var current_q = $(this).parent(".quantity").children(".product_quantity").val();
+                var current_quantity = parseInt(current_q) + 1;
+                $(this).parent(".quantity").children(".product_quantity").attr("value", current_quantity);
+            }
+            function minus(){
+                var current_q = $(this).parent(".quantity").children(".product_quantity").val();
+                if (parseInt(current_q)>1){
+                    var current_quantity = parseInt(current_q) - 1;
+                    $(this).parent(".quantity").children(".product_quantity").attr("value", current_quantity);
+                }
+            }
 
 
 
@@ -199,6 +293,10 @@
 </script>
 
 {% endblock %}
-
+{% block react %}    
+    {# // <script src="{% static 'app/vendor/react/react.js' %}"></script> #}
+    {# // <script src="{% static 'app/catalog/main_catalog.js' %}"></script> #}
+    {# // <script src="{% static 'app/catalog/show_product.js' %}"></script> #}    
+{% endblock %}      
 
 

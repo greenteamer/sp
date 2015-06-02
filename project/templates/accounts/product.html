@@ -12,15 +12,6 @@
             </ol>
         </section>
 
-        {% if not profile %}
-            <div class="pad margin no-print">
-                <div class="callout callout-info" style="margin-bottom: 0!important;">
-                    <h4><i class="fa fa-info"></i> Записочка</h4>
-                    Для того что бы работать организатором в SP Mooscow, вам необходимо заполнить личные данные, после этого Ваша учетная запись будет рассмотренна админимтратором и ей будет присвоен соответствующий статус
-                </div>
-            </div>
-        {% endif %}
-
         {% if message %}
             <div class="pad margin no-print">
                 <div class="callout callout-info" style="margin-bottom: 0!important;">
@@ -52,18 +43,6 @@
                         <div style="float:left;margin:0 7px 7px 0;">{{ property }}</div>
                     {% endfor %}
                     </div>
-{#                    <b>all_properties: </b>#}
-{#                    <ul>#}
-{#                        {% for name_value, values in all_properties.items %}#}
-{#                            <li> {{ name_value }} :#}
-{#                                {% for value in values %}#}
-{#                                    {{ value }}#}
-{#                                  <input type="radio" name="{{ name_value }}" value="{{ value }}"> ;#}
-{#                                {% endfor %}#}
-{#                            </li>#}
-{#                        {% endfor %}#}
-{#                    </ul>#}
-                    <br/>
 
                 </div><!-- /.col -->
                 <div class="col-xs-6">

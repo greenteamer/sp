@@ -16,15 +16,6 @@
             </ol>
         </section>
 
-        {% if not profile %}
-            <div class="pad margin no-print">
-                <div class="callout callout-info" style="margin-bottom: 0!important;">
-                    <h4><i class="fa fa-info"></i> Записочка</h4>
-                    Для того что бы работать организатором в SP Mooscow, вам необходимо заполнить личные данные, после этого Ваша учетная запись будет рассмотренна админимтратором и ей будет присвоен соответствующий статус
-                </div>
-            </div>
-        {% endif %}
-
         {% if message %}
             <div class="pad margin no-print">
                 <div class="callout callout-info" style="margin-bottom: 0!important;">
@@ -117,8 +108,6 @@
 
 
 {% block page_js %}
-    <script src='{{ STATIC_URL }}AdminLte/plugins/fastclick/fastclick.min.js'></script>
-    <script src="{{ STATIC_URL }}AdminLte/dist/js/app.min.js" type="text/javascript"></script>
 {#    <script src="{{ STATIC_URL }}AdminLte/dist/js/demo.js" type="text/javascript"></script>#}
 {#    <script src='{{ STATIC_URL }}js/jquery.cookie.js'></script>#}
 

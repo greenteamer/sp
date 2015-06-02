@@ -16,6 +16,7 @@ atlassian-ide-plugin.xml
 
 # Project
 settings_local.py
+notes.py
 logs/
 pids/
 save_2gis_data.py

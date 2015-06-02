@@ -2,15 +2,16 @@
 #!/usr/bin/env python
 from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, purchaseForm, catalogForm, \
                                     catalogProductPropertiesForm, ProductForm, MemberProfileForm, UserLoginForm, \
-                                    ProductImagesForm  # propertyForm
+                                    ProductImagesForm
 from project.core.forms import ImportXLSForm
 from project.core.models import Purchase, PurchaseStatus, Catalog, Product, CatalogProductProperties, \
-                                ProductImages, ImportFiles, PurchaseStatusLinks  #, Properties
+                                ProductImages, ImportFiles, PurchaseStatusLinks
 from django.shortcuts import render, render_to_response, redirect
 from project.accounts.models import OrganizerProfile, getProfile, repopulateProfile
 from django.contrib import auth
 from django.contrib import messages
 import xlrd
+from excel_response import ExcelResponse
 from django.template import RequestContext
 from django.core import urlresolvers
 from django.http import HttpResponseRedirect
@@ -21,6 +22,7 @@ from django.http.response import Http404, HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from project.cart.purchases import get_purchases_dict, get_all_purchases_dict
 import datetime
+
 
 def check_organizer(func):
     """декоратор проверки профиля пользователя
@@ -43,17 +45,17 @@ def check_organizer(func):
                 messages.info(request, "Вы не являетесь организаотором закупок")
                 return redirect('/profile/')
             elif purchase_id:  # проверка является ли профайл владельцем закупки
-                try:
-                    purchase_test = Purchase.objects.get(id=kwargs['purchase_id'])
-                    purchase_set = profile.purchase_set.all()
-                    if purchase_test in purchase_set:
-                        return func(request, *args, **kwargs)
-                    else:
-                        messages.info(request, "Вы не являетесь вледельцем закупки")
-                        return redirect('/profile/')
-                except:
+            # try:
+                purchase_test = Purchase.objects.get(id=kwargs['purchase_id'])
+                purchase_set = profile.purchase_set.all()
+                if purchase_test in purchase_set:
+                    return func(request, *args, **kwargs)
+                else:
                     messages.info(request, "Вы не являетесь вледельцем закупки")
                     return redirect('/profile/')
+            # except:
+            #     messages.info(request, "Вы не являетесь вледельцем закупки")
+            #     return redirect('/profile/')
             else:
                 # возвращаем наконец функцию
                 return func(request, *args, **kwargs)
@@ -75,6 +77,7 @@ def profileView(request, template_name):
 
 def populateProfileView(request, template_name):
     user = request.user
+    # profile = getProfile(user)
     form = OrganizerProfileForm()
     if user.is_authenticated():
         profile = getProfile(user)
@@ -206,14 +209,10 @@ def purchases(request, template_name):
     statuses = PurchaseStatus.objects.all()
 
     if 'ajax' in request.POST:
+        PurchaseStatusLinks.objects.filter(purchase_id=request.POST['purchase_id'], status_id=request.POST['status_id']).update(active=0)
+        PurchaseStatusLinks.objects.filter(purchase_id=request.POST['purchase_id'], status_id=request.POST['new_status_id']).update(active=1)
 
-        # purchasestatuslinks = PurchaseStatusLinks.objects.get(status_id=2, purchase_id=1)
-        purchasestatuslinks = PurchaseStatusLinks.objects.get(status_id=request.POST['status_id'], purchase_id=request.POST['purchase_id'])
-        purchasestatuslinks.status_id = request.POST['new_status_id']
-        purchasestatuslinks.save()
-
-        return HttpResponse('{"status":"%d"}' % purchasestatuslinks.id)
-
+        return HttpResponse('{"status":"ok"}')
 
     # purchases_dict = get_purchases_dict(request)  # получаем словарь словарей ... описание в cart.purchases.py
     purchases_dict = get_all_purchases_dict(request)  # словарь словарей всех закупок пользователя
@@ -226,21 +225,32 @@ def purchases(request, template_name):
 def purchaseAdd(request, template_name):
     user = request.user
     message = ''
+    statuses = PurchaseStatus.objects.all()  # все статусы
     if request.POST:
 
         form = purchaseForm(request.POST)
         if form.is_valid():
             new_purchase = form.save(user)
+            form.save_m2m()
 
             dates_start = request.POST.getlist('date_start')
             dates_end = request.POST.getlist('date_end')
             data = request.POST.getlist('data')
-            status_num = 1
-            i = 0   #  TODO: ПОЛУЧИТЬ ИЗ БАЗЫ АЙДИ СТАТУСОВ
-            for date_start in dates_start:
-                date_end = dates_end[i]
+
+            #  TODO: переписать с оптимизацией сохранения. чтобы был один запрос (insert) к бд.
+            i = 0
+            for status in statuses:
+                #        A if условие else B - Краткая форма.
+                try:
+                    date_start = datetime.datetime.strptime(dates_start[i], '%Y-%m-%d')
+                except:
+                    date_start = None
+                try:
+                    date_end = datetime.datetime.strptime(dates_end[i], '%Y-%m-%d')
+                except:
+                    date_end = None
                 obj = PurchaseStatusLinks()
-                obj.status_id = status_num
+                obj.status = status
                 obj.purchase = new_purchase
                 obj.date_end = date_end
                 obj.data = data[i]
@@ -252,13 +262,11 @@ def purchaseAdd(request, template_name):
                     obj.active = 0
                 obj.save()
                 i += 1
-                status_num += 1
 
             message = u"Новая закупка «%s» успешно добавлена" % request.POST['name']
         else:
             message = u"Ошибка при добавлении закупки"
     purchase_form = purchaseForm()
-    statuses = PurchaseStatus.objects.all()  # все статусы
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
 
@@ -271,18 +279,38 @@ def purchase(request, template_name, purchase_id, edit=False):
         try:
             purchase = Purchase.objects.get(id=purchase_id)  # получаем экземпляр Закупки по id
             if request.POST:
-                form = purchaseForm(request.POST)
+                form = purchaseForm(request.POST, instance=purchase)
                 if form.is_valid():
-                    purchase.name = request.POST['name']
-                    purchase.save()
+                    form.save(request.user)
+                    form.save_m2m()
+                    dates_start = request.POST.getlist('date_start')
+                    dates_end = request.POST.getlist('date_end')
+                    data = request.POST.getlist('data')
+                    statuses = PurchaseStatus.objects.all()  # все статусы
+                    i = 0
+                    for status in statuses:
+                        try:
+                            date_start = datetime.datetime.strptime(dates_start[i], '%Y-%m-%d')
+                        except:
+                            date_start = None
+                        try:
+                            date_end = datetime.datetime.strptime(dates_end[i], '%Y-%m-%d')
+                        except:
+                            date_end = None
+                        # Проверяем выставлена ли активность этого статуса
+                        if int(request.POST['active']) != status.id:
+                            PurchaseStatusLinks.objects.filter(purchase=purchase, status=status).update(date_start=date_start, date_end=date_end, data=data[i], active=0)
+                        else:
+                            PurchaseStatusLinks.objects.filter(purchase=purchase, status=status).update(date_start=date_start, date_end=date_end, data=data[i], active=1)
+                        i += 1
+
                     message = u"Закупка «%s» успешно изменена" % request.POST['name']
                 else:
                     message = u"Ошибка при изменении закупки"
             purchase_form = purchaseForm(instance=purchase)  # заполненная форма текущей закупки
-            # purchase_statuses = PurchaseStatus.objects.all()  # все статусы
 
-            # При создании закупки должны быть созданы все статусы. их вот и выдираем из базы.
-            sql = 'SELECT core_purchasestatus.id, core_purchasestatus.status_name, core_purchasestatuslinks.id as links_id, core_purchasestatuslinks.date_start, core_purchasestatuslinks.date_end, core_purchasestatuslinks.data \
+            # При создании закупки должны быть созданы все статусы. выдираем их из базы со всеми параметрами
+            sql = 'SELECT core_purchasestatus.id, core_purchasestatus.status_name, core_purchasestatuslinks.id as links_id, core_purchasestatuslinks.date_start, core_purchasestatuslinks.date_end, core_purchasestatuslinks.data, core_purchasestatuslinks.active \
             FROM core_purchasestatus \
             LEFT JOIN core_purchasestatuslinks \
             ON core_purchasestatus.id = core_purchasestatuslinks.status_id \
@@ -350,15 +378,6 @@ def catalogAdd(request, purchase_id, template_name):
             message = u"Новый каталог «%s» успешно добавлен. <br/> Добавить еще: " % request.POST['catalog_name']
         else:
             message = u"Ошибка при добавлении каталога"
-        #
-        # if catalog_form.is_valid() and catalogProductProperties_form.is_valid():
-        #     new_catalogProductProperties = catalogProductProperties_form.save(commit=False)
-        #     new_catalogProductProperties.cpp_catalog = catalog_form.save(purchase_id)  # каталог сохраняется для нужной закупки - переопределена ф-я save, возвращает созданный объект каталога
-        #     new_catalogProductProperties.cpp_purchase = Purchase.objects.get(id=purchase_id)
-        #     new_catalogProductProperties.save()
-        #     message = u"Новый каталог «%s» успешно добавлен. <br/> Добавить еще: " % request.POST['catalog_name']
-        # else:
-        #     message = u"Ошибка при добавлении каталога"
 
     catalog_form = catalogForm()
     catalogProductProperties_form = catalogProductPropertiesForm()
@@ -387,60 +406,79 @@ def getNewCatalogProductPropertiesFormBlock(request, template_name):
 def catalog(request, purchase_id, catalog_id, template_name):
     """ проверяем пользователя и его профайл организатора"""
     profile = checkOrganizerProfile(request.user)
-    try:
-        purchase = Purchase.objects.get(id=purchase_id)
-        catalog = Catalog.objects.get(id=catalog_id)
-        catalog_product_properties = CatalogProductProperties.objects.filter(cpp_catalog=catalog_id)
-        products = catalog.get_products()
-        for product in products:
-            product.property = product.property.split(';')  # для более читаемого вида
-        if request.method == 'POST':
-            # импорт товаров через xml
-            form = ImportXLSForm(request.POST, request.FILES)
-            if form.is_valid():
-                form.save()
-                file_name = '%s/%s' % (IMPORT_XLS, request.FILES['file'].name)
-                rb = xlrd.open_workbook(file_name, formatting_info=True)
-                sheet = rb.sheet_by_index(0)
-                objects_dict = {}
-                for colnum in range(sheet.ncols):
-                    col = sheet.col_values(colnum)
-                    """ с помощью метода pop() извлекаем 1 эллемент колонки и используем его как ключ, удаляя его
-                    из последовательности значения при этом - список всех элементов колонки кроме первого """
-                    objects_dict.update({col.pop(0): col})
-                for rownum in range(sheet.nrows):
-                    row = sheet.row_values(rownum)
-                    if rownum != 0:
-                        new_product = Product()
-                        try:
-                            test_sku = int(objects_dict['sku'][rownum-1])
-                            if Product.objects.filter(catalog=catalog, sku=test_sku):
-                                continue
-                            # for test_prod in exist_products:
-                                # if test_prod in Product.objects.filter(catalog=catalog):
-                                #     continue  # прерываем итерацию и создание товара если нашелся SKU в каталоге
-                        except:
-                            pass
-                        new_product.sku = objects_dict['sku'][rownum-1]
-                        new_product.catalog = catalog
-                        new_product.description = objects_dict['description'][rownum-1]
-                        new_product.product_name = objects_dict['product_name'][rownum-1]
-                        new_product.property = objects_dict['property'][rownum-1]
-                        new_product.price = objects_dict['price'][rownum-1]
-                        new_product.save()
-                        new_image = ProductImages()
-                        new_image.image = 'product/04_small.jpg'
-                        new_image.p_image_product = new_product
-                        new_image.save()
-                return HttpResponseRedirect(catalog.url())
-        else:
-            instance_form = ImportFiles.objects.create(import_catalog=catalog)
-            form = ImportXLSForm(instance=instance_form)
-            new_product = Product()
+    # try:
+    # 3 запроса к базе
+    # purchase = Purchase.objects.get(id=purchase_id)
+    # catalog = Catalog.objects.get(id=catalog_id)
+    # catalog_product_properties = CatalogProductProperties.objects.filter(cpp_catalog=catalog_id)
+
+    # 1 запрос к базе
+    catalog_product_properties = CatalogProductProperties.objects.select_related().filter(cpp_catalog=catalog_id)
+    catalog = catalog_product_properties[0].cpp_catalog
+    purchase = catalog.catalog_purchase
+
+    products = catalog.get_products()
+    for product in products:
+        product.property = product.property.split(';')  # для более читаемого вида
+    if request.method == 'POST' and 'import' in request.POST:
+        # импорт товаров через xml
+        form = ImportXLSForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            file_name = '%s/%s' % (IMPORT_XLS, request.FILES['file'].name)
+            rb = xlrd.open_workbook(file_name, formatting_info=True)
+            sheet = rb.sheet_by_index(0)
+            objects_dict = {}
+            for colnum in range(sheet.ncols):
+                col = sheet.col_values(colnum)
+                """ с помощью метода pop() извлекаем 1 эллемент колонки и используем его как ключ, удаляя его
+                из последовательности значения при этом - список всех элементов колонки кроме первого """
+                objects_dict.update({col.pop(0): col})
+            for rownum in range(sheet.nrows):
+                row = sheet.row_values(rownum)
+                if rownum != 0:
+                    new_product = Product()
+                    try:
+                        test_sku = int(objects_dict['sku'][rownum-1])
+                        if Product.objects.filter(catalog=catalog, sku=test_sku):
+                            continue
+                        # for test_prod in exist_products:
+                            # if test_prod in Product.objects.filter(catalog=catalog):
+                            #     continue  # прерываем итерацию и создание товара если нашелся SKU в каталоге
+                    except:
+                        pass
+                    new_product.sku = objects_dict['sku'][rownum-1]
+                    new_product.catalog = catalog
+                    new_product.description = objects_dict['description'][rownum-1]
+                    new_product.product_name = objects_dict['product_name'][rownum-1]
+                    new_product.property = objects_dict['property'][rownum-1]
+                    new_product.price = objects_dict['price'][rownum-1]
+                    new_product.save()
+                    new_image = ProductImages()
+                    new_image.image = 'product/04_small.jpg'
+                    new_image.p_image_product = new_product
+                    new_image.save()
+            return HttpResponseRedirect(catalog.url())
+    elif request.method == 'POST' and 'export' in request.POST:
+        data = [[u'sku', u'description', u'price', u'product_name', u'catalog', u'property']]
+        for product_item in catalog.get_products():
+            data.append([product_item.sku, product_item.description, product_item.price,
+                         product_item.product_name, product_item.catalog.id, product_item.property])
+        return ExcelResponse(data, 'catalog_example')
+    elif request.method == 'POST' and 'del_product' in request.POST:  # удаление продукта
+        p = Product.objects.get(id=request.POST['product'])
+        products = set(products) ^ set([p, ])  # преобразуем в set и делаем симметричкскую разность
+        p.delete()
         return render_to_response(template_name, locals(),
-                                  context_instance=RequestContext(request))
-    except ObjectDoesNotExist:
-            raise Http404
+                              context_instance=RequestContext(request))
+    else:
+        instance_form = ImportFiles.objects.create(import_catalog=catalog)
+        form = ImportXLSForm(instance=instance_form)
+        # new_product = Product()
+    return render_to_response(template_name, locals(),
+                              context_instance=RequestContext(request))
+    # except ObjectDoesNotExist:
+    #         raise Http404
 
 # __ // Каталоги __
 
@@ -514,21 +552,6 @@ def product(request, purchase_id, catalog_id, product_id, template_name, edit=Fa
                     except:
                         product_image_form.save(product_id)
 
-                # Сохранение свойств в старом формате. Удалить если все норм работает.
-                # Properties.objects.filter(properties_product_id=product_id).delete()
-                #
-                # properties = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
-                # for property in properties:
-                #     try:
-                #         if request.POST[property.cpp_slug] is not None:
-                #             new_properties = Properties()
-                #             new_properties.properties_value = request.POST[property.cpp_slug]  #request.POST['tsvet']
-                #             new_properties.properties_product = product
-                #             new_properties.properties_catalogProductProperties = CatalogProductProperties.objects.get(cpp_slug=property.cpp_slug)
-                #             new_properties.save()
-                #     except:
-                #         continue
-
                 message = u"Новый товар %s успешно отредактирован." % request.POST['product_name']
             else:
                 message = u"Ошибка при изменении товара"
@@ -561,15 +584,6 @@ def product(request, purchase_id, catalog_id, product_id, template_name, edit=Fa
             # указанные свойства товара
             product_properties = product.property.split(";")
 
-            # properties = get_propeties(catalog_id, 'list')  # получим все возможные свойства для товаров этой категории
-
-            # старый вывод:
-            # properties = Properties.objects.filter(properties_product=product_id)  # получим все свойства для этого товара
-            # all_properties = {}
-            # for property in properties:
-            #     current_catalog_product_properties = CatalogProductProperties.objects.get(id=property.properties_catalogProductProperties_id)
-            #     all_properties.update({current_catalog_product_properties.cpp_name: property.properties_value.split(";")})  # формируется словарь вида {имя_свойства: значения_распарсенные_в_список}
-
 
             return render_to_response(template_name, locals(),
                                           context_instance=RequestContext(request))
@@ -592,19 +606,6 @@ def productAdd(request, purchase_id, catalog_id, template_name):
                 property = ';'.join(properties)            # u'34,green,41;34,green,42;34,green,43;34,blue,41;34,blue,42'
                 new_product = product_form.save(catalog_id, property)
                 product_image_form.save(new_product.id)
-
-                # Сохранение свойств в старом формате. Удалить если все норм работает.
-                # properties = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
-                # for property in properties:
-                #     try:
-                #         if request.POST[property.cpp_slug] is not None:
-                #             new_properties = Properties()
-                #             new_properties.properties_value = request.POST[property.cpp_slug]  # request.POST['tsvet']
-                #             new_properties.properties_product = new_product
-                #             new_properties.properties_catalogProductProperties = CatalogProductProperties.objects.get(cpp_slug=property.cpp_slug)
-                #             new_properties.save()
-                #     except:
-                #         continue
 
                 message = u"Новый товар %s успешно добавлен." % request.POST['product_name']
             else:
