@@ -169,12 +169,12 @@ class Purchase(models.Model):
         n.name = u'Изменена закупка %s' % self.name
         n.description = u'Пожалуйста, удостоверьтесь что Вас по-прежнему '\
             u'устраивают условия '\
-            u'закупки http://127.0.0.1:8000%s' % self.url_core()
+            u'/%s' % self.url_core()
 
         n.choice = 'purchase'
         n.users_list = n.purchase_choice(self)
         n.save()
-        return super(Purchase, self).save(force_insert, force_update, using)
+        return super(Purchase, self).save(force_insert, force_update, using, update_fields)
 
 
 class PurchaseStatusLinks(models.Model):
@@ -208,12 +208,12 @@ class PurchaseStatusLinks(models.Model):
             n.name = u'Изменен статус закупки %s' % self.purchase.name
             n.description = u'Пожалуйста, удостоверьтесь что Вас по-прежнему '\
                 u'устраивают условия закупки '\
-                u'http://127.0.0.1:8000%s' % self.purchase.url_core()
+                u'/%s' % self.purchase.url_core()
 
             n.choice = 'status'
             n.users_list = n.status_choice(self)
             n.save()
-        return super(Purchase, self).save(force_insert, force_update, using)
+        return super(Purchase, self).save(force_insert, force_update, using, update_fields)
 
 
 class Catalog(models.Model):
