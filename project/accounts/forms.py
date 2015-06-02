@@ -259,24 +259,6 @@ class ProductForm(ModelForm):
         return obj
 
 
-class ProductImagesForm(ModelForm):
-    class Meta:
-        model = ProductImages
-        exclude = ('p_image_product', 'cropping')
-
-    def __init__(self, *args, **kwargs):
-        super(ProductImagesForm, self).__init__(*args, **kwargs)
-        self.fields['image'].widget.attrs = {
-            'class': 'btn btn-block btn-default btn-sm'
-        }
-        self.fields['p_image_title'].widget.attrs = {'class': 'form-control'}
-
-    def save(self, product_id):
-        obj = super(ProductImagesForm, self).save(commit=False)
-        obj.p_image_product = Product.objects.get(id=product_id)
-        obj.save()
-        return obj
-
 
 # TODO: желательно сделать выбор по умолчанию каждого из свойств.\
 #на данный момент реализованно через jquery
