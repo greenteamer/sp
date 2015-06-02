@@ -5,11 +5,11 @@ from project import settings
 
 
 urlpatterns = patterns('project.notifications.views',
-
-    url(r'^all/$', 'noticeAllView',
-       {'template_name': 'accounts/profile.html'},
-       name='noticeAllView'),
-    url(r'^new/$', 'noticeFormView',
-       {'template_name': 'accounts/registration.html'},
-        name='noticeFormView'),
+    #
+    # url(r'^all/$', 'noticeAllView',
+    #    {'template_name': 'accounts/profile.html'},
+    #    name='noticeAllView'),
+    # url(r'^new/$', 'noticeFormView',
+    #    {'template_name': 'accounts/registration.html'},
+    #     name='noticeFormView'),
 )

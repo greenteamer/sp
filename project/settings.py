@@ -247,7 +247,7 @@ INSTALLED_APPS = (
     'project.documentation',
     'tastypie',
     'crispy_forms',
-    'ckeditor',
+    # 'ckeditor',
     # 'debug_toolbar',
 )
 
