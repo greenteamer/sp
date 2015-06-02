@@ -3,13 +3,28 @@
 {% load staticfiles %}
 
 <header class="main-header">
-    <a href="/" class="logo"><b>SP</b> Moscow</a>
+    <a href="/" class="logo" data-step="5" data-intro="Вы всегда, быстро можете перейти в основной каталог совместных покупок."><b>SP</b> Tomsk</a>
     <nav class="navbar navbar-static-top" role="navigation">
-        <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button"><span class="sr-only">Toggle navigation</span></a>
+        <li class="nav-button" data-step="4" data-intro="Если Вам не достаточно места для комфортного просмотра содержимого сайты, Вы всегда можете скрыть боковое меню."><a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button"><span class="sr-only" >Toggle navigation</span></a></li>
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
             {% if user.is_authenticated %}
-                <li class="dropdown notifications-menu">
+                <li></li>
+                <li class="dropdown intro-menu notifications-menu">
+                    <a  data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-success"><i class="fa fa-life-buoy"></i>Помощь</a>
+                    <ul class="dropdown-menu">
+                        <li class="header">Выберите раздел</li>
+                        <li>
+                            <ul class="menu">
+                                <li><a id="start_intro_top" name="" style="cursor:pointer;"></i>Помощь по верхнему меню</a></li>                                
+                            </ul>
+                        </li>
+                        <li class="footer">
+                            <a data-toggle="modal" data-target="#myModal" href="#">Показать все</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown notifications-menu" data-step="3" data-intro="Ваши уведомления помогут быть вкурсе когда актуальные для Вас закупки меняют свой статус.">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-bell-o"></i>
                         <span class="label label-warning">{{ notifications|length }}</span>
@@ -29,7 +44,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="dropdown messages-menu">
+                <li class="dropdown messages-menu intro-top" data-step="2" data-intro="Вы можете просмотреть содержимое Вашей корзины, а так же увидет статус актуальных для вас закупок.">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-shopping-cart"></i>
                         <span class="full_count_product label label-success">{{ cart_items.full_count }}</span>
@@ -64,8 +79,8 @@
                     </ul>
                 </li>
             {% endif %}
-                <li class="dropdown user user-menu">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <li class='dropdown user user-menu intro-top' data-step="1" data-intro="Меню пользователя, здесь Вы можете редактировать свой профиль и просматривать ваши данные.">
+                    <a href="#" class="dropdown-toggle " data-toggle="dropdown">
                         {% if user.is_authenticated %}
                             {% if profile.icon %}
                                 <img src="/media/{{ profile.icon }}"class="user-image" alt="Ваше фото"/>

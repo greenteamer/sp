@@ -140,14 +140,13 @@
         $(document).ready(function() {
 
 
-
             var csrftoken = $.cookie('csrftoken');
             var ViewOneProduct = $('#ViewOneProduct');
             $(document).on('click', '.add_to_cart', add_to_cart);
 
             $('.more_product').click(function(){
                 $.get(
-                    '/purchase-1/catalog-3/product-' + $(this).attr('product-id') + '/',
+                    '/purchase-{{ purchase.id }}/catalog-{{ catalog.id }}/product-' + $(this).attr('product-id') + '/',
                     {
                         ajax: '1'
                     },
