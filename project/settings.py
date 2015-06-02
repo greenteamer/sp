@@ -4,17 +4,17 @@ import os
 from easy_thumbnails.conf import Settings as thumbnail_settings
 # import djcelery
 
-from django.utils.translation import ugettext_lazy as _
-from os.path import abspath, dirname, basename, join, split
-
-# djcelery.setup_loader()
 
 CURRPATH = os.path.abspath('.')
 
-PROJECT_PATH = os.path.abspath(os.path.dirname(__file__).decode('utf-8')).replace('\\', '/')
+PROJECT_PATH = os.path.abspath(
+    os.path.dirname(__file__).decode('utf-8')).replace('\\', '/')
+
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 ROOT_URLCONF = 'project.urls'
 
+DATA_IMPORTER_EXCEL_DECODER = 'cp1252'
+DATA_IMPORTER_DECODER = 'UTF-8'
 
 THUMBNAIL_PROCESSORS = (
     'image_cropping.thumbnail_processors.crop_corners',
@@ -30,12 +30,11 @@ DEFAULT_CHARSET = 'utf-8'
 AUTH_PROFILE_MODULE = 'accounts.MemberProfile'
 ADMIN_EMAIL = 'greenteamer@bk.ru'
 ADMINS = (
-	# ('Your Name', 'your_email@example.com'),
 )
 
 """celery"""
-CELERYBEAT_SCHEDULER="djcelery.schedulers.DatabaseScheduler"
-CELERY_ALWAYS_EAGER=False
+CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
+CELERY_ALWAYS_EAGER = False
 BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
 """celery end"""
 
@@ -64,14 +63,14 @@ TIME_ZONE = 'Europe/Moscow'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
-# LANGUAGE_CODE = 'ru'
+# LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
 ugettext = lambda s: s
 
 LANGUAGES = (
-	('en', ugettext('English')),
-	('ru', ugettext('Russian')),
+    ('en', ugettext('English')),
+    ('ru', ugettext('Russian')),
 )
 
 SITE_ID = 1
@@ -89,6 +88,7 @@ USE_L10N = True
 # MEDIA_ROOT = 'C:/webmagazinedjango/webshop/static/media/'
 # MEDIA_ROOT = os.path.join(PROJECT_PATH, 'media').replace('\\', '/')
 MEDIA_ROOT = '%s/media' % CURRPATH
+IMPORT_XLS = '%s/import_xls' % MEDIA_ROOT
 CKEDITOR_UPLOAD_PATH = '/media/uploads'
 DIRECTORY = os.path.join(CURRPATH, 'media/uploads')
 
@@ -114,19 +114,14 @@ ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-	# Put strings here, like "/home/html/static" or "C:/www/django/static".
-	# Always use forward slashes, even on Windows.
-	# Don't forget to use absolute paths, not relative paths.
-	os.path.join(CURRPATH, 'static').replace('\\', '/'),
-	os.path.join(CURRPATH, 'static/media').replace('\\', '/'),
+    os.path.join(CURRPATH, 'static').replace('\\', '/'),
 )
 
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
-	'django.contrib.staticfiles.finders.FileSystemFinder',
-	'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    # 'dajaxice.finders.DajaxiceFinder',
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -140,22 +135,19 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
-	'django.middleware.common.CommonMiddleware',
-	'django.contrib.sessions.middleware.SessionMiddleware',
-	'django.middleware.locale.LocaleMiddleware',
-	'django.middleware.csrf.CsrfViewMiddleware',
-	'django.contrib.auth.middleware.AuthenticationMiddleware',
-	'django.contrib.messages.middleware.MessageMiddleware',
-	'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'pybb.middleware.PybbMiddleware',
     #'webshop.SSLMiddleware.SSLRedirect',
 )
 
 TEMPLATE_DIRS = (
-	# Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-	# Always use forward slashes, even on Windows.
-	# Don't forget to use absolute paths, not relative paths.
-	os.path.join(PROJECT_PATH, 'templates').replace('\\', '/'),
+    os.path.join(PROJECT_PATH, 'templates').replace('\\', '/'),
 )
 
 
@@ -163,13 +155,13 @@ TEMPLATE_DIRS = (
 # Each one should be a callable that takes the request object as its
 # only parameter and returns a dictionary to add to the context.
 TEMPLATE_CONTEXT_PROCESSORS = (
-	'django.contrib.auth.context_processors.auth',
-	'django.core.context_processors.debug',
-	'django.core.context_processors.i18n',
-	'django.core.context_processors.media',
-	'django.core.context_processors.static',
-	'django.core.context_processors.request',
-	'django.contrib.messages.context_processors.messages',
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.core.context_processors.request',
+    'django.contrib.messages.context_processors.messages',
     'pybb.context_processors.processor',
 )
 
@@ -196,33 +188,40 @@ SOUTH_MIGRATION_MODULES = {
     # 'sitetree': 'sitetree.south_migrations',
 }
 
-INPLACEEDIT_DISABLE_CLICK = False # "разрешаем сохранять изменения нажатием Enter"
+INPLACEEDIT_DISABLE_CLICK = False
 THUMBNAIL_DEBUG = True
-INPLACEEDIT_EVENT = "click" # "событие для вызова редактирования"
+INPLACEEDIT_EVENT = "click"
 
-ADAPTOR_INPLACEEDIT = {'auto_fk': 'inplaceeditform_extra_fields.fields.AdaptorAutoCompleteForeingKeyField',
-                       'auto_m2m': 'inplaceeditform_extra_fields.fields.AdaptorAutoCompleteManyToManyField',
-                       'image_thumb': 'inplaceeditform_extra_fields.fields.AdaptorImageThumbnailField',
-                       'tiny': 'inplaceeditform_extra_fields.fields.AdaptorTinyMCEField',
-                       'ckeditor': 'inplaceeditform_extra_fields.fields.AdaptorCKEDITORField',}
+ADAPTOR_INPLACEEDIT = {
+    'auto_fk': 'inplaceeditform_extra_fields.\
+        fields.AdaptorAutoCompleteForeingKeyField',
+
+    'auto_m2m': 'inplaceeditform_extra_fields.fields.\
+        AdaptorAutoCompleteManyToManyField',
+
+    'image_thumb': 'inplaceeditform_extra_fields.\
+        fields.AdaptorImageThumbnailField',
+
+    'tiny': 'inplaceeditform_extra_fields.\
+        fields.AdaptorTinyMCEField',
+
+    'ckeditor': 'inplaceeditform_extra_fields.fields.\
+        AdaptorCKEDITORField',
+}
 INSTALLED_APPS = (
-    # 'admin_tools',
-    # 'admin_tools.theming',
-    # 'admin_tools.menu',
-    # 'admin_tools.dashboard',
-	'django.contrib.auth',
-	'django.contrib.contenttypes',
-	'django.contrib.sessions',
-	'django.contrib.sites',
-	'django.contrib.messages',
-	'django.contrib.staticfiles',
-	'django.contrib.flatpages',
-	# Uncomment the next line to enable the admin:
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'django.contrib.flatpages',
+    # Uncomment the next line to enable the admin:
     # 'grappelli',
     'filebrowser',
-	'django.contrib.admin',
-	# Uncomment the next line to enable admin documentation:
-	# 'django.contrib.admindocs',
+    'django.contrib.admin',
+    # Uncomment the next line to enable admin documentation:
+    # 'django.contrib.admindocs',
     'bootstrap3',
     'sorl.thumbnail',
     # 'dajaxice',
@@ -244,6 +243,12 @@ INSTALLED_APPS = (
     'image_cropping',
     'easy_thumbnails',
     'import_export',
+    'project.notifications',
+    'project.documentation',
+    'tastypie',
+    # 'crispy_forms',
+    'ckeditor',
+    # 'debug_toolbar',
 )
 
 FILEBROWSER_MEDIA_ROOT = MEDIA_ROOT
@@ -259,28 +264,28 @@ PATH_FILEBROWSER_MEDIA = STATIC_ROOT + 'filebrowser/'
 # See http://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
 LOGGING = {
-	'version': 1,
-	'disable_existing_loggers': False,
-	'handlers': {
-		'mail_admins': {
-			'level': 'ERROR',
-			'class': 'django.utils.log.AdminEmailHandler'
-		}
-	},
-	'loggers': {
-		'django.request': {
-			'handlers': ['mail_admins'],
-			'level': 'ERROR',
-			'propagate': True,
-		},
-	}
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler'
+        }
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    }
 }
 
 # Custom settings
 ENABLE_SSL = False
-SITE_NAME = _(u'Product magazine')
-META_KEYWORDS = _(u'products, online, shop, buy')
-META_DESCRIPTION = _(u'Product magazine is an online supplier of products')
+SITE_NAME = u'Product magazine'
+META_KEYWORDS = u'products, online, shop, buy'
+META_DESCRIPTION = u'Product magazine is an online supplier of products'
 LOGIN_REDIRECT_URL = '/accounts/my_account/'
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 90  # 90 дней на хранение cookies
 PRODUCTS_PER_PAGE = 300
@@ -297,5 +302,5 @@ except ImportError:
     pass
 
 
-
-# PYBB_PERMISSION_HANDLER = "project.core.pybbm_custom.MyPermissionHandler"  зараза не работает
+PYBB_ATTACHMENT_ENABLE = True
+PYBB_DEFAULT_TITLE = 'Форум сайта совместных покупок'

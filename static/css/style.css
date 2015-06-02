@@ -1,12 +1,265 @@
+.modal-width-90{
+width: 90%;
+}
+
+
+
 .content-header>ol.breadcrumb {
     position: relative;
     float: none;
     top: 0;
     left: 0;
 }
-#core_product .item img{
-    /*width: 100%;*/
-}
+
 #core_catalog .item img{
     width: 100%;
+}
+.form_export button {
+    border: none;
+    background: none;
+}
+.example-modal .modal {
+    position: relative;
+    top: auto;
+    bottom: auto;
+    right: auto;
+    left: auto;
+    display: block;
+    z-index: 1;
+}
+.example-modal .modal {
+    background: transparent!important;
+}
+button.close.pull-right {
+    margin-left: 20px;
+}
+.modal-dialog.modal-lg{
+    margin: 0;
+    height: 100%;
+}
+.modal-dialog.modal-lg .modal-content {
+    height: 100%;
+}
+.modal-dialog.modal-lg .modal-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+.close span img {
+    height: 30px;
+    width: auto;
+}
+.page-header::before {
+    content: " ";
+    display: block;
+    background: #ccc;
+    width: 100%;
+    height: 1px;
+    position: absolute;
+    top: 50%;
+    margin-top: 2px;
+    z-index: -1;
+}
+.navbar .navbar-nav>li>a {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+
+
+
+
+
+.check_view_product{
+text-align: right;
+margin-bottom: 25px;
+}
+.check_view_product > span{
+cursor: pointer;
+font-size: 30px;
+padding: 0px 13px 3px 13px;
+color: rgb(160, 160, 160);
+border: 1px solid rgb(160, 160, 160);
+background: none;
+}
+.check_view_product > span:hover{
+color: rgb(90, 90, 90);
+}
+
+
+.product-item {
+height: 500px;
+/*overflow: overlay;*/
+margin-bottom: 20px;
+border: 1px solid #eee;
+}
+.product-item-modal{
+height: auto;
+overflow: auto;
+}
+.product-item img {
+width: 100%;
+height: auto;
+}
+
+.product-item .images .image {
+width: 50%;
+height: auto;
+float: left;
+border: 1px solid #eee;
+}
+
+.product-item ul{
+overflow: hidden;
+position: relative;
+padding: 5px;
+list-style: none;
+}
+.product-item li{
+float: left;
+}
+.quantity i{
+cursor: pointer;
+}
+
+.buttons_wrap {
+overflow: hidden;
+display: block;
+position: relative;
+padding: 5px;
+background: rgba(255, 255, 255, 0.5);
+border: none;
+margin-bottom: -42px;
+z-index: 1;
+}
+.modal .buttons_wrap {
+position: fixed;
+padding: 9px 10px;
+border-radius: 3px;
+right: 15px;
+top: 10%;
+}
+.product-item .buttons_wrap .link_more {
+float: left;
+}
+.product-item .buttons_wrap .add_to_cart_wrapper {
+float: right;
+}
+.product-item .quantity{
+display: inline-block;
+}
+.buttons_wrap .btn {
+background: rgba(2, 2, 2, 0.5);
+border: none;
+border-radius: 0;
+}
+
+.image {
+position: relative;
+}
+.price {
+position: absolute;
+right: 0px;
+bottom: 0px;
+background: rgba(0, 0, 0, 0.6);
+padding: 5px 10px 5px 45px;
+border-radius: 40px 0 0 0;
+color: white;
+font-size: 19px;
+}
+
+
+
+.col-md-12.product-item {
+height: auto;
+}
+
+.col-md-12.product-item .image {
+position: relative;
+width: 300px;
+float: left;
+margin: 0 15px 15px 0;
+}
+.col-md-12.product-item .name {
+position: absolute;
+z-index: 3;
+padding: 0 150px 0 0px;
+margin-left: 315px;
+}
+.col-md-12.product-item .properties {
+margin-top: 42px;
+}
+
+.btn-primary:not(.btn-link):not(.btn-flat) {
+    padding: 8px 25px;
+    background: #3C8DBF;
+}
+.btn-primary:not(.btn-link):not(.btn-flat):hover{
+    background: #357EA8;
+}
+.navbar-static-top .btn.btn-xs {
+    padding: 15px 15px;
+    margin: 0;
+    font-size: 14px;
+    background: none;
+    border: none;
+}
+.navbar-static-top .btn.btn-xs:hover {
+      box-shadow: none!important;
+}
+
+.table>tbody>tr>td,
+.table>thead>tr>th,
+.table>thead:first-child>tr:first-child>th{
+    border: 1px solid #BDBDBD;
+    border-top: 1px solid #BDBDBD;
+    border-bottom: 1px solid #BDBDBD;
+}
+
+section.sidebar .mdi-action-account-circle {
+    color: #D2D2D2;
+    font-size: 43px;
+}
+
+.user-menu .dropdown-toggle .mdi-action-account-circle {
+    float: left;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    margin-right: 10px;
+    margin-top: -2px;
+}
+.user-header .mdi-action-account-circle {
+    z-index: 5;
+    height: 90px;
+    width: 90px;
+    font-size: 90px;
+    border-radius:50%;
+    /*border: 3px solid;*/
+    border-color: transparent;
+    border-color: rgba(255,255,255,0.2);
+}
+
+.modal#ViewOneProduct {
+    z-index: 1049;
+}
+
+.fa.fa-life-buoy {
+    padding-right: 5px;
+    font-size: 18px;
+}
+
+/*intro*/
+.introjs-fixParent {
+    position: relative;
+}
+.introjs-fixParent .introjs-showElement a {
+    color: #000!important;
+}
+li.nav-button {
+    float:left;
+    list-style:none;
+}
+.intro-menu ul {
+    min-width: 260px;
 }

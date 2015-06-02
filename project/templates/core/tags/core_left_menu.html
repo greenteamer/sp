@@ -1,4 +1,6 @@
 {#{% if user.is_authenticated %}#}
+{#{% if user.memberprofile and docs or user.organizerprofile and docs %}#}
+
 {% if user.organizerprofile %}
         <aside class="main-sidebar">
                             <!-- sidebar: style can be found in sidebar.less -->
@@ -7,7 +9,11 @@
                 <div class="user-panel">
 
                         <div class="pull-left image">
-                            <img src="/media/{{ profile.icon }}" class="img-circle" alt="Ваше фото" />
+                            {% if profile.icon %}
+                                <img src="/media/{{ profile.icon }}" class="img-circle" alt="Ваше фото" />
+                            {% else %}
+                                <i class="mdi-action-account-circle"></i>
+                            {% endif %}                            
                         </div>
                         <div class="pull-left info">
                             <p>{{ profile.firstName }} <small>{{ profile.lastName }}</small></p>
@@ -45,41 +51,41 @@
                             <li><a href=""><i class="fa fa-circle-o"></i> Не открытые</a></li>
                         </ul>
                     </li>
+{#                    <li class="treeview">#}
+{#                        <a href="#">#}
+{#                            <i class="fa fa-edit"></i> <span>Создать тему</span>#}
+{#                        </a>#}
+{#                    </li>#}
                     <li class="treeview">
-                        <a href="#">
-                            <i class="fa fa-edit"></i> <span>Создать тему</span>
-                        </a>
-                    </li>
-                    <li class="treeview">
-                        <a href="#">
-                            <i class="fa fa-table"></i> <span>Сводная информация</span>
+                        <a href="/forum/">
+                                <i class="fa fa-table"></i> <span>Форум</span>
                         </a>
                     </li>
                     <li>
-                        <a href="">
+                        <a href="/calendar">
                             <i class="fa fa-calendar"></i> <span>Календарь</span>
                             <small class="label pull-right bg-red">3</small>
                         </a>
                     </li>
-                    <li>
-                        <a href="">
-                            <i class="fa fa-envelope"></i> <span>Письма</span>
-                            <small class="label pull-right bg-yellow">12</small>
-                        </a>
-                    </li>
-                    <li class="treeview active">
-                        <a href="#">
-                            <i class="fa fa-folder"></i> <span>Мои файлы</span>
-                            <i class="fa fa-angle-left pull-right"></i>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li class="active"><a href=""><i class="fa fa-circle-o"></i> Для участников</a></li>
-                            <li><a href=""><i class="fa fa-circle-o"></i> Для поставщиков</a></li>
-                            <li><a href=""><i class="fa fa-circle-o"></i> Спецификации</a></li>
-                            <li><a href=""><i class="fa fa-circle-o"></i> Разное</a></li>
-                        </ul>
-                    </li>
-                    <li><a href=""><i class="fa fa-book"></i> Документация</a></li>
+{#                    <li>#}
+{#                        <a class="disabled" href="">#}
+{#                            <i class="fa fa-envelope"></i> <span>Письма</span>#}
+{#                            <small class="label pull-right bg-yellow">12</small>#}
+{#                        </a>#}
+{#                    </li>#}
+{#                    <li class="treeview active">#}
+{#                        <a href="#">#}
+{#                            <i class="fa fa-folder"></i> <span>Мои файлы</span>#}
+{#                            <i class="fa fa-angle-left pull-right"></i>#}
+{#                        </a>#}
+{#                        <ul class="treeview-menu">#}
+{#                            <li class="active"><a href=""><i class="fa fa-circle-o"></i> Для участников</a></li>#}
+{#                            <li><a href=""><i class="fa fa-circle-o"></i> Для поставщиков</a></li>#}
+{#                            <li><a href=""><i class="fa fa-circle-o"></i> Спецификации</a></li>#}
+{#                            <li><a href=""><i class="fa fa-circle-o"></i> Разное</a></li>#}
+{#                        </ul>#}
+{#                    </li>#}
+                    <li><a href="/documentation"><i class="fa fa-book"></i> Документация</a></li>
                 </ul>
             </section>
                 <!-- /.sidebar -->
@@ -92,9 +98,14 @@
             <!-- Sidebar user panel -->
             <div class="user-panel">
                     <div class="pull-left image">
+                        {% if profile.icon %}
+                            <img src="/media/{{ profile.icon }}" class="img-circle" alt="Ваше фото" />
+                        {% else %}
+                            <i class="mdi-action-account-circle"></i>
+                        {% endif %}
                     </div>
                     <div class="pull-left info">
-                        <p>Незарегистрированный <small>пользователь</small></p>
+                        <p>{{ profile.firstName }} <small>{{ profile.lastName }}</small></p>
                         <a href="#"><i class="fa fa-circle text-success"></i> В сети</a>
                     </div>
             </div>
@@ -117,14 +128,53 @@
                         <i class="fa fa-th"></i> <span>Смотреть все закупки</span>
                     </a>
                 </li>
+                <li>
+                    <a href="/calendar">
+                        <i class="fa fa-calendar"></i> <span>Календарь</span>
+                        <small class="label pull-right bg-red">3</small>
+                    </a>
+                </li>
                 <li class="treeview">
                     <a href="#">
                         <i class="fa fa-table"></i> <span>Информация</span>
                     </a>
                 </li>
-                <li><a href=""><i class="fa fa-book"></i> Документация</a></li>
+                <li><a href="/documentation"><i class="fa fa-book"></i> Документация</a></li>
             </ul>
         </section>
             <!-- /.sidebar -->
     </aside>
+{% else %}
+
+    <aside class="main-sidebar">
+                        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+            <!-- Sidebar user panel -->
+            <div class="user-panel">
+                    <div class="pull-left image">
+                        {% if profile.icon %}
+                            <img src="/media/{{ profile.icon }}" class="img-circle" alt="Ваше фото" />
+                        {% else %}
+                            <i class="mdi-action-account-circle"></i>
+                        {% endif %}
+                    </div>
+                    <div class="pull-left info">
+                        <p>{{ profile.firstName }} <small>{{ profile.lastName }}</small></p>
+                        <a href="#"><i class="fa fa-circle text-success"></i> В сети</a>
+                    </div>
+            </div>        
+            <!-- sidebar menu: : style can be found in sidebar.less -->
+            <ul class="sidebar-menu">
+                <li class="header">Главная навигация</li>                
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-table"></i> <span>Информация о нас</span>
+                    </a>
+                </li>
+                <li><a href="/documentation"><i class="fa fa-book"></i> Документация</a></li>
+            </ul>
+        </section>
+            <!-- /.sidebar -->
+    </aside>
+    
 {% endif %}

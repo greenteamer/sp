@@ -315,8 +315,8 @@
                             </a>
                         </li>
                         <li class="treeview">
-                            <a href="#">
-                                <i class="fa fa-table"></i> <span>Сводная информация</span>
+                            <a href="/forum/">
+                                <i class="fa fa-table"></i> <span>Форум</span>
                             </a>
                         </li>
                         <li>
@@ -351,6 +351,9 @@
 
         {% endblock %}
 
+        {% block forum_content %}
+        {% endblock %}
+
         {% block content %}
         {% endblock %}
 
@@ -367,8 +370,7 @@
         </div><!-- ./wrapper -->
     {% endblock %}
 
-{% block page_js %}
-    <script src='{{ STATIC_URL }}AdminLte/plugins/fastclick/fastclick.min.js'></script>
-    <script src="{{ STATIC_URL }}AdminLte/dist/js/app.min.js" type="text/javascript"></script>
-{#    <script src="{{ STATIC_URL }}AdminLte/dist/js/demo.js" type="text/javascript"></script>#}
-{% endblock %}
+{#{% block page_js %}#}
+{#    <script src='{{ STATIC_URL }}AdminLte/plugins/fastclick/fastclick.min.js'></script>#}
+{#    <script src="{{ STATIC_URL }}AdminLte/dist/js/app.min.js" type="text/javascript"></script>#}
+{#{% endblock %}#}
