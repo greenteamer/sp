@@ -198,9 +198,8 @@ class PurchaseStatusLinks(models.Model):
     def __unicode__(self):
         return self.status.status_name
 
-    def save(
-            self, force_insert=False, force_update=False, using=None,
-            update_fields=None):
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
 
         if self.active is True:
             from project.notifications.models import Notification
@@ -213,7 +212,8 @@ class PurchaseStatusLinks(models.Model):
             n.choice = 'status'
             n.users_list = n.status_choice(self)
             n.save()
-        return super(Purchase, self).save(force_insert, force_update, using, update_fields)
+        return super(PurchaseStatusLinks, self).save(
+            force_insert, force_update, using, update_fields)
 
 
 class Catalog(models.Model):
