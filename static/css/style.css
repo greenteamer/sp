@@ -263,3 +263,26 @@ li.nav-button {
 .intro-menu ul {
     min-width: 260px;
 }
+
+input.form-control::-webkit-input-placeholder {color:#3C8DBC;}
+input.form-control::-moz-placeholder          {color:#3C8DBC;}/* Firefox 19+ */
+input.form-control:-moz-placeholder           {color:#3C8DBC;}/* Firefox 18- */
+input.form-control:-ms-input-placeholder      {color:#3C8DBC;}
+
+section .box-footer {
+    padding: 0;
+}
+
+.documentation section {
+    margin-bottom: 55px;
+}
+.documentation h2.page-header{
+    font-size: 35px!important;
+}
+
+/*populate profile form*/
+form#populate-profile em {
+    color: red;
+}
+
+
