@@ -87,6 +87,12 @@
                     selectOtherMonths: true
                 });
 
+                // высота селекта катеогий
+                $('#id_categories').css({
+                    'height': $('#id_categories option').length*19,
+                    'max-height': 250
+                });
+
                 var date_inputs = $('input.date');
 
 {#                $('#submit_purchase_add').click(function(){#}
