@@ -14,3 +14,17 @@ class Documentation(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class Page(models.Model):
+    name = models.CharField(
+        verbose_name=u'Название страницы',
+        max_length=240
+    )
+    description = RichTextField(
+        verbose_name=u'Текст страницы')
+
+    is_main = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return self.name

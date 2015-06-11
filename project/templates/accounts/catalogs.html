@@ -21,7 +21,7 @@
                     {% if not catalogs %}
                         <div>
                             <p>Нет доступных каталогов</p>
-                            <p><a href="/profile/organizer/purchase-{{ purchase.id }}/catalog-add">Создать новый каталог</a></p>
+                            <p><a class="btn btn-primary" href="/profile/organizer/purchase-{{ purchase.id }}/catalog-add">Создать новый каталог</a></p>
                         </div>
                     {% else %}
                         <ul>
@@ -29,6 +29,7 @@
                                 <li><a href="/profile/organizer/purchase-{{ purchase.id }}/catalog-{{ catalog.id }}">{{ catalog.catalog_name }}</a></li>
                             {% endfor %}
                         </ul>
+                        <p><a class="btn btn-primary" href="/profile/organizer/purchase-{{ purchase.id }}/catalog-add">Создать новый каталог</a></p>
                     {% endif %}
 
                 </div><!-- /.col -->
