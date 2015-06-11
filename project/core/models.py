@@ -47,7 +47,7 @@ class Category(MPTTModel):
     active = CommonActiveManager()
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ['created_at']
         verbose_name_plural = u'Категории'
 
     # It is required to rebuild tree after save, when using order for mptt-tree
