@@ -479,8 +479,11 @@ def catalog(request, purchase_id, catalog_id, template_name):
     for product in products:
         product.property = product.property.split(';')  # для более читаемого вида
     if request.method == 'POST' and 'import' in request.POST:
+
         # импорт товаров через xml
         form = ImportXLSForm(request.POST, request.FILES)
+        # form = ImportXLSForm(request.POST, request.FILES, initai=instance_form)
+        # form = ImportXLSForm(initial=formset)
         if form.is_valid():
             form.save()
             import_file = list(ImportFiles.objects.filter(import_catalog=catalog))[-1].file
@@ -531,8 +534,9 @@ def catalog(request, purchase_id, catalog_id, template_name):
         return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
     else:
-        instance_form = ImportFiles.objects.create(import_catalog=catalog)
-        form = ImportXLSForm(instance=instance_form)
+        # instance_form = ImportFiles.objects.create(import_catalog=catalog)
+        # form = ImportXLSForm(instance=instance_form)
+        form = ImportXLSForm(initial={"import_catalog": catalog.id})
         # new_product = Product()
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
