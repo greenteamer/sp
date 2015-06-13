@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
-from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, purchaseForm, catalogForm, \
-                                    catalogProductPropertiesForm, ProductForm, MemberProfileForm, UserLoginForm
-from project.core.forms import ImportXLSForm
-from project.core.models import Purchase, PurchaseStatus, Catalog, Product, CatalogProductProperties, \
-                                ProductImages, ImportFiles, PurchaseStatusLinks
+from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm,\
+    purchaseForm, catalogForm, catalogProductPropertiesForm, ProductForm,\
+    MemberProfileForm, UserLoginForm
 
-from project.documentation.models import Page                            
+from project.core.forms import ImportXLSForm
+from project.core.models import Purchase, PurchaseStatus, Catalog, Product,\
+    CatalogProductProperties, ProductImages, ImportFiles, PurchaseStatusLinks
+
+from project.documentation.models import Page
 from django.shortcuts import render, render_to_response, redirect
-from project.accounts.models import OrganizerProfile, getProfile, repopulateProfile
+from project.accounts.models import OrganizerProfile, getProfile,\
+    repopulateProfile
+
 from django.contrib import auth
 from django.contrib import messages
 import xlrd
@@ -17,18 +21,19 @@ from django.template import RequestContext
 from django.core import urlresolvers
 from django.http import HttpResponseRedirect
 from project.settings import ADMIN_EMAIL, IMPORT_XLS
-from django.core.mail import send_mail, EmailMultiAlternatives
+from django.core.mail import send_mail
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import Http404, HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from project.cart.purchases import get_purchases_dict, get_all_purchases_dict
+from project.cart.purchases import get_all_purchases_dict
 import datetime
 
 
 def check_organizer(func):
     """декоратор проверки профиля пользователя
     принимает пользователя , проверяет и возвращает вьюху
-    purchase-id - необходимо присутствие именованной переменной во views для проверки владельца закупки"""
+    purchase-id - необходимо присутствие именованной переменной во views для
+    проверки владельца закупки"""
     def wrapper(request, *args, **kwargs):
         if request.user.is_authenticated():
             profile = getProfile(request.user)
@@ -66,11 +71,12 @@ def check_organizer(func):
 
 
 def profileView(request, template_name):
-    user = request.user    
+    user = request.user
     if user.is_authenticated():
-        """проверка есть ли профиль у пользователя и получение его файл accounts.models"""
+        """проверка есть ли профиль у пользователя и получение его
+        файл accounts.models"""
         profile = getProfile(user)
-        page = Page.objects.get(is_main=True)        
+        page = Page.objects.get(is_main=True)
     else:
         return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
     return render_to_response(template_name, locals(),
@@ -90,22 +96,35 @@ def populateProfileView(request, template_name):
             is_organizer = postdata.get('is_organizer', '')
             form = OrganizerProfileForm(request.POST, request.FILES)
 
-            if form.is_valid() and getProfile(user): #если профиль уже существует то только обновляем (не возвращает None)
-                # current_profile = getProfile(user)
+            if form.is_valid() and getProfile(user):
+            # если профиль уже существует то только
+            # обновляем(не возвращает None)"""
+
                 profile = repopulateProfile(profile, request)
                 profile.save()
-                return HttpResponseRedirect(urlresolvers.reverse('populateProfileView'))
+                return HttpResponseRedirect(
+                    urlresolvers.reverse('populateProfileView'))
 
             elif form.is_valid() and terms == 'on' and is_organizer == 'on':
                 form.save(request.user)
-                return HttpResponseRedirect(urlresolvers.reverse('populateProfileView'))
+                return HttpResponseRedirect(
+                    urlresolvers.reverse('populateProfileView'))
+
             elif form.is_valid() and terms == 'on' and is_organizer == '':
                 form = MemberProfileForm(request.POST, request.FILES)
                 form.save(request.user)
-                messages.text(request, "Спасибо, вы успешно создали профиль, ожидайте его подтверждения от администратора")
-                return HttpResponseRedirect(urlresolvers.reverse('populateProfileView'))
+                messages.text(
+                    request,
+                    "Спасибо, вы успешно создали профиль, ожидайте его\
+                    подтверждения от администратора")
+
+                return HttpResponseRedirect(
+                    urlresolvers.reverse('populateProfileView'))
+
             elif form.is_valid() and terms == '':
-                messages.text(request, "Вы должны согласиться с условиями")          
+                messages.text(
+                    request, "Вы должны согласиться с условиями")
+
             else:  # TODO: должна быть обработка ошибок
                 form = OrganizerProfileForm(request.POST, request.FILES)
                 return render(request, 'accounts/populate_profile.html', {
@@ -136,8 +155,12 @@ def registrationView(request, template_name):
 
                 # отправляем e-mail о регистрации нового пользователя
                 subject = u'sp.ru регистрация %s' % new_user.username
-                message = u' Зарегистрирован новый пользователь %s / пароль: %s' % (new_user.username, pw)
-                send_mail(subject, message, 'teamer777@gmail.com', [ADMIN_EMAIL], fail_silently=False)
+                message = u'Зарегистрирован новый пользователь\
+                %s / пароль: %s' % (new_user.username, pw)
+
+                send_mail(
+                    subject, message, 'teamer777@gmail.com', [ADMIN_EMAIL],
+                    fail_silently=False)
 
                 auth.login(request, new_user)
                 # Редирект на url с именем my_account
@@ -214,13 +237,19 @@ def purchases(request, template_name):
     statuses = PurchaseStatus.objects.all()
 
     if 'ajax' in request.POST:
-        PurchaseStatusLinks.objects.filter(purchase_id=request.POST['purchase_id'], status_id=request.POST['status_id']).update(active=0)
-        PurchaseStatusLinks.objects.filter(purchase_id=request.POST['purchase_id'], status_id=request.POST['new_status_id']).update(active=1)
+        PurchaseStatusLinks.objects.filter(
+            purchase_id=request.POST['purchase_id'],
+            status_id=request.POST['status_id']).update(active=0)
+
+        PurchaseStatusLinks.objects.filter(
+            purchase_id=request.POST['purchase_id'],
+            status_id=request.POST['new_status_id']).update(active=1)
 
         return HttpResponse('{"status":"ok"}')
 
-    # purchases_dict = get_purchases_dict(request)  # получаем словарь словарей ... описание в cart.purchases.py
-    purchases_dict = get_all_purchases_dict(request)  # словарь словарей всех закупок пользователя
+    # словарь словарей всех закупок пользователя
+    purchases_dict = get_all_purchases_dict(request)
+
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
 
@@ -242,16 +271,21 @@ def purchaseAdd(request, template_name):
             dates_end = request.POST.getlist('date_end')
             data = request.POST.getlist('data')
 
-            #  TODO: переписать с оптимизацией сохранения. чтобы был один запрос (insert) к бд.
+            #  TODO: переписать с оптимизацией сохранения.\
+            #  чтобы был один запрос (insert) к бд.
             i = 0
             for status in statuses:
                 #        A if условие else B - Краткая форма.
                 try:
-                    date_start = datetime.datetime.strptime(dates_start[i], '%Y-%m-%d')
+                    date_start = datetime.datetime.strptime(
+                        dates_start[i], '%Y-%m-%d')
+
                 except:
                     date_start = None
                 try:
-                    date_end = datetime.datetime.strptime(dates_end[i], '%Y-%m-%d')
+                    date_end = datetime.datetime.strptime(
+                        dates_end[i], '%Y-%m-%d')
+
                 except:
                     date_end = None
                 obj = PurchaseStatusLinks()
@@ -268,7 +302,9 @@ def purchaseAdd(request, template_name):
                 obj.save()
                 i += 1
 
-            message = u"Новая закупка «%s» успешно добавлена" % request.POST['name']
+            message = u"Новая закупка «%s» успешно\
+                добавлена" % request.POST['name']
+
         else:
             message = u"Ошибка при добавлении закупки"
     purchase_form = purchaseForm()
@@ -280,9 +316,11 @@ def purchaseAdd(request, template_name):
 @check_organizer
 def purchase(request, template_name, purchase_id, edit=False):
     message = ''
-    if edit is True:  # если передан парамерт edit равный True, то редактируем закупку
+    # если передан парамерт edit равный True, то редактируем закупку
+    if edit is True:
         try:
-            purchase = Purchase.objects.get(id=purchase_id)  # получаем экземпляр Закупки по id
+            # получаем экземпляр Закупки по id
+            purchase = Purchase.objects.get(id=purchase_id)
             if request.POST:
                 form = purchaseForm(request.POST, instance=purchase)
                 if form.is_valid():
@@ -295,26 +333,41 @@ def purchase(request, template_name, purchase_id, edit=False):
                     i = 0
                     for status in statuses:
                         try:
-                            date_start = datetime.datetime.strptime(dates_start[i], '%Y-%m-%d')
+                            date_start = datetime.datetime.strptime(
+                                dates_start[i], '%Y-%m-%d')
+
                         except:
                             date_start = None
                         try:
-                            date_end = datetime.datetime.strptime(dates_end[i], '%Y-%m-%d')
+                            date_end = datetime.datetime.strptime(
+                                dates_end[i], '%Y-%m-%d')
+
                         except:
                             date_end = None
                         # Проверяем выставлена ли активность этого статуса
                         if int(request.POST['active']) != status.id:
-                            PurchaseStatusLinks.objects.filter(purchase=purchase, status=status).update(date_start=date_start, date_end=date_end, data=data[i], active=0)
+                            PurchaseStatusLinks.objects.filter(
+                                purchase=purchase, status=status).update(
+                                    date_start=date_start, date_end=date_end,
+                                    data=data[i], active=0)
+
                         else:
-                            PurchaseStatusLinks.objects.filter(purchase=purchase, status=status).update(date_start=date_start, date_end=date_end, data=data[i], active=1)
+                            PurchaseStatusLinks.objects.filter(
+                                purchase=purchase, status=status).update(
+                                    date_start=date_start, date_end=date_end,
+                                    data=data[i], active=1)
+
                         i += 1
 
                     message = u"Закупка «%s» успешно изменена" % request.POST['name']
+
                 else:
                     message = u"Ошибка при изменении закупки"
-            purchase_form = purchaseForm(instance=purchase)  # заполненная форма текущей закупки
+            # заполненная форма текущей закупки
+            purchase_form = purchaseForm(instance=purchase)
 
-            # При создании закупки должны быть созданы все статусы. выдираем их из базы со всеми параметрами
+            # При создании закупки должны быть созданы все статусы.
+            # выдираем их из базы со всеми параметрами
             sql = 'SELECT core_purchasestatus.id, core_purchasestatus.status_name, core_purchasestatuslinks.id as links_id, core_purchasestatuslinks.date_start, core_purchasestatuslinks.date_end, core_purchasestatuslinks.data, core_purchasestatuslinks.active \
             FROM core_purchasestatus \
             LEFT JOIN core_purchasestatuslinks \
@@ -430,8 +483,9 @@ def catalog(request, purchase_id, catalog_id, template_name):
         form = ImportXLSForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            file_name = '%s/%s' % (IMPORT_XLS, request.FILES['file'].name)
-            rb = xlrd.open_workbook(file_name, formatting_info=True)
+            import_file = list(ImportFiles.objects.filter(import_catalog=catalog))[-1].file
+            # file_name = '%s/%s' % (IMPORT_XLS, request.FILES['file'].name)
+            rb = xlrd.open_workbook(import_file.path, formatting_info=True)
             sheet = rb.sheet_by_index(0)
             objects_dict = {}
             for colnum in range(sheet.ncols):
@@ -460,7 +514,7 @@ def catalog(request, purchase_id, catalog_id, template_name):
                     new_product.price = objects_dict['price'][rownum-1]
                     new_product.save()
                     new_image = ProductImages()
-                    new_image.image = 'product/04_small.jpg'
+                    new_image.image = 'product/no-image.png'
                     new_image.p_image_product = new_product
                     new_image.save()
             return HttpResponseRedirect(catalog.url())
@@ -534,9 +588,10 @@ def product(request, purchase_id, catalog_id, product_id, template_name, edit=Fa
     # profile = checkOrganizerProfile(request.user)
     message = ''
 
-    if edit == True:  # если передан парамерт edit равный True, то редактируем товар
-        # try:
-        product = Product.objects.get(id=product_id)  # получаем экземпляр товара по id
+    # если передан парамерт edit равный True, то редактируем товар
+    if edit is True:
+        # получаем экземпляр товара по id
+        product = Product.objects.get(id=product_id)
 
         if request.POST:
             product_form = ProductForm(request.POST)

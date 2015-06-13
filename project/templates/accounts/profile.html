@@ -71,7 +71,7 @@
                                     <td>{{ purchase.id }}</td>
                                     <td><a href="{{ purchase.url }}">{{ purchase.name }}</a></td>
                                     <td>{{ purchase.date|date:"d M Y" }}</td>
-                                    <td>{{ purchase.description|truncatewords:10|safe }}</td>
+                                    <td>{{ purchase.description|truncatewords:10|removetags:"img"|safe }}</td>
                                     <td>
 {#                                        <div class="progress">#}
 {#                                          <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ purchase.bar }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ purchase.bar }}%;">#}
