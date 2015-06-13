@@ -102,9 +102,17 @@ def update_cart(request):
             cart_item.save()
 
 
-def cart_subtotal(cart_items):
-    cart_subtotal = 0.00
-    for item in cart_items:
-        cart_subtotal += item.product.price * item.quantity
+class HelperClass():
+    pass
 
-    return cart_subtotal
+
+def cart_stat(cart_items):
+    cart_stat = HelperClass()
+    cart_stat.items_count = 0
+    cart_stat.cart_total = 0.00
+
+    for item in cart_items:
+        cart_stat.cart_total += item.total_price()  
+        cart_stat.items_count += item.quantity
+
+    return cart_stat

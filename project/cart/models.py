@@ -41,5 +41,3 @@ class CartItem(models.Model):  # TODO: добавить profile_member и profil
 
     def __unicode__(self):
         return self.product.product_name
-
-

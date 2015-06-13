@@ -72,7 +72,7 @@ def get_purchases_dict_for_user(request):
         for item in list_of_tuples_items:
             if item[0] == catalog:
                 tmp_list.append(item[1])
-                catalog.total += item[1].product.price * item[1].quantity
+                catalog.total += item[1].total_price()
         dict.update({catalog: tmp_list})
     global_dict = {}
 
