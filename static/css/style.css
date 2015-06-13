@@ -216,6 +216,15 @@ margin-top: 42px;
     border-bottom: 1px solid #BDBDBD;
 }
 
+.cart_page .table-responsive,
+.cart_page h4 {
+    padding-left: 50px;
+}
+
+.cart_page .purchase {
+    margin-bottom: 50px;
+}
+
 section.sidebar .mdi-action-account-circle {
     color: #D2D2D2;
     font-size: 43px;
