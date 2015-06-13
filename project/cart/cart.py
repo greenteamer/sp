@@ -100,3 +100,11 @@ def update_cart(request):
         if quantity.isdigit() and int(quantity) > 0:
             cart_item.quantity = int(quantity)
             cart_item.save()
+
+
+def cart_subtotal(cart_items):
+    cart_subtotal = 0.00
+    for item in cart_items:
+        cart_subtotal += item.product.price * item.quantity
+
+    return cart_subtotal

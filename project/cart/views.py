@@ -3,6 +3,7 @@
 from django.template import RequestContext
 from django.shortcuts import get_object_or_404, render_to_response, redirect
 from project.cart.cart import add_to_cart, get_cart_items, remove_from_cart, update_cart
+from project.cart import cart
 from project.cart.admin import CartItemResource, CartItem
 from project.cart.forms import ExportForm
 from project.cart.purchases import get_purchases_dict, get_purchases_dict_for_user
@@ -17,21 +18,25 @@ import datetime
 @check_profile
 def cartView(request, template_name):
     if request.method == 'POST':
-        postdata = request.POST.copy()
-        if postdata.has_key('remove'):
+        if 'remove' in request.POST:
             remove_from_cart(request)
-        if postdata.has_key('update'):
-            update_cart(request)
-    cart_items = get_cart_items(request)
 
+        if 'update' in request.POST:
+            update_cart(request)
+
+    cart_items = get_cart_items(request)
+    total = cart.cart_subtotal(cart_items)
     dict = get_purchases_dict_for_user(request)
 
-    return render_to_response(template_name, locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        template_name, locals(), context_instance=RequestContext(request))
 
 
 @check_profile
-def purchasesCartView(request, template_name):  # TODO: настроить экспорт по закупкам
-    purchases_dict = get_purchases_dict(request)  # получаем словарь словарей ... описание в purchases.py
+# TODO: настроить экспорт по закупкам
+def purchasesCartView(request, template_name):
+    # получаем словарь словарей ... описание в purchases.py
+    purchases_dict = get_purchases_dict(request)
     form = ExportForm(request.POST or None)
     data = []
     if form.is_valid():
