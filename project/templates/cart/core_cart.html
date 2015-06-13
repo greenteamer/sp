@@ -24,7 +24,7 @@
 
 
         <!-- Main content -->
-        <section class="invoice">
+        <section class="invoice cart_page">
             <!-- Table row -->
             <div class="row">
 
@@ -35,7 +35,8 @@
                         <div class="col-xs-12">
 
                             {% for key, value in dict.items %}
-                                <h3>Закупка: {{ key.name }}</h3>
+                            <h3>Закупка: {{ key.name }}</h3>
+                            <div class="purchase">                                
                                 {% for key, value in value.items %}
                                     <h4>Каталог: {{ key.catalog_name }}</h4>
 
@@ -108,11 +109,35 @@
                                     </div>
 
                                 {% endfor %}
+                        
+                                    <h4>Инфо по оплате товаров и статусу:</h4>
+                                    <div class="table-responsive" style="width:80%">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Организатор</th>
+                                                    <th>Статус</th>
+                                                    <th>Инфо</th>
+                                                    <th>Всего к оплате по закупке</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>{{ key.organizerProfile.get_full_name }}</td>
+                                                    <td>{{ key.get_current_status.status_name }}</td>
+                                                    <td>{{ key.get_current_status_link.data }}</td>
+                                                    <td>{{ key.total }} руб.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                            </div>
                             {% endfor %}
 
                         </div>
 
                         <div class="col-xs-12">
+                            <h2>Общая информация:</h2>
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>

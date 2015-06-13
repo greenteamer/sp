@@ -37,6 +37,9 @@ class OrganizerProfile(BaseUserInfo):
     def __unicode__(self):
         return _(u'Профиль: ') + self.user.username
 
+    def get_full_name(self):
+        return u"%s %s" % (self.firstName, self.lastName)
+
     class Meta:
         verbose_name_plural = _(u'Профили организаторов')
 

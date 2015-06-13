@@ -144,6 +144,10 @@ class Purchase(models.Model):
         status = PurchaseStatusLinks.objects.get(purchase=self.id, active=True)
         return status.status
 
+    def get_current_status_link(self):
+        status = PurchaseStatusLinks.objects.get(purchase=self.id, active=True)
+        return status
+
     def get_catalogs(self):
         return Catalog.objects.filter(catalog_purchase=self.id)
 

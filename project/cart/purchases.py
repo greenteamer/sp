@@ -79,9 +79,12 @@ def get_purchases_dict_for_user(request):
     for purchase in purchases:
         tmp_catalogs = Catalog.objects.filter(catalog_purchase=purchase)
         tmp_dict = {}
+        purchase.total = 0.0
         for key, value in dict.items():
             if key in tmp_catalogs:
                 tmp_dict.update({key: value})
+                purchase.total += key.total
+
         global_dict.update({purchase: tmp_dict})
 
     return global_dict
