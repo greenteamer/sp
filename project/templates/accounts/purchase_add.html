@@ -89,7 +89,7 @@
 
                 // высота селекта катеогий
                 $('#id_categories').css({
-                    'height': $('#id_categories option').css('padding', 6).length*30,
+                    'height': $(this).find('option').css('padding', 6).length*30,
                     'max-height': 250
                 });
 
