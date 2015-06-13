@@ -57,22 +57,22 @@ def get_purchases_dict_for_user(request):
     purchases = set([])
     dict = {}
     list_of_tuples_items = []
-    cats = {}
 
     for item in cart_items:
         products.add(item.product)
-        tmp_cat = item.product.catalog
         list_of_tuples_items.append((item.product.catalog, item))
 
     for product in products:
         catalogs.add(product.catalog)
 
     for catalog in catalogs:
+        catalog.total = 0.0
         purchases.add(catalog.catalog_purchase)
         tmp_list = []
         for item in list_of_tuples_items:
             if item[0] == catalog:
                 tmp_list.append(item[1])
+                catalog.total += item[1].product.price * item[1].quantity
         dict.update({catalog: tmp_list})
     global_dict = {}
 

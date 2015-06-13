@@ -101,7 +101,7 @@
                                             <tfoot>
                                                 <tr>
                                                     <th colspan="5">Стоимость товаров:</th>
-        {#                                            <th>{{ cart_subtotal }} руб.</th>#}
+                                                    <th>{{ key.total }} руб.</th>
                                                 </tr>
                                             </tfoot>
                                         </table>
@@ -110,6 +110,25 @@
                                 {% endfor %}
                             {% endfor %}
 
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Всего товаров</th>
+                                            <th>Общая стоимость</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                            <td>{{ total }} руб.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
 
                     </div>
