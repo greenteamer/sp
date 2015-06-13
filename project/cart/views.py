@@ -25,7 +25,11 @@ def cartView(request, template_name):
             update_cart(request)
 
     cart_items = get_cart_items(request)
-    total = cart.cart_subtotal(cart_items)
+
+    # возвращает Helper класс который содержит статистику по корзине
+    cart_stat = cart.cart_stat(cart_items)
+
+    # возвращает очень замущеный словарь
     dict = get_purchases_dict_for_user(request)
 
     return render_to_response(
