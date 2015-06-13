@@ -174,7 +174,8 @@ class Purchase(models.Model):
         n.choice = 'purchase'
         n.users_list = n.purchase_choice(self)
         n.save()
-        return super(Purchase, self).save(force_insert, force_update, using, update_fields)
+        return super(Purchase, self).save(
+            force_insert, force_update, using, update_fields)
 
 
 class PurchaseStatusLinks(models.Model):

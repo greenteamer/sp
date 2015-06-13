@@ -35,21 +35,66 @@
                         <div id="insertfields">
 {#                            {{ catalogProductProperties_form }}#}
 
-                            <label>Свойство товара в каталоге:</label>
+                            <label>Атрибут товара в каталоге:</label>
                             <input class="form-control" name="cpp_name" placeholder="Введите свойство для товаров в этом каталоге" type="text">
                             <label>Возможные значения:</label>
                             <input class="form-control" name="cpp_values" placeholder="Введите возможные значения для свойства через символ &quot;;&quot;" type="text">
                             <hr/>
 
                         </div>
-                        <div id="clickbutton" class="btn btn-info">Добавить поля</div>
+                        <div id="clickbutton" class="btn btn-info">Добавить атрибут для товаров</div>
                         <div class="box-footer">
-                            <button type="submit" class="btn btn-primary">Отправить</button>
+                            <button type="submit" class="btn btn-primary">Создать каталог</button>
                         </div>
                     </form>
 
 
                 </div><!-- /.col -->
+
+                <div class="col-xs-6">
+                    <div class="box box-success ">
+                    <div class="box-header">                      
+                      <h3 class="">Помощь по разделу</h3>
+                    </div><!-- /.box-header -->
+                    <div class="box-body">
+
+                        <div>В данном разделе Вы можете создать и отредактировать каталог для Вашей закупки. Одной закупке может принадлежать несколько каталогов, которые, в свою очередь, содержат товары определенного типа. Создание нескольких каталогов может быть полезным если вы хотите разместить в одной закупке товары существенно отличающиеся по своему типу и своим атрибутам. Вы так же можете создавать столько автрибудов сколько Вам необходимо для данной группы товаров
+                        <br/><br/>
+                        <strong>Например:</strong> если Ваши товары в одном каталоге могут содержать атрибуты "размер" и "цвет" Вы должны сначала указать первое свойство товара в каталоге ("размер") и добавить в поле "возможные значения" те значения, которые могут быть у товаров в данном каталоге... в нашем случае для атрибута "размер" значения могут быть "32;34;39;41". Если мы хотим добавить атрибут "цвет", нам просто нужно нажать кнопку "добавить атрибут для товаров" а затем повторить операцицию.</div>
+
+                        <h3>Пошаговые действия</h3>  
+                        <ul class="todo-list ui-sortable">
+                            <li class="">
+                              <div class="icheckbox_flat-blue" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="checkbox" value="" name="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background-color: rgb(255, 255, 255); border: 0px; opacity: 0; background-position: initial initial; background-repeat: initial initial;"></ins></div>
+                              <small class="label label-success"><i class="fa fa-clock-o"></i> 1 шаг</small>
+                              <span class="text">Дайте название Вашему каталогу (например: Обувь для детей из Китая). Позаботьтесь о том что бы Ваше название соответствовало содержимому.</span>
+                            </li>
+                            <li>
+                              <div class="icheckbox_flat-blue" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="checkbox" value="" name="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background-color: rgb(255, 255, 255); border: 0px; opacity: 0; background-position: initial initial; background-repeat: initial initial;"></ins></div>
+                              <small class="label label-success"><i class="fa fa-clock-o"></i> 2 шаг</small>
+                              <span class="text">Название атрибута (например: размер). Не стоит писать большие названия атрибутов так как, в таком случае, потребителю будет сложно ориентироваться в Вашем каталоге.</span>                          
+                            </li>
+                            <li>
+                              <div class="icheckbox_flat-blue" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="checkbox" value="" name="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background-color: rgb(255, 255, 255); border: 0px; opacity: 0; background-position: initial initial; background-repeat: initial initial;"></ins></div>
+                              <small class="label label-success"><i class="fa fa-clock-o"></i> 3 шаг</small>
+                              <span class="text">Введите возможные параметры товаров, разделяя их символом ";". В дальнейшем, при добавлении товаров, вы сможете указать какие ему присущи атрибуты исходя из тех вариантов, которые Вы ввели в данное поле</span>                          
+                            </li>
+                            <li>
+                              <div class="icheckbox_flat-blue" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="checkbox" value="" name="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background-color: rgb(255, 255, 255); border: 0px; opacity: 0; background-position: initial initial; background-repeat: initial initial;"></ins></div>
+                              <small class="label label-success"><i class="fa fa-clock-o"></i> 4 шаг</small>
+                              <span class="text">При необходимости добавьте атрибуты и их параметры нажав на кнопку "добавить атрибут для товаров" и заполнив необходимые поля.</span>                          
+                            </li>
+                            <li>
+                              <div class="icheckbox_flat-blue" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="checkbox" value="" name="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background-color: rgb(255, 255, 255); border: 0px; opacity: 0; background-position: initial initial; background-repeat: initial initial;"></ins></div>
+                              <small class="label label-success"><i class="fa fa-clock-o"></i> 5 шаг</small>
+                              <span class="text">После проверки введенных данных нажмите "создать каталог". <strong>Внимание!</strong> Вы не сможете изменить параметры каталога после его создания.</span>
+                            </li>
+                        </ul>
+                            
+                    </div><!-- /.box-body -->
+                  </div>
+                </div>
+
             </div><!-- /.row -->
 
         </section><!-- /.content -->
