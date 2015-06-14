@@ -13,9 +13,11 @@ def get_purchases_dict(request):
     profile = getProfile(request.user)
     purchases_dict = {}
     for purchase in Purchase.objects.filter(organizerProfile=profile):
+        purchase.total_price = 0.0
         purchase_dict = {}
         for catalog in Catalog.objects.filter(catalog_purchase=purchase):
             list_items = []
+            catalog.total_price = 0.0
             for product in Product.objects.filter(catalog=catalog):
                 try:
                     items = CartItem.objects.filter(product=product)
@@ -24,7 +26,12 @@ def get_purchases_dict(request):
                 except:
                     pass
             if list_items:
+                for item in list_items:
+                    catalog.total_price += item.total_price()
+
+                purchase.total_price += catalog.total_price
                 purchase_dict.update({catalog: list_items})
+
         purchases_dict.update({purchase: purchase_dict})
     return purchases_dict
 
