@@ -76,7 +76,10 @@ def profileView(request, template_name):
         """проверка есть ли профиль у пользователя и получение его
         файл accounts.models"""
         profile = getProfile(user)
-        page = Page.objects.get(is_main=True)
+        try:
+            page = Page.objects.get(is_main=True)
+        except:
+            pass
     else:
         return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
     return render_to_response(template_name, locals(),

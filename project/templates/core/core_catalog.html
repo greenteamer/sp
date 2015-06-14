@@ -40,8 +40,8 @@
                 <li>{{ catalog.catalog_name }}</li>
             </ol>
             <h1>Просмотр каталога "{{ catalog.catalog_name }}" закупки - {{ purchase.name }}</h1>
-        </section>
-
+        </section>        
+    
         <!-- Main content -->
         <section class="invoice">
             <!-- Table row -->
@@ -51,6 +51,21 @@
 
                     <h2>{{ catalog.catalog_name }}</h2>
 
+                    <h4>{% if current_request %}
+                        {{current_request}}
+                    {% endif %}</h4>
+
+                    <form action="" method="get" id="filter">
+                        {% for prop in catalog_properties %}
+                            <label for="{{ prop.cpp_name }}">{{ prop.cpp_name }}</label>                            
+                            <input type="text" class="prop" id="{{ prop.cpp_name }}" name="{{ prop.cpp_name }}">                            
+                        {% endfor %}
+                        <input type="hidden" name="product_property" id="product_property">
+                        {# <input type="text" name="product_property"> #}
+                        <input type="submit" value="send">
+                    </form>
+
+                    
                     <div class="check_view_product">
                         <span id="view_line" style="margin-right:10px;">=</span>
                         <span id="view_block" style="">::</span>
@@ -59,8 +74,8 @@
                 </div><!-- /.col -->
 
                 <div class="col-xs-12 products">
-                    <div class="row">
-                        {% for product in catalog.get_products %}
+                    <div class="row">                        
+                        {% for product in products %}
                             <div class="col-xs-12 col-md-4 product-item">
 
                                 <h4 class="name">{{ product.product_name }}</h4>
@@ -284,6 +299,25 @@
                     $(this).parent(".quantity").children(".product_quantity").attr("value", current_quantity);
                 }
             }
+
+            var filter = $('#filter input.prop');            
+            var len = filter.length;
+            $( ".prop" ).change(function() {
+                var str = '';
+                filter.each(function (i, elem) {
+                                        
+                    // console.log(i); 
+                    // console.log(len);                                       
+                    if (i === len - 1) {                        
+                        str = str + elem.value;     
+                    } else {
+                        str = str + elem.value + ",";
+                    }
+                });
+                $("#product_property").val(str);
+                console.log(str);                
+            });
+
 
 
 

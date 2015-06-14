@@ -10,7 +10,7 @@ from django.core.context_processors import csrf
 from project.cart.models import CartItem
 from project.cart.forms import CartItemForm
 from project.cart.cart import add_to_cart, get_cart_items
-from project.core.models import Purchase, Product, Catalog, ProductImages, Category
+from project.core.models import Purchase, Product, Catalog, ProductImages, Category, CatalogProductProperties
 from project.accounts.models import getProfile, OrganizerProfile, MemberProfile
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import HttpResponse, Http404
@@ -101,7 +101,7 @@ def corePurchase(request, purchase_id, template_name):
 
 # Просмотр каталога
 @check_profile
-def coreCatalog(request, purchase_id, catalog_id, template_name):  # TODO: реализовать ajax добавление в корзину
+def coreCatalog(request, purchase_id, catalog_id, template_name):
     try:
 
         if 'ajax' in request.POST:
@@ -141,14 +141,28 @@ def coreCatalog(request, purchase_id, catalog_id, template_name):  # TODO: ре�
             else:
                 return HttpResponse('no_ajax')
 
-
         purchase = Purchase.objects.get(id=purchase_id)
-        catalog = Catalog.objects.get(id=catalog_id)
+
+        if 'product_property' in request.GET:
+
+            property = request.GET['product_property']
+            # property = "34"
+            products = Product.objects.filter(property__icontains=property)
+            current_request = ""
+            for key, value in request.GET.items():
+                if key != 'product_property':
+                    current_request += u"%s %s " % (key, value)
+        else:
+            products = Catalog.objects.get(id=catalog_id).get_products()
+
+        catalog_properties = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
+        # purchase = Purchase.objects.get(id=purchase_id)
+        # catalog = Catalog.objects.get(id=catalog_id)
         property_form = propertyForm(catalog_id)
 
-        # catalog_product_properties = CatalogProductProperties.objects.filter(cpp_catalog=catalog_id)
-        # catalogs = Catalog.objects.all()
-        return render_to_response(template_name, locals(), context_instance=RequestContext(request))
+        return render_to_response(
+            template_name, locals(), context_instance=RequestContext(request))
+
     except ObjectDoesNotExist:
             raise Http404
 
