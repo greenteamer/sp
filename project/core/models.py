@@ -7,6 +7,8 @@ from project.core.functions import translit
 from django.db.models import permalink
 from image_cropping import ImageRatioField
 from ckeditor.fields import RichTextField
+from django.contrib.auth.models import User
+from project.accounts.models import getProfile
 import os
 
 
@@ -148,6 +150,9 @@ class Purchase(models.Model):
     def get_catalogs(self):
         return Catalog.objects.filter(catalog_purchase=self.id)
 
+    def get_questions(self):
+        return PurchaseQuestion.objects.filter(purchase_id=self.id)
+
     def counts(self):
         dictionary = {
             "catalogs": Catalog.objects.filter(
@@ -217,6 +222,30 @@ class PurchaseStatusLinks(models.Model):
             n.save()
         return super(PurchaseStatusLinks, self).save(
             force_insert, force_update, using, update_fields)
+
+
+class PurchaseQuestion(models.Model):
+    purchase = models.ForeignKey(Purchase, verbose_name=u'Закупка')
+    text = RichTextField(verbose_name=u'Задайте вопрос')
+    user = models.ForeignKey(User, verbose_name=u'Автор вопроса', default=1)
+    created_at = models.DateTimeField(
+        verbose_name=u'Создан', null=True, auto_now_add=True)
+
+    def user_profile(self):
+        return getProfile(self.user)
+
+    def get_answer(self):
+        return PurchaseAnswer.objects.filter(question_id=self.id)
+
+class PurchaseAnswer(models.Model):
+    question = models.ForeignKey(PurchaseQuestion, verbose_name=u'Напишите ответ')
+    text = RichTextField(verbose_name=u'Добавьте ответ')
+    user = models.ForeignKey(User, verbose_name=u'Автор ответа', default=1)
+    created_at = models.DateTimeField(
+        verbose_name=u'Создан', null=True, auto_now_add=True)
+
+    def user_profile(self):
+        return getProfile(self.user)
 
 
 class Catalog(models.Model):

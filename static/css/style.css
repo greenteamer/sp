@@ -7,7 +7,7 @@ width: 90%;
 /* ошибочные поля формы */
 form .error{
 color: crimson;
-font-weight: 100;
+font-weight: 300;
 display: block;
 }
 .form-control.error{
