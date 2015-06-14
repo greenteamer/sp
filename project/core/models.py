@@ -135,7 +135,7 @@ class Purchase(models.Model):
         verbose_name_plural = u'Закупки'
 
     def __unicode__(self):
-        return self.names
+        return self.name
 
     def get_current_status(self):
         status = PurchaseStatusLinks.objects.get(purchase=self.id, active=True)
