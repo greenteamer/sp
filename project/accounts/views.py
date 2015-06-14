@@ -628,6 +628,7 @@ def product(request, purchase_id, catalog_id, product_id, template_name, edit=Fa
         images = product.get_all_image()
 
         product_form = ProductForm(instance=product)                    # заполненная форма текущей товара
+        catalog_product_properties = CatalogProductProperties.objects.select_related().filter(cpp_catalog=catalog_id)
         properties = get_propeties(catalog_id, 'list')  # получим все возможные свойства для товаров этой категории
         # указанные свойства товара
         product_properties = product.property.split(";")
@@ -644,6 +645,8 @@ def product(request, purchase_id, catalog_id, product_id, template_name, edit=Fa
             product = Product.objects.get(id=product_id)
 
             images = product.get_all_image()
+
+            catalog_product_properties = CatalogProductProperties.objects.select_related().filter(cpp_catalog=catalog_id)
 
             # указанные свойства товара
             product_properties = product.property.split(";")
@@ -679,7 +682,7 @@ def productAdd(request, purchase_id, catalog_id, template_name):
                 message = u"Ошибка при добавлении товара"
 
         product_form = ProductForm
-
+        catalog_product_properties = CatalogProductProperties.objects.select_related().filter(cpp_catalog=catalog_id)
         properties = get_propeties(catalog_id, 'list')    # получим все возможные свойства для товаров этой категории
 
         return render_to_response(template_name, locals(),
