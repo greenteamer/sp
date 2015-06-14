@@ -135,10 +135,7 @@ class Purchase(models.Model):
         verbose_name_plural = u'Закупки'
 
     def __unicode__(self):
-        return self.name
-
-    # def get_categories:
-    #     return Category.objects.filter()
+        return self.names
 
     def get_current_status(self):
         status = PurchaseStatusLinks.objects.get(purchase=self.id, active=True)
@@ -152,13 +149,13 @@ class Purchase(models.Model):
         return Catalog.objects.filter(catalog_purchase=self.id)
 
     def counts(self):
-        c = {
+        dictionary = {
             "catalogs": Catalog.objects.filter(
                 catalog_purchase=self.id).count(),
             "orders": 0,  # TODO: Настроить подсчет!
             "member": 0  # Настроить подсчет
         }
-        return c
+        return dictionary
 
     def url(self):
         return '/profile/organizer/purchase-%s' % self.id

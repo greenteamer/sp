@@ -5,6 +5,7 @@
       <!-- Content Wrapper. Contains page content -->
     <div id="core_product" class="content-wrapper">
         <!-- Content Header (Page header) -->
+
         <section class="content-header">
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
@@ -12,16 +13,6 @@
             </ol>
             <h1>Просмотр корзины</h1>
         </section>
-
-        {% if not profile %}
-            <div class="pad margin no-print">
-                <div class="callout callout-info" style="margin-bottom: 0!important;">
-                    <h4><i class="fa fa-info"></i> Записочка</h4>
-                    Для того что бы работать организатором в SP Mooscow, вам необходимо заполнить личные данные, после этого Ваша учетная запись будет рассмотренна админимтратором и ей будет присвоен соответствующий статус
-                </div>
-            </div>
-        {% endif %}
-
 
         <!-- Main content -->
         <section class="invoice">
@@ -63,7 +54,7 @@
                                             </tbody>
                                             <tfoot>
                                                 <tr>
-                                                    <th colspan="5">Стоимость товаров:</th>
+                                                    <th colspan="5">Заказано на: {{ purchase.total_price }} руб.</th>                                                    
                                                 </tr>
                                             </tfoot>
                                         </table>
