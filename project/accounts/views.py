@@ -5,6 +5,8 @@ from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm, p
 from project.core.forms import ImportXLSForm
 from project.core.models import Purchase, PurchaseStatus, Catalog, Product, CatalogProductProperties, \
                                 ProductImages, ImportFiles, PurchaseStatusLinks
+
+from project.documentation.models import Page                            
 from django.shortcuts import render, render_to_response, redirect
 from project.accounts.models import OrganizerProfile, getProfile, repopulateProfile
 from django.contrib import auth
@@ -64,10 +66,11 @@ def check_organizer(func):
 
 
 def profileView(request, template_name):
-    user = request.user
+    user = request.user    
     if user.is_authenticated():
         """проверка есть ли профиль у пользователя и получение его файл accounts.models"""
         profile = getProfile(user)
+        page = Page.objects.get(is_main=True)        
     else:
         return HttpResponseRedirect(urlresolvers.reverse('registrationView'))
     return render_to_response(template_name, locals(),
@@ -99,9 +102,12 @@ def populateProfileView(request, template_name):
             elif form.is_valid() and terms == 'on' and is_organizer == '':
                 form = MemberProfileForm(request.POST, request.FILES)
                 form.save(request.user)
+                messages.text(request, "Спасибо, вы успешно создали профиль, ожидайте его подтверждения от администратора")
                 return HttpResponseRedirect(urlresolvers.reverse('populateProfileView'))
+            elif form.is_valid() and terms == '':
+                messages.text(request, "Вы должны согласиться с условиями")          
             else:  # TODO: должна быть обработка ошибок
-                form = UserRegistrationForm(request.POST, request.FILES)
+                form = OrganizerProfileForm(request.POST, request.FILES)
                 return render(request, 'accounts/populate_profile.html', {
                     'form': form,
                     'error': form.errors,
@@ -563,6 +569,7 @@ def product(request, purchase_id, catalog_id, product_id, template_name, edit=Fa
         images = product.get_all_image()
 
         product_form = ProductForm(instance=product)                    # заполненная форма текущей товара
+        catalog_product_properties = CatalogProductProperties.objects.select_related().filter(cpp_catalog=catalog_id)
         properties = get_propeties(catalog_id, 'list')  # получим все возможные свойства для товаров этой категории
         # указанные свойства товара
         product_properties = product.property.split(";")
@@ -579,6 +586,8 @@ def product(request, purchase_id, catalog_id, product_id, template_name, edit=Fa
             product = Product.objects.get(id=product_id)
 
             images = product.get_all_image()
+
+            catalog_product_properties = CatalogProductProperties.objects.select_related().filter(cpp_catalog=catalog_id)
 
             # указанные свойства товара
             product_properties = product.property.split(";")
@@ -614,7 +623,7 @@ def productAdd(request, purchase_id, catalog_id, template_name):
                 message = u"Ошибка при добавлении товара"
 
         product_form = ProductForm
-
+        catalog_product_properties = CatalogProductProperties.objects.select_related().filter(cpp_catalog=catalog_id)
         properties = get_propeties(catalog_id, 'list')    # получим все возможные свойства для товаров этой категории
 
         return render_to_response(template_name, locals(),

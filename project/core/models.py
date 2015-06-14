@@ -125,7 +125,7 @@ class Purchase(models.Model):
         verbose_name=u'Процент организатора',
         help_text=u'Отмечается в процентах', default=15)
 
-    paymethods = models.TextField(u'Способы оплаты', default=u'Не указано')
+    paymethods = models.TextField(u'Способы оплаты')
     categories = models.ManyToManyField(
         Category, verbose_name=u'Categories',
         help_text=u'Категории для этой закупки')
@@ -174,7 +174,8 @@ class Purchase(models.Model):
         n.choice = 'purchase'
         n.users_list = n.purchase_choice(self)
         n.save()
-        return super(Purchase, self).save(force_insert, force_update, using, update_fields)
+        return super(Purchase, self).save(
+            force_insert, force_update, using, update_fields)
 
 
 class PurchaseStatusLinks(models.Model):
