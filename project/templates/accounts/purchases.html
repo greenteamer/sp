@@ -83,7 +83,7 @@
                                 </div>
                             </div><!-- /.box-header -->
                             <div class="box-body">
-                                <p>{{ purchase.description|truncatewords:60|safe }}</p>
+                                <p>{{ purchase.description|truncatewords:60|removetags:"img"|safe }}</p>
                                 <hr/>
                                 <div class="table-responsive">
                                     <table class="table table-bordered">

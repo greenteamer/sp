@@ -13,9 +13,11 @@ def get_purchases_dict(request):
     profile = getProfile(request.user)
     purchases_dict = {}
     for purchase in Purchase.objects.filter(organizerProfile=profile):
+        purchase.total_price = 0.0
         purchase_dict = {}
         for catalog in Catalog.objects.filter(catalog_purchase=purchase):
             list_items = []
+            catalog.total_price = 0.0
             for product in Product.objects.filter(catalog=catalog):
                 try:
                     items = CartItem.objects.filter(product=product)
@@ -24,7 +26,12 @@ def get_purchases_dict(request):
                 except:
                     pass
             if list_items:
+                for item in list_items:
+                    catalog.total_price += item.total_price()
+
+                purchase.total_price += catalog.total_price
                 purchase_dict.update({catalog: list_items})
+
         purchases_dict.update({purchase: purchase_dict})
     return purchases_dict
 
@@ -57,31 +64,34 @@ def get_purchases_dict_for_user(request):
     purchases = set([])
     dict = {}
     list_of_tuples_items = []
-    cats = {}
 
     for item in cart_items:
         products.add(item.product)
-        tmp_cat = item.product.catalog
         list_of_tuples_items.append((item.product.catalog, item))
 
     for product in products:
         catalogs.add(product.catalog)
 
     for catalog in catalogs:
+        catalog.total = 0.0
         purchases.add(catalog.catalog_purchase)
         tmp_list = []
         for item in list_of_tuples_items:
             if item[0] == catalog:
                 tmp_list.append(item[1])
+                catalog.total += item[1].total_price()
         dict.update({catalog: tmp_list})
     global_dict = {}
 
     for purchase in purchases:
         tmp_catalogs = Catalog.objects.filter(catalog_purchase=purchase)
         tmp_dict = {}
+        purchase.total = 0.0
         for key, value in dict.items():
             if key in tmp_catalogs:
                 tmp_dict.update({key: value})
+                purchase.total += key.total
+
         global_dict.update({purchase: tmp_dict})
 
     return global_dict
