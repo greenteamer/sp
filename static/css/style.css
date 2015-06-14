@@ -7,7 +7,7 @@ width: 90%;
 /* ошибочные поля формы */
 form .error{
 color: crimson;
-font-weight: 100;
+font-weight: 300;
 display: block;
 }
 .form-control.error{
@@ -229,6 +229,15 @@ margin-top: 42px;
     border: 1px solid #BDBDBD;
     border-top: 1px solid #BDBDBD;
     border-bottom: 1px solid #BDBDBD;
+}
+
+.cart_page .table-responsive,
+.cart_page h4 {
+    padding-left: 50px;
+}
+
+.cart_page .purchase {
+    margin-bottom: 50px;
 }
 
 section.sidebar .mdi-action-account-circle {

@@ -7,6 +7,9 @@ from project.core.functions import translit
 from django.db.models import permalink
 from image_cropping import ImageRatioField
 from ckeditor.fields import RichTextField
+from django.contrib.auth.models import User
+from project.accounts.models import getProfile
+import os
 
 
 class CommonActiveManager(models.Manager):
@@ -134,26 +137,30 @@ class Purchase(models.Model):
         verbose_name_plural = u'Закупки'
 
     def __unicode__(self):
-        return self.name
-
-    # def get_categories:
-    #     return Category.objects.filter()
+        return self.names
 
     def get_current_status(self):
         status = PurchaseStatusLinks.objects.get(purchase=self.id, active=True)
         return status.status
 
+    def get_current_status_link(self):
+        status = PurchaseStatusLinks.objects.get(purchase=self.id, active=True)
+        return status
+
     def get_catalogs(self):
         return Catalog.objects.filter(catalog_purchase=self.id)
 
+    def get_questions(self):
+        return PurchaseQuestion.objects.filter(purchase_id=self.id)
+
     def counts(self):
-        c = {
+        dictionary = {
             "catalogs": Catalog.objects.filter(
                 catalog_purchase=self.id).count(),
             "orders": 0,  # TODO: Настроить подсчет!
             "member": 0  # Настроить подсчет
         }
-        return c
+        return dictionary
 
     def url(self):
         return '/profile/organizer/purchase-%s' % self.id
@@ -215,6 +222,30 @@ class PurchaseStatusLinks(models.Model):
             n.save()
         return super(PurchaseStatusLinks, self).save(
             force_insert, force_update, using, update_fields)
+
+
+class PurchaseQuestion(models.Model):
+    purchase = models.ForeignKey(Purchase, verbose_name=u'Закупка')
+    text = RichTextField(verbose_name=u'Задайте вопрос')
+    user = models.ForeignKey(User, verbose_name=u'Автор вопроса', default=1)
+    created_at = models.DateTimeField(
+        verbose_name=u'Создан', null=True, auto_now_add=True)
+
+    def user_profile(self):
+        return getProfile(self.user)
+
+    def get_answer(self):
+        return PurchaseAnswer.objects.filter(question_id=self.id)
+
+class PurchaseAnswer(models.Model):
+    question = models.ForeignKey(PurchaseQuestion, verbose_name=u'Напишите ответ')
+    text = RichTextField(verbose_name=u'Добавьте ответ')
+    user = models.ForeignKey(User, verbose_name=u'Автор ответа', default=1)
+    created_at = models.DateTimeField(
+        verbose_name=u'Создан', null=True, auto_now_add=True)
+
+    def user_profile(self):
+        return getProfile(self.user)
 
 
 class Catalog(models.Model):
@@ -343,10 +374,34 @@ class CatalogProductProperties(models.Model):
 #         return self.properties_value
 #
 
+
 class ImportFiles(models.Model):
+
+    # def path_and_rename(self, path):
+    #     def wrapper(instance, filename):
+    #         ext = filename.split('.')[-1]
+    #         name = filename.split('.')[0]
+    #         # get filename
+    #         if instance.pk:
+    #             filename = '{}.{}'.format(instance.pk, ext)
+    #         else:
+    #             # pass
+    #             # set filename as random string
+    #             filename = '{}-purchase-{}-catalog-{}.{}'.format(
+    #                 name,
+    #                 self.import_catalog.catalog_purchase.id,
+    #                 self.import_catalog.id,
+    #                 ext)
+
+    #         # return the whole path to the file
+    #         return os.path.join(path, filename)
+    #     return wrapper
+
     file = models.FileField(
         verbose_name=u'Файл для импорта товаров в каталог',
-        upload_to='import_xls')
+        upload_to='import_xls',
+        # upload_to=path_and_rename('import_xls')
+    )
 
     import_catalog = models.ForeignKey(Catalog)
 

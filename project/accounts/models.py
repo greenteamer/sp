@@ -4,8 +4,9 @@ from django.db import models
 import random
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
-from project.core.models import Purchase
+# from project.core.models import Purchase
 from django.core.exceptions import ObjectDoesNotExist
+
 
 class BaseUserInfo(models.Model):
     """Абстрактный класс для заказов"""
@@ -25,25 +26,30 @@ class BaseUserInfo(models.Model):
 class OrganizerProfile(BaseUserInfo):
     """Профиль пользователя"""
     user = models.OneToOneField(User, unique=True)
-    icon = models.FileField(_(u'Image'), upload_to='accounts/images/',
-                             help_text=u'Фото', blank=True)
+    icon = models.FileField(
+        u'Image', upload_to='accounts/images/', help_text=u'Фото', blank=True)
 
     organizer_checked = models.BooleanField(default=False)
 
     def is_checked(self):
-        return self.organizer_checked==True
+        return self.organizer_checked is True
 
     def __unicode__(self):
         return _(u'Профиль: ') + self.user.username
+
+    def get_full_name(self):
+        return u"%s %s" % (self.firstName, self.lastName)
 
     class Meta:
         verbose_name_plural = _(u'Профили организаторов')
 
     def getOrganizerPurchases(self):
+        from project.core.models import Purchase
         try:
             profiles = Purchase.objects.filter(organizerProfile=self)
-            for profile in profiles: #используется для вывода статуса закупки (демо режим)
-                profile.bar = random.randrange(20,90,1)
+            for profile in profiles:
+                #используется для вывода статуса закупки (демо режим)
+                profile.bar = random.randrange(20, 90, 1)
             return profiles
         except:
             return None
@@ -52,13 +58,13 @@ class OrganizerProfile(BaseUserInfo):
 class MemberProfile(BaseUserInfo):
     """Профиль пользователя"""
     user = models.OneToOneField(User, unique=True)
-    icon = models.FileField(_(u'Image'), upload_to='accounts/images/',
-                             help_text=u'Фото', blank=True)
+    icon = models.FileField(
+        u'Image', upload_to='accounts/images/', help_text=u'Фото', blank=True)
 
     member_checked = models.BooleanField(default=False)
 
     def is_checked(self):
-        return self.member_checked==True
+        return self.member_checked is True
 
     def __unicode__(self):
         return _(u'Профиль: ') + self.user.username
