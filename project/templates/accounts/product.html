@@ -34,15 +34,22 @@
                     <br/>
                     <b>ID: </b>{{ product.id }}
                     <br/>
-                    <b>Name: </b>{{ product.product_name }}
+                    <b>Название: </b>{{ product.product_name }}
                     <br/>
-                    <b>Description: </b>{{ product.description }}
+                    <b>Описание: </b>{{ product.description }}
                     <br/>
-
-                    <b>Свойства: </b>
+                    <hr/>
+                    <b>Свойства каталога: </b>
+                    <div class="svvakataloga">
+                        {% for catalog_product_property in catalog_product_properties %}
+                            <p><i class="fa fa-check"></i> <b>{{ catalog_product_property.cpp_name }}</b>: {{ catalog_product_property.cpp_values }}</p>
+                        {% endfor %}
+                    </div>
+                    <br/>
+                    <b>Свойства товара: </b>
                     <div style="overflow: hidden;">
                     {% for property in product_properties%}
-                        <div style="float:left;margin:0 7px 7px 0;">{{ property }}</div>
+                        <div style="float:left;margin:0 7px 7px 0;background: wheat; border-radius: 3px; padding: 4px;">{{ property }}</div>
                     {% endfor %}
                     </div>
 
