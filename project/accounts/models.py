@@ -4,7 +4,6 @@ from django.db import models
 import random
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
-from project.core.models import Purchase
 from django.core.exceptions import ObjectDoesNotExist
 
 
@@ -44,6 +43,7 @@ class OrganizerProfile(BaseUserInfo):
         verbose_name_plural = _(u'Профили организаторов')
 
     def getOrganizerPurchases(self):
+        from project.core.models import Purchase
         try:
             profiles = Purchase.objects.filter(organizerProfile=self)
             for profile in profiles:
@@ -64,6 +64,9 @@ class MemberProfile(BaseUserInfo):
 
     def is_checked(self):
         return self.member_checked is True
+
+    def get_full_name(self):
+        return u"%s %s" % (self.firstName, self.lastName)
 
     def __unicode__(self):
         return _(u'Профиль: ') + self.user.username
