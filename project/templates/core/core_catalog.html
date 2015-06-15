@@ -82,7 +82,6 @@
 
                                 <div class="buttons_wrap">
                                     <div class="link_more">
-{#                                        <a data-toggle="modal" data-target="#ViewOneProduct" class="btn btn-primary" href="{{ product.url_core }}">Подробнее</a>#}
                                         <a data-toggle="modal" data-target="#ViewOneProduct" class="btn btn-primary more_product" href="#" product-id="{{ product.id }}">Подробнее</a>
                                     </div>
                                     <div class="add_to_cart_wrapper">
@@ -105,12 +104,10 @@
                                         {{ product.price }} руб.
                                     </div>
                                 </div>
-{#                                <img style="" src="{% cropped_thumbnail product.get_image "cropping" scale=1 %}">#}
                                 <div class="properties">
                                     {{ property_form }}
                                 </div>
 
-{#                                {{ product.description|truncatewords:15|safe }}#}
                                 {{ product.description | truncatewords:25 | safe}}
 
 {#                                {% if product.sku %}#}
@@ -122,6 +119,315 @@
                     </div>
                 </div>
             </div><!-- /.row -->
+
+
+
+
+
+
+        --------------------
+
+<form class="post-form" action="/forum/forum/1/topic/add/
+                                " method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrfmiddlewaretoken" value="CjIVfzEcBRxaBevghOQdLkqxLuPm3yEf">
+        <fieldset>
+
+
+
+
+<div class=" ">
+
+        <label class="control-label" for="id_name">
+            Заголовок
+        </label>
+
+    <div>
+        <input id="id_name" name="name" type="text">
+
+    </div>
+</div>
+
+
+
+
+
+<div class=" ">
+
+        <label class="control-label" for="id_login">
+            Пользователь
+        </label>
+
+    <div>
+        <input id="id_login" name="login" type="text" value="admin">
+
+    </div>
+</div>
+
+
+
+
+
+<div class=" ">
+
+        <label class="control-label" for="id_body">
+            Сообщение
+        </label>
+
+    <div>
+
+
+
+<div><div id="markItUpId_body" class="markItUp"><div class="markItUpContainer"><div class="markItUpHeader"><ul><li class="markItUpButton markItUpButton1 "><a href="" accesskey="B" title="Жирный [Ctrl+B]">Жирный</a></li><li class="markItUpButton markItUpButton2 "><a href="" accesskey="I" title="Курсив [Ctrl+I]">Курсив</a></li><li class="markItUpButton markItUpButton3 "><a href="" accesskey="U" title="Подчёркнутый [Ctrl+U]">Подчёркнутый</a></li><li class="markItUpButton markItUpButton4 "><a href="" accesskey="S" title="Зачёркнутый [Ctrl+S]">Зачёркнутый</a></li><li class="markItUpSeparator">---------------</li><li class="markItUpButton markItUpButton5 "><a href="" accesskey="P" title="Изображение [Ctrl+P]">Изображение</a></li><li class="markItUpButton markItUpButton6 "><a href="" accesskey="L" title="Ссылка [Ctrl+L]">Ссылка</a></li><li class="markItUpSeparator">---------------</li><li class="markItUpButton markItUpButton7 "><a href="" title="Ненумерованный список">Ненумерованный список</a></li><li class="markItUpButton markItUpButton8 "><a href="" title="Нумерованный список">Нумерованный список</a></li><li class="markItUpButton markItUpButton9 "><a href="" title="Элемент списка">Элемент списка</a></li><li class="markItUpSeparator">---------------</li><li class="markItUpButton markItUpButton10 "><a href="" title="Цитировать">Цитировать</a></li><li class="markItUpButton markItUpButton11 "><a href="" title="Код">Код</a></li><li class="markItUpSeparator">---------------</li><li class="markItUpButton markItUpButton12 clean"><a href="" title="Очистить">Очистить</a></li><li class="markItUpButton markItUpButton13 preview"><a href="" title="Предпросмотр">Предпросмотр</a></li></ul></div><textarea cols="40" id="id_body" name="body" rows="10" class="markItUpEditor"></textarea><div class="markItUpFooter"><div class="markItUpResizeHandle"></div></div></div></div></div>
+
+
+<script type="text/javascript">
+if(!window.pybb){
+    window.pybb = {};
+}
+if(!window.pybb.get_markitup_settings){
+    window.pybb.get_markitup_settings = function() {
+        var mySettings = new Array();
+        mySettings['previewParserPath'] = '/forum/api/post_ajax_preview/';
+        mySettings['previewPosition'] = 'before';
+        mySettings['resizeHandle'] = true;
+        mySettings['markupSet'] = [
+            {name:'Жирный', key:'B', openWith:'[b]', closeWith:'[/b]'},
+            {name:'Курсив', key:'I', openWith:'[i]', closeWith:'[/i]'},
+            {name:'Подчёркнутый', key:'U', openWith:'[u]', closeWith:'[/u]'},
+            {name:'Зачёркнутый', key:'S', openWith:'[s]', closeWith:'[/s]'},
+            {separator:'---------------' },
+            {name:'Изображение', key:'P', replaceWith:'[img][![Url]!][/img]'},
+            {name:'Ссылка', key:'L', openWith:'[url=[![Url]!]]', closeWith:'[/url]', placeHolder:'Your text to link here...'},
+            {separator:'---------------' },
+            {name:'Ненумерованный список', openWith:'[list]\n', closeWith:'\n[/list]'},
+            {name:'Нумерованный список', openWith:'[list=[![Starting number]!]]\n', closeWith:'\n[/list]'},
+            {name:'Элемент списка', openWith:'[*] '},
+            {separator:'---------------' },
+            {name:'Цитировать', openWith:'[quote]', closeWith:'[/quote]'},
+            {name:'Код', openWith:'[code]', closeWith:'[/code]'},
+            {separator:'---------------' },
+            {name:'Очистить', className:"clean", replaceWith:function(markitup) { return markitup.selection.replace(/\[(.*?)\]/g, "") } },
+            {name:'Предпросмотр', className:"preview", call:'preview' }
+        ];
+        return mySettings ;
+    };
+}
+</script>
+
+
+    </div>
+</div>
+
+
+
+        <div id="emoticons">
+
+        <a href="#" title="8)"><img src="/static/pybb/emoticons/glasses.png"></a>
+
+        <a href="#" title=":("><img src="/static/pybb/emoticons/sad.png"></a>
+
+        <a href="#" title=":)"><img src="/static/pybb/emoticons/smile.png"></a>
+
+        <a href="#" title=">_<"><img src="/static/pybb/emoticons/angry.png"></a>
+
+        <a href="#" title=";)"><img src="/static/pybb/emoticons/wink.png"></a>
+
+        <a href="#" title=":O"><img src="/static/pybb/emoticons/shok.png"></a>
+
+        <a href="#" title="-_-"><img src="/static/pybb/emoticons/shy.png"></a>
+
+        <a href="#" title="[]_[]"><img src="/static/pybb/emoticons/geek.png"></a>
+
+        <a href="#" title=":D"><img src="/static/pybb/emoticons/lol.png"></a>
+
+        <a href="#" title=":.("><img src="/static/pybb/emoticons/cry.png"></a>
+
+        <a href="#" title="o_O"><img src="/static/pybb/emoticons/eyes.png"></a>
+
+        <a href="#" title=":P"><img src="/static/pybb/emoticons/tongue.png"></a>
+
+        </div>
+
+
+
+
+
+<div class=" ">
+
+        <label class="control-label" for="id_poll_type">
+            Тип опроса
+        </label>
+
+    <div>
+        <select id="id_poll_type" name="poll_type">
+<option value="0">Нет</option>
+<option value="1">Выбор одного варианта</option>
+<option value="2">Выбор нескольких вариантов</option>
+</select>
+
+    </div>
+</div>
+
+
+
+<div id="poll-question" style="display: none;">
+
+
+<div class=" ">
+
+        <label class="control-label" for="id_poll_question">
+            Тема опроса
+        </label>
+
+    <div>
+        <textarea class="no-markitup" cols="40" id="id_poll_question" name="poll_question" rows="10"></textarea>
+
+    </div>
+</div>
+
+
+
+</div>
+<div id="poll-answers-formset" style="display: none;">
+  <br>Ответы на опрос
+
+
+
+        <div class="poll-answer-form dynamic-form">
+
+<input type="hidden" name="csrfmiddlewaretoken" value="CjIVfzEcBRxaBevghOQdLkqxLuPm3yEf">
+
+
+
+
+
+
+
+
+<div class=" ">
+
+    <div>
+        <input id="id_poll_answers-0-text" maxlength="255" name="poll_answers-0-text" type="text">
+
+    </div>
+</div>
+
+
+
+
+
+
+        <input type="hidden" name="poll_answers-0-DELETE" id="id_poll_answers-0-DELETE">
+
+
+
+
+    <input id="id_poll_answers-0-id" name="poll_answers-0-id" type="hidden">
+
+    <input id="id_poll_answers-0-topic" name="poll_answers-0-topic" type="hidden">
+
+
+<input type="hidden" name="next" value="">
+
+        <a class="delete-row" href="javascript:void(0)">удалить ответ</a></div>
+
+        <div class="poll-answer-form dynamic-form">
+
+<input type="hidden" name="csrfmiddlewaretoken" value="CjIVfzEcBRxaBevghOQdLkqxLuPm3yEf">
+
+
+
+
+
+
+
+
+<div class=" ">
+
+    <div>
+        <input id="id_poll_answers-1-text" maxlength="255" name="poll_answers-1-text" type="text">
+
+    </div>
+</div>
+
+
+
+
+
+
+        <input type="hidden" name="poll_answers-1-DELETE" id="id_poll_answers-1-DELETE">
+
+
+
+
+    <input id="id_poll_answers-1-id" name="poll_answers-1-id" type="hidden">
+
+    <input id="id_poll_answers-1-topic" name="poll_answers-1-topic" type="hidden">
+
+
+<input type="hidden" name="next" value="">
+
+        <a class="delete-row" href="javascript:void(0)">удалить ответ</a></div><a class="add-row" href="javascript:void(0)">добавить ответ</a>
+
+  <input id="id_poll_answers-TOTAL_FORMS" name="poll_answers-TOTAL_FORMS" type="hidden" value="2"><input id="id_poll_answers-INITIAL_FORMS" name="poll_answers-INITIAL_FORMS" type="hidden" value="0"><input id="id_poll_answers-MAX_NUM_FORMS" name="poll_answers-MAX_NUM_FORMS" type="hidden" value="10">
+</div>
+
+<script type="text/javascript">
+  window.onload = function () {
+    $('div#poll-answers-formset div.poll-answer-form').formset({
+      deleteText:'удалить ответ',
+      addText:'добавить ответ',
+      prefix: 'poll_answers'
+    });
+
+    var toggle_poll_answers_formset = function (poll_type) {
+      if (poll_type === "0") {
+        $('div#poll-answers-formset').hide();
+        $('div#poll-question').hide();
+      } else {
+        $('div#poll-answers-formset').show();
+        $('div#poll-question').show();
+      }
+    };
+
+    $('#id_poll_type').each(function () {
+      toggle_poll_answers_formset($(this).val());
+    }).change(function () {
+      toggle_poll_answers_formset($(this).val());
+    });
+  };
+</script>
+
+
+
+
+
+    <div class="attachments-form">
+        <a class="attachment-link" onclick="$(&quot;div.attachments-form table&quot;).toggle();return false;" href="#">Добавить вложение</a>
+        <input id="id_attachments-TOTAL_FORMS" name="attachments-TOTAL_FORMS" type="hidden" value="1"><input id="id_attachments-INITIAL_FORMS" name="attachments-INITIAL_FORMS" type="hidden" value="0"><input id="id_attachments-MAX_NUM_FORMS" name="attachments-MAX_NUM_FORMS" type="hidden" value="1000">
+            <table style="display:none;">
+
+                <tbody><tr>
+                    <td><input id="id_attachments-0-id" name="attachments-0-id" type="hidden"> <input id="id_attachments-0-file" name="attachments-0-file" type="file"></td>
+                    <td></td>
+                </tr>
+
+            </tbody></table>
+    </div>
+
+
+        <p class="submit"><input type="submit" class="btn btn-primary" value="Подтвердить"></p>
+    </fieldset>
+</form>
+
+
+
+
+
+
+
+
+
 
         </section><!-- /.content -->
         <div class="clearfix"></div>
