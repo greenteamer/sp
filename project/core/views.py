@@ -10,7 +10,7 @@ from django.core.context_processors import csrf
 from project.cart.models import CartItem
 from project.cart.forms import CartItemForm
 from project.cart.cart import add_to_cart, get_cart_items
-from project.core.models import Purchase, Product, Catalog, ProductImages, Category, PurchaseQuestion, PurchaseAnswer
+from project.core.models import Purchase, Product, Catalog, ProductImages, Category, PurchaseQuestion, PurchaseAnswer, CatalogProductProperties
 from project.accounts.models import getProfile, OrganizerProfile, MemberProfile
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import HttpResponse, Http404

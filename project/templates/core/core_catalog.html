@@ -608,24 +608,18 @@ if(!window.pybb.get_markitup_settings){
 
             var filter = $('#filter input.prop');            
             var len = filter.length;
-            $( ".prop" ).change(function() {
+            $(".prop").change(function() {
                 var str = '';
                 filter.each(function (i, elem) {
-                                        
-                    // console.log(i); 
-                    // console.log(len);                                       
-                    if (i === len - 1) {                        
-                        str = str + elem.value;     
+                    if (i === len - 1) {               
+                        str = str + elem.value;
                     } else {
                         str = str + elem.value + ",";
                     }
                 });
                 $("#product_property").val(str);
-                console.log(str);                
+                console.log(str);
             });
-
-
-
 
         });
     })(jQuery);
