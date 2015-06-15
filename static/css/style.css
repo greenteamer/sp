@@ -7,7 +7,7 @@ width: 90%;
 /* ошибочные поля формы */
 form .error{
 color: crimson;
-font-weight: 100;
+font-weight: 300;
 display: block;
 }
 .form-control.error{
@@ -166,6 +166,7 @@ display: inline-block;
 background: rgba(2, 2, 2, 0.5);
 border: none;
 border-radius: 0;
+padding: 5px 11px!important;
 }
 
 .image {

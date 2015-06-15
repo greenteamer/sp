@@ -10,13 +10,12 @@ from django.core.context_processors import csrf
 from project.cart.models import CartItem
 from project.cart.forms import CartItemForm
 from project.cart.cart import add_to_cart, get_cart_items
-from project.core.models import Purchase, Product, Catalog, ProductImages, Category, CatalogProductProperties
+from project.core.models import Purchase, Product, Catalog, ProductImages, Category, PurchaseQuestion, PurchaseAnswer
 from project.accounts.models import getProfile, OrganizerProfile, MemberProfile
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import HttpResponse, Http404
 from django.contrib import messages
 from project.accounts.forms import propertyForm
-
 
 def check_profile(func):
     """декоратор проверки профиля пользователя
@@ -93,6 +92,21 @@ def corePurchase(request, purchase_id, template_name):
     try:
         purchase = Purchase.objects.get(id=purchase_id)  # получаем экземпляр Закупки по id
         catalogs = Catalog.objects.filter(catalog_purchase=purchase)
+
+        if 'question' in request.POST:
+            new_question = PurchaseQuestion()
+            new_question.purchase_id = purchase_id
+            new_question.text = request.POST['question']
+            new_question.user = user
+            new_question.save()
+
+        if 'answer' in request.POST:
+            new_answer = PurchaseAnswer()
+            new_answer.question_id = request.POST['question_id']
+            new_answer.text = request.POST['answer']
+            new_answer.user = user
+            new_answer.save()
+
     except ObjectDoesNotExist:
         raise Http404
 

@@ -4,6 +4,7 @@ from django.db import models
 import random
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
+# from project.core.models import Purchase
 from django.core.exceptions import ObjectDoesNotExist
 
 

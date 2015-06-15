@@ -1,4 +1,6 @@
 {% extends "core_main.html" %}
+{% load thumbnail %}
+{% load cropping %}
 
 {% block content %}
       <!-- Content Wrapper. Contains page content -->
@@ -63,6 +65,81 @@
                 </div><!-- /.col -->
 
             </div><!-- /.row -->
+            <hr/>
+            <div class="row">
+                <div class="col-sm-12">
+
+                    <div class="list-group">
+                        {% for question in purchase.get_questions %}
+                            <div class="list-group-item">
+                                <div class="row-picture">
+                                    {% if profile.icon %}
+                                        <img src="/media/{{ question.user_profile.icon }}"class="circle" alt="фото"/>
+                                    {% else %}
+                                        <i class="mdi-action-account-circle"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="row-content">
+                                     <h4 class="list-group-item-heading">{{ question.user_profile.firstName }}</h4>
+                                    <p class="list-group-item-text">{{ question.text }}</p>
+                                    <div class="created" style="color: #999;text-align: right;">{{ question.created_at }}</div>
+                                </div>
+                                <div class="list-group-separator"></div>
+
+                                <div class="answers" style="padding-left: 6%;">
+                                    <div class="list-group">
+                                        {% for answer in question.get_answer %}
+                                            <div class="list-group-item">
+                                                <div class="row-picture">
+                                                    {% if profile.icon %}
+                                                        <img src="/media/{{ answer.user_profile.icon }}"class="circle" alt="фото"/>
+                                                    {% else %}
+                                                        <i class="mdi-action-account-circle"></i>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="row-content">
+                                                    <h4 class="list-group-item-heading">{{ answer.user_profile.firstName }}</h4>
+                                                    <p class="list-group-item-text">{{ answer.text }}</p>
+                                                    <div class="created" style="color: #999;text-align: right;">{{ answer.created_at }}</div>
+                                                </div>
+                                            </div>
+                                            <div class="list-group-separator"></div>
+                                        {% endfor %}
+                                        {% if question.user.id == profile.id or profile.id == purchase.organizerProfile.id %}
+                                            <form action="" method="post" style="width: 75%;float: right;">
+                                                {% csrf_token %}
+                                                <textarea name="answer" id="" cols="30" rows="5" class="form-control" style="border: 1px solid #e1e1e1;border-bottom: 0;"></textarea>
+                                                <input type="hidden" name="question_id" value="{{ question.id }}"/>
+                                                <input type="submit" value="Отправить ответ" class="btn btn-primary"/>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        {% endfor %}
+                    </div>
+
+                    <br/>
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <div class="clearfix">
+                            <textarea name="question" id="" cols="30" rows="5" class="form-control" style="border: 1px solid #e1e1e1;border-bottom: 0; width: 80%;float: left;"></textarea>
+                            <div class="avatar" style="float: right;width: 20%;padding-left: 10px;">
+                                <h4 style="margin-top: -4px;margin-bottom: 0px;">{{ profile.firstName }}</h4> <br/>
+                                {% thumbnail profile.icon "60x60" crop="60% center" as im %}
+                                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" style="border-radius: 50%;" />
+                                {% empty %}
+                                    <i class="mdi-action-account-circle"></i>
+                                {% endthumbnail %}
+                            </div>
+                        </div>
+                        <input type="submit" value="Задать вопрос" class="btn btn-primary"/>
+                    </form>
+                </div>
+            </div>
 
         </section><!-- /.content -->
         <div class="clearfix"></div>
