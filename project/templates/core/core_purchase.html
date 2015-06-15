@@ -50,10 +50,13 @@
                         </div>
                         <div class="col-xs-12">
                             <h3>Каталоги закупки</h3>
-                            {% for catalog in purchase.get_catalogs %}
-                                <a href="{{ catalog.url_core }}">{{ catalog.catalog_name }}</a>
-                            {% endfor %}
-
+                            <table class="table-responsive">
+                                {% for catalog in purchase.get_catalogs %}
+                                    <tr>
+                                        <td><a href="{{ catalog.url_core }}">{{ catalog.catalog_name }}</a></td>
+                                    </tr>    
+                                {% endfor %}
+                            </table>                            
                         </div>
                     </div>
 
