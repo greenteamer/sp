@@ -19,7 +19,7 @@ from project.accounts.forms import propertyForm
 
 def check_profile(func):
     """декоратор проверки профиля пользователя
-п   ринимает пользователя , возвращяет профайл"""
+    принимает пользователя , возвращяет профайл"""
     def wrapper(request, *args, **kwargs):
         if request.user.is_authenticated():
             profile = getProfile(request.user)
@@ -171,7 +171,8 @@ def coreCatalog(request, purchase_id, catalog_id, template_name):
 
         catalog_properties = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
         # purchase = Purchase.objects.get(id=purchase_id)
-        # catalog = Catalog.objects.get(id=catalog_id)
+        catalog = Catalog.objects.get(id=catalog_id)
+        # id = catalog_id
         property_form = propertyForm(catalog_id)
 
         return render_to_response(

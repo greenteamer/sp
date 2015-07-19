@@ -41,7 +41,7 @@
             </ol>
             <h1>Просмотр каталога "{{ catalog.catalog_name }}" закупки - {{ purchase.name }}</h1>
         </section>        
-    
+
         <!-- Main content -->
         <section class="invoice">
             <!-- Table row -->
@@ -57,15 +57,15 @@
 
                     <form action="" method="get" id="filter">
                         {% for prop in catalog_properties %}
-                            <label for="{{ prop.cpp_name }}">{{ prop.cpp_name }}</label>                            
-                            <input type="text" class="prop" id="{{ prop.cpp_name }}" name="{{ prop.cpp_name }}">                            
+                            <label for="{{ prop.cpp_name }}">{{ prop.cpp_name }}</label>
+                            <input type="text" class="prop" id="{{ prop.cpp_name }}" name="{{ prop.cpp_name }}">
                         {% endfor %}
                         <input type="hidden" name="product_property" id="product_property">
                         {# <input type="text" name="product_property"> #}
                         <input type="submit" value="send">
                     </form>
 
-                    
+
                     <div class="check_view_product">
                         <span id="view_line" style="margin-right:10px;">=</span>
                         <span id="view_block" style="">::</span>
@@ -74,7 +74,7 @@
                 </div><!-- /.col -->
 
                 <div class="col-xs-12 products">
-                    <div class="row">                        
+                    <div class="row">
                         {% for product in products %}
                             <div class="col-xs-12 col-md-4 product-item">
 
@@ -297,12 +297,12 @@
                 }
             }
 
-            var filter = $('#filter input.prop');            
+            var filter = $('#filter input.prop');
             var len = filter.length;
             $(".prop").change(function() {
                 var str = '';
                 filter.each(function (i, elem) {
-                    if (i === len - 1) {               
+                    if (i === len - 1) {
                         str = str + elem.value;
                     } else {
                         str = str + elem.value + ",";
@@ -317,10 +317,8 @@
 </script>
 
 {% endblock %}
-{% block react %}    
+{% block react %}
     {# // <script src="{% static 'app/vendor/react/react.js' %}"></script> #}
     {# // <script src="{% static 'app/catalog/main_catalog.js' %}"></script> #}
-    {# // <script src="{% static 'app/catalog/show_product.js' %}"></script> #}    
-{% endblock %}      
-
-
+    {# // <script src="{% static 'app/catalog/show_product.js' %}"></script> #}
+{% endblock %}
