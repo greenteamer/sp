@@ -14,10 +14,6 @@ display: block;
 border: 1px solid crimson;
 }
 
-
-
-
-
 .content-header>ol.breadcrumb {
     position: relative;
     float: none;
@@ -102,7 +98,7 @@ color: rgb(90, 90, 90);
 
 
 .product-item {
-height: 500px;
+height: 550px;
 /*overflow: overlay;*/
 margin-bottom: 20px;
 border: 1px solid #eee;
