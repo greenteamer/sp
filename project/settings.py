@@ -183,10 +183,10 @@ TINYMCE_SPELLCHECKER = True
 TINYMCE_COMPRESSOR = True
 
 
-SOUTH_MIGRATION_MODULES = {
-    'captcha': 'captcha.south_migrations',
-    # 'sitetree': 'sitetree.south_migrations',
-}
+# SOUTH_MIGRATION_MODULES = {
+#     'captcha': 'captcha.south_migrations',
+#     # 'sitetree': 'sitetree.south_migrations',
+# }
 
 INPLACEEDIT_DISABLE_CLICK = False
 THUMBNAIL_DEBUG = True
@@ -226,7 +226,7 @@ INSTALLED_APPS = (
     'sorl.thumbnail',
     # 'dajaxice',
     # 'dajax',
-    'south',
+    # 'south',
     'captcha',
     'ckeditor',
     'tinymce',
@@ -247,7 +247,7 @@ INSTALLED_APPS = (
     'project.documentation',
     'tastypie',
     # 'crispy_forms',
-    'ckeditor',
+    # 'ckeditor',
     # 'debug_toolbar',
 )
 

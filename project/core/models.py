@@ -40,7 +40,7 @@ class Category(MPTTModel):
         verbose_name=u'Создана', null=True, auto_now_add=True)
 
     updated_at = models.DateTimeField(
-        verbose_name=u'Обновлена', default='', null=True, auto_now=True)
+        verbose_name=u'Обновлена', null=True, auto_now=True)
 
     parent = TreeForeignKey(
         'self', verbose_name=u'Родительская категория', related_name='children',
@@ -155,8 +155,7 @@ class Purchase(models.Model):
 
     def counts(self):
         dictionary = {
-            "catalogs": Catalog.objects.filter(
-                catalog_purchase=self.id).count(),
+            "catalogs": Catalog.objects.filter(catalog_purchase=self.id).count(),
             "orders": 0,  # TODO: Настроить подсчет!
             "member": 0  # Настроить подсчет
         }
@@ -258,6 +257,10 @@ class Catalog(models.Model):
 
     updated_at = models.DateTimeField(
         u'Updated at', null=True, auto_now=True)
+
+    categories = models.ManyToManyField(
+        Category, verbose_name=u'Categories',
+        help_text=u'Категории для этой закупки')
 
     def __unicode__(self):
         return self.catalog_name
