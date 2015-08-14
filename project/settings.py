@@ -216,24 +216,18 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.flatpages',
-    # Uncomment the next line to enable the admin:
-    # 'grappelli',
+    # Custom apps:
     'filebrowser',
     'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
     'bootstrap3',
     'sorl.thumbnail',
-    # 'dajaxice',
-    # 'dajax',
-    # 'south',
     'captcha',
     'ckeditor',
     'tinymce',
-    # 'djcelery',
     'djkombu',
     'mptt',
     'project.core',
+    'project.client',
     'project.accounts',
     'django_coverage',
     'mptt_tree_editor',
@@ -246,10 +240,18 @@ INSTALLED_APPS = (
     'project.notifications',
     'project.documentation',
     'tastypie',
-    # 'crispy_forms',
-    # 'ckeditor',
-    # 'debug_toolbar',
+    'rest_framework',
 )
+
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
+
 
 FILEBROWSER_MEDIA_ROOT = MEDIA_ROOT
 FILEBROWSER_MEDIA_URL = MEDIA_URL

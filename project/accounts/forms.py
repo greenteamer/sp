@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from project.accounts.models import OrganizerProfile, getProfile, MemberProfile
 from project.core.models import Purchase, Catalog, CatalogProductProperties,\
-    Product, ProductImages
+    Product, ProductImages, Category
 
 from django.forms import ModelForm
 from project.core.functions import *
@@ -177,7 +177,7 @@ class UserLoginForm(forms.ModelForm):
 class purchaseForm(ModelForm):
     class Meta:
         model = Purchase
-        exclude = ('organizerProfile',)
+        exclude = ('organizerProfile', 'promo')
 
     def __init__(self, *args, **kwargs):
         super(purchaseForm, self).__init__(*args, **kwargs)
@@ -207,6 +207,11 @@ class catalogForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(catalogForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs = {
+                'placeholder': self.fields[field].label,
+                'class': 'form-control'
+            }
         self.fields['catalog_name'].widget.attrs = {
             'placeholder': 'Введите название каталога',
             'class': 'form-control'
@@ -310,5 +315,38 @@ def propertyForm(catalog_id, product_id=False):
                 self.fields[slug] = forms.ChoiceField(
                     widget=forms.RadioSelect,
                     label=name, choices=list_choices)
+
+    return DynamicPropertyForm()
+
+
+# TODO: желательно сделать выбор по умолчанию каждого из свойств.\
+#на данный момент реализованно через jquery
+def clientPropertyForm(catalog_id, product_id=False):
+    """динамичная форма свойств.перечисляет свойства выбранного каталога"""
+    cpp_obj = CatalogProductProperties.objects.filter(cpp_catalog_id=catalog_id)
+    list = []
+    for cpp_object in cpp_obj:
+        values = cpp_object.cpp_values.split(";")
+        local_dict = {}
+        for value in values:
+            local_dict.update({value: cpp_object.cpp_name})
+        list.append(local_dict)
+
+    # return list
+    class DynamicPropertyForm(forms.Form):
+
+        def __init__(self, *args, **kwargs):
+            super(DynamicPropertyForm, self).__init__(*args, **kwargs)
+
+            for dict_item in list:
+                list_choices = []
+                for key, value in dict_item.items():
+                    list_choices.append([key, key])
+                    name = value
+                slug = translit(name).lower()
+                self.fields[slug] = forms.ChoiceField(
+                    widget=forms.Select,
+                    label=name, choices=list_choices)
+                self.fields[slug].widget.attrs = {'class': 'select'}
 
     return DynamicPropertyForm()

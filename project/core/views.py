@@ -16,24 +16,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import HttpResponse, Http404
 from django.contrib import messages
 from project.accounts.forms import propertyForm
-
-def check_profile(func):
-    """декоратор проверки профиля пользователя
-    принимает пользователя , возвращяет профайл"""
-    def wrapper(request, *args, **kwargs):
-        if request.user.is_authenticated():
-            profile = getProfile(request.user)
-            if profile is None:
-                messages.info(request, "Пожалуйста заполните Ваш профиль")
-                return redirect('/profile/populate-profile/')
-            elif not profile.is_checked():
-                messages.info(request, "Ваш профиль еще не проверен")
-                return redirect('/profile/')
-            else:
-                return func(request, *args, **kwargs)
-        else:
-            return HttpResponseRedirect('/profile/registration/')
-    return wrapper
+from project.helpers import check_profile
 
 
 @check_profile

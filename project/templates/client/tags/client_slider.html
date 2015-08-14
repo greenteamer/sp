@@ -1,0 +1,15 @@
+<div class="swiper-container swiper1">
+    <!-- Additional required wrapper -->
+    <div class="swiper-wrapper">
+        <!-- Slides -->
+        {% for slide in slides %}
+            <div class="swiper-slide"><img src="/media/{{ slide.image }}" alt=""/></div>
+        {% endfor %}
+    </div>
+    <!-- If we need pagination -->
+    <div class="swiper-pagination"></div>
+
+    <!-- If we need navigation buttons -->
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-button-next"></div>
+</div>

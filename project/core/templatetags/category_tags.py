@@ -9,6 +9,3 @@ register = template.Library()
 def categories_tree(request):
 	"""Возвращает дерево категорий"""
 	return {'nodes': Category.objects.filter(is_active=True) }
-
-
-

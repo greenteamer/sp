@@ -15,24 +15,24 @@
     ]
   },
   "dependencies": {
-    "jquery": "^2.1.4",
-    "material-ui": "^0.8.0",
+    "fancybox": "^3.0.0",
     "flux": "^2.0.3",
+    "jquery": "^2.1.4",
     "js-cookie": "^1.5.1",
+    "material-ui": "^0.8.0",
     "merge": "^1.2.0",
     "microevent": "^1.0.0",
     "react": "latest",
-    "fancybox": "^3.0.0"
+    "react-select": "^0.6.2"
   },
   "devDependencies": {
     "browserify": "latest",
     "reactify": "^1.1.1",
-    "watchify": "^3.2.1",
-    "jquery-validation": "latest"
+    "watchify": "^3.2.1"
   },
   "scripts": {
-    "prod": "jsx -x jsx ./browserify/dev ./browserify/dist",    
-    "build-js": "browserify ./faq/main.js > ./faq/bundle.js",
-    "watch-js": "watchify ./faq/main.js -o ./faq/bundle.js -v"
+    "prod": "jsx -x jsx ./dev ./dist",
+    "build-js": "browserify ./client/main.js > ./client/bundle.js",
+    "watch-js": "watchify ./client/main.js -o ./client/bundle.js -v"
   }
 }
