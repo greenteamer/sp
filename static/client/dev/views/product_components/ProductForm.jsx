@@ -12,7 +12,7 @@ var PurchasesActions = require('../../actions/PurchasesActions.js');
 
 var Properties = React.createClass({
     getInitialState: function() {
-        var cpp_properties = []
+        var cpp_properties = [];
         this.props.cpp_catalog.forEach(function(cpp_property){
             cpp_properties.push({
                 name: cpp_property.cpp_name,
@@ -23,8 +23,8 @@ var Properties = React.createClass({
 
         var product = this.props.product;
         return {
-            cpp_properties,
-            product
+            cpp_properties: cpp_properties,
+            product: product
         }
     },
     childContextTypes: {
