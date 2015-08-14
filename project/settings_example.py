@@ -43,7 +43,7 @@ CKEDITOR_CONFIGS = {
             ['TextColor', 'BGColor'],
             ['Maximize', 'ShowBlocks', 'CreateDiv'],
         ],
-        'width': 1040,
+        'width': 100%,
         'height': 500,
     },
     'interface': {

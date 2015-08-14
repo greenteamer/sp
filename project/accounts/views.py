@@ -53,7 +53,7 @@ def check_organizer(func):
             elif purchase_id:  # проверка является ли профайл владельцем закупки
             # try:
                 purchase_test = Purchase.objects.get(id=kwargs['purchase_id'])
-                purchase_set = profile.purchase_set.all()
+                purchase_set = profile.get_purchases()
                 if purchase_test in purchase_set:
                     return func(request, *args, **kwargs)
                 else:
@@ -421,6 +421,7 @@ def catalogAdd(request, purchase_id, template_name):
 
         if catalog_form.is_valid():
             new_catalog = catalog_form.save(purchase_id)  # каталог сохраняется для нужной закупки - переопределена ф-я save, возвращает созданный объект каталога
+            catalog_form.save_m2m()
 
             cpp_names = request.POST.getlist('cpp_name')
             cpp_values = request.POST.getlist('cpp_values')

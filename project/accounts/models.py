@@ -30,6 +30,10 @@ class OrganizerProfile(BaseUserInfo):
         u'Image', upload_to='accounts/images/', help_text=u'Фото', blank=True)
 
     organizer_checked = models.BooleanField(default=False)
+    created_at = models.DateField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = _(u'Профили организаторов')
 
     def is_checked(self):
         return self.organizer_checked is True
@@ -40,8 +44,9 @@ class OrganizerProfile(BaseUserInfo):
     def get_full_name(self):
         return u"%s %s" % (self.firstName, self.lastName)
 
-    class Meta:
-        verbose_name_plural = _(u'Профили организаторов')
+    def get_purchases(self):
+        from project.core.models import Purchase
+        return Purchase.objects.filter(organizerProfile=self)
 
     def getOrganizerPurchases(self):
         from project.core.models import Purchase

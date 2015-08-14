@@ -7,6 +7,7 @@ from models import Product, ProductImages
 class ProductForm(ModelForm):
     class Meta:
         model = Product
+        exclude = []
     def __init__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)
         for field in self.fields:
@@ -30,7 +31,3 @@ class ProductImagesForm(ModelForm):
         obj.p_image_product = Product.objects.get(id=product_id)
         obj.save()
         return obj
-
-
-
-

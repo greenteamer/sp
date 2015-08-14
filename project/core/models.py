@@ -40,7 +40,7 @@ class Category(MPTTModel):
         verbose_name=u'Создана', null=True, auto_now_add=True)
 
     updated_at = models.DateTimeField(
-        verbose_name=u'Обновлена', default='', null=True, auto_now=True)
+        verbose_name=u'Обновлена', null=True, auto_now=True)
 
     parent = TreeForeignKey(
         'self', verbose_name=u'Родительская категория', related_name='children',
@@ -108,11 +108,26 @@ class PurchaseStatus(models.Model):
         return self.status_name
 
 
+class Promo(models.Model):
+    name = models.CharField(max_length=200, verbose_name=u'Название раздела рекламы')
+    alias = models.CharField(max_length=200, verbose_name=u'Техническое название')
+
+    class Meta:
+        verbose_name = u'Реклама'
+        verbose_name_plural = u'Рекламная система'
+
+    def __unicode__(self):
+        return "%s - %s" % (self.name, self.alias)
+
+
 class Purchase(models.Model):
     name = models.CharField(max_length=100, verbose_name=u'Название закупки')
     description = RichTextField(verbose_name=u'Описание закупки')
     organizerProfile = models.ForeignKey(
-        'accounts.OrganizerProfile', verbose_name=u'Профиль организатора')
+        'accounts.OrganizerProfile',
+        verbose_name=u'Профиль организатора',
+        related_name='purchases')
+    promo = models.ManyToManyField(Promo, related_name="promo_purchase", null=True, blank=True)
 
     created_at = models.DateTimeField(
         verbose_name=u'Создан', null=True, auto_now_add=True)
@@ -155,8 +170,7 @@ class Purchase(models.Model):
 
     def counts(self):
         dictionary = {
-            "catalogs": Catalog.objects.filter(
-                catalog_purchase=self.id).count(),
+            "catalogs": Catalog.objects.filter(catalog_purchase=self.id).count(),
             "orders": 0,  # TODO: Настроить подсчет!
             "member": 0  # Настроить подсчет
         }
@@ -188,7 +202,7 @@ class Purchase(models.Model):
 class PurchaseStatusLinks(models.Model):
     """связи между закупками и статусами закупок"""
     status = models.ForeignKey(PurchaseStatus, verbose_name=u'Статус')
-    purchase = models.ForeignKey(Purchase, verbose_name=u'Закупка')
+    purchase = models.ForeignKey(Purchase, verbose_name=u'Закупка', related_name="purchase_status")
     date_start = models.DateTimeField(
         verbose_name=u'Дата начала действия статуса', null=True)
 
@@ -252,12 +266,16 @@ class Catalog(models.Model):
     catalog_name = models.CharField(
         max_length=100, verbose_name=u'Название каталога', unique=False)
 
-    catalog_purchase = models.ForeignKey(Purchase)
+    catalog_purchase = models.ForeignKey(Purchase, related_name='catalogs')
     created_at = models.DateTimeField(
         u'Created at', null=True, auto_now_add=True)
 
     updated_at = models.DateTimeField(
         u'Updated at', null=True, auto_now=True)
+
+    categories = models.ManyToManyField(
+        Category, verbose_name=u'Категории каталога',
+        help_text=u'Категории для этой закупки')
 
     def __unicode__(self):
         return self.catalog_name
@@ -294,7 +312,7 @@ class Product(models.Model):
     sku = models.IntegerField(
         verbose_name=u'Артикул', null=True, blank=True)
 
-    catalog = models.ForeignKey(Catalog, verbose_name=u'Выбрать каталог')
+    catalog = models.ForeignKey(Catalog, verbose_name=u'Выбрать каталог', related_name='products')
     created_at = models.DateTimeField(
         u'Created at', null=True, auto_now_add=True)
 
@@ -330,7 +348,7 @@ class ProductImages(models.Model):
     cropping = ImageRatioField(
         'image', '500x320', verbose_name=u'Обрезка для продукта')
 
-    p_image_product = models.ForeignKey(Product, verbose_name=u'Выбрать товар')
+    p_image_product = models.ForeignKey(Product, verbose_name=u'Выбрать товар', related_name='images')
     p_image_title = models.CharField(
         verbose_name=u'Title изображения', blank=True, null=True,
         max_length=255)
@@ -351,7 +369,7 @@ class CatalogProductProperties(models.Model):
     cpp_values = models.CharField(
         max_length=255, verbose_name=u'Возможные значения')
 
-    cpp_catalog = models.ForeignKey(Catalog)
+    cpp_catalog = models.ForeignKey(Catalog, related_name="cpp_catalog")
 
     def __unicode__(self):
         return self.cpp_name
@@ -375,3 +393,16 @@ class ImportFiles(models.Model):
 
     def __unicode__(self):
         return self.import_catalog.catalog_name
+
+
+class Slide(models.Model):
+    name = models.CharField(max_length=200)
+    image = models.ImageField(
+        verbose_name=u'Изображение товара', upload_to='slides/',
+        help_text=u'Изображение', blank=True)
+    class Meta:
+        verbose_name = u"Слайд"
+        verbose_name_plural = u"Слайды"
+
+    def __unicode__(self):
+        return "%s" % self.name

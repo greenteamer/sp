@@ -1,0 +1,20 @@
+{% extends "client/client_base.html" %}
+{% load client_category_tags %}
+{% block wrapper %}
+    <div class="container">
+        <div class="row">
+
+            <div class="col-xs-9">
+                {% block content %}
+                {% endblock %}
+            </div>
+
+            <div class="col-xs-3">
+                {% block sidebar %}
+                    {% client_sidebar request %}
+                {% endblock %}
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

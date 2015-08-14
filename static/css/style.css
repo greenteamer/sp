@@ -1,17 +1,15 @@
 .modal-width-90{
-width: 90%;
+    width: 90%;
 }
-
-
 
 /* ошибочные поля формы */
 form .error{
-color: crimson;
-font-weight: 300;
-display: block;
+    color: crimson;
+    font-weight: 300;
+    display: block;
 }
 .form-control.error{
-border: 1px solid crimson;
+    border: 1px solid crimson;
 }
 
 .content-header>ol.breadcrumb {
@@ -19,6 +17,11 @@ border: 1px solid crimson;
     float: none;
     top: 0;
     left: 0;
+}
+
+.navbar .navbar-nav>li>a {
+    padding-top: 15px;
+    padding-bottom: 15px;
 }
 
 #core_catalog .item img{
@@ -70,135 +73,126 @@ button.close.pull-right {
     margin-top: 2px;
     z-index: -1;
 }
-.navbar .navbar-nav>li>a {
-    padding-top: 15px;
-    padding-bottom: 15px;
-}
-
-
-
-
-
 
 .check_view_product{
-text-align: right;
-margin-bottom: 25px;
+    text-align: right;
+    margin-bottom: 25px;
 }
 .check_view_product > span{
-cursor: pointer;
-font-size: 30px;
-padding: 0px 13px 3px 13px;
-color: rgb(160, 160, 160);
-border: 1px solid rgb(160, 160, 160);
-background: none;
+    cursor: pointer;
+    font-size: 30px;
+    padding: 0px 13px 3px 13px;
+    color: rgb(160, 160, 160);
+    border: 1px solid rgb(160, 160, 160);
+    background: none;
 }
 .check_view_product > span:hover{
-color: rgb(90, 90, 90);
+    color: rgb(90, 90, 90);
 }
 
 
 .product-item {
-height: 550px;
-/*overflow: overlay;*/
-margin-bottom: 20px;
-border: 1px solid #eee;
+    height: 550px;
+    /*overflow: overlay;*/
+    margin-bottom: 20px;
+    border: 1px solid #eee;
 }
 .product-item-modal{
-height: auto;
-overflow: auto;
+    height: auto;
+    overflow: auto;
 }
 .product-item img {
-width: 100%;
-height: auto;
+    width: 100%;
+    height: auto;
 }
 
 .product-item .images .image {
-width: 50%;
-height: auto;
-float: left;
-border: 1px solid #eee;
+    width: 50%;
+    height: auto;
+    float: left;
+    border: 1px solid #eee;
 }
 
 .product-item ul{
-overflow: hidden;
-position: relative;
-padding: 5px;
-list-style: none;
+    overflow: hidden;
+    position: relative;
+    padding: 5px;
+    list-style: none;
 }
 .product-item li{
-float: left;
+    float: left;
 }
 .quantity i{
-cursor: pointer;
+    cursor: pointer;
 }
 
 .buttons_wrap {
-overflow: hidden;
-display: block;
-position: relative;
-padding: 5px;
-background: rgba(255, 255, 255, 0.5);
-border: none;
-margin-bottom: -42px;
-z-index: 1;
+    overflow: hidden;
+    display: block;
+    position: relative;
+    padding: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    border: none;
+    margin-bottom: -42px;
+    z-index: 1;
 }
 .modal .buttons_wrap {
-position: fixed;
-padding: 9px 10px;
-border-radius: 3px;
-right: 100px;
-top: 10%;
+    position: fixed;
+    padding: 9px 10px;
+    border-radius: 3px;
+    right: 100px;
+    top: 10%;
 }
 .product-item .buttons_wrap .link_more {
-float: left;
+    float: left;
 }
 .product-item .buttons_wrap .add_to_cart_wrapper {
-float: right;
+    float: right;
 }
 .product-item .quantity{
-display: inline-block;
+    display: inline-block;
 }
 .buttons_wrap .btn {
-background: rgba(2, 2, 2, 0.5);
-border: none;
-border-radius: 0;
-padding: 5px 11px!important;
+    background: rgba(2, 2, 2, 0.5);
+    border: none;
+    border-radius: 0;
+    padding: 5px 11px!important;
 }
 
 .image {
-position: relative;
+    position: relative;
 }
 .price {
-position: absolute;
-right: 0px;
-bottom: 0px;
-background: rgba(0, 0, 0, 0.6);
-padding: 5px 10px 5px 45px;
-border-radius: 40px 0 0 0;
-color: white;
-font-size: 19px;
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 5px 10px 5px 45px;
+    border-radius: 40px 0 0 0;
+    color: white;
+    font-size: 19px;
 }
 
 
 
 .col-md-12.product-item {
-height: auto;
+    height: auto;
 }
 
 .col-md-12.product-item .image {
-position: relative;
-width: 300px;
-float: left;
-margin: 0 15px 15px 0;
+    position: relative;
+    width: 300px;
+    float: left;
+    margin: 0 15px 15px 0;
 }
 .col-md-12.product-item .name {
-position: absolute;
-z-index: 3;
-padding: 0 150px 0 0px;
-margin-left: 315px;
+    position: absolute;
+    z-index: 3;
+    padding: 0 150px 0 0px;
+    margin-left: 315px;
 }
 .col-md-12.product-item .properties {
-margin-top: 42px;
+    margin-top: 42px;
 }
 
 .btn-primary:not(.btn-link):not(.btn-flat) {
@@ -292,7 +286,6 @@ input.form-control:-ms-input-placeholder      {color:#3C8DBC;}
 section .box-footer {
     padding: 0;
 }
-
 .documentation section {
     margin-bottom: 55px;
 }
@@ -314,10 +307,6 @@ form#populate-profile em {
 /*свойства каталога */
 .svvakataloga{
 background: rgb(253, 255, 172);
-border-radius: 3px; 
+border-radius: 3px;
 padding: 4px;
 }
-
-
-
-

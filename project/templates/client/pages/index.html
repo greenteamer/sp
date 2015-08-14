@@ -1,0 +1,292 @@
+{% extends "client/client_with_sidebar.html" %}
+{% load staticfiles %}
+
+{% block client_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'bower_components/swiper/dist/css/swiper.css' %}" />
+{% endblock %}
+
+{% block content %}
+{# #}
+    {# <div class="container">#}
+        {# <div class="row">#}
+
+            <div id="products"></div>
+            <div id="popular"></div>
+
+            <div class="col-xs-12 overflow">
+                <div class="big_content_wrapper margin">
+                    <div class="big_content_intro big_content_style">
+                        <h2 class="font-decor">10 причин </h2>
+                        <h4>заказать товар у нас</h4>
+                        <small>Только проверенные закупки, только проверенные организаторы! Мы трудимся для Вас!</small>
+                        <a href="" class="btn btn-primary full-width">Подробнее</a>
+                    </div>
+                    <div class="big_content_image big_content_style">
+                        <img src="{% static 'images/featered-look.png' %}" alt="" />
+                    </div>
+                    <div class="big_content_wrapper_more_button big_content_style_min">
+                        <a name="#" class="more-button">Топ 10 закупок</a>
+                    </div>
+                    <div class="big_content">
+                        {% for product in big_content_purchase.get_catalogs.first.get_products|slice:":3" %}
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <img src="/media/{{ product.get_image.image }}" alt="" />
+                                    <b>{{ product.product_name|truncatechars:"20" }}</b>
+                                    <small>{{ product.description|truncatechars:"100" }}</small><br>
+                                    <b>{{ product.price }} р.</b><br>
+                                    <a class="btn btn-primary full-width" href="{{ product.url }}">Подробнее</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+{#            <div class="separator"></div>#}
+{##}
+{#            <div class="col-xs-12 main-content">#}
+{#                <h2 class="font-decor">Популярное сегодня</h2>#}
+                {# swiper slider 2#}
+{#                <div class="swiper-container swiper2">#}
+{#                    <div class="swiper-wrapper">#}
+{#                        {% for catalog in main_content_purchase.catalogs.all %}#}
+{#                            {% for product in catalog.products.all %}#}
+{#                                <div class="swiper-slide">#}
+{#                                    <img src="/media/{{ product.get_image.image }}" alt="" />#}
+{#                                    <div class="swiper-text">#}
+{#                                        <b>{{ product.product_name|truncatechars:"30" }}</b><br>#}
+{#                                        <p class="price">{{ product.price }}</p>#}
+{#                                        <small>{{ product.categories }}</small>#}
+{#                                        <div class="properties">#}
+{#                                            <form class="" action="." method="post">{% csrf_token %}#}
+{#                                                {{ product.form }}#}
+{#                                                <input type="hidden" name="product" value="{{ product.id }}">#}
+{#                                                <small>{{ product.description|truncatechars:"100" }}</small><br>#}
+{#                                                <button type="submit" class="btn btn-primary" >В корзину</button>#}
+{#                                            </form>#}
+{#                                        </div>#}
+{##}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            {% endfor %}#}
+{#                        {% endfor %}#}
+{#                    </div>#}
+{#                    <!-- Add Pagination -->#}
+{#                    <div class="custom swiper-button-next"></div>#}
+{#                    <div class="custom swiper-button-prev"></div>#}
+{#                </div>#}
+                {# end swiper slider 2#}
+{#            </div>#}
+
+            <div class="col-xs-12 third-block">
+                <div class="row">
+                    <div class="col-xs-6 small-padding">
+                        <div class="banner big-banner">
+                            <a href="#">
+                                <img src="{% static 'images/banner-home1.png' %}" alt="" />
+                                <div class="info">
+                        			<p class="p1">Autumn Collection</p>
+                        			<p class="p2">Fashion Show</p>
+                        			<p class="p3">Design: Fanbong</p>
+                        		</div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="row">
+                            <div class="col-xs-6 small-padding">
+                                <div class="banner small-banner">
+                                    <img src="{% static 'images/banner-home2.png' %}" alt="" />
+                                    <div class="info">
+                            			<div class="inner">
+                            				<p class="p1">PANTALON</p>
+                            				<p class="p2">No.85545 Ecru</p>
+                            				<a href="#" class="link-sn">Shop Now</a>
+                            			</div>
+                            		</div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6 small-padding">
+                                <div class="banner small-banner">
+                                    <img src="{% static 'images/banner-home3.png' %}" alt="" />
+                                    <div class="info">
+                                        <div class="inner">
+                            				<p class="p1">PANTALON</p>
+                            				<p class="p2">No.85545 Ecru</p>
+                            				<a href="#" class="link-sn">Shop Now</a>
+                            			</div>
+                            		</div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6 small-padding">
+                                <div class="banner small-banner">
+                                    <img src="{% static 'images/banner-home4.png' %}" alt="" />
+                                    <div class="info">
+                                        <div class="inner">
+                            				<p class="p1">PANTALON</p>
+                            				<p class="p2">No.85545 Ecru</p>
+                            				<a href="#" class="link-sn">Shop Now</a>
+                            			</div>
+                            		</div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6 small-padding">
+                                <div class="banner small-banner">
+                                    <img src="{% static 'images/banner-home5.png' %}" alt="" />
+                                    <div class="info">
+                                        <div class="inner">
+                            				<p class="p1">PANTALON</p>
+                            				<p class="p2">No.85545 Ecru</p>
+                            				<a href="#" class="link-sn">Shop Now</a>
+                            			</div>
+                            		</div>
+                                </div>
+                            </div>
+{#                            <div class="col-xs-6 small-padding">#}
+{#                                <div class="banner small-banner">#}
+{#                                    <img src="{% static 'images/banner-home6.png' %}" alt="" />#}
+{#                                    <div class="info">#}
+{#                                        <div class="inner">#}
+{#                            				<p class="p1">PANTALON</p>#}
+{#                            				<p class="p2">No.85545 Ecru</p>#}
+{#                            				<a href="#" class="link-sn">Shop Now</a>#}
+{#                            			</div>#}
+{#                            		</div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                            <div class="col-xs-6 small-padding">#}
+{#                                <div class="banner small-banner">#}
+{#                                    <img src="{% static 'images/banner-home7.png' %}" alt="" />#}
+{#                                    <div class="info">#}
+{#                                        <div class="inner">#}
+{#                            				<p class="p1">PANTALON</p>#}
+{#                            				<p class="p2">No.85545 Ecru</p>#}
+{#                            				<a href="#" class="link-sn">Shop Now</a>#}
+{#                            			</div>#}
+{#                            		</div>#}
+{#                                </div>#}
+{#                            </div>#}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+{#            <div class="separator"></div>#}
+{##}
+{#            <div class="col-xs-12 main-content">#}
+{#                <h2 class="font-decor">Наши новинки</h2>#}
+                {# swiper slider 2#}
+{#                <div class="swiper-container swiper3">#}
+{#                    <div class="swiper-wrapper">#}
+{#                        {% for catalog in main_content_purchase.catalogs.all %}#}
+{#                            {% for product in catalog.products.all %}#}
+{#                                <div class="swiper-slide">#}
+{#                                    <div class="image-wrapper">#}
+{#                                        <img src="/media/{{ product.get_image.image }}" alt="" />#}
+{#                                        <div class="blackout"></div>#}
+{#                                    </div>#}
+{#                                    <div class="product-info">#}
+{#                                        <div class="product-name"><a href="#">{{ product.product_name|truncatechars:"30" }}</a></div>#}
+{#                                        <div class="category"><a href="#">Категория</a></div>#}
+{#                                        <p class="price">{{ product.price }}</p>#}
+{#                                        <div class="properties">#}
+{#                                            <form class="" action="." method="post">{% csrf_token %}#}
+{#                                                {{ product.form }}#}
+{#                                                <input type="hidden" name="product" value="{{ product.id }}">#}
+{#                                                <button type="submit" class="btn btn-primary full-width" >В корзину</button>#}
+{#                                            </form>#}
+{#                                        </div>#}
+{##}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            {% endfor %}#}
+{#                        {% endfor %}#}
+{#                    </div>#}
+{#                    <!-- Add Pagination -->#}
+{#                    <div class="custom swiper-button-next"></div>#}
+{#                    <div class="custom swiper-button-prev"></div>#}
+{#                </div>#}
+                {# end swiper slider 2#}
+{#            </div>#}
+
+        {# </div>#}
+    {# </div>#}
+
+    {# test#}
+        <div class="container">
+            <div class="email-block">
+                <div class="inner">
+                    <div class="inner-top">
+
+                        <div class="title-block">
+                            <span class="left-title">ДОБРО ПОЖАЛОВАТЬ В SP.RU</span>
+                            <span class="right-title">Бесплатная доставка при заказе от 1000</span>
+                        </div>
+
+                        <div class="box-left">
+                            <h5>Защита покупателя</h5>
+                            <ul>
+                                <li>- Гарантия доставки</li>
+                                <li>- Гарантия возврата</li>
+                            </ul>
+                        </div>
+                        <div class="box-right">
+                            <p class="desc">Подпишитесь на свежую информацию, плюс купон на 150р в подарок</p>
+                            <form action="http://demo.7uptheme.com/canifa/newsletter/subscriber/new/" method="post" id="newsletter-validate-detail">
+                                <input name="form_key" type="hidden" value="UAkGtfJpfNvP9to9">
+                                <div class="block-content">
+                                    <div class="input-box">
+                                       <input type="text" name="email" id="newsletter" title="Sign up for our newsletter" value="Your email" class="input-text required-entry validate-email">
+                                       <button type="submit" title="Subscribe" class="btn btn-primary">Подписаться</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    {# end test#}
+
+{% endblock %}
+
+{% block client_js %}
+    <script type="text/javascript" src="{% static 'bower_components/swiper/dist/js/swiper.min.js' %}"></script>
+    <script type="text/javascript">
+        var swiper = new Swiper('.swiper1', {
+            pagination: '.swiper-pagination',
+            nextButton: '.swiper-button-next',
+            prevButton: '.swiper-button-prev',
+            paginationClickable: true,
+            spaceBetween: 50,
+            centeredSlides: true,
+            autoplay: 8500,
+            autoplayDisableOnInteraction: false
+        });
+        var swiper2 = new Swiper('.swiper2', {
+            // pagination: '.swiper-pagination',
+            nextButton: '.swiper-button-next',
+            prevButton: '.swiper-button-prev',
+            slidesPerView: 2,
+            paginationClickable: true,
+            spaceBetween: 30
+        });
+        var swiper3 = new Swiper('.swiper3', {
+            // pagination: '.swiper-pagination',
+            nextButton: '.swiper-button-next',
+            prevButton: '.swiper-button-prev',
+            slidesPerView: 4,
+            paginationClickable: true,
+            spaceBetween: 30
+        });
+        $(document).ready(function() {
+            $(".more-button").on("click", function() {
+                $(".big_content_wrapper").toggleClass("in", 200, "easeOutSine");
+            });
+
+        });
+    </script>
+
+{% endblock %}
