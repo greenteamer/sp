@@ -1,0 +1,17 @@
+{% extends "client/client_with_sidebar.html" %}
+{% load staticfiles %}
+
+{% block slider %}
+{% endblock %}
+
+{% block client_css %}
+{% endblock %}
+
+{% block content %}
+    <div id="category"></div>
+{% endblock %}
+
+
+{% block client_js %}
+    <script type="text/javascript" src="{% static 'client/dev/category/bundle.js' %}"></script>
+{% endblock %}

@@ -18,10 +18,21 @@ var PurchasesActions = {
         });
     },
     addToCart: function(item) {
-        console.log(item);
         PurchasesDispatcher.dispatch({
             actionType: "add-to-cart",
             item: item
+        });
+    },
+    //category
+    getCategoryPurchases: function(category){
+        PurchasesDispatcher.dispatch({
+            actionType: "get-category-purchases",
+            category: category
+        });
+    },
+    getCartItems: function(){
+        PurchasesDispatcher.dispatch({
+            actionType: "get-cart-items"
         });
     }
 }

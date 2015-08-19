@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from rest_framework import serializers, viewsets
-from project.core.models import Purchase, Product, Catalog, ProductImages, Promo, CatalogProductProperties, PurchaseStatusLinks, PurchaseStatus
+from project.core.models import Purchase, Product, Catalog, ProductImages, Promo, CatalogProductProperties, PurchaseStatusLinks, PurchaseStatus, Category
 from project.accounts.models import OrganizerProfile
 
 
@@ -61,3 +61,10 @@ class PromoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Promo
         fields = ('name', 'alias', 'promo_purchase')
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    category_purchase = PurchaseSerializer(many=True, read_only=True)
+    class Meta:
+        model = Category
+        fields = ('id', 'name', 'slug', 'category_purchase')

@@ -11,13 +11,14 @@ v1_api.register(NotificationResource())
 
 # rest_framework
 from rest_framework import routers
-from project.client.views import PurchasesViewSet, OrganizersViewSet, PopularPromoViewSet, NewPromoViewSet, HotPurchasesViewSet
+from project.client.views import PurchasesViewSet, OrganizersViewSet, PopularPromoViewSet, NewPromoViewSet, HotPurchasesViewSet, CategoriwsViewSet
 router = routers.DefaultRouter()
 router.register(r'api/v1/purchases', PurchasesViewSet)
 router.register(r'api/v1/organizers', OrganizersViewSet)
 router.register(r'api/v1/popular-promos', PopularPromoViewSet)
 router.register(r'api/v1/new-promos', NewPromoViewSet)
 router.register(r'api/v1/hot-purchases', HotPurchasesViewSet, base_name="hot-purchases")
+router.register(r'api/v1/categories', CategoriwsViewSet)
 
 
 urlpatterns = patterns(
@@ -31,7 +32,10 @@ urlpatterns = patterns(
     url(r'^notice/', include('project.notifications.urls')),
     url(r'^', include('project.core.urls')),
     url(r'^', include('project.cart.urls')),
+
     url(r'^client/', include('project.client.urls')),
+    url(r'^api/v2/', include('project.client.api_v2_urls')),
+
     url(r'^', include('project.calendar_js.urls')),
     url(r'^', include('project.documentation.urls')),
     url(r'^profile/', include('project.accounts.urls')),

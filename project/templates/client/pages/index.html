@@ -253,6 +253,7 @@
 {% endblock %}
 
 {% block client_js %}
+    <script type="text/javascript" src="{% static 'client/dev/index/bundle.js' %}"></script>
     <script type="text/javascript" src="{% static 'bower_components/swiper/dist/js/swiper.min.js' %}"></script>
     <script type="text/javascript">
         var swiper = new Swiper('.swiper1', {

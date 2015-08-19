@@ -7,6 +7,7 @@ var Cookies = require('js-cookie');
 var PurchasesStore = merge(MicroEvent.prototype, {
     user: {},
     collection: [],
+    cartitems: [],
 
     collectionChange: function(){
         this.trigger('change');
@@ -91,25 +92,48 @@ PurchasesDispatcher.register(function (payload) {
                 }
             ).success(
                 function (data) {
-
-                    for (var i = 0; i < FaqStore.collection.length; i++){
-                        if (FaqStore.collection[i].id == data.question_id){
-                            FaqStore.collection[i].answers.push({
-                                photo: data.photo,
-                                name: data.name,
-                                date: data.date,
-                                text: data.text
-                            });
-                            break
-                        }
-                    }
-
-                    FaqStore.collectionChange();
+                    console.log('товар' + data.name + 'успешно добавлен в корзину');
                 })
             .error(
                 function (data) {
                     console.log("Ошибка post запроса");
                 });
+            break;
+
+        case "get-category-purchases":
+            $.ajax({
+                url: '/api/v1/categories/',
+                dataType: 'json',
+                cache: false,
+                success: (function(data){
+                    //console.log(PurchasesStore.collection);
+                    //console.log(data);
+                    data.forEach(function(item){
+                        if (item.slug === payload.category){
+                            PurchasesStore.collection = item;
+                            PurchasesStore.collectionChange();
+                        }
+                    });
+                }).bind(this),
+            error: (function (xhr, status, err) {
+                    console.log('error fetchin collection');
+                }).bind(this)
+            });
+            break;
+
+        case "get-cart-items":
+            $.ajax({
+                url: '/api/v2/cart-items/',
+                dataType: 'json',
+                cache: false,
+                success: (function(data){
+                    PurchasesStore.cartitems = data;
+                    PurchasesStore.collectionChange();
+                }).bind(this),
+            error: (function (xhr, status, err) {
+                    console.log('error fetchin collection');
+                }).bind(this)
+            });
             break;
 
         default:

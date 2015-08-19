@@ -4,9 +4,10 @@ from django.shortcuts import render, get_object_or_404, render_to_response, redi
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponse
 from project.accounts.models import getProfile, OrganizerProfile, MemberProfile
-from project.core.models import Purchase, Product, Promo, Catalog
+from project.core.models import Purchase, Product, Promo, Catalog, Category
 from project.cart.models import CartItem
 from project.cart.forms import CartItemForm
+from project.cart import cart
 from project.helpers import check_profile
 from project.cart.cart import add_to_cart
 from project.accounts.forms import propertyForm, clientPropertyForm
@@ -15,13 +16,13 @@ import json
 # rest
 from rest_framework import serializers, viewsets, generics
 from rest_framework.permissions import IsAuthenticated
-from serializers import PurchaseSerializer, OrganizerSerializer, PromoSerializer
+from serializers import PurchaseSerializer, OrganizerSerializer, PromoSerializer, CategorySerializer
 
 
 # Просмотр каталога
 @check_profile
 def clientAddToCartView(request):
-
+    data = json.dumps({})
     if 'ajax' in request.POST:
         ajax = request.POST['ajax']
 
@@ -32,6 +33,11 @@ def clientAddToCartView(request):
             for item in list_properties:
                 if request.POST['product_properties'] == item:
                     add_to_cart(request)    # Добавление в корзину
+                    data = json.dumps({
+                        'name': product.product_name
+                    })
+
+    return HttpResponse(data, content_type="application/json")
 
 
 
@@ -71,6 +77,12 @@ def indexView(request, template_name="client/pages/index.html"):
                               context_instance=RequestContext(request))
 
 
+def clientCategoryView(request, category_slug, template_name="client/pages/category.html"):
+
+    return render_to_response(template_name, locals(),
+                              context_instance=RequestContext(request))
+
+
 @check_profile
 def catalogView(request, template_name="client/pages/catalog.html"):
     purchases = Purchase.objects.all()
@@ -100,6 +112,8 @@ def getAllPurchases(request):
 
 
 # rest_framework
+
+
 class PurchasesViewSet(viewsets.ModelViewSet):
     queryset = Purchase.objects.all()
     serializer_class = PurchaseSerializer
@@ -131,3 +145,23 @@ class HotPurchasesViewSet(viewsets.ModelViewSet):
                 purchases.append(purchase)
 
         return purchases
+
+
+class CategoriwsViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+
+def getCartItems(request):
+    items = []
+    cart_items = CartItem.objects.filter(user=request.user)
+    for item in cart_items:
+        items.append({
+            'name': item.product.product_name,
+            'image': "/media/%s" % item.product.get_image().image,
+            'properties': item.properties,
+            'price': item.product.price,
+            'quantity': item.quantity
+        })
+    data = json.dumps(items)
+    return HttpResponse(data, content_type="application/json")

@@ -2,7 +2,6 @@ var React = require('react');
 var Catalogs = require('./Catalogs.jsx');
 var PurchasesActions = require('../actions/PurchasesActions.js');
 
-
 var Purchase = React.createClass({
     render: function () {
         var description = this.props.purchase.description.slice(0,100);
@@ -25,18 +24,6 @@ var Purchase = React.createClass({
 
 
 var Purchases = React.createClass({
-    getPopularPromo: function(e){
-        e.preventDefault();
-        PurchasesActions.getPopularPromo();
-    },
-    getNewPromo: function(e){
-        e.preventDefault();
-        PurchasesActions.getNewPromo();
-    },
-    getHotPurchases: function(e){
-        e.preventDefault();
-        PurchasesActions.getHotPurchases();
-    },
     render: function () {
         var length = this.props.collection.length;
         var items = this.props.collection.map(function (item, index){
@@ -58,12 +45,6 @@ var Purchases = React.createClass({
         });
         return (
             <div className="purchases-list">
-                <h2 className="font-decor block-title">{this.props.title}</h2>
-                <div className="block-buttons">
-                    <button type="button" className="btn btn-primary" onClick={this.getPopularPromo}>Популярные</button>
-                    <button type="button" className="btn btn-primary" onClick={this.getNewPromo}>Новые</button>
-                    <button type="button" className="btn btn-primary" onClick={this.getHotPurchases}>Горящие</button>
-                </div>
                 {items}
             </div>
         )

@@ -2,8 +2,7 @@ var React = require('react');
 var $ = require('jquery');
 var Purchases = require('./Purchases.jsx');
 var PurchasesStore = require('../stores/PurchasesStore.js');
-
-// actions
+var PromoFilter = require('./PromoFilter.jsx');
 var PurchasesActions = require('../actions/PurchasesActions.js');
 
 
@@ -17,10 +16,8 @@ var PopularIndex = React.createClass({
     componentDidMount: function () {
 		PurchasesActions.getPopularPromo();
         PurchasesStore.bind( 'change', this.collectionChanged );
-        console.log('component did mount');
     },
     componentWillUnmount: function () {
-        console.log('component will unmount');
         PurchasesStore.unbind( 'change', this.collectionChanged );
     },
     collectionChanged: function () {
@@ -37,6 +34,8 @@ var PopularIndex = React.createClass({
 		});
 		return (
             <div>
+                <h2 className="font-decor block-title">{title}</h2>
+                <PromoFilter />
 		    	<Purchases collection={collection} title={title}/>
             </div>
 		)
