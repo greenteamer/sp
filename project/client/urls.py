@@ -16,6 +16,11 @@ urlpatterns = patterns('project.client.views',
     url(r'^add-to-cart/$', 'clientAddToCartView',
         name='client_add_to_cart'),
 
+    # страница одной категории
+    url(r'^category-(?P<category_slug>[-\w]+)/$', 'clientCategoryView',
+        {'template_name': 'client/pages/category.html'},
+        name='client_category'),
+
     # api
     url(r'^v1/all-purchases/$', 'getAllPurchases', name='get-all-purchases'),
 )

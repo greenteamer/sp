@@ -31,8 +31,10 @@
     "watchify": "^3.2.1"
   },
   "scripts": {
-    "prod": "jsx -x jsx ./dev ./dist",
+    "prod": "jsx -x jsx ./client/dev ./client/dist",
     "build-js": "browserify ./client/main.js > ./client/bundle.js",
-    "watch-js": "watchify ./client/main.js -o ./client/bundle.js -v"
+    "index-watch": "watchify ./client/dev/index/main.js -o ./client/dev/index/bundle.js -v",
+    "category-watch": "watchify ./client/dev/category/main.js -o ./client/dev/category/bundle.js -v",
+    "cartmenu-watch": "watchify ./client/dev/cartmenu/main.js -o ./client/dev/cartmenu/bundle.js -v"
   }
 }

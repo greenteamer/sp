@@ -9,7 +9,6 @@ from image_cropping import ImageRatioField
 from ckeditor.fields import RichTextField
 from django.contrib.auth.models import User
 from project.accounts.models import getProfile
-import os
 
 
 class CommonActiveManager(models.Manager):
@@ -144,9 +143,7 @@ class Purchase(models.Model):
         help_text=u'Отмечается в процентах', default=15)
 
     paymethods = models.TextField(u'Способы оплаты')
-    categories = models.ManyToManyField(
-        Category, verbose_name=u'Categories',
-        help_text=u'Категории для этой закупки')
+    categories = models.ManyToManyField(Category, related_name="category_purchase", verbose_name=u'Categories', help_text=u'Категории для этой закупки')
 
     class Meta:
         verbose_name_plural = u'Закупки'
