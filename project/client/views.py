@@ -16,6 +16,8 @@ import json
 # rest
 from rest_framework import serializers, viewsets, generics
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.decorators import detail_route, list_route
 from serializers import PurchaseSerializer, OrganizerSerializer, PromoSerializer, CategorySerializer
 
 
@@ -147,9 +149,34 @@ class HotPurchasesViewSet(viewsets.ModelViewSet):
         return purchases
 
 
-class CategoriwsViewSet(viewsets.ModelViewSet):
+class SearchViewSet(viewsets.ModelViewSet):
+    queryset = Purchase.objects.all()
+    serializer_class = PurchaseSerializer
+    permission_classes = [IsAuthenticated]
+
+    @list_route()
+    def purchases(self, request, **kwargs):
+        result = Purchase.objects.all()
+        try:
+            result = Purchase.objects.filter(name__icontains=request.query_params['query'])
+        except:
+            pass
+        self.queryset = result
+        serializer = PurchaseSerializer(instance=self.queryset, many=True)
+        return Response(serializer.data)
+
+
+class CategoriesViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+
+    @list_route()
+    def first_category(self, request, **kwargs):
+        """тестовый метод вызывается через /api/v1/categories/first_category/ ...
+        тез каких либо дополнительных записей в urls"""
+        self.queryset = Category.objects.filter(id=2)
+        serializer = CategorySerializer(instance=self.queryset, many=True)
+        return Response(serializer.data)
 
 
 def getCartItems(request):

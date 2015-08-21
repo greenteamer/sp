@@ -1,4 +1,5 @@
 var PurchasesDispatcher = require('../dispatcher/PurchasesDispatcher.js');
+var PurchasesActions = require('../actions/PurchasesActions.js');
 var MicroEvent = require('microevent');
 var merge = require('merge');
 var Cookies = require('js-cookie');
@@ -8,6 +9,8 @@ var PurchasesStore = merge(MicroEvent.prototype, {
     user: {},
     collection: [],
     cartitems: [],
+    search_result_collection: [],
+    query_text: '',
 
     collectionChange: function(){
         this.trigger('change');
@@ -69,6 +72,24 @@ PurchasesDispatcher.register(function (payload) {
             });
             break;
 
+        case 'get-search-results':
+            $.ajax({
+                url: '/api/v1/search/purchases/' + '?query=' + payload.query,
+                dataType: 'json',
+                cache: false,
+                success: (function (data) {
+                    console.log(PurchasesStore.search_result_collection);
+                    PurchasesStore.search_result_collection = data;
+                    PurchasesStore.query_text = payload.query;
+                    PurchasesStore.collectionChange();
+
+                }).bind(this),
+                error: (function (xhr, status, err) {
+                    console.log('error fetchin collection');
+                }).bind(this)
+            });
+            break;
+
         case 'add-to-cart':
             console.log('ajax start');
             var csrftoken = Cookies.get('csrftoken');
@@ -93,6 +114,7 @@ PurchasesDispatcher.register(function (payload) {
             ).success(
                 function (data) {
                     console.log('товар' + data.name + 'успешно добавлен в корзину');
+                    PurchasesActions.getCartItems();
                 })
             .error(
                 function (data) {
