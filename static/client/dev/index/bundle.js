@@ -90,6 +90,12 @@ React.render(
 	document.getElementById('react_search_result')
 );
 
+
+//React.render(
+//	React.createElement(SearchResult, null),
+//	document.getElementById('react_fast_view_product')
+//);
+
 },{"../views/PopularIndex.jsx":6,"../views/cartmenu/CartMenu.jsx":9,"../views/search/SearchForm.jsx":12,"../views/search/SearchResult.jsx":13,"react":324,"react-tap-event-plugin":151}],4:[function(require,module,exports){
 var PurchasesDispatcher = require('../dispatcher/PurchasesDispatcher.js');
 var PurchasesActions = require('../actions/PurchasesActions.js');
@@ -383,20 +389,47 @@ var React = require('react');
 var Catalogs = require('./Catalogs.jsx');
 var PurchasesActions = require('../actions/PurchasesActions.js');
 
+
+var ProductFastView = React.createClass({displayName: "ProductFastView",
+    render: function(){
+        return (
+            React.createElement("div", {className: "product_view hidden"}, 
+                React.createElement("h4", null, this.props.product.name), 
+                React.createElement("img", {src: this.props.product.image, alt: ""}), 
+                React.createElement("p", null, this.props.product.description), 
+                React.createElement("p", null, this.props.product.price)
+            )
+        )
+    }
+});
+
+
+
 var Purchase = React.createClass({displayName: "Purchase",
+    getInitialState: function(){
+        return {
+            product_fast_view: {
+                name: 'Тест Имя',
+                image: 'http://127.0.0.1:8000/media/product/5_4.png',
+                description: 'Тест описание товара для быстрого просмотра',
+                price: 1200
+            }
+        }
+    },
     render: function () {
         var description = this.props.purchase.description.slice(0,100);
         description = description.replace(/(<([^>]+)>)/ig,"");
         return (
             React.createElement("div", {className: "purchase-item"}, 
                 React.createElement("div", {className: "row"}, 
-                    React.createElement("div", {className: "col-xs-4 purchase-info"}, 
+                    React.createElement("div", {className: "col-xs-12 col-md-4 purchase-info"}, 
                         React.createElement("h2", null, this.props.purchase.name), 
                         React.createElement("p", null, description)
                     ), 
-                    React.createElement("div", {className: "col-xs-8 purchase-info"}, 
+                    React.createElement("div", {className: "col-xs-12 col-md-8 purchase-info"}, 
                         React.createElement(Catalogs, {catalogs: this.props.purchase.catalogs})
-                    )
+                    ), 
+                    React.createElement(ProductFastView, {product: this.state.product_fast_view})
                 )
             )
         )
@@ -706,7 +739,9 @@ var Search = React.createClass({displayName: "Search",
 		return (
             React.createElement("form", {className: "custom-form", onSubmit: this.search}, 
                 React.createElement("input", {type: "text", ref: "query_text", className: "col-lg-8", placeholder: "поиск товаров"}), 
-                React.createElement("button", {type: "submit", className: "btn btn-primary pull-left btn-search"}, "ПОИСК")
+                React.createElement("button", {type: "submit", className: "btn btn-primary pull-left btn-search"}, 
+                    React.createElement("i", {className: "mdi-action-search"})
+                )
             )
 		)
 	}

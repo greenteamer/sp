@@ -33,3 +33,9 @@ React.render(
 	document.getElementById('react_search_result')
 );
 
+
+//React.render(
+//	React.createElement(SearchResult, null),
+//	document.getElementById('react_fast_view_product')
+//);
+

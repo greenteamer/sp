@@ -4,15 +4,15 @@
     <div class="container">
         <div class="row">
 
-            <div class="col-xs-9">
-                <div id="react_search_result"></div>
-                {% block content %}
+            <div class="col-xs-12 col-sm-12 col-md-3">
+                {% block sidebar %}
+                    {% client_sidebar request %}
                 {% endblock %}
             </div>
 
-            <div class="col-xs-3">
-                {% block sidebar %}
-                    {% client_sidebar request %}
+            <div class="col-xs-12 col-sm-12 col-md-9">
+                <div id="react_search_result"></div>
+                {% block content %}
                 {% endblock %}
             </div>
 

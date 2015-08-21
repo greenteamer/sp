@@ -15,6 +15,16 @@
 {#    <script type="text/javascript" src="{% static 'client/dev/cartmenu/bundle.js' %}"></script>#}
     <script type="text/javascript">
         $(".select").dropdown({ "autoinit" : ".select" });
+        var mql = window.matchMedia("(min-width: 768px)");
+        if  (mql.matches) {
+            $('.navbar').addClass('desctop_menu');
+            $('body').removeClass('mobile');
+            $('.big_content_wrapper').removeClass('hidden');
+        } else {
+            $('.navbar').removeClass('desctop_menu');
+            $('body').addClass('mobile');
+            $('.big_content_wrapper').addClass('hidden');
+        }
     </script>
 
     {# // <script type="text/javascript" src="{% static 'materialize/js/materialize.min.js' %}"></script>#}

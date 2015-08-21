@@ -36,7 +36,9 @@ var Search = React.createClass({
 		return (
             <form className="custom-form" onSubmit={this.search}>
                 <input type="text" ref="query_text" className="col-lg-8" placeholder="поиск товаров"/>
-                <button type="submit" className="btn btn-primary pull-left btn-search">ПОИСК</button>
+                <button type="submit" className="btn btn-primary pull-left btn-search">
+                    <i className="mdi-action-search"></i>
+                </button>
             </form>
 		)
 	}
