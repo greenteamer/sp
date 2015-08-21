@@ -41,7 +41,7 @@ var CartItem = React.createClass({
 var CartMenu = React.createClass({
 	getInitialState: function () {
         return {
-            items: []
+            cartitems: []
         }
     },
     componentWillMount: function(){
@@ -57,12 +57,12 @@ var CartMenu = React.createClass({
     },
     collectionChanged: function () {
 		this.setState({
-            items: PurchasesStore.cartitems
+            cartitems: PurchasesStore.cartitems
         });
     },
 	render: function () {
-        console.log(this.state.items);
-        var items = this.state.items.map(function (item) {
+        console.log(this.state.cartitems);
+        var items = this.state.cartitems.map(function (item) {
             return (
                 <CartItem item={item} />
             )

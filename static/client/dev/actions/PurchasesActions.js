@@ -34,8 +34,14 @@ var PurchasesActions = {
         PurchasesDispatcher.dispatch({
             actionType: "get-cart-items"
         });
+    },
+    getSearchResults: function(query){
+        PurchasesDispatcher.dispatch({
+            actionType: "get-search-results",
+            query: query
+        });
     }
-}
+};
 
 
 module.exports = PurchasesActions;
