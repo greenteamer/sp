@@ -43,12 +43,22 @@ var PurchasesActions = {
         });
     },
     fastShowProduct: function(data){
-        console.log(data);
         PurchasesDispatcher.dispatch({
             actionType: "fast-show-product",
             product: data.item,
             purchase_id: data.purchase_id,
             cpp_catalog: data.cpp_catalog
+        });
+    },
+    getProduct: function(product_id){
+        PurchasesDispatcher.dispatch({
+            actionType: "get-product",
+            product_id: product_id
+        });
+    },
+    getBenefits: function(){
+        PurchasesDispatcher.dispatch({
+            actionType: "get-benefits"
         });
     }
 };
@@ -117,9 +127,20 @@ var PurchasesStore = merge(MicroEvent.prototype, {
     query_text: '',
     product_fast_view: {},
     purchase_id_fast_view: 0,
+    product: {},
+    benefits: [],
 
     collectionChange: function(){
         this.trigger('change');
+    },
+    modalView: function(){
+        this.trigger('modal');
+    },
+    getProduct: function(){
+        this.trigger('get-product');
+    },
+    changeBenefits: function(){
+        this.trigger('changeBenefits');
     }
 });
 
@@ -184,11 +205,9 @@ PurchasesDispatcher.register(function (payload) {
                 dataType: 'json',
                 cache: false,
                 success: (function (data) {
-                    console.log(PurchasesStore.search_result_collection);
                     PurchasesStore.search_result_collection = data;
                     PurchasesStore.query_text = payload.query;
                     PurchasesStore.collectionChange();
-
                 }).bind(this),
                 error: (function (xhr, status, err) {
                     console.log('error fetchin collection');
@@ -219,12 +238,15 @@ PurchasesDispatcher.register(function (payload) {
                 }
             ).success(
                 function (data) {
-                    $.snackbar({timeout: 5000, content: data.message });
+                    var message = "товар успешно добавлен в корзину";
+                    $.snackbar({timeout: 5000, content: message });
                     console.log('товар' + data.name + 'успешно добавлен в корзину');
                     PurchasesActions.getCartItems();
                 })
             .error(
                 function (data) {
+                    var message = "что-то пошло не так, попробуйте перезагрузить страницу";
+                    $.snackbar({timeout: 5000, content: message });
                     console.log("Ошибка post запроса");
                 });
             break;
@@ -244,9 +266,9 @@ PurchasesDispatcher.register(function (payload) {
                         }
                     });
                 }).bind(this),
-            error: (function (xhr, status, err) {
-                    console.log('error fetchin collection');
-                }).bind(this)
+                error: (function (xhr, status, err) {
+                        console.log('error fetchin collection');
+                    }).bind(this)
             });
             break;
 
@@ -259,10 +281,10 @@ PurchasesDispatcher.register(function (payload) {
                     PurchasesStore.cartitems = data;
                     PurchasesStore.collectionChange();
                 }).bind(this),
-            error: (function (xhr, status, err) {
-                    console.log('error fetchin collection');
-                }).bind(this)
-            });
+                error: (function (xhr, status, err) {
+                        console.log('error fetchin collection');
+                    }).bind(this)
+                });
             break;
 
         case "fast-show-product":
@@ -270,7 +292,54 @@ PurchasesDispatcher.register(function (payload) {
             PurchasesStore.product_fast_view = payload.product;
             PurchasesStore.product_fast_view.cpp_catalog = payload.cpp_catalog;
             PurchasesStore.purchase_id_fast_view = payload.purchase_id;
-            PurchasesStore.collectionChange();
+            PurchasesStore.modalView();
+            break;
+
+        case "get-product":
+            //получаем продукт по id
+            var url = '/api/v1/products/' + payload.product_id + "/";
+            $.ajax({
+                //получаем товар
+                url: url,
+                dataType: "json",
+                cache: false,
+                success: (function(data){
+                    var url_catalog = '/api/v1/catalogs/' + data.catalog + "/";
+                    var tmp_product = data;
+                    $.ajax({
+                        //получаем свойства каталога и добавляем в товар
+                        url: url_catalog,
+                        dataType: "json",
+                        cache: false,
+                        success: (function(data){
+                            tmp_product.cpp_catalog = data.cpp_catalog;
+                            PurchasesStore.product = tmp_product;
+                            PurchasesStore.getProduct();
+                        }).bind(this),
+                        error: (function(){
+                            console.log('ups, something went wrong');
+                        }).bind(this)
+                    });
+                }).bind(this),
+                error: (function(xhr, status, err){
+                    console.log('error fetchin collection');
+                }).bind(this)
+            });
+            break;
+
+        case "get-benefits":
+            $.ajax({
+                url: "/api/v1/benefits/",
+                dataType: "json",
+                cache: false,
+                success: function(data){
+                    PurchasesStore.benefits = data;
+                    PurchasesStore.changeBenefits();
+                },
+                error: function(){
+                    console.log('oups, something went wrong');
+                }
+            });
             break;
 
         default:
@@ -292,7 +361,7 @@ var Catalog = React.createClass({displayName: "Catalog",
     render: function () {
         return (
             React.createElement("div", {className: "catalog"}, 
-                React.createElement(SliderProducts, {items: this.props.catalog.products, cpp_catalog: this.props.catalog.cpp_catalog, purchase_id: this.props.purchase_id})
+                React.createElement(SliderProducts, {items: this.props.catalog.product_catalog, cpp_catalog: this.props.catalog.cpp_catalog, purchase_id: this.props.purchase_id})
             )
         )
     }
@@ -333,7 +402,6 @@ var Purchase = React.createClass({displayName: "Purchase",
     render: function () {
         var description = this.props.purchase.description.slice(0,100);
         description = description.replace(/(<([^>]+)>)/ig,"");
-
         return (
             React.createElement("div", {className: "purchase-item"}, 
                 React.createElement("div", {className: "row"}, 
@@ -532,22 +600,34 @@ var PurchasesStore = require('../../stores/PurchasesStore.js');
 var ProductForm = require('./ProductForm.jsx');
 
 
+function emptyObject(obj) {
+    //вспомогательная функция проверяет пуст ли объект
+    for (var i in obj) {
+        return false;
+    }
+    return true;
+}
+
+
 var ProductFastView = React.createClass({displayName: "ProductFastView",
     render: function(){
+
         var description = this.props.product.description;
         description = (description.substr(0, 500));
-
         return (
             React.createElement("div", {className: "product_view"}, 
-                React.createElement("div", {className: "col-xs-4 product_fast_view"}, 
+                React.createElement("div", {className: "col-xs-12 col-sm-6 col-md-4 product_fast_view"}, 
                     React.createElement("img", {src: this.props.product.images[0].image, alt: ""})
                 ), 
-                React.createElement("div", {className: "col-xs-8 product_fast_view"}, 
+                React.createElement("div", {className: "col-xs-12 col-sm-6 col-md-8 product_fast_view"}, 
                     React.createElement("div", {className: "row"}, 
-                        React.createElement("div", {className: "col-xs-6"}, 
+                        React.createElement("div", {className: "col-xs-12"}, 
+                            React.createElement("h2", null, this.props.product.product_name)
+                        ), 
+                        React.createElement("div", {className: "col-xs-12 col-sm-12 col-md-6"}, 
                             React.createElement("p", null, description)
                         ), 
-                        React.createElement("div", {className: "col-xs-6"}, 
+                        React.createElement("div", {className: "col-xs-12 col-sm-12 col-md-6"}, 
                             React.createElement("p", {className: "price"}, this.props.product.price, " руб."), 
                             React.createElement(ProductForm, {product: this.props.product, cpp_catalog: this.props.product.cpp_catalog})
                         )
@@ -555,6 +635,7 @@ var ProductFastView = React.createClass({displayName: "ProductFastView",
                 )
             )
         )
+
     }
 });
 
@@ -605,7 +686,6 @@ var Properties = React.createClass({displayName: "Properties",
         this.state.cpp_properties[e[0].index].value = e[0].value;
     },
     setCount: function(e){
-        console.log(e.target.value);
         var new_product = this.state.product;
         new_product.count = e.target.value;
         this.setState({
@@ -714,6 +794,7 @@ var ProductFastView = require('./ProductFastView.jsx');
 var Dialog = require('material-ui').Dialog;
 var ThemeManager = require('material-ui/lib/styles/theme-manager')();
 var FlatButton = require('material-ui').FlatButton;
+var Colors = require('material-ui').Styles.Colors;
 
 
 function emptyObject(obj) {
@@ -740,10 +821,10 @@ var ProductModal = React.createClass({displayName: "ProductModal",
         };
     },
     componentDidMount: function () {
-        PurchasesStore.bind( 'change', this.collectionChanged );
+        PurchasesStore.bind( 'modal', this.collectionChanged );
     },
     componentWillUnmount: function () {
-        PurchasesStore.unbind( 'change', this.collectionChanged );
+        PurchasesStore.unbind( 'modal', this.collectionChanged );
     },
     collectionChanged: function () {
         this.setState({
@@ -752,11 +833,11 @@ var ProductModal = React.createClass({displayName: "ProductModal",
         });
         this.state.product_fast_view = PurchasesStore.product_fast_view;
         if (emptyObject(this.state.product_fast_view) != true) {
-            this.refs.answerDialog.show();
+            this.refs.productDialog.show();
         }
     },
     _DialogCancel: function () {
-    	this.refs.answerDialog.dismiss();
+    	this.refs.productDialog.dismiss();
     },
     render: function(){
         var modalActions = [
@@ -768,16 +849,20 @@ var ProductModal = React.createClass({displayName: "ProductModal",
         ];
         var productModal = [
             React.createElement(Dialog, {
-                ref: "answerDialog", 
-                title: this.state.product_fast_view.product_name, 
+                ref: "productDialog", 
+                className: "test_modal", 
+                title: "Быстрый просмотр товара", 
                 actions: modalActions}
             )
         ];
         if (emptyObject(this.state.product_fast_view) != true) {
              productModal = [
                 React.createElement(Dialog, {
-                    ref: "answerDialog", 
-                    title: this.state.product_fast_view.product_name, 
+                    ref: "productDialog", 
+                    style: {
+                        overflow: 'scroll'
+                    }, 
+                    title: "Быстрый просмотр товара", 
                     actions: modalActions}, 
                     React.createElement(ProductFastView, {product: this.state.product_fast_view})
                 )
@@ -822,11 +907,18 @@ var ProductInfoMini = React.createClass({displayName: "ProductInfoMini",
         PurchasesActions.fastShowProduct(data);
     },
     render: function(){
+        var link = "/client/products/" + this.props.item.id + "/";
         return (
             React.createElement("div", null, 
-                React.createElement("div", {className: "image-wrapper", onClick: this.showProduct}, 
+                React.createElement("div", {className: "image-wrapper"}, 
                     React.createElement("img", {src: this.props.item.images[0].image}), 
-                    React.createElement("div", {className: "blackout"})
+                    React.createElement("div", {className: "blackout"}), 
+                    React.createElement("button", {type: "button", className: "btn btn-primary fast-modal bottom", onClick: this.showProduct}, 
+                        React.createElement("i", {className: "mdi-content-content-copy"})
+                    ), 
+                    React.createElement("a", {href: link, className: "btn btn-primary fast-modal top"}, 
+                        React.createElement("i", {className: "mdi-action-search"})
+                    )
                 ), 
                 React.createElement("h5", {className: "product_name_mini"}, this.props.item.product_name), 
                 React.createElement("p", {className: "price"}, this.props.item.price)
