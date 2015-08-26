@@ -1,33 +1,12 @@
 var React = require('react');
 var Catalogs = require('./Catalogs.jsx');
 var PurchasesActions = require('../actions/PurchasesActions.js');
-
-
-var ProductFastView = React.createClass({
-    render: function(){
-        return (
-            <div className="product_view hidden">
-                <h4>{this.props.product.name}</h4>
-                <img src={this.props.product.image} alt="" />
-                <p>{this.props.product.description}</p>
-                <p>{this.props.product.price}</p>
-            </div>
-        )
-    }
-});
+var PurchasesStore = require('../stores/PurchasesStore.js');
+//var ProductForm = require('./product_components/ProductForm.jsx');
+var ProductModal = require('./product_components/ProductModal.jsx');
 
 
 var Purchase = React.createClass({
-    getInitialState: function(){
-        return {
-            product_fast_view: {
-                name: 'Тест Имя',
-                image: 'http://127.0.0.1:8000/media/product/5_4.png',
-                description: 'Тест описание товара для быстрого просмотра',
-                price: 1200
-            }
-        }
-    },
     render: function () {
         var description = this.props.purchase.description.slice(0,100);
         description = description.replace(/(<([^>]+)>)/ig,"");
@@ -39,9 +18,12 @@ var Purchase = React.createClass({
                         <p>{description}</p>
                     </div>
                     <div className="col-xs-12 col-md-8 purchase-info">
-                        <Catalogs catalogs={this.props.purchase.catalogs} />
+                        <Catalogs catalogs={this.props.purchase.catalogs} purchase_id={this.props.purchase.id} />
                     </div>
-                    <ProductFastView product={this.state.product_fast_view}></ProductFastView>
+                    <div className="col-xs-12">
+                        <div className="row fast-open out">
+                        </div>
+                    </div>
                 </div>
             </div>
         )
@@ -59,8 +41,7 @@ var Purchases = React.createClass({
                         <Purchase key={item.id} purchase={item}/>
                     </div>
                 )
-                }
-            else {
+            } else {
                 return (
                     <div>
                         <Purchase key={item.id} purchase={item}/>
@@ -72,6 +53,7 @@ var Purchases = React.createClass({
         return (
             <div className="purchases-list">
                 {items}
+                <ProductModal />
             </div>
         )
     }

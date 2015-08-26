@@ -21,6 +21,10 @@ urlpatterns = patterns('project.client.views',
         {'template_name': 'client/pages/category.html'},
         name='client_category'),
 
+    url(r'^products/(?P<id>\d+)/$', 'clientProductView',
+        {'template_name': 'client/pages/product.html'},
+        name='client_product'),
+
     # api
     url(r'^v1/all-purchases/$', 'getAllPurchases', name='get-all-purchases'),
 )

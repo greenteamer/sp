@@ -25,6 +25,7 @@ class Page(models.Model):
         verbose_name=u'Текст страницы')
 
     is_main = models.BooleanField(default=False)
+    is_benefits = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.name

@@ -96,37 +96,43 @@ var Properties = React.createClass({
             }
 
             return (
-                <Select
-                    name="property_value"
-                    ref="my_select"
-                    value={tmp_name}
-                    options={options}
-                    onChange={boundChange}
-                     />
+                <p>
+                    <Select
+                        name="property_value"
+                        ref="my_select"
+                        value={tmp_name}
+                        options={options}
+                        onChange={boundChange}
+                         />
+                </p>
             )
         });
 
         return (
-            <div>
-                {selects}
-                <div className="count_block">
-                    <button type="button" className="btn btn-default pull-left minus" onClick={this.countMinus}>-</button>
-                    <input
-                        type="text"
-                        name="count"
-                        className="count_input"
-                        onChange={this.setCount}
-                        value={this.state.product.count}/>
-                    <button type="button" className="btn btn-default pull-left plus" onClick={this.countPlus}>+</button>
+            <div className="row">
+                <div className="col-xs-12 col-sm-6">
+                    {selects}
                 </div>
-                <button type="button" className="btn btn-primary full-width" onClick={this.addToCart}>В корзину</button>
+                <div className="col-xs-12 col-sm-6">
+                    <div className="count_block">
+                        <button type="button" className="btn btn-default pull-left minus" onClick={this.countMinus}>-</button>
+                        <input
+                            type="text"
+                            name="count"
+                            className="count_input"
+                            onChange={this.setCount}
+                            value={this.state.product.count}/>
+                        <button type="button" className="btn btn-default pull-left plus" onClick={this.countPlus}>+</button>
+                    </div>
+                    <button type="button" className="btn btn-primary full-width" onClick={this.addToCart}>В корзину</button>
+                </div>
             </div>
         )
     }
 });
 
 
-var ProductForm = React.createClass({
+var ProductDetailForm = React.createClass({
     render: function(){        
         return (
             <div className="properties">
@@ -138,4 +144,4 @@ var ProductForm = React.createClass({
 });
 
 
-module.exports = ProductForm;
+module.exports = ProductDetailForm;

@@ -7,6 +7,7 @@ from project.accounts.models import getProfile, OrganizerProfile, MemberProfile
 from project.core.models import Purchase, Product, Promo, Catalog, Category
 from project.cart.models import CartItem
 from project.cart.forms import CartItemForm
+from project.documentation.models import Page
 from project.cart import cart
 from project.helpers import check_profile
 from project.cart.cart import add_to_cart
@@ -18,7 +19,8 @@ from rest_framework import serializers, viewsets, generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import detail_route, list_route
-from serializers import PurchaseSerializer, OrganizerSerializer, PromoSerializer, CategorySerializer
+from serializers import PurchaseSerializer, OrganizerSerializer, PromoSerializer, CategorySerializer, ProductSerializer,\
+    CatalogSerializer, BenefitsSerializer
 
 
 # Просмотр каталога
@@ -85,6 +87,12 @@ def clientCategoryView(request, category_slug, template_name="client/pages/categ
                               context_instance=RequestContext(request))
 
 
+def clientProductView(request, id, template_name="client/pages/product.html"):
+
+    return render_to_response(template_name, locals(),
+                              context_instance=RequestContext(request))
+
+
 @check_profile
 def catalogView(request, template_name="client/pages/catalog.html"):
     purchases = Purchase.objects.all()
@@ -134,6 +142,16 @@ class PopularPromoViewSet(viewsets.ModelViewSet):
 class NewPromoViewSet(viewsets.ModelViewSet):
     queryset = Promo.objects.filter(alias='new-promo')
     serializer_class = PromoSerializer
+
+
+class ProductsViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+
+class CatalogsViewSet(viewsets.ModelViewSet):
+    queryset = Catalog.objects.all()
+    serializer_class = CatalogSerializer
 
 
 class HotPurchasesViewSet(viewsets.ModelViewSet):
@@ -192,3 +210,8 @@ def getCartItems(request):
         })
     data = json.dumps(items)
     return HttpResponse(data, content_type="application/json")
+
+
+class BenefitsViewSet(viewsets.ModelViewSet):
+    queryset = Page.objects.filter(is_benefits=True)
+    serializer_class = BenefitsSerializer

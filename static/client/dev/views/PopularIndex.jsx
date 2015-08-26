@@ -10,7 +10,8 @@ var PopularIndex = React.createClass({
 	getInitialState: function () {
         return {
             collection: [],
-          	user: {}
+          	user: {},
+            title: ''
         }
     },
     componentDidMount: function () {

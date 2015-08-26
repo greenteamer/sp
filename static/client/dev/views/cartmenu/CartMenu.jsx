@@ -61,7 +61,6 @@ var CartMenu = React.createClass({
         });
     },
 	render: function () {
-        console.log(this.state.cartitems);
         var items = this.state.cartitems.map(function (item) {
             return (
                 <CartItem item={item} />

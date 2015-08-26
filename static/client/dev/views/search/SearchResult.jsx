@@ -2,12 +2,10 @@ var React = require('react');
 var $ = require('jquery');
 var Purchases = require('../Purchases.jsx');
 var PurchasesStore = require('../../stores/PurchasesStore.js');
-
-// actions
 var PurchasesActions = require('../../actions/PurchasesActions.js');
 
 
-var PopularIndex = React.createClass({
+var SearchResult = React.createClass({
 	getInitialState: function () {
         return {
             search_result_collection: [],
@@ -36,21 +34,18 @@ var PopularIndex = React.createClass({
 		this.state.search_result_collection.forEach(function(item){
 			search_result_collection = item;
 		});
-        console.log(search_result_collection);
         if (search_result_collection.length === 0) {
-            console.log('first');
             return (
                 <div className='hidden'>
                     <h3>{title}</h3>
-                    <Purchases collection={search_result_collection} title={title}/>
+                    <Purchases collection={search_result_collection}/>
                 </div>
             )
         } else {
-            console.log('second');
             return (
                 <div className=''>
                     <h3>{title}</h3>
-                    <Purchases collection={search_result_collection} title={title}/>
+                    <Purchases collection={search_result_collection}/>
                 </div>
             )
         }
@@ -58,4 +53,4 @@ var PopularIndex = React.createClass({
 });
 
 
-module.exports = PopularIndex;
+module.exports = SearchResult;
