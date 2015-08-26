@@ -35,6 +35,7 @@
     "build-js": "browserify ./client/main.js > ./client/bundle.js",
     "index-watch": "watchify ./client/dev/index/main.js -o ./client/dev/index/bundle.js -v",
     "category-watch": "watchify ./client/dev/category/main.js -o ./client/dev/category/bundle.js -v",
-    "cartmenu-watch": "watchify ./client/dev/cartmenu/main.js -o ./client/dev/cartmenu/bundle.js -v"
+    "cartmenu-watch": "watchify ./client/dev/cartmenu/main.js -o ./client/dev/cartmenu/bundle.js -v",
+    "product-watch": "watchify ./client/dev/product/main.js -o ./client/dev/product/bundle.js -v"
   }
 }

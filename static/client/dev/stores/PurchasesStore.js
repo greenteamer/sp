@@ -2,7 +2,9 @@ var PurchasesDispatcher = require('../dispatcher/PurchasesDispatcher.js');
 var PurchasesActions = require('../actions/PurchasesActions.js');
 var MicroEvent = require('microevent');
 var merge = require('merge');
+var $ = require('jquery');
 var Cookies = require('js-cookie');
+var snackbar = require('../../lib/snackbar.js');
 
 
 var PurchasesStore = merge(MicroEvent.prototype, {
@@ -11,9 +13,22 @@ var PurchasesStore = merge(MicroEvent.prototype, {
     cartitems: [],
     search_result_collection: [],
     query_text: '',
+    product_fast_view: {},
+    purchase_id_fast_view: 0,
+    product: {},
+    benefits: [],
 
     collectionChange: function(){
         this.trigger('change');
+    },
+    modalView: function(){
+        this.trigger('modal');
+    },
+    getProduct: function(){
+        this.trigger('get-product');
+    },
+    changeBenefits: function(){
+        this.trigger('changeBenefits');
     }
 });
 
@@ -78,11 +93,9 @@ PurchasesDispatcher.register(function (payload) {
                 dataType: 'json',
                 cache: false,
                 success: (function (data) {
-                    console.log(PurchasesStore.search_result_collection);
                     PurchasesStore.search_result_collection = data;
                     PurchasesStore.query_text = payload.query;
                     PurchasesStore.collectionChange();
-
                 }).bind(this),
                 error: (function (xhr, status, err) {
                     console.log('error fetchin collection');
@@ -109,15 +122,19 @@ PurchasesDispatcher.register(function (payload) {
                     csrfmiddlewaretoken: csrftoken,
                     product: payload.item.product.id,
                     product_properties: tmp_properties,
-                    quantity: '1'
+                    quantity: payload.item.product.count
                 }
             ).success(
                 function (data) {
+                    var message = "товар успешно добавлен в корзину";
+                    $.snackbar({timeout: 5000, content: message });
                     console.log('товар' + data.name + 'успешно добавлен в корзину');
                     PurchasesActions.getCartItems();
                 })
             .error(
                 function (data) {
+                    var message = "что-то пошло не так, попробуйте перезагрузить страницу";
+                    $.snackbar({timeout: 5000, content: message });
                     console.log("Ошибка post запроса");
                 });
             break;
@@ -137,9 +154,9 @@ PurchasesDispatcher.register(function (payload) {
                         }
                     });
                 }).bind(this),
-            error: (function (xhr, status, err) {
-                    console.log('error fetchin collection');
-                }).bind(this)
+                error: (function (xhr, status, err) {
+                        console.log('error fetchin collection');
+                    }).bind(this)
             });
             break;
 
@@ -152,9 +169,64 @@ PurchasesDispatcher.register(function (payload) {
                     PurchasesStore.cartitems = data;
                     PurchasesStore.collectionChange();
                 }).bind(this),
-            error: (function (xhr, status, err) {
+                error: (function (xhr, status, err) {
+                        console.log('error fetchin collection');
+                    }).bind(this)
+                });
+            break;
+
+        case "fast-show-product":
+            //передаем продукт которй быстро хочет посмотреть человек
+            PurchasesStore.product_fast_view = payload.product;
+            PurchasesStore.product_fast_view.cpp_catalog = payload.cpp_catalog;
+            PurchasesStore.purchase_id_fast_view = payload.purchase_id;
+            PurchasesStore.modalView();
+            break;
+
+        case "get-product":
+            //получаем продукт по id
+            var url = '/api/v1/products/' + payload.product_id + "/";
+            $.ajax({
+                //получаем товар
+                url: url,
+                dataType: "json",
+                cache: false,
+                success: (function(data){
+                    var url_catalog = '/api/v1/catalogs/' + data.catalog + "/";
+                    var tmp_product = data;
+                    $.ajax({
+                        //получаем свойства каталога и добавляем в товар
+                        url: url_catalog,
+                        dataType: "json",
+                        cache: false,
+                        success: (function(data){
+                            tmp_product.cpp_catalog = data.cpp_catalog;
+                            PurchasesStore.product = tmp_product;
+                            PurchasesStore.getProduct();
+                        }).bind(this),
+                        error: (function(){
+                            console.log('ups, something went wrong');
+                        }).bind(this)
+                    });
+                }).bind(this),
+                error: (function(xhr, status, err){
                     console.log('error fetchin collection');
                 }).bind(this)
+            });
+            break;
+
+        case "get-benefits":
+            $.ajax({
+                url: "/api/v1/benefits/",
+                dataType: "json",
+                cache: false,
+                success: function(data){
+                    PurchasesStore.benefits = data;
+                    PurchasesStore.changeBenefits();
+                },
+                error: function(){
+                    console.log('oups, something went wrong');
+                }
             });
             break;
 

@@ -6,7 +6,7 @@ var Catalog = React.createClass({
     render: function () {
         return (
             <div className="catalog">
-                <SliderProducts items={this.props.catalog.products} cpp_catalog={this.props.catalog.cpp_catalog} />
+                <SliderProducts items={this.props.catalog.product_catalog} cpp_catalog={this.props.catalog.cpp_catalog} purchase_id={this.props.purchase_id}/>
             </div>
         )
     }
@@ -14,11 +14,12 @@ var Catalog = React.createClass({
 
 
 var Catalogs = React.createClass({
-    render: function () {        
+    render: function () {
+        var purchase_id = this.props.purchase_id;
         items = this.props.catalogs.map(function(item, index){
             if (index === 0) {
                 return (
-                    <Catalog key={item.id} catalog={item} />
+                    <Catalog key={item.id} catalog={item} purchase_id={purchase_id} />
                 )
             }
         });

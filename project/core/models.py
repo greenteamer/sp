@@ -309,7 +309,7 @@ class Product(models.Model):
     sku = models.IntegerField(
         verbose_name=u'Артикул', null=True, blank=True)
 
-    catalog = models.ForeignKey(Catalog, verbose_name=u'Выбрать каталог', related_name='products')
+    catalog = models.ForeignKey(Catalog, verbose_name=u'Выбрать каталог', related_name='product_catalog')
     created_at = models.DateTimeField(
         u'Created at', null=True, auto_now_add=True)
 

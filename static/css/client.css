@@ -26,6 +26,9 @@ body {
     -o-transform: scale(0);
     z-index: 10000;
 }
+.btn {
+    padding: 8px 14px;
+}
 .btn-primary{
     background-color: #ffc229!important;
     color: #fff!important;
@@ -36,6 +39,11 @@ body {
 a {
     /*color: #ffc229!important;*/
     color: #333333;
+    font-weight: bold;
+}
+a:hover,
+a:active {
+    color: #ffc229!important;
     font-weight: bold;
 }
 .bg-primary {
@@ -294,6 +302,36 @@ a.more-button:before {
     margin: 10px auto;
     width: 100%;
 }
+.count_block  {
+    /*float: right;*/
+}
+.count_input {
+    float: left;
+    max-width: 72px;
+    padding: 3px;
+    text-align: center;
+    font-size: 20px;
+    margin-top: 10px;
+    width:30%
+}
+.plus,
+.minus{
+    padding: 8px 0;
+    width: 33%;
+    max-width: 50px;
+}
+.modal-button-cancel {
+    color: #333!important;
+    border: 1px solid #BDBDBD!important;
+    border-radius: 2px!important;
+}
+.modal-button-cancel:hover {
+    background-color: #fff!important;
+}
+.btn-default {
+    border: 1px solid #BDBDBD!important;
+    border-radius: 2px!important;
+}
 .big_content_wrapper_more_button .mdi-content-add {
     font-size: 50px;
     cursor: pointer;
@@ -538,6 +576,40 @@ a.more-button:before {
     -o-transition: all 0.3s ease-out 0s;
     transition: all 0.3s ease-out 0s;
 }
+.swiper3 .swiper-slide:hover .image-wrapper .fast-links{
+    position: absolute;
+    /*height: 8%;*/
+    width: 40%;
+    /*background-color: #FFEC00;*/
+    top: 46%;
+    left: 8%;
+}
+.slick-slider .image-wrapper:hover .btn-primary.fast-modal {
+    opacity: 1;
+    filter: alpha(opacity=50);
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
+}
+.slick-slider .btn-primary.fast-modal {
+    opacity: 0;
+    position: absolute;
+    width: 86%;
+    margin: 2% 7%;
+}
+.slick-slider .btn-primary.fast-modal.top {
+    top:70%;
+}
+.slick-slider .btn-primary.fast-modal.bottom {
+    bottom: 70%
+}
+.slick-slider .image-wrapper:hover .btn-primary.fast-modal.top {
+    top:50%;
+}
+.slick-slider .image-wrapper:hover .btn-primary.fast-modal.bottom {
+    bottom: 50%
+}
 .product-info {
     padding: 18px 20px 68px;
 }
@@ -604,6 +676,9 @@ a.more-button:before {
     -moz-transition: all 0.3s ease-out 0s;
     -o-transition: all 0.3s ease-out 0s;
     transition: all 0.3s ease-out 0s;
+}
+.slick-slide .image-wrapper:hover .blackout:after {
+    content: "";
 }
 /*конец четвертый блок*/
 
@@ -800,5 +875,72 @@ h2.block-title {
     right: 0;
 }
 /*конец корзины*/
+
+
+/*product_fast_view*/
+.product_fast_view {
+    margin-bottom: 30px;
+    margin-top: 30px;
+    min-height: 315px;
+}
+.product_fast_view img {
+    float: left;
+    width:100%;
+}
+.product_fast_view h2 {
+    margin-top: 0;
+}
+.product_fast_view .price {
+    text-align:right;
+}
+.product_fast_view .Select-menu-outer {
+    margin-top: -1px!important;
+    margin-bottom: auto!important;
+    max-height: 400px!important;
+    /*height: 400px!important;*/
+    top: 100%!important;
+    bottom: auto;
+    border-radius: 0!important;
+    box-shadow: none!important;
+}
+.product_fast_view .Select-menu {
+  max-height: 350px!important;
+  overflow-y: auto;
+}
+.fast-open.in {
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
+}
+.fast-open.out {
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
+}
+/*end product_fast_view*/
+
+/*product_detail*/
+.benefits {
+    border:1px solid #E4E4E4;
+    padding: 15px;
+}
+.benefits-separator {
+    margin: 15px -15px;
+    padding:15px 15px;
+    background: #E4E4E4;
+}
+.benefits-separator h3 {
+    font-family: 'Nautilus Pompilius';
+    margin: 0;
+}
+.full-description > div > div:first-child {
+    background-color: #A5A5A5!important;
+}
+.full-description > div > div:first-child > .modified:not(:hover) .title::after {
+    background: #fff!important;
+}
+/*end product_detail*/
 
 /*конец INDEX страница*/ /*конец INDEX страница*/
