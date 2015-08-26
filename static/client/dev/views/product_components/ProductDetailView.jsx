@@ -27,7 +27,7 @@ var ProductFastView = React.createClass({
             muiTheme: ThemeManager.getCurrentTheme()
         };
     },
-    componentWillMount() {
+    componentWillMount: function(){
         ThemeManager.setPalette({
            accent1Color: Colors.amber400
         });

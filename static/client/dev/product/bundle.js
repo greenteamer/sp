@@ -843,7 +843,7 @@ var ProductFastView = React.createClass({displayName: "ProductFastView",
             muiTheme: ThemeManager.getCurrentTheme()
         };
     },
-    componentWillMount() {
+    componentWillMount: function(){
         ThemeManager.setPalette({
            accent1Color: Colors.amber400
         });
