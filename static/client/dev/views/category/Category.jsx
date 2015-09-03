@@ -2,28 +2,31 @@ var React = require('react');
 var $ = require('jquery');
 var Purchases = require('../Purchases.jsx');
 var PurchasesStore = require('../../stores/PurchasesStore.js');
-
-// actions
 var PurchasesActions = require('../../actions/PurchasesActions.js');
+var ProductTileView = require('../product_components/ProductTileView.jsx');
+var ProductModal = require('../product_components/ProductModal.jsx');
+
+var IF = require('../customhelpers/IF.jsx');
 
 
-var PopularIndex = React.createClass({
+var Category = React.createClass({
 	getInitialState: function () {
         return {
             collection: [],
-          	user: {}
+            filtered_collection: [],
+          	user: {}            
         }
     },
     componentDidMount: function () {
         //получаем текущий урл
         var url = $(location).attr('pathname');
-        var parse_url = url.split('/')[2];
+        var parse_url = url.split('/')[1];
         var current_category = parse_url.slice(9);
-        console.log(current_category);
 
         //обновляем store в соответствии с текущей категорией
 		PurchasesActions.getCategoryPurchases(current_category);
         PurchasesStore.bind( 'change', this.collectionChanged );
+        PurchasesStore.bind( 'filterTrigger', this.filterTrigger );
     },
     componentWillUnmount: function () {
         PurchasesStore.unbind( 'change', this.collectionChanged );
@@ -35,20 +38,50 @@ var PopularIndex = React.createClass({
             collection: tmp_collection
         });
     },
+    filterTrigger: function () {
+        this.setState({
+            filtered_collection: PurchasesStore.filter.filtered_collection
+        });
+    },
 	render: function () {
-        collection = [];
+        collection = [];        
 		var title = '';
+        var category_id = 0;
 		this.state.collection.forEach(function(item){
 			collection = item.category_purchase;
 			title = item.name;
-		});
-		return (
+            category_id = item.id;
+		}); 
+
+        var filtered_items = []; 
+        if (this.state.filtered_collection.length != 0){
+            filtered_items = this.state.filtered_collection.map(function (product) {
+                return (
+                    <div className="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                        <ProductTileView product={product}/>
+                    </div>
+                )
+            });
+        }      
+		return (            
             <div>
-                <Purchases collection={collection} title={title}/>
+                <IF condition={this.state.filtered_collection.length == 0}>
+                    <Purchases 
+                        collection={collection}
+                        category_id={category_id}
+                        title={title}
+                        indicatorElementName='#category'/>
+                </IF>
+                <IF condition={this.state.filtered_collection.length != 0}>
+                    <div>
+                        {filtered_items}
+                        <ProductModal />
+                    </div>                    
+                </IF>                
             </div>
 		)
 	}
 });
 
 
-module.exports = PopularIndex;
+module.exports = Category;

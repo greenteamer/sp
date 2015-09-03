@@ -39,7 +39,7 @@ urlpatterns = patterns(
     url(r'^', include('project.core.urls')),
     url(r'^', include('project.cart.urls')),
 
-    url(r'^client/', include('project.client.urls')),
+    url(r'^', include('project.client.urls')),
     url(r'^api/v2/', include('project.client.api_v2_urls')),
 
     url(r'^', include('project.calendar_js.urls')),

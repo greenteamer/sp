@@ -1,13 +1,10 @@
 /* Modernizr 2.8.3 (Custom Build) | MIT & BSD
  * Build: http://modernizr.com/download/#-borderradius-boxshadow-opacity-csstransforms-csstransforms3d-csstransitions-prefixed-teststyles-testprop-testallprops-prefixes-domprefixes
  */
-;
-
-
 
 module.exports = (function( window, document, undefined ) {
 
-    var version = '2.8.3',
+    let version = '2.8.3',
 
     Modernizr = {},
 
@@ -17,11 +14,6 @@ module.exports = (function( window, document, undefined ) {
     mod = 'modernizr',
     modElem = document.createElement(mod),
     mStyle = modElem.style,
-
-    inputElem  ,
-
-
-    toString = {}.toString,
 
     prefixes = ' -webkit- -moz- -o- -ms- '.split(' '),
 
@@ -35,19 +27,17 @@ module.exports = (function( window, document, undefined ) {
 
 
     tests = {},
-    inputs = {},
-    attrs = {},
 
     classes = [],
 
     slice = classes.slice,
 
-    featureName, 
+    featureName,
 
 
     injectElementWithStyles = function( rule, callback, nodes, testnames ) {
 
-      var style, ret, node, docOverflow,
+      let style, ret, node, docOverflow,
           div = document.createElement('div'),
                 body = document.body,
                 fakeBody = body || document.createElement('body');
@@ -85,13 +75,17 @@ module.exports = (function( window, document, undefined ) {
     },
     _hasOwnProperty = ({}).hasOwnProperty, hasOwnProp;
 
+    function is( obj, type ) {
+        return typeof obj === type;
+    }
+
     if ( !is(_hasOwnProperty, 'undefined') && !is(_hasOwnProperty.call, 'undefined') ) {
       hasOwnProp = function (object, property) {
         return _hasOwnProperty.call(object, property);
       };
     }
     else {
-      hasOwnProp = function (object, property) { 
+      hasOwnProp = function (object, property) {
         return ((property in object) && is(object.constructor.prototype[property], 'undefined'));
       };
     }
@@ -100,22 +94,22 @@ module.exports = (function( window, document, undefined ) {
     if (!Function.prototype.bind) {
       Function.prototype.bind = function bind(that) {
 
-        var target = this;
+        let target = this;
 
         if (typeof target != "function") {
             throw new TypeError();
         }
 
-        var args = slice.call(arguments, 1),
+        let args = slice.call(arguments, 1),
             bound = function () {
 
             if (this instanceof bound) {
 
-              var F = function(){};
+              let F = function(){};
               F.prototype = target.prototype;
-              var self = new F();
+              let self = new F();
 
-              var result = target.apply(
+              let result = target.apply(
                   self,
                   args.concat(slice.call(arguments))
               );
@@ -147,17 +141,13 @@ module.exports = (function( window, document, undefined ) {
         return setCss(prefixes.join(str1 + ';') + ( str2 || '' ));
     }
 
-    function is( obj, type ) {
-        return typeof obj === type;
-    }
-
     function contains( str, substr ) {
         return !!~('' + str).indexOf(substr);
     }
 
     function testProps( props, prefixed ) {
-        for ( var i in props ) {
-            var prop = props[i];
+        for ( let i in props ) {
+            let prop = props[i];
             if ( !contains(prop, "-") && mStyle[prop] !== undefined ) {
                 return prefixed == 'pfx' ? prop : true;
             }
@@ -166,8 +156,8 @@ module.exports = (function( window, document, undefined ) {
     }
 
     function testDOMProps( props, obj, elem ) {
-        for ( var i in props ) {
-            var item = obj[props[i]];
+        for ( let i in props ) {
+            let item = obj[props[i]];
             if ( item !== undefined) {
 
                             if (elem === false) return props[i];
@@ -184,7 +174,7 @@ module.exports = (function( window, document, undefined ) {
 
     function testPropsAll( prop, prefixed, elem ) {
 
-        var ucProp  = prop.charAt(0).toUpperCase() + prop.slice(1),
+        let ucProp  = prop.charAt(0).toUpperCase() + prop.slice(1),
             props   = (prop + ' ' + cssomPrefixes.join(ucProp + ' ') + ucProp).split(' ');
 
             if(is(prefixed, "string") || is(prefixed, "undefined")) {
@@ -198,33 +188,33 @@ module.exports = (function( window, document, undefined ) {
 
 
 
-    tests['borderradius'] = function() {
+    tests.borderradius = function() {
         return testPropsAll('borderRadius');
     };
 
-    tests['boxshadow'] = function() {
+    tests.boxshadow = function() {
         return testPropsAll('boxShadow');
     };
 
 
 
-    tests['opacity'] = function() {
+    tests.opacity = function() {
                 setCssAll('opacity:.55');
 
                     return (/^0.55$/).test(mStyle.opacity);
     };
-    tests['csstransforms'] = function() {
+    tests.csstransforms = function() {
         return !!testPropsAll('transform');
     };
 
 
-    tests['csstransforms3d'] = function() {
+    tests.csstransforms3d = function() {
 
-        var ret = !!testPropsAll('perspective');
+        let ret = !!testPropsAll('perspective');
 
                         if ( ret && 'webkitPerspective' in docElement.style ) {
 
-                      injectElementWithStyles('@media (transform-3d),(-webkit-transform-3d){#modernizr{left:9px;position:absolute;height:3px;}}', function( node, rule ) {
+                      injectElementWithStyles('@media (transform-3d),(-webkit-transform-3d){#modernizr{left:9px;position:absolute;height:3px;}}', function(node) {
             ret = node.offsetLeft === 9 && node.offsetHeight === 3;
           });
         }
@@ -232,13 +222,13 @@ module.exports = (function( window, document, undefined ) {
     };
 
 
-    tests['csstransitions'] = function() {
+    tests.csstransitions = function() {
         return testPropsAll('transition');
     };
 
 
 
-    for ( var feature in tests ) {
+    for ( let feature in tests ) {
         if ( hasOwnProp(tests, feature) ) {
                                     featureName  = feature.toLowerCase();
             Modernizr[featureName] = tests[feature]();
@@ -251,7 +241,7 @@ module.exports = (function( window, document, undefined ) {
 
      Modernizr.addTest = function ( feature, test ) {
        if ( typeof feature == 'object' ) {
-         for ( var key in feature ) {
+         for ( let key in feature ) {
            if ( hasOwnProp( feature, key ) ) {
              Modernizr.addTest( key, feature[ key ] );
            }
@@ -273,13 +263,11 @@ module.exports = (function( window, document, undefined ) {
 
        }
 
-       return Modernizr; 
+       return Modernizr;
      };
 
 
     setCss('');
-    modElem = inputElem = null;
-
 
     Modernizr._version      = version;
 
@@ -310,4 +298,3 @@ module.exports = (function( window, document, undefined ) {
     return Modernizr;
 
 })(window, window.document);
-;

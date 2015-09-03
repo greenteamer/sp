@@ -1,6 +1,6 @@
 // To include this file in your project:
-// var mui = require('mui');
-// var Colors = mui.Styles.Colors;
+// let mui = require('mui');
+// let Colors = mui.Styles.Colors;
 
 module.exports = {
 
@@ -288,6 +288,6 @@ module.exports = {
   faintBlack:   'rgba(0, 0, 0, 0.12)',
   fullWhite:    'rgba(255, 255, 255, 1)',
   darkWhite:    'rgba(255, 255, 255, 0.87)',
-  lightWhite:   'rgba(255, 255, 255, 0.54)'
+  lightWhite:   'rgba(255, 255, 255, 0.54)',
 
 };

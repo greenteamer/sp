@@ -1,61 +1,62 @@
-var React = require('react');
-var Colors = require('../styles/colors');
-var StylePropable = require('../mixins/style-propable');
+let React = require('react');
+let Colors = require('../styles/colors');
+let StylePropable = require('../mixins/style-propable');
 
-var ToolbarGroup = React.createClass({
+
+let ToolbarGroup = React.createClass({
 
   mixins: [StylePropable],
 
   contextTypes: {
-    muiTheme: React.PropTypes.object
+    muiTheme: React.PropTypes.object,
   },
 
   propTypes: {
     className: React.PropTypes.string,
-    float: React.PropTypes.string
+    float: React.PropTypes.string,
   },
 
-  getDefaultProps: function() {
+  getDefaultProps() {
     return {
-      float: 'left'
+      float: 'left',
     };
   },
-  
-  getTheme: function() {
+
+  getTheme() {
     return this.context.muiTheme.component.toolbar;
   },
 
-  getSpacing: function() {
+  getSpacing() {
     return this.context.muiTheme.spacing.desktopGutter;
   },
 
-  getStyles: function() {
-    var marginHorizontal = this.getSpacing();
-    var marginVertical = (this.getTheme().height - this.context.muiTheme.component.button.height) / 2;
-    var styles = {
+  getStyles() {
+    let marginHorizontal = this.getSpacing();
+    let marginVertical = (this.getTheme().height - this.context.muiTheme.component.button.height) / 2;
+    let styles = {
       root: {
         position: 'relative',
-        float: this.props.float
+        float: this.props.float,
       },
       dropDownMenu: {
         root: {
           float: 'left',
           color: Colors.lightBlack,// removes hover color change, we want to keep it
           display: 'inline-block',
-          marginRight: this.getSpacing()
+          marginRight: this.getSpacing(),
         },
-        controlBg: {  
+        controlBg: {
           backgroundColor: this.getTheme().menuHoverColor,
-          borderRadius: 0
+          borderRadius: 0,
         },
         underline: {
-          display: 'none'
-        }
+          display: 'none',
+        },
       },
       button: {
         float: 'left',
         margin: marginVertical + 'px ' + marginHorizontal + 'px',
-        position: 'relative'
+        position: 'relative',
       },
       icon: {
         root: {
@@ -63,56 +64,59 @@ var ToolbarGroup = React.createClass({
           cursor: 'pointer',
           color: this.getTheme().iconColor,
           lineHeight: this.getTheme().height + 'px',
-          paddingLeft: this.getSpacing()
+          paddingLeft: this.getSpacing(),
         },
         hover: {
-          zIndex: 1,
-          color: Colors.darkBlack
-        }
+          color: Colors.darkBlack,
+        },
       },
       span: {
         float: 'left',
         color: this.getTheme().iconColor,
-        lineHeight: this.getTheme().height + 'px'
-      }
+        lineHeight: this.getTheme().height + 'px',
+      },
     };
+
     return styles;
   },
 
-  render: function() {
-    var styles = this.getStyles();
+  render() {
+    let styles = this.getStyles();
 
     if (this.props.firstChild) styles.marginLeft = -24;
     if (this.props.lastChild) styles.marginRight = -24;
 
-    var newChildren = React.Children.map(this.props.children, function(currentChild) {
+    let newChildren = React.Children.map(this.props.children, (currentChild) => {
+      if (!currentChild) {
+        return null;
+      }
       switch (currentChild.type.displayName) {
-        case 'DropDownMenu' : 
+        case 'DropDownMenu' :
           return React.cloneElement(currentChild, {
-            style: styles.dropDownMenu.root,
+            style: this.mergeStyles(styles.dropDownMenu.root, currentChild.props.style),
             styleControlBg: styles.dropDownMenu.controlBg,
-            styleUnderline: styles.dropDownMenu.underline
+            styleUnderline: styles.dropDownMenu.underline,
           });
         case 'DropDownIcon' :
           return React.cloneElement(currentChild, {
-            style: {float: 'left'},
+            style: this.mergeStyles({float: 'left'}, currentChild.props.style),
             iconStyle: styles.icon.root,
-            onMouseOver: this._handleMouseOverDropDownMenu,
-            onMouseOut: this._handleMouseOutDropDownMenu
+            onMouseEnter: this._handleMouseEnterDropDownMenu,
+            onMouseLeave: this._handleMouseLeaveDropDownMenu,
           });
         case 'RaisedButton' : case 'FlatButton' :
           return React.cloneElement(currentChild, {
-            style: styles.button
+            style: this.mergeStyles(styles.button, currentChild.props.style),
           });
-        case 'FontIcon' : 
+        case 'FontIcon' :
           return React.cloneElement(currentChild, {
-            style: styles.icon.root,
-            onMouseOver: this._handleMouseOverFontIcon,
-            onMouseOut: this._handleMouseOutFontIcon
+            style: this.mergeStyles(styles.icon.root, currentChild.props.style),
+            onMouseEnter: this._handleMouseEnterFontIcon,
+            onMouseLeave: this._handleMouseLeaveFontIcon,
           });
-        case 'ToolbarSeparator' : case 'ToolbarTitle' : 
+        case 'ToolbarSeparator' : case 'ToolbarTitle' :
           return React.cloneElement(currentChild, {
-            style: this.mergeStyles(styles.span, currentChild.props.style)
+            style: this.mergeStyles(styles.span, currentChild.props.style),
           });
         default:
           return currentChild;
@@ -126,22 +130,22 @@ var ToolbarGroup = React.createClass({
     );
   },
 
-  _handleMouseOverDropDownMenu: function(e) {
+  _handleMouseEnterDropDownMenu(e) {
     e.target.style.zIndex = this.getStyles().icon.hover.zIndex;
     e.target.style.color = this.getStyles().icon.hover.color;
   },
 
-  _handleMouseOutDropDownMenu: function(e) {
+  _handleMouseLeaveDropDownMenu(e) {
     e.target.style.zIndex = 'auto';
     e.target.style.color = this.getStyles().icon.root.color;
   },
 
-  _handleMouseOverFontIcon: function(e) {
+  _handleMouseEnterFontIcon(e) {
     e.target.style.zIndex = this.getStyles().icon.hover.zIndex;
     e.target.style.color = this.getStyles().icon.hover.color;
   },
 
-  _handleMouseOutFontIcon: function(e) {
+  _handleMouseLeaveFontIcon(e) {
     e.target.style.zIndex = 'auto';
     e.target.style.color = this.getStyles().icon.root.color;
   },

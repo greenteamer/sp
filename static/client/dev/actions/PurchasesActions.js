@@ -23,6 +23,12 @@ var PurchasesActions = {
             item: item
         });
     },
+    changeViewType: function(type) {
+        PurchasesDispatcher.dispatch({
+            actionType: "change-view-type",
+            type: type
+        });
+    },
     //category
     getCategoryPurchases: function(category){
         PurchasesDispatcher.dispatch({
@@ -59,6 +65,24 @@ var PurchasesActions = {
         PurchasesDispatcher.dispatch({
             actionType: "get-benefits"
         });
+    },
+    getCurrentPurchaseDetail: function (id) {
+        PurchasesDispatcher.dispatch({
+            actionType: 'get-current-purchase-datail',
+            id: id
+        });
+    },
+    setViewStateWidth: function  (num) {
+        PurchasesDispatcher.dispatch({
+            actionType: 'set-view-width',
+            num: num
+        });
+    },
+    filterCollection: function(filtered_collection){
+        PurchasesDispatcher.dispatch({
+            actionType: 'filter-collection',
+            filtered_collection: filtered_collection
+        });  
     }
 };
 

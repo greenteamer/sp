@@ -1,62 +1,63 @@
-var React = require('react');
-var StylePropable = require('../mixins/style-propable');
-var Transition = require('../styles/transitions');
-var DateTime = require('../utils/date-time');
-var EnhancedButton = require('../enhanced-button');
+let React = require('react');
+let StylePropable = require('../mixins/style-propable');
+let Transition = require('../styles/transitions');
+let DateTime = require('../utils/date-time');
+let EnhancedButton = require('../enhanced-button');
 
-var DayButton = React.createClass({
+
+let DayButton = React.createClass({
 
   mixins: [StylePropable],
 
   contextTypes: {
-    muiTheme: React.PropTypes.object
+    muiTheme: React.PropTypes.object,
   },
 
   propTypes: {
     date: React.PropTypes.object,
     onTouchTap: React.PropTypes.func,
     selected: React.PropTypes.bool,
-    disabled: React.PropTypes.bool
+    disabled: React.PropTypes.bool,
   },
-  
-  getDefaultProps: function() {
+
+  getDefaultProps() {
     return {
       selected: false,
-      disabled: false
-    };
-  },
-  
-  getInitialState: function() {
-    return {
-      hover: false
+      disabled: false,
     };
   },
 
-  getTheme: function() {
+  getInitialState() {
+    return {
+      hover: false,
+    };
+  },
+
+  getTheme() {
     return this.context.muiTheme.component.datePicker;
   },
 
-  render: function() {
-    var {
+  render() {
+    let {
       date,
       onTouchTap,
       selected,
-      ...other
+      ...other,
     } = this.props;
 
-    var styles = {
+    let styles = {
       root: {
         boxSizing: 'border-box',
-        WebkitTapHighlightColor: 'rgba(0,0,0,0)', 
+        WebkitTapHighlightColor: 'rgba(0,0,0,0)',
         position: 'relative',
         float: 'left',
         width: 36,
-        padding: '4px 2px'
+        padding: '4px 2px',
       },
 
       label: {
         position: 'relative',
-        color: this.context.muiTheme.palette.textColor
+        color: this.context.muiTheme.palette.textColor,
       },
 
       buttonState: {
@@ -68,7 +69,7 @@ var DayButton = React.createClass({
         transform: 'scale(0)',
         transition: Transition.easeOut(),
         backgroundColor: this.getTheme().selectColor,
-      }
+      },
     };
 
     if (this.state.hover) {
@@ -97,8 +98,8 @@ var DayButton = React.createClass({
         disabled={this.props.disabled}
         disableFocusRipple={true}
         disableTouchRipple={true}
-        onMouseOver={this._handleMouseOver}
-        onMouseOut={this._handleMouseOut}
+        onMouseEnter={this._handleMouseEnter}
+        onMouseLeave={this._handleMouseLeave}
         onTouchTap={this._handleTouchTap}
         onKeyboardFocus={this._handleKeyboardFocus}>
         <div style={styles.buttonState} />
@@ -109,21 +110,21 @@ var DayButton = React.createClass({
     );
   },
 
-  _handleMouseOver: function() {
+  _handleMouseEnter() {
     if (!this.props.disabled) this.setState({hover: true});
   },
-  
-  _handleMouseOut: function() {
+
+  _handleMouseLeave() {
     if (!this.props.disabled) this.setState({hover: false});
   },
 
-  _handleTouchTap: function(e) {
+  _handleTouchTap(e) {
     if (!this.props.disabled && this.props.onTouchTap) this.props.onTouchTap(e, this.props.date);
   },
 
-  _handleKeyboardFocus: function(e, keyboardFocused) {
+  _handleKeyboardFocus(e, keyboardFocused) {
     if (!this.props.disabled && this.props.onKeyboardFocus) this.props.onKeyboardFocus(e, keyboardFocused, this.props.date);
-  } 
+  },
 
 });
 
