@@ -19,11 +19,13 @@
     "flux": "^2.0.3",
     "jquery": "^2.1.4",
     "js-cookie": "^1.5.1",
-    "material-ui": "^0.8.0",
+    "material-ui": "latest",
     "merge": "^1.2.0",
     "microevent": "^1.0.0",
     "react": "latest",
-    "react-select": "^0.6.2"
+    "react-select": "^0.6.2",
+    "react-router": "latest",
+    "underscore": "latest"
   },
   "devDependencies": {
     "browserify": "latest",
@@ -33,9 +35,11 @@
   "scripts": {
     "prod": "jsx -x jsx ./client/dev ./client/dist",
     "build-js": "browserify ./client/main.js > ./client/bundle.js",
-    "index-watch": "watchify ./client/dev/index/main.js -o ./client/dev/index/bundle.js -v",
-    "category-watch": "watchify ./client/dev/category/main.js -o ./client/dev/category/bundle.js -v",
+    "index-watch": "watchify ./client/dev/index/main.jsx -o ./client/dev/index/bundle.js -v",
+    "category-watch": "watchify ./client/dev/category/main.jsx -o ./client/dev/category/bundle.js -v",
     "cartmenu-watch": "watchify ./client/dev/cartmenu/main.js -o ./client/dev/cartmenu/bundle.js -v",
-    "product-watch": "watchify ./client/dev/product/main.js -o ./client/dev/product/bundle.js -v"
+    "product-watch": "watchify ./client/dev/product/main.js -o ./client/dev/product/bundle.js -v",
+    "purchase-watch": "watchify ./client/dev/purchase/main.js -o ./client/dev/purchase/bundle.js -v",
+    "test-watch": "watchify ./client/dev/views/test/main.js -o ./client/dev/views/test/bundle.js -v"
   }
 }

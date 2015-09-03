@@ -7,7 +7,7 @@
         {% recursetree nodes %}
             <li {% if not node.is_leaf_node %} class="dropdown" {% endif %}>
                 {# создание самой ссылки в меню в зависимости от того родительская она или нет#}
-                <a  href="/client{{ node.get_absolute_url }}" {% if not node.is_leaf_node %} data-target="#" class="dropdown-toggle" data-toggle="dropdown" {% endif %}>
+                <a  href="{{ node.get_absolute_url }}" {% if not node.is_leaf_node %} data-target="#" class="dropdown-toggle" data-toggle="dropdown" {% endif %}>
                     {{ node.name }}{% if not node.is_leaf_node %}<b class="caret"></b>{% endif %}
                 </a>
                 {% if not node.is_leaf_node %}

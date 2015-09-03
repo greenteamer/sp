@@ -8,7 +8,7 @@ from project.documentation.models import Page
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImages
-        fields = ('image', 'p_image_title')
+        fields = ('image', 'cropping', 'cropping_url', 'p_image_title')
 
 
 class ProductSerializer(serializers.ModelSerializer):

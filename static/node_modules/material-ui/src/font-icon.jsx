@@ -1,78 +1,81 @@
-var React = require('react');
-var StylePropable = require('./mixins/style-propable');
-var Spacing = require('./styles/spacing');
-var Transitions = require('./styles/transitions');
+let React = require('react');
+let StylePropable = require('./mixins/style-propable');
+let Transitions = require('./styles/transitions');
 
-var FontIcon = React.createClass({
+
+let FontIcon = React.createClass({
 
   mixins: [StylePropable],
 
   contextTypes: {
-    muiTheme: React.PropTypes.object
+    muiTheme: React.PropTypes.object,
   },
 
   propTypes: {
-    className: React.PropTypes.string,
-    hoverColor: React.PropTypes.string
+    color: React.PropTypes.string,
+    hoverColor: React.PropTypes.string,
+    onMouseLeave: React.PropTypes.func,
+    onMouseEnter: React.PropTypes.func,
   },
 
-  getInitialState: function() {
+  getInitialState() {
     return {
       hovered: false,
     };
   },
 
-  getStyles: function() {
-    var theme = this.context.muiTheme.palette;
-    var styles = {
+  render() {
+    let {
+      color,
+      hoverColor,
+      onMouseLeave,
+      onMouseEnter,
+      style,
+      ...other,
+    } = this.props;
+
+    let spacing = this.context.muiTheme.spacing;
+    let offColor = color ? color :
+      style && style.color ? style.color :
+      this.context.muiTheme.palette.textColor;
+    let onColor = hoverColor ? hoverColor : offColor;
+
+    let mergedStyles = this.mergeAndPrefix({
       position: 'relative',
-      fontSize: Spacing.iconSize + 'px',
+      fontSize: spacing.iconSize,
       display: 'inline-block',
       userSelect: 'none',
-      transition: Transitions.easeOut()
-    };
-
-    if (!styles.color && !this.props.className) {
-      styles.color = theme.textColor;
-    }
-
-    return styles;
-  },
-
-  render: function() {
-    var {
-      onMouseOut,
-      onMouseOver,
-      style,
-      ...other
-    } = this.props;
-    var hoverStyle = this.props.hoverColor ? {color: this.props.hoverColor} : {};
+      transition: Transitions.easeOut(),
+    }, style, {
+      color: this.state.hovered ? onColor : offColor,
+    });
 
     return (
       <span
         {...other}
-        onMouseOut={this._handleMouseOut}
-        onMouseOver={this._handleMouseOver}
-        style={this.mergeAndPrefix(
-          this.getStyles(),
-          this.props.style,
-          this.state.hovered && hoverStyle)} />
+        onMouseLeave={this._handleMouseLeave}
+        onMouseEnter={this._handleMouseEnter}
+        style={mergedStyles} />
     );
   },
 
-  _handleMouseOut: function(e) {
-    this.setState({hovered: false});
-    if (this.props.onMouseOut) {
-      this.props.onMouseOut(e);
+  _handleMouseLeave(e) {
+    // hover is needed only when a hoverColor is defined
+    if (this.props.hoverColor !== undefined)
+      this.setState({hovered: false});
+    if (this.props.onMouseLeave) {
+      this.props.onMouseLeave(e);
     }
   },
 
-  _handleMouseOver: function(e) {
-    this.setState({hovered: true});
-    if (this.props.onMouseOver) {
-      this.props.onMouseOver(e);
+  _handleMouseEnter(e) {
+    // hover is needed only when a hoverColor is defined
+    if (this.props.hoverColor !== undefined)
+      this.setState({hovered: true});
+    if (this.props.onMouseEnter) {
+      this.props.onMouseEnter(e);
     }
-  }
+  },
 });
 
 module.exports = FontIcon;

@@ -15,14 +15,14 @@ urlpatterns = patterns('project.core.views',
 
 
     # страница одной категории
-    url(r'^category-(?P<category_slug>[-\w]+)/$', 'coreCategory',
-        {'template_name': 'core/core_category.html'},
-        name='category'),
+    # url(r'^category-(?P<category_slug>[-\w]+)/$', 'coreCategory',
+    #     {'template_name': 'core/core_category.html'},
+    #     name='category'),
 
     # Главная страница
-    url(r'^$', 'index_view',
-        {'template_name': 'core/index.html'},
-        name='catalog_home'),
+    # url(r'^$', 'index_view',
+    #     {'template_name': 'core/index.html'},
+    #     name='catalog_home'),
     url(r'^purchase-(\d+)/$', 'corePurchase',
         {'template_name': 'core/core_purchase.html'},
         name='corePurchase'),

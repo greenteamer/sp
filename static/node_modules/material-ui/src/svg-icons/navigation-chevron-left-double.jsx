@@ -1,9 +1,9 @@
-var React = require('react');
-var SvgIcon = require('../svg-icon');
+let React = require('react');
+let SvgIcon = require('../svg-icon');
 
-var NavigationChevronLeftDouble = React.createClass({
+let NavigationChevronLeftDouble = React.createClass({
 
-  render: function() {
+  render() {
     return (
       <SvgIcon {...this.props}>
         <path d="M11.41 7.41 L10 6 l-6 6 6 6 1.41-1.41 L6.83 12z"/>

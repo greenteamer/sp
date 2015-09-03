@@ -3,6 +3,7 @@ var $ = require('jquery');
 var Purchases = require('../Purchases.jsx');
 var PurchasesStore = require('../../stores/PurchasesStore.js');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
+var IF = require('../customhelpers/IF.jsx');
 
 
 var SearchResult = React.createClass({
@@ -34,21 +35,14 @@ var SearchResult = React.createClass({
 		this.state.search_result_collection.forEach(function(item){
 			search_result_collection = item;
 		});
-        if (search_result_collection.length === 0) {
-            return (
-                <div className='hidden'>
+        return (
+            <IF condition={search_result_collection.length != 0}>
+                <div className=''>            
                     <h3>{title}</h3>
                     <Purchases collection={search_result_collection}/>
                 </div>
-            )
-        } else {
-            return (
-                <div className=''>
-                    <h3>{title}</h3>
-                    <Purchases collection={search_result_collection}/>
-                </div>
-            )
-        }
+            </IF>
+        )
 	}
 });
 

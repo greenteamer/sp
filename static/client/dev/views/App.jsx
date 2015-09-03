@@ -27,7 +27,7 @@ var App = React.createClass({
 		this.setState({
             collection: PurchasesStore.collection
         });
-    },
+    },    
 	render: function () {
 		return (
             <div>

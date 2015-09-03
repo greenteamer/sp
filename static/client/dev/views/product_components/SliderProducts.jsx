@@ -25,7 +25,7 @@ var ProductInfoMini = React.createClass({
         PurchasesActions.fastShowProduct(data);
     },
     render: function(){
-        var link = "/client/products/" + this.props.item.id + "/";
+        var link = "/products/" + this.props.item.id + "/";
         return (
             <div>
                 <div className="image-wrapper">

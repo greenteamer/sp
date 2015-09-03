@@ -3,7 +3,6 @@
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 from project.core.functions import translit
-# from django.utils.translation import ugettext_lazy as _
 from django.db.models import permalink
 from image_cropping import ImageRatioField
 from ckeditor.fields import RichTextField
@@ -65,7 +64,7 @@ class Category(MPTTModel):
 
     @permalink
     def get_absolute_url(self):
-         #Генерация постоянных ссылок на категории
+        #Генерация постоянных ссылок на категории
         return('category', (), {'category_slug': self.slug})
 
 
@@ -344,6 +343,10 @@ class ProductImages(models.Model):
 
     cropping = ImageRatioField(
         'image', '500x320', verbose_name=u'Обрезка для продукта')
+    cropping_250x375 = ImageRatioField(
+        'image', '250x375', verbose_name=u'Обрезка для продукта')
+
+    cropping_url = models.CharField(max_length=200, blank=True)
 
     p_image_product = models.ForeignKey(Product, verbose_name=u'Выбрать товар', related_name='images')
     p_image_title = models.CharField(
@@ -355,6 +358,16 @@ class ProductImages(models.Model):
             return "/media/%s" % self.image
         else:
             return '/static/images/none_image.png'
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        from easy_thumbnails.files import get_thumbnailer
+        self.cropping_url = get_thumbnailer(self.image).get_thumbnail({
+            'size': (250, 375),
+            'box': self.cropping_250x375,
+            'crop': True,
+            'detail': True,
+        }).url
+        return super(ProductImages, self).save(force_insert, force_update, using, update_fields)
 
 
 class CatalogProductProperties(models.Model):

@@ -81,16 +81,18 @@ def indexView(request, template_name="client/pages/index.html"):
                               context_instance=RequestContext(request))
 
 
+# вьюхи для пустых страниц ract
+# шаблоны содержат div куда рендериться react
 def clientCategoryView(request, category_slug, template_name="client/pages/category.html"):
-
-    return render_to_response(template_name, locals(),
-                              context_instance=RequestContext(request))
+    return render_to_response(template_name, locals(), context_instance=RequestContext(request))
 
 
 def clientProductView(request, id, template_name="client/pages/product.html"):
+    return render_to_response(template_name, locals(), context_instance=RequestContext(request))
 
-    return render_to_response(template_name, locals(),
-                              context_instance=RequestContext(request))
+
+def clientPurchaseView(request, id, template_name="client/pages/purchase.html"):
+    return render_to_response(template_name, locals(), context_instance=RequestContext(request))
 
 
 @check_profile
@@ -122,7 +124,6 @@ def getAllPurchases(request):
 
 
 # rest_framework
-
 
 class PurchasesViewSet(viewsets.ModelViewSet):
     queryset = Purchase.objects.all()

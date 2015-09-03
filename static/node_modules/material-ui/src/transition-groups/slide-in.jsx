@@ -1,59 +1,68 @@
-var React = require('react/addons');
-var ReactTransitionGroup = React.addons.TransitionGroup;
-var StylePropable = require('../mixins/style-propable');
-var SlideInChild = require('./slide-in-child');
+let React = require('react/addons');
+let ReactTransitionGroup = React.addons.TransitionGroup;
+let StylePropable = require('../mixins/style-propable');
+let SlideInChild = require('./slide-in-child');
 
-var SlideIn = React.createClass({
+
+let SlideIn = React.createClass({
 
   mixins: [StylePropable],
 
   propTypes: {
-    direction: React.PropTypes.oneOf(['left', 'right', 'up', 'down'])
+    enterDelay: React.PropTypes.number,
+    childStyle: React.PropTypes.object,
+    direction: React.PropTypes.oneOf(['left', 'right', 'up', 'down']),
   },
 
-  getDefaultProps: function() {
+  getDefaultProps() {
     return {
-      direction: 'left'
+      enterDelay: 0,
+      direction: 'left',
     };
   },
 
-  render: function() {
-    var {
+  render() {
+    let {
+      enterDelay,
+      children,
+      childStyle,
       direction,
-      ...other
+      style,
+      ...other,
     } = this.props;
 
-    var styles = this.mergeAndPrefix({
+    let mergedRootStyles = this.mergeAndPrefix({
       position: 'relative',
       overflow: 'hidden',
-      height: '100%'
-    }, this.props.style);
+      height: '100%',
+    }, style);
 
-    return (
-      <ReactTransitionGroup {...other}
-        style={styles}
-        component="div">
-        {this._getSlideInChildren()}
-      </ReactTransitionGroup>
-    );
-  },
-
-  _getSlideInChildren: function() {
-    return React.Children.map(this.props.children, function(child) {
+    let newChildren = React.Children.map(children, (child) => {
       return (
         <SlideInChild
           key={child.key}
-          direction={this.props.direction}
-          getLeaveDirection={this._getLeaveDirection}>
+          direction={direction}
+          enterDelay={enterDelay}
+          getLeaveDirection={this._getLeaveDirection}
+          style={childStyle}>
           {child}
         </SlideInChild>
       );
     }, this);
+
+    return (
+      <ReactTransitionGroup
+        {...other}
+        style={mergedRootStyles}
+        component="div">
+        {newChildren}
+      </ReactTransitionGroup>
+    );
   },
 
-  _getLeaveDirection: function() {
+  _getLeaveDirection() {
     return this.props.direction;
-  }
+  },
 
 });
 

@@ -70,6 +70,9 @@ var CartMenu = React.createClass({
             <li className="dropdown">
                 <a href="" data-target="#" className="dropdown-toggle" data-toggle="dropdown">Корзина <b className="caret"></b></a>
                 <ul className="dropdown-menu">
+                    <div className="cart_button_wrapper">
+                        <a href="/cart/" className="btn btn-primary full-width">перейти в корзину</a>
+                    </div>
                     {items}
                 </ul>
             </li>

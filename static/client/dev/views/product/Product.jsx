@@ -24,7 +24,7 @@ var Product = React.createClass({
     componentWillMount: function () {
         //получаем текущий урл
         var url = $(location).attr('pathname');
-        var product_id = url.split('/')[3];
+        var product_id = url.split('/')[2];        
         //обновляем store в соответствии с текущей категорией
         PurchasesActions.getProduct(product_id);
         PurchasesStore.bind( 'get-product', this.collectionChanged );

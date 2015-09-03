@@ -34,10 +34,13 @@ var PopularIndex = React.createClass({
 			title = item.name;
 		});
 		return (
-            <div>
+            <div>                
                 <h2 className="font-decor block-title">{title}</h2>
                 <PromoFilter />
-		    	<Purchases collection={collection} title={title}/>
+		    	<Purchases 
+                    collection={collection} 
+                    title={title}
+                    indicatorElementName='#popular'/>
             </div>
 		)
 	}

@@ -1,9 +1,10 @@
-var Events = require('./events');
+let Events = require('./events');
+
 
 module.exports = {
 
-  _testSupportedProps: function(props) {
-    var i,
+  _testSupportedProps(props) {
+    let i,
       el = document.createElement('div');
 
     for (i in props) {
@@ -14,38 +15,37 @@ module.exports = {
   },
 
   //Returns the correct event name to use
-  transitionEndEventName: function() {
+  transitionEndEventName() {
     return this._testSupportedProps({
       'transition':'transitionend',
-      'OTransition':'otransitionend',  
+      'OTransition':'otransitionend',
       'MozTransition':'transitionend',
-      'WebkitTransition':'webkitTransitionEnd'
+      'WebkitTransition':'webkitTransitionEnd',
     });
   },
 
-  animationEndEventName: function() {
+  animationEndEventName() {
     return this._testSupportedProps({
       'animation': 'animationend',
       '-o-animation': 'oAnimationEnd',
       '-moz-animation': 'animationend',
-      '-webkit-animation': 'webkitAnimationEnd'
+      '-webkit-animation': 'webkitAnimationEnd',
     });
   },
 
-  onTransitionEnd: function (el, callback) {
-    var transitionEnd = this.transitionEndEventName();
+  onTransitionEnd(el, callback) {
+    let transitionEnd = this.transitionEndEventName();
 
-    Events.once(el, transitionEnd, function() {
+    Events.once(el, transitionEnd, () => {
       return callback();
     });
   },
 
-  onAnimationEnd: function (el, callback) {
-    var animationEnd = this.animationEndEventName();
+  onAnimationEnd(el, callback) {
+    let animationEnd = this.animationEndEventName();
 
-    Events.once(el, animationEnd, function() {
+    Events.once(el, animationEnd, () => {
       return callback();
     });
-  }
-
+  },
 };

@@ -1,18 +1,19 @@
-var React = require('react');
-var StylePropable = require('../mixins/style-propable');
-var WindowListenable = require('../mixins/window-listenable');
-var CssEvent = require('../utils/css-event');
-var KeyCode = require('../utils/key-code');
-var Calendar = require('./calendar');
-var DialogWindow = require('../dialog-window');
-var FlatButton = require('../flat-button');
+let React = require('react');
+let StylePropable = require('../mixins/style-propable');
+let WindowListenable = require('../mixins/window-listenable');
+let CssEvent = require('../utils/css-event');
+let KeyCode = require('../utils/key-code');
+let Calendar = require('./calendar');
+let Dialog = require('../dialog');
+let FlatButton = require('../flat-button');
 
-var DatePickerDialog = React.createClass({
+
+let DatePickerDialog = React.createClass({
 
   mixins: [StylePropable, WindowListenable],
 
   contextTypes: {
-    muiTheme: React.PropTypes.object
+    muiTheme: React.PropTypes.object,
   },
 
   propTypes: {
@@ -25,68 +26,74 @@ var DatePickerDialog = React.createClass({
     maxDate: React.PropTypes.object,
     shouldDisableDate: React.PropTypes.func,
     hideToolbarYearChange: React.PropTypes.bool,
-    showYearSelector: React.PropTypes.bool
+    showYearSelector: React.PropTypes.bool,
   },
 
   windowListeners: {
-    'keyup': '_handleWindowKeyUp'
+    keyup: '_handleWindowKeyUp',
   },
 
-  getInitialState: function() {
+  getInitialState() {
     return {
       isCalendarActive: false,
-      showMonthDayPicker: true
+      showMonthDayPicker: true,
     };
   },
 
-  render: function() {
-    var {
+  render() {
+    let {
       initialDate,
       onAccept,
       style,
-      ...other
+      ...other,
     } = this.props;
 
-    var styles = {
+    let styles = {
       root: {
-        fontSize: '14px',
-        color: this.context.muiTheme.component.datePicker.calendarTextColor
+        fontSize: 14,
+        color: this.context.muiTheme.component.datePicker.calendarTextColor,
       },
 
-      dialogContents: {
-        width: this.props.mode === 'landscape' ? '560px' : '280px'
+      dialogContent: {
+        width: this.props.mode === 'landscape' ? 560 : 280,
+      },
+
+      dialogBodyContent: {
+        padding: 0,
       },
 
       actions: {
         marginRight: 8,
-      }
+      },
     };
 
-    var actions = [
+    let actions = [
       <FlatButton
         key={0}
         label="Cancel"
         secondary={true}
         style={styles.actions}
         onTouchTap={this._handleCancelTouchTap} />,
-      <FlatButton
-        key={1}
-        label="OK"
-        secondary={true}
-        disabled={this.refs.calendar !== undefined && this.refs.calendar.isSelectedDateDisabled()}
-        style={styles.actions}
-        onTouchTap={this._handleOKTouchTap} />
     ];
 
-    if(this.props.autoOk){
-      actions = actions.slice(0, 1);
+    if (!this.props.autoOk) {
+      actions.push(
+        <FlatButton
+          key={1}
+          label="OK"
+          secondary={true}
+          disabled={this.refs.calendar !== undefined && this.refs.calendar.isSelectedDateDisabled()}
+          style={styles.actions}
+          onTouchTap={this._handleOKTouchTap} />
+      );
     }
 
     return (
-      <DialogWindow {...other}
-        ref="dialogWindow"
+      <Dialog {...other}
+        ref="dialog"
         style={styles.root}
-        contentStyle={styles.dialogContents}
+        contentStyle={styles.dialogContent}
+        bodyStyle={styles.dialogBodyContent}
         actions={actions}
         onDismiss={this._handleDialogDismiss}
         onShow={this._handleDialogShow}
@@ -94,7 +101,7 @@ var DatePickerDialog = React.createClass({
         repositionOnUpdate={false}>
         <Calendar
           ref="calendar"
-          onSelectedDate={this._onSelectedDate}
+          onDayTouchTap={this._onDayTouchTap}
           initialDate={this.props.initialDate}
           isActive={this.state.isCalendarActive}
           minDate={this.props.minDate}
@@ -104,29 +111,29 @@ var DatePickerDialog = React.createClass({
           hideToolbarYearChange={this.props.hideToolbarYearChange}
           showYearSelector={this.props.showYearSelector}
           mode={this.props.mode} />
-      </DialogWindow>
+      </Dialog>
     );
   },
 
-  show: function() {
-    this.refs.dialogWindow.show();
+  show() {
+    this.refs.dialog.show();
   },
 
-  dismiss: function() {
-    this.refs.dialogWindow.dismiss();
+  dismiss() {
+    this.refs.dialog.dismiss();
   },
 
-  _onSelectedDate: function(e) {
-    if(this.props.autoOk) {
+  _onDayTouchTap() {
+    if (this.props.autoOk) {
       setTimeout(this._handleOKTouchTap, 300);
     }
   },
 
-  _handleCancelTouchTap: function() {
+  _handleCancelTouchTap() {
     this.dismiss();
   },
 
-  _handleOKTouchTap: function() {
+  _handleOKTouchTap() {
     if (this.props.onAccept && !this.refs.calendar.isSelectedDateDisabled()) {
       this.props.onAccept(this.refs.calendar.getSelectedDate());
     }
@@ -134,45 +141,45 @@ var DatePickerDialog = React.createClass({
     this.dismiss();
   },
 
-  _handleDialogShow: function() {
+  _handleDialogShow() {
     this.setState({
-      isCalendarActive: true
+      isCalendarActive: true,
     });
 
-    if(this.props.onShow) this.props.onShow();
+    if (this.props.onShow) this.props.onShow();
   },
 
-  _handleDialogDismiss: function() {
-    CssEvent.onTransitionEnd(this.refs.dialogWindow.getDOMNode(), function() {
+  _handleDialogDismiss() {
+    CssEvent.onTransitionEnd(this.refs.dialog.getDOMNode(), () => {
       this.setState({
         isCalendarActive: false,
-        showMonthDayPicker: true
+        showMonthDayPicker: true,
       });
-    }.bind(this));
+    });
 
-    if(this.props.onDismiss) this.props.onDismiss();
+    if (this.props.onDismiss) this.props.onDismiss();
   },
 
-  _handleDialogClickAway: function() {
-    CssEvent.onTransitionEnd(this.refs.dialogWindow.getDOMNode(), function() {
+  _handleDialogClickAway() {
+    CssEvent.onTransitionEnd(this.refs.dialog.getDOMNode(), () => {
       this.setState({
         isCalendarActive: false,
-        showMonthDayPicker: true
+        showMonthDayPicker: true,
       });
-    }.bind(this));
+    });
 
     if (this.props.onClickAway) this.props.onClickAway();
   },
 
-  _handleWindowKeyUp: function(e) {
-    if (this.refs.dialogWindow.isOpen()) {
+  _handleWindowKeyUp(e) {
+    if (this.state.isCalendarActive) {
       switch (e.keyCode) {
         case KeyCode.ENTER:
           this._handleOKTouchTap();
           break;
       }
     }
-  }
+  },
 
 });
 

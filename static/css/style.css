@@ -299,14 +299,66 @@ form#populate-profile em {
 }
 
 
-
-
-
-
-
 /*свойства каталога */
 .svvakataloga{
 background: rgb(253, 255, 172);
 border-radius: 3px;
 padding: 4px;
 }
+
+
+/* new styles */
+.skin-blue .main-header .navbar,
+.skin-blue .main-header .logo  {
+    background-color: #443f39!important;
+}
+.skin-blue .wrapper,
+.skin-blue .main-sidebar,
+.skin-blue .left-side{
+    background: #443f39!important;
+}
+.skin-blue .sidebar-menu>li>a:hover,
+.skin-blue .sidebar-menu>li.active>a {
+    color: #fff!important;
+    background: none!important;
+    border-left-color: #ffc229!important;
+}
+.skin-blue .sidebar-menu>li.header {
+    color: #000000!important;
+    background: #ECF0F5!important;
+}
+.text-success {
+    color: #ffc229!important;
+}
+.skin-blue .main-header li.user-header {    
+    background-color: #f9f9f9!important;
+}
+.navbar-nav>.user-menu>.dropdown-menu>li.user-header>p {
+    color: #000!important;
+}
+.btn-primary {
+    background: #ffc229!important;
+    border-color: #FFC229!important;
+    font-weight: bold!important;
+}
+.btn-primary.active, .btn-primary.focus, .btn-primary:active, .btn-primary:focus, .btn-primary:hover, .open>.dropdown-toggle.btn-primary {
+    border-color: #FFC229!important;    
+}
+.skin-blue .treeview-menu>li.active>a, .skin-blue .treeview-menu>li>a:hover {
+    color: #000!important;        
+}
+.skin-blue .treeview-menu>li>a {
+    color: #5A5A5A!important;    
+}
+.skin-blue .sidebar-menu>li>.treeview-menu {
+    margin: 0 0px!important;
+    background: #fff!important;
+}
+.skin-blue .main-header .navbar .sidebar-toggle {
+    color: #FFC229!important;
+}
+.skin-blue .main-header .navbar .sidebar-toggle:hover {
+    background-color: #FFC229!important;
+    color: #fff!important;
+}
+/* end new styles */

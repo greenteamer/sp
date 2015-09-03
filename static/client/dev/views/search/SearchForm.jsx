@@ -6,27 +6,6 @@ var PurchasesActions = require('../../actions/PurchasesActions.js');
 
 
 var Search = React.createClass({
-	getInitialState: function () {
-        return {
-            cartitems: []
-        }
-    },
-    componentWillMount: function(){
-        //PurchasesActions.getCartItems();
-    },
-    componentDidMount: function () {
-        //обновляем store в соответствии с текущей категорией
-        //PurchasesActions.getCartItems();
-        //PurchasesStore.bind( 'change', this.collectionChanged );
-    },
-    componentWillUnmount: function () {
-        //PurchasesStore.unbind( 'change', this.collectionChanged );
-    },
-    collectionChanged: function () {
-		this.setState({
-            cartitems: PurchasesStore.cartitems
-        });
-    },
     search: function(e){
         var query = React.findDOMNode(this.refs.query_text).value;
         PurchasesActions.getSearchResults(query);

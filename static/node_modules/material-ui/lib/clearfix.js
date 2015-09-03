@@ -18,7 +18,7 @@ var ClearFix = React.createClass({
 
     var before = function before() {
       return {
-        content: '\' \'',
+        content: "' '",
         display: 'table'
       };
     };

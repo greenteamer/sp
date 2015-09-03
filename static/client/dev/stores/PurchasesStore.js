@@ -8,6 +8,21 @@ var snackbar = require('../../lib/snackbar.js');
 
 
 var PurchasesStore = merge(MicroEvent.prototype, {
+    
+    // состояние отображений
+    view_state: {
+        view_type: '',
+        view_width: 12
+    },    
+
+    // filter
+    filter: {
+        filtered_collection: []
+    },
+    filterTrigger : function () {
+        this.trigger('filterTrigger');    
+    },
+
     user: {},
     collection: [],
     cartitems: [],
@@ -18,6 +33,12 @@ var PurchasesStore = merge(MicroEvent.prototype, {
     product: {},
     benefits: [],
 
+    // for purchase page
+    purchase: [],
+
+    changeViewState: function(){
+        this.trigger('changeViewState');
+    },
     collectionChange: function(){
         this.trigger('change');
     },
@@ -29,12 +50,27 @@ var PurchasesStore = merge(MicroEvent.prototype, {
     },
     changeBenefits: function(){
         this.trigger('changeBenefits');
+    },
+    chengePurchaseDetail: function  () {
+        this.trigger('chengePurchaseDetail');
     }
 });
 
 
 PurchasesDispatcher.register(function (payload) {
     switch (payload.actionType) {
+
+        // изменение отображения компонентов
+        case 'change-view-type':
+            PurchasesStore.view_state.view_type = payload.type;
+            PurchasesStore.changeViewState();
+            break;
+
+        case 'set-view-width':
+            PurchasesStore.view_state.view_width = payload.num;
+            PurchasesStore.changeViewState();
+            break;
+        //конец изменения отображения компонентов
 
         case 'get-popular-promo':
             $.ajax({
@@ -49,7 +85,7 @@ PurchasesDispatcher.register(function (payload) {
                 error: (function (xhr, status, err) {
                     console.log('error fetchin collection');
                 }).bind(this)
-            });
+            });            
             break;
 
         case 'get-new-promo':
@@ -128,7 +164,6 @@ PurchasesDispatcher.register(function (payload) {
                 function (data) {
                     var message = "товар успешно добавлен в корзину";
                     $.snackbar({timeout: 5000, content: message });
-                    console.log('товар' + data.name + 'успешно добавлен в корзину');
                     PurchasesActions.getCartItems();
                 })
             .error(
@@ -229,6 +264,28 @@ PurchasesDispatcher.register(function (payload) {
                 }
             });
             break;
+
+        case 'get-current-purchase-datail':
+            var url = '/api/v1/purchases/' + payload.id + '/'
+            $.ajax({
+                url: url,
+                dataType: 'json',
+                cache: false,
+                success: (function(data){                    
+                    PurchasesStore.purchase = [];
+                    PurchasesStore.purchase.push(data);
+                    PurchasesStore.chengePurchaseDetail();
+                }).bind(this),
+                error: (function(){
+                    console.log('sory, something went wrong');
+                }).bind(this),
+            });
+            break;  
+
+        case 'filter-collection':
+            PurchasesStore.filter.filtered_collection = payload.filtered_collection;
+            PurchasesStore.filterTrigger();
+            break;      
 
         default:
             console.log('default dispatcher');
