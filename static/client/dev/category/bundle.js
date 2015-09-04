@@ -1806,11 +1806,12 @@ process.umask = function() { return 0; };
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-module.exports.Dispatcher = require('./lib/Dispatcher')
+module.exports.Dispatcher = require('./lib/Dispatcher');
 
 },{"./lib/Dispatcher":24}],24:[function(require,module,exports){
-/*
- * Copyright (c) 2014, Facebook, Inc.
+(function (process){
+/**
+ * Copyright (c) 2014-2015, Facebook, Inc.
  * All rights reserved.
  *
  * This source code is licensed under the BSD-style license found in the
@@ -1818,14 +1819,18 @@ module.exports.Dispatcher = require('./lib/Dispatcher')
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @providesModule Dispatcher
- * @typechecks
+ * 
+ * @preventMunge
  */
 
-"use strict";
+'use strict';
 
-var invariant = require('./invariant');
+exports.__esModule = true;
 
-var _lastID = 1;
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var invariant = require('fbjs/lib/invariant');
+
 var _prefix = 'ID_';
 
 /**
@@ -1875,7 +1880,7 @@ var _prefix = 'ID_';
  *
  * This payload is digested by both stores:
  *
- *    CountryStore.dispatchToken = flightDispatcher.register(function(payload) {
+ *   CountryStore.dispatchToken = flightDispatcher.register(function(payload) {
  *     if (payload.actionType === 'country-update') {
  *       CountryStore.country = payload.selectedCountry;
  *     }
@@ -1903,14 +1908,10 @@ var _prefix = 'ID_';
  *     flightDispatcher.register(function(payload) {
  *       switch (payload.actionType) {
  *         case 'country-update':
+ *         case 'city-update':
  *           flightDispatcher.waitFor([CityStore.dispatchToken]);
  *           FlightPriceStore.price =
  *             getFlightPriceStore(CountryStore.country, CityStore.city);
- *           break;
- *
- *         case 'city-update':
- *           FlightPriceStore.price =
- *             FlightPriceStore(CountryStore.country, CityStore.city);
  *           break;
  *     }
  *   });
@@ -1920,131 +1921,109 @@ var _prefix = 'ID_';
  * `FlightPriceStore`.
  */
 
+var Dispatcher = (function () {
   function Dispatcher() {
-    this.$Dispatcher_callbacks = {};
-    this.$Dispatcher_isPending = {};
-    this.$Dispatcher_isHandled = {};
-    this.$Dispatcher_isDispatching = false;
-    this.$Dispatcher_pendingPayload = null;
+    _classCallCheck(this, Dispatcher);
+
+    this._callbacks = {};
+    this._isDispatching = false;
+    this._isHandled = {};
+    this._isPending = {};
+    this._lastID = 1;
   }
 
   /**
    * Registers a callback to be invoked with every dispatched payload. Returns
    * a token that can be used with `waitFor()`.
-   *
-   * @param {function} callback
-   * @return {string}
    */
-  Dispatcher.prototype.register=function(callback) {
-    var id = _prefix + _lastID++;
-    this.$Dispatcher_callbacks[id] = callback;
+
+  Dispatcher.prototype.register = function register(callback) {
+    var id = _prefix + this._lastID++;
+    this._callbacks[id] = callback;
     return id;
   };
 
   /**
    * Removes a callback based on its token.
-   *
-   * @param {string} id
    */
-  Dispatcher.prototype.unregister=function(id) {
-    invariant(
-      this.$Dispatcher_callbacks[id],
-      'Dispatcher.unregister(...): `%s` does not map to a registered callback.',
-      id
-    );
-    delete this.$Dispatcher_callbacks[id];
+
+  Dispatcher.prototype.unregister = function unregister(id) {
+    !this._callbacks[id] ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatcher.unregister(...): `%s` does not map to a registered callback.', id) : invariant(false) : undefined;
+    delete this._callbacks[id];
   };
 
   /**
    * Waits for the callbacks specified to be invoked before continuing execution
    * of the current callback. This method should only be used by a callback in
    * response to a dispatched payload.
-   *
-   * @param {array<string>} ids
    */
-  Dispatcher.prototype.waitFor=function(ids) {
-    invariant(
-      this.$Dispatcher_isDispatching,
-      'Dispatcher.waitFor(...): Must be invoked while dispatching.'
-    );
+
+  Dispatcher.prototype.waitFor = function waitFor(ids) {
+    !this._isDispatching ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatcher.waitFor(...): Must be invoked while dispatching.') : invariant(false) : undefined;
     for (var ii = 0; ii < ids.length; ii++) {
       var id = ids[ii];
-      if (this.$Dispatcher_isPending[id]) {
-        invariant(
-          this.$Dispatcher_isHandled[id],
-          'Dispatcher.waitFor(...): Circular dependency detected while ' +
-          'waiting for `%s`.',
-          id
-        );
+      if (this._isPending[id]) {
+        !this._isHandled[id] ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatcher.waitFor(...): Circular dependency detected while ' + 'waiting for `%s`.', id) : invariant(false) : undefined;
         continue;
       }
-      invariant(
-        this.$Dispatcher_callbacks[id],
-        'Dispatcher.waitFor(...): `%s` does not map to a registered callback.',
-        id
-      );
-      this.$Dispatcher_invokeCallback(id);
+      !this._callbacks[id] ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatcher.waitFor(...): `%s` does not map to a registered callback.', id) : invariant(false) : undefined;
+      this._invokeCallback(id);
     }
   };
 
   /**
    * Dispatches a payload to all registered callbacks.
-   *
-   * @param {object} payload
    */
-  Dispatcher.prototype.dispatch=function(payload) {
-    invariant(
-      !this.$Dispatcher_isDispatching,
-      'Dispatch.dispatch(...): Cannot dispatch in the middle of a dispatch.'
-    );
-    this.$Dispatcher_startDispatching(payload);
+
+  Dispatcher.prototype.dispatch = function dispatch(payload) {
+    !!this._isDispatching ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatch.dispatch(...): Cannot dispatch in the middle of a dispatch.') : invariant(false) : undefined;
+    this._startDispatching(payload);
     try {
-      for (var id in this.$Dispatcher_callbacks) {
-        if (this.$Dispatcher_isPending[id]) {
+      for (var id in this._callbacks) {
+        if (this._isPending[id]) {
           continue;
         }
-        this.$Dispatcher_invokeCallback(id);
+        this._invokeCallback(id);
       }
     } finally {
-      this.$Dispatcher_stopDispatching();
+      this._stopDispatching();
     }
   };
 
   /**
    * Is this Dispatcher currently dispatching.
-   *
-   * @return {boolean}
    */
-  Dispatcher.prototype.isDispatching=function() {
-    return this.$Dispatcher_isDispatching;
+
+  Dispatcher.prototype.isDispatching = function isDispatching() {
+    return this._isDispatching;
   };
 
   /**
    * Call the callback stored with the given id. Also do some internal
    * bookkeeping.
    *
-   * @param {string} id
    * @internal
    */
-  Dispatcher.prototype.$Dispatcher_invokeCallback=function(id) {
-    this.$Dispatcher_isPending[id] = true;
-    this.$Dispatcher_callbacks[id](this.$Dispatcher_pendingPayload);
-    this.$Dispatcher_isHandled[id] = true;
+
+  Dispatcher.prototype._invokeCallback = function _invokeCallback(id) {
+    this._isPending[id] = true;
+    this._callbacks[id](this._pendingPayload);
+    this._isHandled[id] = true;
   };
 
   /**
    * Set up bookkeeping needed when dispatching.
    *
-   * @param {object} payload
    * @internal
    */
-  Dispatcher.prototype.$Dispatcher_startDispatching=function(payload) {
-    for (var id in this.$Dispatcher_callbacks) {
-      this.$Dispatcher_isPending[id] = false;
-      this.$Dispatcher_isHandled[id] = false;
+
+  Dispatcher.prototype._startDispatching = function _startDispatching(payload) {
+    for (var id in this._callbacks) {
+      this._isPending[id] = false;
+      this._isHandled[id] = false;
     }
-    this.$Dispatcher_pendingPayload = payload;
-    this.$Dispatcher_isDispatching = true;
+    this._pendingPayload = payload;
+    this._isDispatching = true;
   };
 
   /**
@@ -2052,17 +2031,21 @@ var _prefix = 'ID_';
    *
    * @internal
    */
-  Dispatcher.prototype.$Dispatcher_stopDispatching=function() {
-    this.$Dispatcher_pendingPayload = null;
-    this.$Dispatcher_isDispatching = false;
+
+  Dispatcher.prototype._stopDispatching = function _stopDispatching() {
+    delete this._pendingPayload;
+    this._isDispatching = false;
   };
 
+  return Dispatcher;
+})();
 
 module.exports = Dispatcher;
-
-},{"./invariant":25}],25:[function(require,module,exports){
+}).call(this,require('_process'))
+},{"_process":22,"fbjs/lib/invariant":25}],25:[function(require,module,exports){
+(function (process){
 /**
- * Copyright (c) 2014, Facebook, Inc.
+ * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
  *
  * This source code is licensed under the BSD-style license found in the
@@ -2085,8 +2068,8 @@ module.exports = Dispatcher;
  * will remain to ensure logic does not differ in production.
  */
 
-var invariant = function(condition, format, a, b, c, d, e, f) {
-  if (false) {
+var invariant = function (condition, format, a, b, c, d, e, f) {
+  if (process.env.NODE_ENV !== 'production') {
     if (format === undefined) {
       throw new Error('invariant requires an error message argument');
     }
@@ -2095,17 +2078,13 @@ var invariant = function(condition, format, a, b, c, d, e, f) {
   if (!condition) {
     var error;
     if (format === undefined) {
-      error = new Error(
-        'Minified exception occurred; use the non-minified dev environment ' +
-        'for the full error message and additional helpful warnings.'
-      );
+      error = new Error('Minified exception occurred; use the non-minified dev environment ' + 'for the full error message and additional helpful warnings.');
     } else {
       var args = [a, b, c, d, e, f];
       var argIndex = 0;
-      error = new Error(
-        'Invariant Violation: ' +
-        format.replace(/%s/g, function() { return args[argIndex++]; })
-      );
+      error = new Error('Invariant Violation: ' + format.replace(/%s/g, function () {
+        return args[argIndex++];
+      }));
     }
 
     error.framesToPop = 1; // we don't care about invariant's own frame
@@ -2114,8 +2093,8 @@ var invariant = function(condition, format, a, b, c, d, e, f) {
 };
 
 module.exports = invariant;
-
-},{}],26:[function(require,module,exports){
+}).call(this,require('_process'))
+},{"_process":22}],26:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.4
  * http://jquery.com/
@@ -29675,6 +29654,7 @@ if( typeof module !== "undefined" && ('exports' in module)){
 'use strict';
 
 var React = require('react');
+var classes = require('classnames');
 
 var Option = React.createClass({
 	displayName: 'Option',
@@ -29689,28 +29669,46 @@ var Option = React.createClass({
 		renderFunc: React.PropTypes.func // method passed to ReactSelect component to render label text
 	},
 
+	blockEvent: function blockEvent(event) {
+		event.preventDefault();
+		if (event.target.tagName !== 'A' || !('href' in event.target)) {
+			return;
+		}
+
+		if (event.target.target) {
+			window.open(event.target.href);
+		} else {
+			window.location.href = event.target.href;
+		}
+	},
+
 	render: function render() {
 		var obj = this.props.option;
 		var renderedLabel = this.props.renderFunc(obj);
+		var optionClasses = classes(this.props.className, obj.className);
 
 		return obj.disabled ? React.createElement(
 			'div',
-			{ className: this.props.className },
+			{ className: optionClasses,
+				onMouseDown: this.blockEvent,
+				onClick: this.blockEvent },
 			renderedLabel
 		) : React.createElement(
 			'div',
-			{ className: this.props.className,
+			{ className: optionClasses,
+				style: obj.style,
 				onMouseEnter: this.props.mouseEnter,
 				onMouseLeave: this.props.mouseLeave,
 				onMouseDown: this.props.mouseDown,
-				onClick: this.props.mouseDown },
+				onClick: this.props.mouseDown,
+				title: obj.title },
 			obj.create ? this.props.addLabelText.replace('{label}', obj.label) : renderedLabel
 		);
 	}
 });
 
 module.exports = Option;
-},{"react":368}],169:[function(require,module,exports){
+},{"classnames":172,"react":368}],169:[function(require,module,exports){
 /* disable some rules until we refactor more completely; fixing them now would
    cause conflicts with some open PRs unnecessarily. */
 /* eslint react/jsx-sort-prop-types: 0, react/sort-comp: 0, react/prop-types: 0 */
@@ -29764,6 +29762,7 @@ var Select = React.createClass({
 		options: React.PropTypes.array, // array of options
 		placeholder: React.PropTypes.string, // field placeholder, displayed when there's no value
 		searchable: React.PropTypes.bool, // whether to enable searching feature or not
+		searchingText: React.PropTypes.string, // message to display whilst options are loading via asyncOptions
 		searchPromptText: React.PropTypes.string, // label to prompt for search input
 		singleValueComponent: React.PropTypes.func, // single value component when multiple is set to false
 		value: React.PropTypes.any, // initial field value
@@ -29773,7 +29772,7 @@ var Select = React.createClass({
 
 	getDefaultProps: function getDefaultProps() {
 		return {
-			addLabelText: 'Add {label} ?',
+			addLabelText: 'Add "{label}"?',
 			allowCreate: false,
 			asyncOptions: undefined,
 			autoload: true,
@@ -29798,6 +29797,7 @@ var Select = React.createClass({
 			options: undefined,
 			placeholder: 'Select...',
 			searchable: true,
+			searchingText: 'Searching...',
 			searchPromptText: 'Type to search',
 			singleValueComponent: SingleValue,
 			value: undefined,
@@ -29957,12 +29957,7 @@ var Select = React.createClass({
 			focusedOption = values[0];
 			valueForState = values[0].value;
 		} else {
-			for (var optionIndex = 0; optionIndex < filteredOptions.length; ++optionIndex) {
-				if (!filteredOptions[optionIndex].disabled) {
-					focusedOption = filteredOptions[optionIndex];
-					break;
-				}
-			}
+			focusedOption = this.getFirstFocusableOption(filteredOptions);
 			valueForState = values.map(function (v) {
 				return v.value;
 			}).join(this.props.delimiter);
@@ -29976,6 +29971,15 @@ var Select = React.createClass({
 			placeholder: !this.props.multi && values.length ? values[0].label : placeholder,
 			focusedOption: focusedOption
 		};
+	},
+
+	getFirstFocusableOption: function getFirstFocusableOption(options) {
+
+		for (var optionIndex = 0; optionIndex < options.length; ++optionIndex) {
+			if (!options[optionIndex].disabled) {
+				return options[optionIndex];
+			}
+		}
 	},
 
 	initValuesArray: function initValuesArray(values, options) {
@@ -30067,6 +30071,15 @@ var Select = React.createClass({
 		}
 		event.stopPropagation();
 		event.preventDefault();
+
+		// for the non-searchable select, close the dropdown when button is clicked
+		if (this.state.isOpen && !this.props.searchable) {
+			this.setState({
+				isOpen: false
+			}, this._unbindCloseMenuIfClickedOutside);
+			return;
+		}
+
 		if (this.state.isFocused) {
 			this.setState({
 				isOpen: true
@@ -30189,7 +30202,7 @@ var Select = React.createClass({
 				return filteredOptions[key];
 			}
 		}
-		return filteredOptions[0];
+		return this.getFirstFocusableOption(filteredOptions);
 	},
 
 	handleInputChange: function handleInputChange(event) {
@@ -30305,7 +30318,10 @@ var Select = React.createClass({
 		if (this.props.allowCreate && !this.state.focusedOption) {
 			return this.selectValue(this.state.inputValue);
 		}
-		return this.selectValue(this.state.focusedOption);
+
+		if (this.state.focusedOption) {
+			return this.selectValue(this.state.focusedOption);
+		}
 	},
 
 	focusOption: function focusOption(op) {
@@ -30416,11 +30432,28 @@ var Select = React.createClass({
 			});
 			return optionResult;
 		}, this);
-		return ops.length ? ops : React.createElement(
-			'div',
-			{ className: 'Select-noresults' },
-			this.props.asyncOptions && !this.state.inputValue ? this.props.searchPromptText : this.props.noResultsText
-		);
+
+		if (ops.length) {
+			return ops;
+		} else {
+			var noResultsText, promptClass;
+			if (this.state.isLoading) {
+				promptClass = 'Select-searching';
+				noResultsText = this.props.searchingText;
+			} else if (this.state.inputValue || !this.props.asyncOptions) {
+				promptClass = 'Select-noresults';
+				noResultsText = this.props.noResultsText;
+			} else {
+				promptClass = 'Select-search-prompt';
+				noResultsText = this.props.searchPromptText;
+			}
+
+			return React.createElement(
+				'div',
+				{ className: promptClass },
+				noResultsText
+			);
+		}
 	},
 
 	handleOptionLabelClick: function handleOptionLabelClick(value, event) {
@@ -30483,11 +30516,9 @@ var Select = React.createClass({
 		if (this.state.isOpen) {
 			menuProps = {
 				ref: 'menu',
-				className: 'Select-menu'
+				className: 'Select-menu',
+				onMouseDown: this.handleMouseDown
 			};
-			if (this.props.multi) {
-				menuProps.onMouseDown = this.handleMouseDown;
-			}
 			menu = React.createElement(
 				'div',
 				{ ref: 'selectMenuContainer', className: 'Select-menu-outer' },
@@ -30553,31 +30584,39 @@ var Select = React.createClass({
 
 module.exports = Select;
 },{"./Option":168,"./SingleValue":170,"./Value":171,"classnames":172,"react":368,"react-input-autosize":173}],170:[function(require,module,exports){
-"use strict";
+'use strict';
 
 var React = require('react');
+var classes = require('classnames');
 
 var SingleValue = React.createClass({
-	displayName: "SingleValue",
+	displayName: 'SingleValue',
 
 	propTypes: {
 		placeholder: React.PropTypes.string, // this is default value provided by React-Select based component
 		value: React.PropTypes.object // selected option
 	},
 	render: function render() {
+
+		var classNames = classes('Select-placeholder', this.props.value && this.props.value.className);
 		return React.createElement(
-			"div",
-			{ className: "Select-placeholder" },
+			'div',
+			{
+				className: classNames,
+				style: this.props.value && this.props.value.style,
+				title: this.props.value && this.props.value.title
+			},
 			this.props.placeholder
 		);
 	}
 });
 
 module.exports = SingleValue;
-},{"react":368}],171:[function(require,module,exports){
+},{"classnames":172,"react":368}],171:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
+var classes = require('classnames');
 
 var Value = React.createClass({
 
@@ -30611,25 +30650,34 @@ var Value = React.createClass({
 		if (!this.props.onRemove && !this.props.optionLabelClick) {
 			return React.createElement(
 				'div',
-				{ className: 'Select-value' },
+				{
+					className: classes('Select-value', this.props.option.className),
+					style: this.props.option.style,
+					title: this.props.option.title
+				},
 				label
 			);
 		}
 
 		if (this.props.optionLabelClick) {
+
 			label = React.createElement(
 				'a',
-				{ className: 'Select-item-label__a',
+				{ className: classes('Select-item-label__a', this.props.option.className),
 					onMouseDown: this.blockEvent,
 					onTouchEnd: this.props.onOptionLabelClick,
-					onClick: this.props.onOptionLabelClick },
+					onClick: this.props.onOptionLabelClick,
+					style: this.props.option.style,
+					title: this.props.option.title },
 				label
 			);
 		}
 
 		return React.createElement(
 			'div',
-			{ className: 'Select-item' },
+			{ className: classes('Select-item', this.props.option.className),
+				style: this.props.option.style,
+				title: this.props.option.title },
 			React.createElement(
 				'span',
 				{ className: 'Select-item-icon',
@@ -30649,7 +30697,7 @@ var Value = React.createClass({
 });
 
 module.exports = Value;
-},{"react":368}],172:[function(require,module,exports){
+},{"classnames":172,"react":368}],172:[function(require,module,exports){
 /*!
   Copyright (c) 2015 Jed Watson.
   Licensed under the MIT License (MIT), see
@@ -30748,10 +30796,12 @@ var AutosizeInput = React.createClass({
 		var widthNode = React.findDOMNode(this.refs.sizer);
 		widthNode.style.fontSize = inputStyle.fontSize;
 		widthNode.style.fontFamily = inputStyle.fontFamily;
+		widthNode.style.letterSpacing = inputStyle.letterSpacing;
 		if (this.props.placeholder) {
 			var placeholderNode = React.findDOMNode(this.refs.placeholderSizer);
 			placeholderNode.style.fontSize = inputStyle.fontSize;
 			placeholderNode.style.fontFamily = inputStyle.fontFamily;
+			placeholderNode.style.letterSpacing = inputStyle.letterSpacing;
 		}
 	},
 	updateInputWidth: function updateInputWidth() {
@@ -30786,8 +30836,9 @@ var AutosizeInput = React.createClass({
 		var escapedValue = (this.props.value || '').replace(/\&/g, '&amp;').replace(/ /g, '&nbsp;').replace(/\</g, '&lt;').replace(/\>/g, '&gt;');
 		var wrapperStyle = this.props.style || {};
 		wrapperStyle.display = 'inline-block';
-		var inputStyle = this.props.inputStyle || {};
+		var inputStyle = _extends({}, this.props.inputStyle);
 		inputStyle.width = this.state.inputWidth;
+		inputStyle.boxSizing = 'content-box';
 		var placeholder = this.props.placeholder ? React.createElement(
 			'div',
 			{ ref: 'placeholderSizer', style: sizerStyle },
@@ -31005,7 +31056,10 @@ var Dots = _react2['default'].createClass({
       slidesToScroll: this.props.slidesToScroll
     });
 
-    var dots = Array.apply(null, { length: dotCount }).map(function (x, i) {
+    // Apply join & split to Array to pre-fill it for IE8
+    //
+    // Credit: http://stackoverflow.com/a/13735425/1849458
+    var dots = Array.apply(null, Array(dotCount + 1).join('0').split('')).map(function (x, i) {
 
       var className = (0, _classnames2['default'])({
         'slick-active': _this.props.currentSlide === i * _this.props.slidesToScroll
@@ -31102,6 +31156,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactLibEventListener = require('react/lib/EventListener');
+
+var _reactLibEventListener2 = _interopRequireDefault(_reactLibEventListener);
+
 var _mixinsEventHandlers = require('./mixins/event-handlers');
 
 var _mixinsEventHandlers2 = _interopRequireDefault(_mixinsEventHandlers);
@@ -31162,16 +31220,25 @@ var InnerSlider = _react2['default'].createClass({
     // Hack for autoplay -- Inspect Later
     this.initialize(this.props);
     this.adaptHeight();
-    window.addEventListener('resize', this.onWindowResized);
+    this.resizeListener = _reactLibEventListener2['default'].listen(window, 'resize', this.onWindowResized);
   },
   componentWillUnmount: function componentWillUnmount() {
-    window.removeEventListener('resize', this.onWindowResized);
+    if (this.resizeListener) {
+      this.resizeListener.remove();
+    }
+
+    if (this.state.autoPlayTimer) {
+      window.clearTimeout(this.state.autoPlayTimer);
+    }
+  },
+  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+    this.update(nextProps);
   },
   componentDidUpdate: function componentDidUpdate() {
     this.adaptHeight();
   },
   onWindowResized: function onWindowResized() {
-    this.initialize(this.props);
+    this.update(this.props);
   },
   render: function render() {
     var className = (0, _classnames2['default'])('slick-initialized', 'slick-slider', this.props.className);
@@ -31255,7 +31322,7 @@ var InnerSlider = _react2['default'].createClass({
   }
 });
 exports.InnerSlider = InnerSlider;
-},{"./arrows":174,"./default-props":175,"./dots":176,"./initial-state":178,"./mixins/event-handlers":180,"./mixins/helpers":181,"./track":184,"classnames":185,"react":368}],180:[function(require,module,exports){
+},{"./arrows":174,"./default-props":175,"./dots":176,"./initial-state":178,"./mixins/event-handlers":180,"./mixins/helpers":181,"./track":184,"classnames":185,"react":368,"react/lib/EventListener":212}],180:[function(require,module,exports){
 'use strict';
 Object.defineProperty(exports, '__esModule', {
   value: true
@@ -31443,9 +31510,9 @@ var _objectAssign2 = _interopRequireDefault(_objectAssign);
 var helpers = {
   initialize: function initialize(props) {
     var slideCount = _react2['default'].Children.count(props.children);
-    var listWidth = this.refs.list.getDOMNode().getBoundingClientRect().width;
-    var trackWidth = this.refs.track.getDOMNode().getBoundingClientRect().width;
-    var slideWidth = this.getDOMNode().getBoundingClientRect().width / props.slidesToShow;
+    var listWidth = this.getWidth(this.refs.list.getDOMNode());
+    var trackWidth = this.getWidth(this.refs.track.getDOMNode());
+    var slideWidth = this.getWidth(this.getDOMNode()) / props.slidesToShow;
 
     var currentSlide = props.rtl ? slideCount - 1 - props.initialSlide : props.initialSlide;
 
@@ -31469,6 +31536,34 @@ var helpers = {
 
       this.autoPlay(); // once we're set up, trigger the initial autoplay.
     });
+  },
+  update: function update(props) {
+    // This method has mostly same code as initialize method.
+    // Refactor it
+    var slideCount = _react2['default'].Children.count(props.children);
+    var listWidth = this.getWidth(this.refs.list.getDOMNode());
+    var trackWidth = this.getWidth(this.refs.track.getDOMNode());
+    var slideWidth = this.getWidth(this.getDOMNode()) / props.slidesToShow;
+
+    this.setState({
+      slideCount: slideCount,
+      slideWidth: slideWidth,
+      listWidth: listWidth,
+      trackWidth: trackWidth
+    }, function () {
+
+      var targetLeft = (0, _trackHelper.getTrackLeft)((0, _objectAssign2['default'])({
+        slideIndex: this.state.currentSlide,
+        trackRef: this.refs.track
+      }, props, this.state));
+      // getCSS function needs previously set state
+      var trackStyle = (0, _trackHelper.getTrackCSS)((0, _objectAssign2['default'])({ left: targetLeft }, props, this.state));
+
+      this.setState({ trackStyle: trackStyle });
+    });
+  },
+  getWidth: function getWidth(elem) {
+    return elem.getBoundingClientRect().width || elem.offsetWidth;
   },
   adaptHeight: function adaptHeight() {
     if (this.props.adaptiveHeight) {
@@ -31706,6 +31801,11 @@ var getTrackCSS = function getTrackCSS(spec) {
     WebkitTransition: '',
     msTransform: 'translateX(' + spec.left + 'px)'
   };
+
+  // Fallback for IE8
+  if (!window.addEventListener && window.attachEvent) {
+    style.marginLeft = spec.left + 'px';
+  }
 
   return style;
 };
