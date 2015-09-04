@@ -25,6 +25,7 @@
     "react": "latest",
     "react-select": "^0.6.2",
     "react-router": "latest",
+    "react-slick": "latest",
     "underscore": "latest"
   },
   "devDependencies": {
