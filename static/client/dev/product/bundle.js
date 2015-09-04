@@ -288,7 +288,7 @@ PurchasesDispatcher.register(function (payload) {
             });
             console.log(tmp_properties);
             $.post(
-                "/client/add-to-cart/",
+                "/add-to-cart/",
                 {
                     ajax: 'add_to_cart',
                     csrfmiddlewaretoken: csrftoken,
