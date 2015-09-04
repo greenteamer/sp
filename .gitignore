@@ -24,3 +24,4 @@ get_2gis_data.py
 get_2gis_filials.py
 migrations/
 media/
+static/node_modules/
