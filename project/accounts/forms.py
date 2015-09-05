@@ -10,6 +10,7 @@ from project.core.models import Purchase, Catalog, CatalogProductProperties,\
 from django.forms import ModelForm
 from project.core.functions import *
 from ckeditor.widgets import CKEditorWidget
+from image_cropping import ImageCropWidget
 
 
 class OrganizerProfileForm(forms.ModelForm):
@@ -246,7 +247,7 @@ class catalogProductPropertiesForm(ModelForm):
 class ProductForm(ModelForm):
     class Meta:
         model = Product
-        exclude = ('catalog', 'property')
+        exclude = ('catalog', 'property')        
 
     def __init__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)
@@ -254,6 +255,8 @@ class ProductForm(ModelForm):
         self.fields['description'].widget.attrs = {'class': 'form-control'}
         self.fields['price'].widget.attrs = {'class': 'form-control'}
         self.fields['sku'].widget.attrs = {'class': 'form-control'}
+
+
 
     def save(self, catalog_id, sv=''):
         # TODO: сделать валидацию на существование каталога (catalog_id)
@@ -263,6 +266,14 @@ class ProductForm(ModelForm):
         obj.save()
         return obj
 
+
+class ProductImagesForm(ModelForm):
+    class Meta:
+        model = ProductImages
+        exclude = ('image_url',)
+        widgets = {
+            'image': ImageCropWidget,
+        }
 
 
 # TODO: желательно сделать выбор по умолчанию каждого из свойств.\

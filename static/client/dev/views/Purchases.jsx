@@ -16,6 +16,7 @@ var ThemeManager = require('material-ui/lib/styles/theme-manager')();
 //my custom helpers
 var IF = require('./customhelpers/IF.jsx');
 var MyRefreshIndicator = require('./customhelpers/MyRefreshIndicator.jsx');
+var Methods = require('./customhelpers/Methods.js');
 
 
 var CatalogTileView = React.createClass({
@@ -115,6 +116,11 @@ var PurchaseListView = React.createClass({
 
 
 var Purchases = React.createClass({
+    getInitialState: function(){
+        return {
+            view_state: PurchasesStore.view_state
+        }
+    },
     childContextTypes: {
         muiTheme: React.PropTypes.object
     },
@@ -122,12 +128,7 @@ var Purchases = React.createClass({
         return {
             muiTheme: ThemeManager.getCurrentTheme()
         };
-    },
-    getInitialState: function(){
-        return {
-            view_state: PurchasesStore.view_state           
-        }
-    },
+    },    
     componentWillMount: function  () {
         PurchasesStore.bind('changeViewState', this.changeViewState);    
     },
@@ -145,6 +146,12 @@ var Purchases = React.createClass({
     changeViewToTite: function(){
         PurchasesActions.changeViewType('tile');
     },
+    viewByProducts: function  () {
+        PurchasesActions.viewBy('products');  
+    },
+    viewByPurchases: function  () {
+        PurchasesActions.viewBy('purchases');    
+    },
     render: function () {        
         // Cоздаем условие при котором будет выводитсья PurchaseListView
         // state.view_state.view_type слушает Store
@@ -157,6 +164,7 @@ var Purchases = React.createClass({
 
         var length = this.props.collection.length;
         var condition = this.state.view_state.view_type === 'list' || this.state.view_state.view_type === '';
+        var view_by_condition = this.state.view_state.view_by == 'products';
 
         var items = this.props.collection.map(function (item, index) {            
             return (
@@ -174,20 +182,58 @@ var Purchases = React.createClass({
             )
         });
 
+        var flat_products = Methods.convertPurchasesToFlatProducts(this.props.collection);
+        flat_items = flat_products.map(function (product) {
+            return (
+                <div className="col-xs-12 col-sm-4 col-md-3 col-lg-3">
+                    <ProductTileView product={product}/>
+                </div>
+            )
+        });
+
+        console.log('Purchases state view_state: ', this.state.view_state);
+
+        // if (this.state.filtered_collection.length != 0){
+        //     filtered_items = this.state.filtered_collection.map(function (product) {
+        //         return (
+        //             <div className="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+        //                 <ProductTileView product={product}/>
+        //             </div>
+        //         )
+        //     });
+        // }
+
         return (
             <div className="purchases-list">
                 <div className="swich-view">
-                    <button onClick={this.changeViewToList} type="button" className="btn btn-primary">
-                        <i className="mdi-action-view-list"></i>
-                    </button>
-                    <button onClick={this.changeViewToTite} type="button" className="btn btn-primary">
-                        <i className="mdi-action-view-module"></i>
-                    </button>
+                    <IF condition={view_by_condition}>                        
+                        <button onClick={this.viewByPurchases} type="button" className="btn btn-primary">
+                            по закупкам
+                        </button>
+                    </IF>
+                    <IF condition={!view_by_condition}>
+                        <div> 
+                            <button onClick={this.viewByProducts} type="button" className="btn btn-primary">
+                                по продуктам
+                            </button>                    
+                            <button onClick={this.changeViewToList} type="button" className="btn btn-primary mini">
+                                <i className="mdi-action-view-list"></i>
+                            </button>
+                            <button onClick={this.changeViewToTite} type="button" className="btn btn-primary mini">
+                                <i className="mdi-action-view-module"></i>
+                            </button>
+                        </div>
+                    </IF>
                 </div>
                 <IF condition={length == 0}>
                     <MyRefreshIndicator relative_element_name={this.props.indicatorElementName} />
                 </IF>
-                {items}
+                <IF condition={!view_by_condition}>
+                    <div>{items}</div>
+                </IF>
+                <IF condition={view_by_condition}>
+                    <div className="row">{flat_items}</div>
+                </IF>
                 <ProductModal />
             </div>
         )

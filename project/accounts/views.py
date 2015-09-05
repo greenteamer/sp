@@ -2,7 +2,7 @@
 #!/usr/bin/env python
 from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm,\
     purchaseForm, catalogForm, catalogProductPropertiesForm, ProductForm,\
-    MemberProfileForm, UserLoginForm
+    MemberProfileForm, UserLoginForm, ProductImagesForm
 
 from project.core.forms import ImportXLSForm
 from project.core.models import Purchase, PurchaseStatus, Catalog, Product,\
@@ -631,7 +631,7 @@ def product(request, purchase_id, catalog_id, product_id, template_name, edit=Fa
 
         images = product.get_all_image()
 
-        product_form = ProductForm(instance=product)                    # заполненная форма текущей товара
+        product_form = ProductForm(instance=product)                    # заполненная форма текущей товара        
         catalog_product_properties = CatalogProductProperties.objects.select_related().filter(cpp_catalog=catalog_id)
         properties = get_propeties(catalog_id, 'list')  # получим все возможные свойства для товаров этой категории
         # указанные свойства товара
@@ -679,6 +679,16 @@ def productAdd(request, purchase_id, catalog_id, template_name):
                 if request.FILES:
                     for f in request.FILES.getlist('file', []):
                         productimages = ProductImages(p_image_product=new_product, image=f)
+                        productimages.save()
+
+                        # создаем url обрезанной фотографии после сохранения
+                        from easy_thumbnails.files import get_thumbnailer
+                        productimages.cropping_url = get_thumbnailer(productimages.image).get_thumbnail({
+                            'size': (250, 375),
+                            'box': productimages.cropping_250x375,
+                            'crop': True,
+                            'detail': True,
+                        }).url
                         productimages.save()
 
                 message = u"Новый товар %s успешно добавлен." % request.POST['product_name']

@@ -340,6 +340,7 @@ padding: 4px;
     background: #ffc229!important;
     border-color: #FFC229!important;
     font-weight: bold!important;
+    color: #fff!important;
 }
 .btn-primary.active, .btn-primary.focus, .btn-primary:active, .btn-primary:focus, .btn-primary:hover, .open>.dropdown-toggle.btn-primary {
     border-color: #FFC229!important;    
@@ -360,5 +361,8 @@ padding: 4px;
 .skin-blue .main-header .navbar .sidebar-toggle:hover {
     background-color: #FFC229!important;
     color: #fff!important;
+}
+#cke_id_description {
+    width: 100%!important;
 }
 /* end new styles */

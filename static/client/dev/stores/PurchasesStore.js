@@ -12,8 +12,12 @@ var PurchasesStore = merge(MicroEvent.prototype, {
     // состояние отображений
     view_state: {
         view_type: '',
-        view_width: 12
-    },    
+        view_width: 12,
+        view_by: ''
+    },
+    changeViewState: function(){
+        this.trigger('changeViewState');
+    },
 
     // filter
     filter: {
@@ -36,9 +40,7 @@ var PurchasesStore = merge(MicroEvent.prototype, {
     // for purchase page
     purchase: [],
 
-    changeViewState: function(){
-        this.trigger('changeViewState');
-    },
+    
     collectionChange: function(){
         this.trigger('change');
     },
@@ -285,7 +287,13 @@ PurchasesDispatcher.register(function (payload) {
         case 'filter-collection':
             PurchasesStore.filter.filtered_collection = payload.filtered_collection;
             PurchasesStore.filterTrigger();
-            break;      
+            break;   
+
+        case 'view-by':
+            PurchasesStore.view_state.view_by = payload.parametr
+            PurchasesStore.changeViewState();
+            console.log('Dispatcher view-by PurchasesStore.filter.view_by : ', PurchasesStore.view_state.view_by);
+            break;   
 
         default:
             console.log('default dispatcher');

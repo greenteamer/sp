@@ -72,6 +72,8 @@ var PurchasesActions = {
             id: id
         });
     },
+
+    // фильтры, сортировки, режимы отображения
     setViewStateWidth: function  (num) {
         PurchasesDispatcher.dispatch({
             actionType: 'set-view-width',
@@ -83,6 +85,13 @@ var PurchasesActions = {
             actionType: 'filter-collection',
             filtered_collection: filtered_collection
         });  
+    },
+    viewBy: function (parametr) {
+        console.log('Actions viewBy parametr: ', parametr);
+        PurchasesDispatcher.dispatch({
+            actionType: 'view-by',
+            parametr: parametr  
+        });
     }
 };
 
