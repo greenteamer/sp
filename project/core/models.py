@@ -8,6 +8,7 @@ from image_cropping import ImageRatioField
 from ckeditor.fields import RichTextField
 from django.contrib.auth.models import User
 from project.accounts.models import getProfile
+from django.db.models.fields.files import ImageFieldFile, FileField
 
 
 class CommonActiveManager(models.Manager):
@@ -358,16 +359,6 @@ class ProductImages(models.Model):
             return "/media/%s" % self.image
         else:
             return '/static/images/none_image.png'
-
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        from easy_thumbnails.files import get_thumbnailer
-        self.cropping_url = get_thumbnailer(self.image).get_thumbnail({
-            'size': (250, 375),
-            'box': self.cropping_250x375,
-            'crop': True,
-            'detail': True,
-        }).url
-        return super(ProductImages, self).save(force_insert, force_update, using, update_fields)
 
 
 class CatalogProductProperties(models.Model):

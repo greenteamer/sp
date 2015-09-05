@@ -8,6 +8,8 @@ var Slider = mui.Slider;
 var PurchasesStore = require('../../stores/PurchasesStore.js');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
 
+var Methods = require('../customhelpers/Methods.js');
+
 
 var Filters = React.createClass({
 	childContextTypes: {
@@ -32,26 +34,16 @@ var Filters = React.createClass({
         var tmp_collection = [];
         tmp_collection.push(PurchasesStore.collection);    
 
-        tmp_filter_collection = [];
-        tmp_collection.forEach(function (category){
-            var collection = category.category_purchase;            
-            category.category_purchase.forEach(function (purchase) {
-                purchase.catalogs.forEach(function (catalog) {
-                    catalog.product_catalog.forEach(function (product) {
-                        product.cpp_catalog = catalog.cpp_catalog;
-                        tmp_filter_collection.push(product);
-                    });
-                });
-            });
-        });     
+        // вызываем вспомогательный метод для преобразования массива категорий в
+        // простой массив продуктов (используется файл customhelpers/Methods.js)
+        tmp_filter_collection = Methods.convertCategoriesToFlatProducts(tmp_collection);
 
 		this.setState({
             collection: tmp_collection,
             filtered_сollection: tmp_filter_collection            
         });        
     },
-    changeValue: function (e, value) {   
-
+    changeValue: function (e, value) {        
         var tmp_filtered_сollection = _.filter(this.state.filtered_сollection, function (product) {
             return product.price <= value;
         });

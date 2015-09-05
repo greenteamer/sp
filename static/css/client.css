@@ -832,8 +832,8 @@ a.more-button:before {
     text-align: right;
     margin: 0 5px 15px 0;    
 }
-.swich-view .btn {
-    padding: 4px 6px 2px;
+.swich-view .btn.mini {
+    padding: 5px 8px 4px;
 }
 .purchases-list {
     border: 1px solid #DCDCDC;
