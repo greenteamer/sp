@@ -623,6 +623,16 @@ def product(request, purchase_id, catalog_id, product_id, template_name, edit=Fa
                         productimages = ProductImages(p_image_product=product, image=f)
                         productimages.save()
 
+                        # создаем url обрезанной фотографии после сохранения
+                        from easy_thumbnails.files import get_thumbnailer
+                        productimages.cropping_url = get_thumbnailer(productimages.image).get_thumbnail({
+                            'size': (250, 375),
+                            'box': productimages.cropping_250x375,
+                            'crop': True,
+                            'detail': True,
+                        }).url
+                        productimages.save()
+
                 message = u"Новый товар %s успешно отредактирован." % request.POST['product_name']
             else:
                 message = u"Ошибка при изменении товара"
