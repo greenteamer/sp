@@ -12,6 +12,8 @@ from project.core.functions import *
 from ckeditor.widgets import CKEditorWidget
 from image_cropping import ImageCropWidget
 
+from datetime import datetime
+
 
 class OrganizerProfileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -143,6 +145,7 @@ class UserRegistrationForm(forms.ModelForm):
     def save(self, commit=True):
         user = super(UserRegistrationForm, self).save(commit=False)
         user.set_password(self.cleaned_data["password1"])
+        user.last_login = datetime.now()
         if commit:
             user.save()
         return user

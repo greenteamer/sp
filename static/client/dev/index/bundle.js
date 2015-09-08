@@ -827,16 +827,6 @@ var Purchases = React.createClass({displayName: "Purchases",
 
         console.log('Purchases state view_state: ', this.state.view_state);
 
-        // if (this.state.filtered_collection.length != 0){
-        //     filtered_items = this.state.filtered_collection.map(function (product) {
-        //         return (
-        //             <div className="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-        //                 <ProductTileView product={product}/>
-        //             </div>
-        //         )
-        //     });
-        // }
-
         return (
             React.createElement("div", {className: "purchases-list"}, 
                 React.createElement("div", {className: "swich-view"}, 

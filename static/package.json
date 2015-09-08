@@ -22,10 +22,11 @@
     "material-ui": "latest",
     "merge": "^1.2.0",
     "microevent": "^1.0.0",
-    "react": "latest",
-    "react-select": "^0.6.2",
+    "react": "latest",    
     "react-router": "latest",
+    "react-select": "^0.6.2",
     "react-slick": "latest",
+    "react-slider": "^0.5.1",
     "underscore": "latest"
   },
   "devDependencies": {

@@ -57,7 +57,7 @@ var Category = React.createClass({
         if (this.state.filtered_collection.length != 0){
             filtered_items = this.state.filtered_collection.map(function (product) {
                 return (
-                    <div className="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                    <div className="col-xs-12 col-sm-4 col-md-3 col-lg-3">
                         <ProductTileView product={product}/>
                     </div>
                 )
