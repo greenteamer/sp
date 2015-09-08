@@ -45,10 +45,11 @@
                 $.material.init();
                 $(window).scroll(function() {
                     var top = $(document).scrollTop();
-                    if (top < 410)
-                        $("#main-menu").removeClass("navbar-fixed-top");
-                    else
-                        $("#main-menu").addClass("navbar-fixed-top");
+                    if (top < 410) {
+                        $("#main-menu").removeClass("navbar-fixed-top");                        
+                    } else {
+                        $("#main-menu").addClass("navbar-fixed-top");                    
+                    }
                 });
         	});
         </script>
