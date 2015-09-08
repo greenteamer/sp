@@ -57,6 +57,7 @@ def add_to_cart(request):
         его не существует"""
         p = get_object_or_404(Product, id=product_id)
 
+
         """Получаем товары в корзине"""
         cart_products = get_cart_items(request)
 

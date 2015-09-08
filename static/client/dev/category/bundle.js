@@ -300,7 +300,7 @@ PurchasesDispatcher.register(function (payload) {
                 })
             .error(
                 function (data) {
-                    var message = "что-то пошло не так, попробуйте перезагрузить страницу";
+                    var message = "Товара с такими свойствами нет, попробуйте другие варианты";
                     $.snackbar({timeout: 5000, content: message });
                     console.log("Ошибка post запроса");
                 });
@@ -1165,6 +1165,10 @@ var PurchasesActions = require('../../actions/PurchasesActions.js');
 
 var Properties = React.createClass({displayName: "Properties",
     getInitialState: function() {
+
+        console.log('ProductForm getInitialState props.cpp_catalog', this.props.cpp_catalog);
+        console.log('ProductForm getInitialState props.product', this.props.product);
+
         var cpp_properties = [];
         this.props.cpp_catalog.forEach(function(cpp_property){
             cpp_properties.push({

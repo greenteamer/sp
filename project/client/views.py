@@ -26,7 +26,6 @@ from serializers import PurchaseSerializer, OrganizerSerializer, PromoSerializer
 # Просмотр каталога
 @check_profile
 def clientAddToCartView(request):
-    data = json.dumps({})
     if 'ajax' in request.POST:
         ajax = request.POST['ajax']
 
@@ -34,14 +33,16 @@ def clientAddToCartView(request):
             # Добавление в корзину по аяксу
             product = Product.objects.get(id=request.POST['product'])
             list_properties = product.property.split(';')
-            for item in list_properties:
-                if request.POST['product_properties'] == item:
-                    add_to_cart(request)    # Добавление в корзину
-                    data = json.dumps({
-                        'name': product.product_name
-                    })
+            try:
+                list_properties.index(request.POST['product_properties'])
+                add_to_cart(request)    # Добавление в корзину
+                data = json.dumps({
+                    'name': product.product_name
+                })
+                return HttpResponse(data, content_type="application/json")
+            except Exception:
+                pass
 
-    return HttpResponse(data, content_type="application/json")
 
 
 

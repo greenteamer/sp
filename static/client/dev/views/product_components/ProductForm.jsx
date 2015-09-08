@@ -12,6 +12,10 @@ var PurchasesActions = require('../../actions/PurchasesActions.js');
 
 var Properties = React.createClass({
     getInitialState: function() {
+
+        console.log('ProductForm getInitialState props.cpp_catalog', this.props.cpp_catalog);
+        console.log('ProductForm getInitialState props.product', this.props.product);
+
         var cpp_properties = [];
         this.props.cpp_catalog.forEach(function(cpp_property){
             cpp_properties.push({

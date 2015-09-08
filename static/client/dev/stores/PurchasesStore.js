@@ -170,7 +170,7 @@ PurchasesDispatcher.register(function (payload) {
                 })
             .error(
                 function (data) {
-                    var message = "что-то пошло не так, попробуйте перезагрузить страницу";
+                    var message = "Товара с такими свойствами нет, попробуйте другие варианты";
                     $.snackbar({timeout: 5000, content: message });
                     console.log("Ошибка post запроса");
                 });
