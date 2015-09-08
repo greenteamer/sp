@@ -10,6 +10,8 @@ var PurchasesActions = require('../../actions/PurchasesActions.js');
 
 var Methods = require('../customhelpers/Methods.js');
 
+var ReactSlider = require('react-slider');
+
 
 var Filters = React.createClass({
 	childContextTypes: {
@@ -24,7 +26,7 @@ var Filters = React.createClass({
     	return {
     		collection: [],
     		filtered_сollection: [],
-    		value: 0
+    		values: [100, 1000]
     	}	
     },
     componentWillMount: function  () {
@@ -40,38 +42,46 @@ var Filters = React.createClass({
 
 		this.setState({
             collection: tmp_collection,
-            filtered_сollection: tmp_filter_collection            
-        });        
-    },
-    changeValue: function (e, value) {        
+            filtered_сollection: tmp_filter_collection
+        });
+    },    
+    onAfterChange: function  () {
+        var values = this.refs.reactSlider.getValue();
+        console.log('test slider', values);
         var tmp_filtered_сollection = _.filter(this.state.filtered_сollection, function (product) {
-            return product.price <= value;
+            return product.price >= values[0] && product.price <= values[1] ;
         });
         var sorted_collection = _.sortBy(tmp_filtered_сollection, function(product){ return product.price; });
-        console.log('sorted_collection', sorted_collection);
-    	this.setState({
-    		value: value            
-    	});
-    	PurchasesActions.filterCollection(sorted_collection);
+        PurchasesActions.filterCollection(sorted_collection);        
     },
-	render: function  () {
-		console.log('collection: ', this.state.collection);
-		console.log('filter collection: ', this.state.filtered_сollection);
-	
+    setValues: function () {
+        var values = this.refs.reactSlider.getValue();
+        this.setState({
+            values: values
+        });
+    },
+	render: function  () {		
 		var product_max_price = _.max(this.state.filtered_сollection, function (product) {
 			//получаем продукт с максимальной ценой
 			return product.price;
-		});		
+		});
+        console.log('max price: ', product_max_price);
 		return (
 			<div>
-				<h3 className="font-decor">Фильтры</h3>
-				<p className="price">Цена до {this.state.value} р.</p>	
-				<Slider
-					name="price_slider"
-					onChange={this.changeValue}                    
-					defaultValue={0}
-					max={product_max_price.price}
-					step={100} />
+				<h3 className="font-decor">Фильтры</h3>            
+                <ReactSlider 
+                        ref="reactSlider"
+                        defaultValue={[100, 1000]}
+                        max={product_max_price.price+100}
+                        step={100}
+                        minDistance={100}
+                        onAfterChange={this.onAfterChange}
+                        onChange={this.setValues}
+                        withBars >
+                    <div className="my-handle">от: {this.state.values[0]} р.</div>
+                    <div className="my-handle">до: {this.state.values[1]} р.</div>                    
+                </ReactSlider>
+                
 			</div>
 		)
 	}

@@ -84,6 +84,68 @@ a {
 }
 
 
+/* react-slider component */
+.slider {
+    height: 2px;
+    background: #BDBDBD;
+    margin: 50px 0;
+}
+.slider .bar {
+    height: 12px;
+    width: 12px;
+    background: #ffc229;
+    border-radius: 12px;
+    top: -6px;
+}
+.slider .bar.bar-0 {
+    height: 7px;
+    width: 7px;
+    background: #FFFFFF;
+    border-radius: 7px;
+    border: 1px solid #B3B3B3;
+    top: -3px;
+}
+.my-handle:after {    
+    height: 20px;
+    position: absolute;    
+    color: #333;
+    font-size: 15px;
+    font-family: "FontAwesome";
+}
+.handle-0 .my-handle:after {
+    content: "\f0d8";
+    top: -13px;
+    right: 10px;
+    margin-left: -5px;
+}
+.handle-1 .my-handle:after {
+    content: "\f0d7";
+    bottom: -11px;
+    left: 17px;
+    margin-left: -5px;
+}
+.my-handle {
+    width: 100px;
+    position: absolute;
+    background-color: #333;
+    border-radius: 3px;
+    color: #fff;
+    padding: 3px 10px;
+    cursor: pointer;
+}
+.handle-0 .my-handle {
+    top: 12px;
+    right: -20px;
+    text-align: right;
+}
+.handle-1 .my-handle {
+    top: -38px;
+    left: -10px;
+}
+/*end react-slider component*/
+
+
+
 /*custom select*/
 .Select-menu-outer {
     margin-top: auto!important;
