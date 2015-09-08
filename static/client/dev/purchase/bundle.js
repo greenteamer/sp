@@ -1002,10 +1002,6 @@ var snackbar = require('../../../lib/snackbar.js');
 
 var Properties = React.createClass({displayName: "Properties",
     getInitialState: function() {
-
-        console.log('ProductForm getInitialState props.cpp_catalog', this.props.cpp_catalog);
-        console.log('ProductForm getInitialState props.product.property', this.props.product.property);
-
         var cpp_properties = [];
         this.props.cpp_catalog.forEach(function(cpp_property){
             cpp_properties.push({
@@ -1034,25 +1030,22 @@ var Properties = React.createClass({displayName: "Properties",
     setProperties: function(val, e){
         //изменяем state когда выбирается какое либо свойство
         this.state.cpp_properties[e[0].index].value = e[0].value;
-        console.log('ProductDetailForm setProperties state.cpp_properties: ', this.state.cpp_properties);
 
         // РЕАЛИЗАЦИЯ ПРОВЕРКИ СУЩЕСТВОВАНИЯ КОМБИНАЦИИ СВОЙСТВ
-
         var properties_filled = _.every(this.state.cpp_properties,function (property) {
             // проверяем все ли свойства заполнены
             // _.every - возвращает true если все итерации функции вернули true
             return property.value != undefined;
         });        
         if (properties_filled) {
-            console.log('all properties filled');
             var values_str = _.pluck(this.state.cpp_properties, 'value').join(',');
-            console.log('ProductDetailForm setProperties values_str: ', values_str);
+            // _.pluck - возвращает массив состоящий из значений полей 'value' объектов массива
+            // join - создает из массива выбранных параметров строку параметров через ','
             if (_.contains(this.props.product.property.split(';'), values_str)) {
+                // _.contains - возвращает true если массив содежит элемент values_str
                 this.setState({
                     chacked: true
                 });
-                console.log('this.props.product.property: ', this.props.product.property);
-                console.log('ProductDetailForm setProperties property is contain values');
             } else {
                 this.setState({
                     chacked: false
@@ -1089,10 +1082,9 @@ var Properties = React.createClass({displayName: "Properties",
         });
     },
     addToCart: function(e){
-        //добавляем товар в корзину
+        // если товар с такими свойствами существует добавляем товар в корзину
         if (this.state.chacked) {
             PurchasesActions.addToCart(this.state);
-            console.log('success function addToCart');            
         } else {
             $.snackbar({timeout: 5000, content: 'Нет товара с такими характеристиками, пожалуйста, попробуйте другие варианты' });
         }
@@ -1344,13 +1336,13 @@ var mui = require('material-ui');
     TextField = mui.TextField;
 var PurchasesActions = require('../../actions/PurchasesActions.js');
 
+var $ = require('jquery');
+var _ = require('underscore');
+var snackbar = require('../../../lib/snackbar.js');
+
 
 var Properties = React.createClass({displayName: "Properties",
     getInitialState: function() {
-
-        console.log('ProductForm getInitialState props.cpp_catalog', this.props.cpp_catalog);
-        console.log('ProductForm getInitialState props.product', this.props.product);
-
         var cpp_properties = [];
         this.props.cpp_catalog.forEach(function(cpp_property){
             cpp_properties.push({
@@ -1364,7 +1356,8 @@ var Properties = React.createClass({displayName: "Properties",
         product.count = 1;
         return {
             cpp_properties: cpp_properties,
-            product: product
+            product: product,
+            chacked: false
         }
     },
     childContextTypes: {
@@ -1375,9 +1368,37 @@ var Properties = React.createClass({displayName: "Properties",
             muiTheme: ThemeManager.getCurrentTheme()
         };
     },
+    // setProperties: function(val, e){
+    //     //изменяем state когда выбирается какое либо свойство
+    //     this.state.cpp_properties[e[0].index].value = e[0].value;
+    // },
     setProperties: function(val, e){
         //изменяем state когда выбирается какое либо свойство
         this.state.cpp_properties[e[0].index].value = e[0].value;
+
+        // РЕАЛИЗАЦИЯ ПРОВЕРКИ СУЩЕСТВОВАНИЯ КОМБИНАЦИИ СВОЙСТВ
+        var properties_filled = _.every(this.state.cpp_properties,function (property) {
+            // проверяем все ли свойства заполнены
+            // _.every - возвращает true если все итерации функции вернули true
+            return property.value != undefined;
+        });        
+        if (properties_filled) {
+            var values_str = _.pluck(this.state.cpp_properties, 'value').join(',');
+            // _.pluck - возвращает массив состоящий из значений полей 'value' объектов массива
+            // join - создает из массива выбранных параметров строку параметров через ','
+            if (_.contains(this.props.product.property.split(';'), values_str)) {
+                // _.contains - возвращает true если массив содежит элемент values_str
+                this.setState({
+                    chacked: true
+                });
+            } else {
+                this.setState({
+                    chacked: false
+                });
+                $.snackbar({timeout: 5000, content: 'Нет товара с такими характеристиками, пожалуйста, попробуйте другие варианты' });
+            }
+        };        
+        
     },
     setCount: function(e){
         var new_product = this.state.product;
@@ -1405,9 +1426,18 @@ var Properties = React.createClass({displayName: "Properties",
             product: new_product
         });
     },
+    // addToCart: function(e){
+    //     //добавляем товар в корзину
+    //     PurchasesActions.addToCart(this.state);
+    // },
     addToCart: function(e){
-        //добавляем товар в корзину
-        PurchasesActions.addToCart(this.state);
+        // если товар с такими свойствами существует добавляем товар в корзину
+        if (this.state.chacked) {
+            PurchasesActions.addToCart(this.state);
+        } else {
+            $.snackbar({timeout: 5000, content: 'Нет товара с такими характеристиками, пожалуйста, попробуйте другие варианты' });
+        }
+        
     },
     render: function(){
         // получаем свойства товара из общих возможных свойств каталога
@@ -1479,7 +1509,7 @@ var ProductForm = React.createClass({displayName: "ProductForm",
 
 module.exports = ProductForm;
 
-},{"../../actions/PurchasesActions.js":1,"material-ui":64,"material-ui/lib/styles/theme-manager":101,"react":370,"react-select":171,"react-tap-event-plugin":197}],16:[function(require,module,exports){
+},{"../../../lib/snackbar.js":23,"../../actions/PurchasesActions.js":1,"jquery":28,"material-ui":64,"material-ui/lib/styles/theme-manager":101,"react":370,"react-select":171,"react-tap-event-plugin":197,"underscore":371}],16:[function(require,module,exports){
 var React = require('react');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
 var PurchasesStore = require('../../stores/PurchasesStore.js');
