@@ -12,20 +12,23 @@
     </head>
 
     <body class="client_body">
-        {% block header %}
-            <!-- Dropdown Structure Menu -->
-            {% include 'client/top_menu.html' %}
-        {% endblock %}
 
-        {% block header_info %}
-            <!-- Dropdown Structure Menu -->
-            {% include 'client/header_info.html' %}
-        {% endblock %}
+        <div class="scroll-class">
+            {% block header %}
+                <!-- Dropdown Structure Menu -->
+                {% include 'client/top_menu.html' %}
+            {% endblock %}
+        
+            {% block header_info %}
+                <!-- Dropdown Structure Menu -->
+                {% include 'client/header_info.html' %}
+            {% endblock %}
 
-        {% block main_menu %}
-            <!-- Dropdown Structure Menu -->
-            {% include 'client/main_menu.html' %}
-        {% endblock %}
+            {% block main_menu %}
+                <!-- Dropdown Structure Menu -->
+                {% include 'client/main_menu.html' %}
+            {% endblock %}
+        </div>
 
         {% block slider %}
             {% client_slider request %}
@@ -43,15 +46,25 @@
         <script type="text/javascript">
             $(document).ready(function() {
                 $.material.init();
+                var width = $(window).width();    
                 $(window).scroll(function() {
+                    // фиксируем основное меню при скроле
+                    var bool = false;
                     var top = $(document).scrollTop();
-                    if (top < 410) {
-                        $("#main-menu").removeClass("navbar-fixed-top");                        
-                    } else {
-                        $("#main-menu").addClass("navbar-fixed-top");                    
-                    }
+                    if (top < 50) {                        
+                        $(".scroll-class").css({
+                            position: "fixed",
+                            top:"0px",
+                            left:0,                            
+                            zIndex:"100"
+                        });
+                        $(".main-menu-container").addClass('container');
+                    } else if (top >= 150) {                        
+                        $(".scroll-class").css({position: "fixed", top: "-101px", left:0 , zIndex:"100", width: "100%"});
+                        $(".main-menu-container").removeClass('container');
+                    }                    
                 });
-        	});
+            });
         </script>
         {% block client_js %}
         {% endblock %}

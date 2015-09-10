@@ -54,6 +54,9 @@ a {
     color: #333333;
     font-weight: bold;
 }
+.client_body {
+    padding-top: 161px;
+}
 .client_body a:hover,
 .client_body a:active {
     color: #ffc229;
@@ -243,10 +246,31 @@ input:-ms-input-placeholder {color: #000; padding: 5px; border: 1px solid #82828
 /*END HEADER INFO*/
 
 /*Main MENU*/
+#main-menu {
+    -webkit-transition: all 1s;
+    transition: all 1s;
+}
+.scroll-class {
+    position: fixed;
+    top:0;
+    z-index: 100;
+    width:100%;
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;   
+} 
+#main-menu.navbar-fixed-top {
+    top: 100px;
+    -webkit-transition: all 1s;
+    transition: all 1s;
+}
+#main-menu.navbar-fixed-top.animate {
+    top: 0px;
+}
 .desktop_menu {
     /*margin-bottom: 10px;*/
 }
-
 .desktop_menu .dropdown-menu {
     visibility: hidden;
     display: block;
@@ -973,6 +997,15 @@ h2.block-title {
 /*end sidebar*/
 
 /*корзина*/
+#cartmenu .full_count_product{
+    position: absolute;
+    left: -20px;
+    top: 10px;
+    background-color: #FFC229;
+    color: #FFF;
+    font-weight: 600;
+    font-size: 13px;
+}
 #cartmenu .dropdown-menu {
     min-width: 300px;
     max-height: 400px;

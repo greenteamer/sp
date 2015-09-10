@@ -834,7 +834,9 @@ var CartMenu = React.createClass({displayName: "CartMenu",
         });
     },
 	render: function () {
-        var items = this.state.cartitems.map(function (item, index, collection) {            
+        var count = 0;
+        var items = this.state.cartitems.map(function (item, index, collection) {
+            count += item.quantity;
             return (
                 React.createElement("div", null, 
                     React.createElement(CartItem, {item: item}), 
@@ -846,7 +848,10 @@ var CartMenu = React.createClass({displayName: "CartMenu",
         });
 		return (
             React.createElement("li", {className: "dropdown"}, 
-                React.createElement("a", {href: "", "data-target": "#", className: "dropdown-toggle", "data-toggle": "dropdown"}, "Корзина ", React.createElement("b", {className: "caret"})), 
+                React.createElement("a", {href: "", "data-target": "#", className: "dropdown-toggle", "data-toggle": "dropdown"}, 
+                    React.createElement("span", {className: "full_count_product label label-success"}, count), 
+                    "Корзина ", React.createElement("b", {className: "caret"})
+                ), 
                 React.createElement("ul", {className: "dropdown-menu"}, 
                     React.createElement("div", {className: "cart_button_wrapper"}, 
                         React.createElement("a", {href: "/cart/", className: "btn btn-primary full-width"}, "перейти в корзину")

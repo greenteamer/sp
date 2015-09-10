@@ -66,7 +66,9 @@ var CartMenu = React.createClass({
         });
     },
 	render: function () {
-        var items = this.state.cartitems.map(function (item, index, collection) {            
+        var count = 0;
+        var items = this.state.cartitems.map(function (item, index, collection) {
+            count += item.quantity;
             return (
                 <div>
                     <CartItem item={item} />
@@ -78,7 +80,10 @@ var CartMenu = React.createClass({
         });
 		return (
             <li className="dropdown">
-                <a href="" data-target="#" className="dropdown-toggle" data-toggle="dropdown">Корзина <b className="caret"></b></a>
+                <a href="" data-target="#" className="dropdown-toggle" data-toggle="dropdown">
+                    <span className="full_count_product label label-success">{count}</span>
+                    Корзина <b className="caret"></b>
+                </a>
                 <ul className="dropdown-menu">
                     <div className="cart_button_wrapper">
                         <a href="/cart/" className="btn btn-primary full-width">перейти в корзину</a>
