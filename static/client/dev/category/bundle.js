@@ -1696,11 +1696,12 @@ var SimpleSlider = React.createClass({displayName: "SimpleSlider",
     },
     render: function () {
         var settings = {
-          dots: true,
-          infinite: true,
-          speed: 500,
-          slidesToShow: 3,
-          slidesToScroll: 4
+            dots: true,
+            arrows: true,
+            infinite: true,
+            speed: 500,
+            slidesToShow: 3,
+            slidesToScroll: 4
         };
         var cpp_catalog = this.props.cpp_catalog;
         var purchase_id = this.props.purchase_id;

@@ -713,6 +713,38 @@ a.more-button:before {
     top: 46%;
     left: 8%;
 }
+.catalog .slick-prev,
+.catalog .slick-next {
+    background: #fff;
+    border: 1px solid #BDBDBD;
+    height: 60px;    
+    width: 25px;
+    left: -25px;
+}
+.catalog .slick-prev:before {
+    content: '\f100';
+    font: normal normal normal 23px/1 FontAwesome;
+    font-weight: bold;
+    color: #5a5a5a;
+}
+.catalog .slick-next:before {
+    content: '\f101';
+    font: normal normal normal 23px/1 FontAwesome;
+    font-weight: bold;
+    color: #5a5a5a;
+}
+.catalog .slick-prev:hover,
+.catalog .slick-prev:focus,
+.catalog .slick-next:hover,
+.catalog .slick-next:focus {
+    background: #fff;
+    border: 1px solid #BDBDBD;
+}
+.catalog .slick-next {    
+}
+.catalog .slick-prev {    
+    top: 32%;
+}
 .slick-slider .image-wrapper:hover .btn-primary.fast-modal {
     opacity: 1;
     filter: alpha(opacity=50);
