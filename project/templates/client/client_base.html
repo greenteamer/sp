@@ -17,10 +17,6 @@
             {% include 'client/top_menu.html' %}
         {% endblock %}
 
-        {% block slider %}
-            {% client_slider request %}
-        {% endblock %}
-
         {% block header_info %}
             <!-- Dropdown Structure Menu -->
             {% include 'client/header_info.html' %}
@@ -30,6 +26,10 @@
             <!-- Dropdown Structure Menu -->
             {% include 'client/main_menu.html' %}
         {% endblock %}
+
+        {% block slider %}
+            {% client_slider request %}
+        {% endblock %}        
 
         {% block wrapper %}
         {% endblock %}

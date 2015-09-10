@@ -13,7 +13,7 @@
         }
       ]
     ]
-  },
+  },  
   "dependencies": {
     "fancybox": "^3.0.0",
     "flux": "^2.0.3",
@@ -27,8 +27,8 @@
     "react-select": "^0.6.2",
     "react-slick": "latest",
     "react-slider": "^0.5.1",
-    "underscore": "latest"
-  },
+    "underscore": "latest"    
+  },  
   "devDependencies": {
     "browserify": "latest",
     "reactify": "^1.1.1",

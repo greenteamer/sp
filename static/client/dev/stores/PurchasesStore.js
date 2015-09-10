@@ -13,7 +13,8 @@ var PurchasesStore = merge(MicroEvent.prototype, {
     view_state: {
         view_type: '',
         view_width: 12,
-        view_by: ''
+        view_by: '',
+        view_page: ''
     },
     changeViewState: function(){
         this.trigger('changeViewState');
@@ -290,10 +291,15 @@ PurchasesDispatcher.register(function (payload) {
             break;   
 
         case 'view-by':
-            PurchasesStore.view_state.view_by = payload.parametr
+            PurchasesStore.view_state.view_by = payload.parametr;
             PurchasesStore.changeViewState();
             console.log('Dispatcher view-by PurchasesStore.filter.view_by : ', PurchasesStore.view_state.view_by);
-            break;   
+            break;  
+
+        case 'set-view-page':
+            PurchasesStore.view_state.view_page = payload.view_page
+            PurchasesStore.changeViewState();
+            break; 
 
         default:
             console.log('default dispatcher');

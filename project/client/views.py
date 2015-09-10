@@ -204,6 +204,7 @@ def getCartItems(request):
     cart_items = CartItem.objects.filter(user=request.user)
     for item in cart_items:
         items.append({
+            'product_id': item.product.id,
             'name': item.product.product_name,
             'image': "/media/%s" % item.product.get_image().image,
             'properties': item.properties,

@@ -6,6 +6,7 @@ var PurchasesStore = require('../stores/PurchasesStore.js');
 //var ProductForm = require('./product_components/ProductForm.jsx');
 var ProductModal = require('./product_components/ProductModal.jsx');
 var ProductTileView = require('./product_components/ProductTileView.jsx');
+var ProductRelativeTitle = require('./product_components/ProductRelativeTitle.jsx');
 var PurchaseDetailInfo = require('./purchase/PurchaseDetailInfo.jsx');
 
 //material-ui
@@ -20,14 +21,37 @@ var Methods = require('./customhelpers/Methods.js');
 
 
 var CatalogTileView = React.createClass({
+    getInitialState: function () {
+        return {
+            view_state: PurchasesStore.view_state
+        }  
+    },
+    componentWillMount: function () {
+        PurchasesStore.bind('changeViewState', this.setViewState);
+    },
+    componentWillUnmount: function () {
+        PurchasesStore.unbind('changeViewState', this.setViewState);
+    },
+    setViewState: function () {
+        this.setState({
+            view_state: PurchasesStore.view_state
+        });
+    },
     render: function (){
+        console.log('CatalogTileView render state.view_state: ', this.state.view_state);
         var tmp_cpp = this.props.catalog.cpp_catalog;
+        var tmp_view_state = this.state.view_state.view_page;
         var items = this.props.catalog.product_catalog.map(function(product){
             console.log(tmp_cpp);
             product.cpp_catalog = tmp_cpp;
             return (
                 <div className="col-xs-12 col-sm-6 col-md-4">
-                    <ProductTileView product={product}/>
+                    <IF condition={tmp_view_state != 'category'}>
+                        <ProductTileView product={product}/>
+                    </IF>
+                    <IF condition={tmp_view_state == 'category'}>
+                        <ProductRelativeTitle product={product}/>
+                    </IF>
                 </div>
             )
         });
@@ -164,7 +188,7 @@ var Purchases = React.createClass({
 
         var length = this.props.collection.length;
         var condition = this.state.view_state.view_type === 'list' || this.state.view_state.view_type === '';
-        var view_by_condition = this.state.view_state.view_by == 'products';
+        // var view_by_condition = this.state.view_state.view_by == 'products';
 
         var items = this.props.collection.map(function (item, index) {            
             return (
@@ -196,12 +220,12 @@ var Purchases = React.createClass({
         return (
             <div className="purchases-list">
                 <div className="swich-view">
-                    <IF condition={view_by_condition}>                        
+                    <IF condition={this.state.view_state.view_by == 'products'}>                        
                         <button onClick={this.viewByPurchases} type="button" className="btn btn-primary">
                             по закупкам
                         </button>
                     </IF>
-                    <IF condition={!view_by_condition}>
+                    <IF condition={this.state.view_state.view_by != 'products'}>
                         <div> 
                             <button onClick={this.viewByProducts} type="button" className="btn btn-primary">
                                 по продуктам
@@ -215,13 +239,13 @@ var Purchases = React.createClass({
                         </div>
                     </IF>
                 </div>
-                <IF condition={length == 0}>
+                <IF condition={this.props.collection.length == 0}>
                     <MyRefreshIndicator relative_element_name={this.props.indicatorElementName} />
                 </IF>
-                <IF condition={!view_by_condition}>
+                <IF condition={this.state.view_state.view_by != 'products'}>
                     <div>{items}</div>
                 </IF>
-                <IF condition={view_by_condition}>
+                <IF condition={this.state.view_state.view_by == 'products'}>
                     <div className="row">{flat_items}</div>
                 </IF>
                 <ProductModal />

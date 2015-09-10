@@ -4,6 +4,7 @@ var Purchases = require('../Purchases.jsx');
 var PurchasesStore = require('../../stores/PurchasesStore.js');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
 var ProductTileView = require('../product_components/ProductTileView.jsx');
+var ProductRelativeTitle = require('../product_components/ProductRelativeTitle.jsx');
 var ProductModal = require('../product_components/ProductModal.jsx');
 
 var IF = require('../customhelpers/IF.jsx');
@@ -18,6 +19,9 @@ var Category = React.createClass({
         }
     },
     componentDidMount: function () {
+        // устанавливаем view_state.view_page как category
+        PurchasesActions.setViewPage('category');
+
         //получаем текущий урл
         var url = $(location).attr('pathname');
         var parse_url = url.split('/')[1];
@@ -58,7 +62,7 @@ var Category = React.createClass({
             filtered_items = this.state.filtered_collection.map(function (product) {
                 return (
                     <div className="col-xs-12 col-sm-4 col-md-3 col-lg-3">
-                        <ProductTileView product={product}/>
+                        <ProductRelativeTitle product={product}/>
                     </div>
                 )
             });

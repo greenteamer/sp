@@ -25,7 +25,7 @@ var ProductTileView = React.createClass({
     render: function(){
         var description = this.props.product.description;
         description = (description.substr(0, 100));
-        var link = "/client/products/" + this.props.product.id + "/";
+        var link = "/products/" + this.props.product.id + "/";
         return (
             <div className="product_view product_tile_view row">
                 <div className="col-xs-12">
@@ -36,18 +36,26 @@ var ProductTileView = React.createClass({
                         <a href={link} className="btn btn-primary fast-modal right">
                             <i className="mdi-action-search"></i>
                         </a>
-                        <img src={this.props.product.images[0].cropping_url} alt="" />
+                        <a href={link} className="">
+                            <img src={this.props.product.images[0].cropping_url} alt="" />
+                        </a>
                         <div className="gradient"></div>
                     </div>
                 </div>
                 <div className="col-xs-12">
                     <div className="info">
-                        <div className="info_inner">
-                            <h3>{this.props.product.product_name}</h3>
-                            <p className="price">{this.props.product.price} руб.</p>
-                        </div>
-                    </div>
-                    <ProductForm product={this.props.product} cpp_catalog={this.props.product.cpp_catalog} />
+                        <a href={link} className="">
+                            <div className="info_inner">                            
+                                <h3>{this.props.product.product_name}</h3>                            
+                                <p className="price">{this.props.product.price} руб.</p>
+                            </div>
+                        </a>
+                    </div>                    
+                </div>
+                <div className="col-xs-12">
+                    <button type="button" className="btn btn-primary full-width" onClick={this.showProduct}>
+                        <i className="fa fa-shopping-cart"></i> в корзину
+                    </button>
                 </div>
             </div>
         )

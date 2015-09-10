@@ -2,9 +2,14 @@ var React = require('react');
 var Slider = require('react-slick');
 var ProductForm = require('./ProductForm.jsx');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
+var PurchasesStore = require('../../stores/PurchasesStore.js');
 var Dialog = require('material-ui').Dialog;
 var FlatButton = require('material-ui').FlatButton;
 var ThemeManager = require('material-ui/lib/styles/theme-manager')();
+var ProductTileView = require('./ProductTileView.jsx');
+var ProductRelativeTitle = require('./ProductRelativeTitle.jsx');
+
+var IF = require('../customhelpers/IF.jsx');
 
 
 var ProductInfoMini = React.createClass({
@@ -47,6 +52,22 @@ var ProductInfoMini = React.createClass({
 
 
 var SimpleSlider = React.createClass({
+    getInitialState: function () {
+        return {
+            view_state: PurchasesStore.view_state
+        }  
+    },
+    componentWillMount: function () {
+        PurchasesStore.bind('changeViewState', this.setViewState);
+    },
+    componentWillUnmount: function () {
+        PurchasesStore.unbind('changeViewState', this.setViewState);
+    },
+    setViewState: function () {
+        this.setState({
+            view_state: PurchasesStore.view_state
+        });
+    },
     render: function () {
         var settings = {
           dots: true,
@@ -57,14 +78,26 @@ var SimpleSlider = React.createClass({
         };
         var cpp_catalog = this.props.cpp_catalog;
         var purchase_id = this.props.purchase_id;
+        var tmp_view_state = this.state.view_state.view_page;
         var items = this.props.items.map(function(item){
             text = item.description.slice(0,100);
+
             return (
-                <div key={item.id}>
-                    <ProductInfoMini item={item} purchase_id={purchase_id} cpp_catalog={cpp_catalog}/>
-                    <ProductForm key={item.id} product={item} cpp_catalog={cpp_catalog}/>
+                <div key={item.id}>                    
+                    <IF condition={tmp_view_state != 'category'}>
+                        <ProductTileView key={item.id} product={item}/>
+                    </IF>
+                    <IF condition={tmp_view_state == 'category'}>
+                        <ProductRelativeTitle key={item.id} product={item}/>
+                    </IF>
                 </div>
-            )
+            )            
+            // return (
+            //     <div key={item.id}>
+            //         <ProductInfoMini item={item} purchase_id={purchase_id} cpp_catalog={cpp_catalog}/>
+            //         <ProductForm key={item.id} product={item} cpp_catalog={cpp_catalog}/>
+            //     </div>
+            // )
         });
         return (
           <Slider {...settings}>

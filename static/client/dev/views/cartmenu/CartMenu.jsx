@@ -4,10 +4,12 @@ var Purchases = require('../Purchases.jsx');
 var PurchasesStore = require('../../stores/PurchasesStore.js');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
 
+var IF = require('../customhelpers/IF.jsx');
+
 
 var CartItem = React.createClass({
     render: function(){
-        //<h3>{this.props.item.name}</h3>
+        //<h3>{this.props.item.name}</h3
         //        <ul>
         //            {properties}
         //        </ul>
@@ -16,22 +18,25 @@ var CartItem = React.createClass({
         var property_values = this.props.item.properties.split(',');
         var properties = property_values.map(function(property){
             return(
-                <li>{property}</li>
+                <li><i className="fa fa-check"></i> {property}</li>
             )
         });
+        var link = "/products/" + this.props.item.product_id + "/";
         return (
-            <div>
-                <div className="small-banner">
+            <div className="overflow">            
+                <a href={link}>
                     <img src={this.props.item.image} alt="" className="cart-image" />
-                    <div className="info">
-                        <div className="inner">
+                </a>
+                <div className="info">
+                    <div className="inner">
+                        <a href={link}>
                             <p className="p1">{this.props.item.name}</p>
-                            <p className="p2">{properties}</p>
-                            <p className="p2">{this.props.item.price} р.</p>
-                            <span className="quantity">{this.props.item.quantity}</span>
-                        </div>
+                        </a>
+                        <ul>{properties}</ul>
+                        <span className="quantity">{this.props.item.quantity} шт.</span>
+                        <p className="p2">{this.props.item.price} р.</p>                        
                     </div>
-                </div>
+                </div>            
             </div>
         )
     }
@@ -61,9 +66,14 @@ var CartMenu = React.createClass({
         });
     },
 	render: function () {
-        var items = this.state.cartitems.map(function (item) {
+        var items = this.state.cartitems.map(function (item, index, collection) {            
             return (
-                <CartItem item={item} />
+                <div>
+                    <CartItem item={item} />
+                    <IF condition={index != collection.length - 1}>
+                        <div className="separator"></div>
+                    </IF>
+                </div>
             )
         });
 		return (

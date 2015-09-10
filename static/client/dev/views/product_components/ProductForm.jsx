@@ -9,6 +9,8 @@ var mui = require('material-ui');
     TextField = mui.TextField;
 var PurchasesActions = require('../../actions/PurchasesActions.js');
 
+var Methods = require('../customhelpers/Methods.js');
+
 var $ = require('jquery');
 var _ = require('underscore');
 var snackbar = require('../../../lib/snackbar.js');
@@ -40,37 +42,19 @@ var Properties = React.createClass({
         return {
             muiTheme: ThemeManager.getCurrentTheme()
         };
-    },
-    // setProperties: function(val, e){
-    //     //изменяем state когда выбирается какое либо свойство
-    //     this.state.cpp_properties[e[0].index].value = e[0].value;
-    // },
+    },    
     setProperties: function(val, e){
         //изменяем state когда выбирается какое либо свойство
         this.state.cpp_properties[e[0].index].value = e[0].value;
 
         // РЕАЛИЗАЦИЯ ПРОВЕРКИ СУЩЕСТВОВАНИЯ КОМБИНАЦИИ СВОЙСТВ
-        var properties_filled = _.every(this.state.cpp_properties,function (property) {
-            // проверяем все ли свойства заполнены
-            // _.every - возвращает true если все итерации функции вернули true
-            return property.value != undefined;
-        });        
-        if (properties_filled) {
-            var values_str = _.pluck(this.state.cpp_properties, 'value').join(',');
-            // _.pluck - возвращает массив состоящий из значений полей 'value' объектов массива
-            // join - создает из массива выбранных параметров строку параметров через ','
-            if (_.contains(this.props.product.property.split(';'), values_str)) {
-                // _.contains - возвращает true если массив содежит элемент values_str
-                this.setState({
-                    chacked: true
-                });
-            } else {
-                this.setState({
-                    chacked: false
-                });
-                $.snackbar({timeout: 5000, content: 'Нет товара с такими характеристиками, пожалуйста, попробуйте другие варианты' });
-            }
-        };        
+        // устанавливаем true в chacked если проверка успешна иначе false, undefined если не все параметры были выбраны
+        // подобное описание метода chackProperties смотри внутри файла customhelpers/Methods.js
+        // console.log('this.props.cpp_catalog: ', this.props.cpp_catalog);
+        // console.log('this.state.cpp_properties: ', this.state.cpp_properties);
+        this.setState({
+            chacked: Methods.chackProperties(this.state.cpp_properties, this.props.product.property)
+        }); 
         
     },
     setCount: function(e){
@@ -98,11 +82,7 @@ var Properties = React.createClass({
             cpp_properties: this.state.cpp_properties,
             product: new_product
         });
-    },
-    // addToCart: function(e){
-    //     //добавляем товар в корзину
-    //     PurchasesActions.addToCart(this.state);
-    // },
+    },    
     addToCart: function(e){
         // если товар с такими свойствами существует добавляем товар в корзину
         if (this.state.chacked) {

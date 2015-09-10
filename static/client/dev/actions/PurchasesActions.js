@@ -92,6 +92,13 @@ var PurchasesActions = {
             actionType: 'view-by',
             parametr: parametr  
         });
+    },
+    setViewPage: function (view_page) {
+        console.log('Actions setViewPage view_page: ', view_page);
+        PurchasesDispatcher.dispatch({
+            actionType: 'set-view-page',
+            view_page: view_page
+        });
     }
 };
 
