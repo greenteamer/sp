@@ -3,7 +3,6 @@ var $ = require('jquery');
 var Purchases = require('../Purchases.jsx');
 var PurchasesStore = require('../../stores/PurchasesStore.js');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
-var ProductTileView = require('../product_components/ProductTileView.jsx');
 var ProductRelativeTitle = require('../product_components/ProductRelativeTitle.jsx');
 var ProductModal = require('../product_components/ProductModal.jsx');
 

@@ -1,4 +1,5 @@
 var React = require('react');
+var IF = require('../customhelpers/IF.jsx');
 
 
 var PurchaseDetailInfo = React.createClass({
@@ -16,12 +17,22 @@ var PurchaseDetailInfo = React.createClass({
     			)
         	};
         });
+        var link = "/purchases/" + this.props.purchase.id + "/";
 
         return (
             <div>
                 <h2>{this.props.purchase.name}</h2>
-                {status}                
-                <div dangerouslySetInnerHTML={createDescription()} />             
+                <IF condition={this.props.view_state.view_page == 'purchase'}>
+                    <div>                        
+                        {status}                
+                        <div dangerouslySetInnerHTML={createDescription()} />             
+                    </div>
+                </IF>
+                <IF condition={this.props.view_state.view_page != 'purchase'}>
+                    <div>                         
+                        <a className="btn btn-primary purchase_link" href={link}>подробнее о закупке</a>
+                    </div>
+                </IF>
             </div>
         )
         	

@@ -13,7 +13,7 @@ function emptyObject(obj) {
 }
 
 
-var ProductTileView = React.createClass({
+var ProductHoverTitle = React.createClass({
     showProduct: function(){
         var data = {
             item: this.props.product,
@@ -64,4 +64,4 @@ var ProductTileView = React.createClass({
 });
 
 
-module.exports = ProductTileView;
+module.exports = ProductHoverTitle;

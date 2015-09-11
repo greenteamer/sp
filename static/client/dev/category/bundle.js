@@ -582,7 +582,11 @@ var Catalog = React.createClass({displayName: "Catalog",
     render: function () {
         return (
             React.createElement("div", {className: "catalog"}, 
-                React.createElement(SliderProducts, {items: this.props.catalog.product_catalog, cpp_catalog: this.props.catalog.cpp_catalog, purchase_id: this.props.purchase_id})
+                React.createElement(SliderProducts, {
+                    items: this.props.catalog.product_catalog, 
+                    cpp_catalog: this.props.catalog.cpp_catalog, 
+                    purchase_id: this.props.purchase_id, 
+                    view_state: this.props.view_state})
             )
         )
     }
@@ -592,10 +596,15 @@ var Catalog = React.createClass({displayName: "Catalog",
 var Catalogs = React.createClass({displayName: "Catalogs",
     render: function () {
         var purchase_id = this.props.purchase_id;
+        var tmp_view_state = this.props.view_state;
         items = this.props.catalogs.map(function(item, index){
             if (index === 0) {
                 return (
-                    React.createElement(Catalog, {key: item.id, catalog: item, purchase_id: purchase_id})
+                    React.createElement(Catalog, {
+                        key: item.id, 
+                        catalog: item, 
+                        purchase_id: purchase_id, 
+                        view_state: tmp_view_state})
                 )
             }
         });
@@ -619,7 +628,7 @@ var PurchasesActions = require('../actions/PurchasesActions.js');
 var PurchasesStore = require('../stores/PurchasesStore.js');
 var ButtonsView = require('./ButtonsView.jsx');
 var ProductModal = require('./product_components/ProductModal.jsx');
-var ProductTileView = require('./product_components/ProductTileView.jsx');
+var ProductHoverTitle = require('./product_components/ProductHoverTitle.jsx');
 var ProductRelativeTitle = require('./product_components/ProductRelativeTitle.jsx');
 var PurchaseDetailInfo = require('./purchase/PurchaseDetailInfo.jsx');
 
@@ -635,36 +644,29 @@ var MyRefreshIndicator = require('./customhelpers/MyRefreshIndicator.jsx');
 var Methods = require('./customhelpers/Methods.js');
 
 
-var CatalogTileView = React.createClass({displayName: "CatalogTileView",
-    getInitialState: function () {
-        return {
-            view_state: PurchasesStore.view_state
-        }  
-    },
-    componentWillMount: function () {
-        PurchasesStore.bind('changeViewState', this.setViewState);
-    },
-    componentWillUnmount: function () {
-        PurchasesStore.unbind('changeViewState', this.setViewState);
-    },
-    setViewState: function () {
-        this.setState({
-            view_state: PurchasesStore.view_state
-        });
-    },
+var CatalogTileView = React.createClass({displayName: "CatalogTileView",    
     render: function (){
-        console.log('CatalogTileView render state.view_state: ', this.state.view_state);
+        // Устанавливаем классы для каждого товара в зависимости от view_state.view_page
+        // Получаем view_state из PurchaseTileView
+        var products_class = '';
+        if (this.props.view_state.view_page == 'purchase') {
+            products_class = "col-xs-12 col-sm-4 col-md-3";
+        } else {
+            products_class = "col-xs-12 col-sm-6 col-md-4";
+        } 
+        
         var tmp_cpp = this.props.catalog.cpp_catalog;
-        var tmp_view_state = this.state.view_state.view_page;
+        var tmp_view_state = this.props.view_state;
+        
         var items = this.props.catalog.product_catalog.map(function(product){
             console.log(tmp_cpp);
             product.cpp_catalog = tmp_cpp;
             return (
-                React.createElement("div", {className: "col-xs-12 col-sm-6 col-md-4"}, 
-                    React.createElement(IF, {condition: tmp_view_state != 'category'}, 
-                        React.createElement(ProductTileView, {product: product})
+                React.createElement("div", {className: products_class}, 
+                    React.createElement(IF, {condition: tmp_view_state.view_page != 'category'}, 
+                        React.createElement(ProductHoverTitle, {product: product})
                     ), 
-                    React.createElement(IF, {condition: tmp_view_state == 'category'}, 
+                    React.createElement(IF, {condition: tmp_view_state.view_page == 'category'}, 
                         React.createElement(ProductRelativeTitle, {product: product})
                     )
                 )
@@ -683,26 +685,40 @@ var CatalogTileView = React.createClass({displayName: "CatalogTileView",
 
 
 var PurchaseTileView = React.createClass({displayName: "PurchaseTileView",
-    getInitialState: function  () {
-        return {
-            view_state: PurchasesStore.view_state
-        }  
-    },
     render: function(){
+        // Устанавливаем классы для каждой закупки в зависимости от view_state.view_page
+        // Получаем view_state из Purchases
+        var info_class = '';
+        var products_class = '';
+        if (this.props.view_state.view_page == 'purchase') {
+            info_class = "col-xs-12 col-md-12";
+            products_class = "col-xs-12 col-md-12";
+        } else {
+            info_class = "col-xs-12 col-md-4";
+            products_class = "col-xs-12 col-md-8";
+        } 
+
+        var tmp_view_state = this.props.view_state;
         var items = this.props.purchase.catalogs.map(function(catalog){
-            return (React.createElement(CatalogTileView, {catalog: catalog}));
+            return (
+                React.createElement(CatalogTileView, {
+                    catalog: catalog, 
+                    view_state: tmp_view_state})
+            )
         });
-        var link = "/purchases/" + this.props.purchase.id + "/";
-        var condition = this.state.view_state.view_width === 9;
+
+        var link = "/purchases/" + this.props.purchase.id + "/";        
         return (
             React.createElement("div", {className: "purchase_tile_view"}, 
                 React.createElement("div", {className: "row"}, 
-                    React.createElement("div", {className: "col-xs-4"}, 
+                    React.createElement("div", {className: info_class}, 
                         React.createElement("div", {className: "purchase_tile_title"}, 
-                            React.createElement(IF, {condition: condition}, 
-                                React.createElement(PurchaseDetailInfo, {purchase: this.props.purchase})
+                            React.createElement(IF, {condition: this.props.view_state.view_page == 'purchase'}, 
+                                React.createElement(PurchaseDetailInfo, {
+                                    purchase: this.props.purchase, 
+                                    view_state: this.props.view_state})
                             ), 
-                            React.createElement(IF, {condition: !condition}, 
+                            React.createElement(IF, {condition: this.props.view_state.view_page != 'purchase'}, 
                                 React.createElement("div", null, 
                                     React.createElement("h2", {className: "tile_view"}, this.props.purchase.name), 
                                     React.createElement("a", {className: "btn btn-primary purchase_link", href: link}, "подробнее о закупке")
@@ -710,7 +726,7 @@ var PurchaseTileView = React.createClass({displayName: "PurchaseTileView",
                             )
                         )
                     ), 
-                    React.createElement("div", {className: "col-xs-8"}, 
+                    React.createElement("div", {className: products_class}, 
                         items
                     )
                 )
@@ -721,30 +737,31 @@ var PurchaseTileView = React.createClass({displayName: "PurchaseTileView",
 
 
 var PurchaseListView = React.createClass({displayName: "PurchaseListView",
-    getInitialState: function  () {
-        return {
-            view_state: PurchasesStore.view_state
-        }  
-    },
-    render: function () {
-        var link = "/purchases/" + this.props.purchase.id + "/";
-        var condition = this.state.view_state.view_width === 9;                
+    render: function () {     
+        // Устанавливаем классы для каждой закупки в зависимости от view_state.view_page
+        // Получаем view_state из purchases
+        var info_class = '';
+        var products_class = '';
+        if (this.props.view_state.view_page == 'purchase') {
+            info_class = "col-xs-12 col-md-12 purchase-info";
+            products_class = "col-xs-12 col-md-12 purchase-info";
+        } else {
+            info_class = "col-xs-12 col-md-4 purchase-info";
+            products_class = "col-xs-12 col-md-8 purchase-info";
+        }    
         return (
             React.createElement("div", {className: "purchase-item"}, 
                 React.createElement("div", {className: "row"}, 
-                    React.createElement("div", {className: "col-xs-12 col-md-4 purchase-info"}, 
-                        React.createElement(IF, {condition: condition}, 
-                            React.createElement(PurchaseDetailInfo, {purchase: this.props.purchase})
-                        ), 
-                        React.createElement(IF, {condition: !condition}, 
-                            React.createElement("div", null, 
-                                React.createElement("h2", null, this.props.purchase.name), 
-                                React.createElement("a", {className: "btn btn-primary purchase_link", href: link}, "подробнее о закупке")
-                            )
-                        )
+                    React.createElement("div", {className: info_class}, 
+                        React.createElement(PurchaseDetailInfo, {
+                            purchase: this.props.purchase, 
+                            view_state: this.props.view_state})
                     ), 
-                    React.createElement("div", {className: "col-xs-12 col-md-8 purchase-info"}, 
-                        React.createElement(Catalogs, {catalogs: this.props.purchase.catalogs, purchase_id: this.props.purchase.id})
+                    React.createElement("div", {className: products_class}, 
+                        React.createElement(Catalogs, {
+                            catalogs: this.props.purchase.catalogs, 
+                            purchase_id: this.props.purchase.id, 
+                            view_state: this.props.view_state})
                     )
                 )
             )
@@ -792,15 +809,21 @@ var Purchases = React.createClass({displayName: "Purchases",
         var length = this.props.collection.length;
         var condition = this.state.view_state.view_type === 'list' || this.state.view_state.view_type === '';
         // var view_by_condition = this.state.view_state.view_by == 'products';
-
+        var tmp_view_state = this.state.view_state;
         var items = this.props.collection.map(function (item, index) {            
             return (
                 React.createElement("div", null, 
                     React.createElement(IF, {condition: condition == true}, 
-                        React.createElement(PurchaseListView, {key: item.id, purchase: item})
+                        React.createElement(PurchaseListView, {
+                            key: item.id, 
+                            purchase: item, 
+                            view_state: tmp_view_state})
                     ), 
                     React.createElement(IF, {condition: condition == false}, 
-                        React.createElement(PurchaseTileView, {key: item.id, purchase: item})
+                        React.createElement(PurchaseTileView, {
+                            key: item.id, 
+                            purchase: item, 
+                            view_state: tmp_view_state})
                     ), 
                     React.createElement(IF, {condition: index != length - 1}, 
                         React.createElement("div", {className: "separator"})
@@ -813,7 +836,7 @@ var Purchases = React.createClass({displayName: "Purchases",
         flat_items = flat_products.map(function (product) {
             return (
                 React.createElement("div", {className: "col-xs-12 col-sm-4 col-md-3 col-lg-3"}, 
-                    React.createElement(ProductTileView, {product: product})
+                    React.createElement(ProductHoverTitle, {product: product})
                 )
             )
         });
@@ -841,7 +864,7 @@ var Purchases = React.createClass({displayName: "Purchases",
 
 module.exports = Purchases;
 
-},{"../actions/PurchasesActions.js":1,"../stores/PurchasesStore.js":4,"./ButtonsView.jsx":5,"./Catalogs.jsx":6,"./customhelpers/IF.jsx":11,"./customhelpers/Methods.js":12,"./customhelpers/MyRefreshIndicator.jsx":13,"./product_components/ProductModal.jsx":17,"./product_components/ProductRelativeTitle.jsx":18,"./product_components/ProductTileView.jsx":19,"./purchase/PurchaseDetailInfo.jsx":21,"jquery":29,"material-ui":65,"material-ui/lib/styles/theme-manager":102,"react":372,"underscore":373}],8:[function(require,module,exports){
+},{"../actions/PurchasesActions.js":1,"../stores/PurchasesStore.js":4,"./ButtonsView.jsx":5,"./Catalogs.jsx":6,"./customhelpers/IF.jsx":11,"./customhelpers/Methods.js":12,"./customhelpers/MyRefreshIndicator.jsx":13,"./product_components/ProductHoverTitle.jsx":17,"./product_components/ProductModal.jsx":18,"./product_components/ProductRelativeTitle.jsx":19,"./purchase/PurchaseDetailInfo.jsx":21,"jquery":29,"material-ui":65,"material-ui/lib/styles/theme-manager":102,"react":372,"underscore":373}],8:[function(require,module,exports){
 var React = require('react');
 var Store = require('../../stores/PurchasesStore.js');
 var Actions = require('../../actions/PurchasesActions.js');
@@ -967,7 +990,6 @@ var $ = require('jquery');
 var Purchases = require('../Purchases.jsx');
 var PurchasesStore = require('../../stores/PurchasesStore.js');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
-var ProductTileView = require('../product_components/ProductTileView.jsx');
 var ProductRelativeTitle = require('../product_components/ProductRelativeTitle.jsx');
 var ProductModal = require('../product_components/ProductModal.jsx');
 
@@ -1054,7 +1076,7 @@ var Category = React.createClass({displayName: "Category",
 
 module.exports = Category;
 
-},{"../../actions/PurchasesActions.js":1,"../../stores/PurchasesStore.js":4,"../Purchases.jsx":7,"../customhelpers/IF.jsx":11,"../product_components/ProductModal.jsx":17,"../product_components/ProductRelativeTitle.jsx":18,"../product_components/ProductTileView.jsx":19,"jquery":29,"react":372}],11:[function(require,module,exports){
+},{"../../actions/PurchasesActions.js":1,"../../stores/PurchasesStore.js":4,"../Purchases.jsx":7,"../customhelpers/IF.jsx":11,"../product_components/ProductModal.jsx":18,"../product_components/ProductRelativeTitle.jsx":19,"jquery":29,"react":372}],11:[function(require,module,exports){
 // Компонент принимает condition
 // Если condition не false и не undefined компонент возвращает свой children компонент
 // Используется для упрощения логики внутри компонентов что бы не писать безконечные if
@@ -1503,6 +1525,75 @@ var React = require('react');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
 var PurchasesStore = require('../../stores/PurchasesStore.js');
 var ProductForm = require('./ProductForm.jsx');
+
+
+function emptyObject(obj) {
+    //вспомогательная функция проверяет пуст ли объект
+    for (var i in obj) {
+        return false;
+    }
+    return true;
+}
+
+
+var ProductHoverTitle = React.createClass({displayName: "ProductHoverTitle",
+    showProduct: function(){
+        var data = {
+            item: this.props.product,
+            //purchase_id: this.props.purchase_id,
+            cpp_catalog: this.props.product.cpp_catalog
+        };
+        PurchasesActions.fastShowProduct(data);
+    },
+    render: function(){
+        var description = this.props.product.description;
+        description = (description.substr(0, 100));
+        var link = "/products/" + this.props.product.id + "/";
+        return (
+            React.createElement("div", {className: "product_view product_tile_view row"}, 
+                React.createElement("div", {className: "col-xs-12"}, 
+                    React.createElement("div", {className: "image_block"}, 
+                        React.createElement("button", {type: "button", className: "btn btn-primary fast-modal left", onClick: this.showProduct}, 
+                            React.createElement("i", {className: "mdi-content-content-copy"})
+                        ), 
+                        React.createElement("a", {href: link, className: "btn btn-primary fast-modal right"}, 
+                            React.createElement("i", {className: "mdi-action-search"})
+                        ), 
+                        React.createElement("a", {href: link, className: ""}, 
+                            React.createElement("img", {src: this.props.product.images[0].cropping_url, alt: ""})
+                        ), 
+                        React.createElement("div", {className: "gradient"})
+                    )
+                ), 
+                React.createElement("div", {className: "col-xs-12"}, 
+                    React.createElement("div", {className: "info"}, 
+                        React.createElement("a", {href: link, className: ""}, 
+                            React.createElement("div", {className: "info_inner"}, 
+                                React.createElement("h3", null, this.props.product.product_name), 
+                                React.createElement("p", {className: "price"}, this.props.product.price, " руб.")
+                            )
+                        )
+                    )
+                ), 
+                React.createElement("div", {className: "col-xs-12"}, 
+                    React.createElement("button", {type: "button", className: "btn btn-primary full-width", onClick: this.showProduct}, 
+                        React.createElement("i", {className: "fa fa-shopping-cart"}), " в корзину"
+                    )
+                )
+            )
+        )
+
+    }
+});
+
+
+module.exports = ProductHoverTitle;
+
+},{"../../actions/PurchasesActions.js":1,"../../stores/PurchasesStore.js":4,"./ProductForm.jsx":16,"react":372}],18:[function(require,module,exports){
+var React = require('react');
+var PurchasesActions = require('../../actions/PurchasesActions.js');
+var PurchasesStore = require('../../stores/PurchasesStore.js');
+var ProductForm = require('./ProductForm.jsx');
 var ProductFastView = require('./ProductFastView.jsx');
 var Dialog = require('material-ui').Dialog;
 var ThemeManager = require('material-ui/lib/styles/theme-manager')();
@@ -1592,7 +1683,7 @@ var ProductModal = React.createClass({displayName: "ProductModal",
 
 module.exports = ProductModal;
 
-},{"../../actions/PurchasesActions.js":1,"../../stores/PurchasesStore.js":4,"./ProductFastView.jsx":15,"./ProductForm.jsx":16,"material-ui":65,"material-ui/lib/styles/theme-manager":102,"react":372}],18:[function(require,module,exports){
+},{"../../actions/PurchasesActions.js":1,"../../stores/PurchasesStore.js":4,"./ProductFastView.jsx":15,"./ProductForm.jsx":16,"material-ui":65,"material-ui/lib/styles/theme-manager":102,"react":372}],19:[function(require,module,exports){
 var React = require('react');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
 var PurchasesStore = require('../../stores/PurchasesStore.js');
@@ -1649,75 +1740,6 @@ var ProductTileView = React.createClass({displayName: "ProductTileView",
 
 module.exports = ProductTileView;
 
-},{"../../actions/PurchasesActions.js":1,"../../stores/PurchasesStore.js":4,"./ProductForm.jsx":16,"react":372}],19:[function(require,module,exports){
-var React = require('react');
-var PurchasesActions = require('../../actions/PurchasesActions.js');
-var PurchasesStore = require('../../stores/PurchasesStore.js');
-var ProductForm = require('./ProductForm.jsx');
-
-
-function emptyObject(obj) {
-    //вспомогательная функция проверяет пуст ли объект
-    for (var i in obj) {
-        return false;
-    }
-    return true;
-}
-
-
-var ProductTileView = React.createClass({displayName: "ProductTileView",
-    showProduct: function(){
-        var data = {
-            item: this.props.product,
-            //purchase_id: this.props.purchase_id,
-            cpp_catalog: this.props.product.cpp_catalog
-        };
-        PurchasesActions.fastShowProduct(data);
-    },
-    render: function(){
-        var description = this.props.product.description;
-        description = (description.substr(0, 100));
-        var link = "/products/" + this.props.product.id + "/";
-        return (
-            React.createElement("div", {className: "product_view product_tile_view row"}, 
-                React.createElement("div", {className: "col-xs-12"}, 
-                    React.createElement("div", {className: "image_block"}, 
-                        React.createElement("button", {type: "button", className: "btn btn-primary fast-modal left", onClick: this.showProduct}, 
-                            React.createElement("i", {className: "mdi-content-content-copy"})
-                        ), 
-                        React.createElement("a", {href: link, className: "btn btn-primary fast-modal right"}, 
-                            React.createElement("i", {className: "mdi-action-search"})
-                        ), 
-                        React.createElement("a", {href: link, className: ""}, 
-                            React.createElement("img", {src: this.props.product.images[0].cropping_url, alt: ""})
-                        ), 
-                        React.createElement("div", {className: "gradient"})
-                    )
-                ), 
-                React.createElement("div", {className: "col-xs-12"}, 
-                    React.createElement("div", {className: "info"}, 
-                        React.createElement("a", {href: link, className: ""}, 
-                            React.createElement("div", {className: "info_inner"}, 
-                                React.createElement("h3", null, this.props.product.product_name), 
-                                React.createElement("p", {className: "price"}, this.props.product.price, " руб.")
-                            )
-                        )
-                    )
-                ), 
-                React.createElement("div", {className: "col-xs-12"}, 
-                    React.createElement("button", {type: "button", className: "btn btn-primary full-width", onClick: this.showProduct}, 
-                        React.createElement("i", {className: "fa fa-shopping-cart"}), " в корзину"
-                    )
-                )
-            )
-        )
-
-    }
-});
-
-
-module.exports = ProductTileView;
-
 },{"../../actions/PurchasesActions.js":1,"../../stores/PurchasesStore.js":4,"./ProductForm.jsx":16,"react":372}],20:[function(require,module,exports){
 var React = require('react');
 var Slider = require('react-slick');
@@ -1727,99 +1749,55 @@ var PurchasesStore = require('../../stores/PurchasesStore.js');
 var Dialog = require('material-ui').Dialog;
 var FlatButton = require('material-ui').FlatButton;
 var ThemeManager = require('material-ui/lib/styles/theme-manager')();
-var ProductTileView = require('./ProductTileView.jsx');
+var ProductHoverTitle = require('./ProductHoverTitle.jsx');
 var ProductRelativeTitle = require('./ProductRelativeTitle.jsx');
 
 var IF = require('../customhelpers/IF.jsx');
 
 
-var ProductInfoMini = React.createClass({displayName: "ProductInfoMini",
-    childContextTypes: {
-        muiTheme: React.PropTypes.object
-    },
-    getChildContext: function() {
-        return {
-            muiTheme: ThemeManager.getCurrentTheme()
-        };
-    },
-    showProduct: function(){
-        var data = {
-            item: this.props.item,
-            purchase_id: this.props.purchase_id,
-            cpp_catalog: this.props.cpp_catalog
-        };
-        PurchasesActions.fastShowProduct(data);
-    },
-    render: function(){
-        var link = "/products/" + this.props.item.id + "/";
-        return (
-            React.createElement("div", null, 
-                React.createElement("div", {className: "image-wrapper"}, 
-                    React.createElement("img", {src: this.props.item.images[0].image}), 
-                    React.createElement("div", {className: "blackout"}), 
-                    React.createElement("button", {type: "button", className: "btn btn-primary fast-modal bottom", onClick: this.showProduct}, 
-                        React.createElement("i", {className: "mdi-content-content-copy"})
-                    ), 
-                    React.createElement("a", {href: link, className: "btn btn-primary fast-modal top"}, 
-                        React.createElement("i", {className: "mdi-action-search"})
-                    )
-                ), 
-                React.createElement("h5", {className: "product_name_mini"}, this.props.item.product_name), 
-                React.createElement("p", {className: "price"}, this.props.item.price)
-            )
-        )
-    }
-});
-
-
 var SimpleSlider = React.createClass({displayName: "SimpleSlider",
-    getInitialState: function () {
-        return {
-            view_state: PurchasesStore.view_state
-        }  
-    },
-    componentWillMount: function () {
-        PurchasesStore.bind('changeViewState', this.setViewState);
-    },
-    componentWillUnmount: function () {
-        PurchasesStore.unbind('changeViewState', this.setViewState);
-    },
-    setViewState: function () {
-        this.setState({
-            view_state: PurchasesStore.view_state
-        });
-    },
     render: function () {
-        var settings = {
-            dots: true,
-            arrows: true,
-            infinite: true,
-            speed: 500,
-            slidesToShow: 3,
-            slidesToScroll: 4
-        };
+        if (this.props.view_state.view_page == 'purchase') {
+            // колличество слайдов больше на странице закупки 
+            var settings = {
+                dots: true,
+                arrows: true,
+                infinite: true,
+                speed: 500,
+                slidesToShow: 4,
+                slidesToScroll: 5
+            };
+        } else {
+            var settings = {
+                dots: true,
+                arrows: true,
+                infinite: true,
+                speed: 500,
+                slidesToShow: 3,
+                slidesToScroll: 4
+            };
+        }        
         var cpp_catalog = this.props.cpp_catalog;
         var purchase_id = this.props.purchase_id;
-        var tmp_view_state = this.state.view_state.view_page;
+        var tmp_view_state = this.props.view_state;
         var items = this.props.items.map(function(item){
             text = item.description.slice(0,100);
-
             return (
                 React.createElement("div", {key: item.id}, 
-                    React.createElement(IF, {condition: tmp_view_state != 'category'}, 
-                        React.createElement(ProductTileView, {key: item.id, product: item})
+                    React.createElement(IF, {condition: tmp_view_state.view_page != 'category'}, 
+                        React.createElement(ProductHoverTitle, {
+                            key: item.id, 
+                            product: item, 
+                            view_state: tmp_view_state})
                     ), 
-                    React.createElement(IF, {condition: tmp_view_state == 'category'}, 
-                        React.createElement(ProductRelativeTitle, {key: item.id, product: item})
+                    React.createElement(IF, {condition: tmp_view_state.view_page == 'category'}, 
+                        React.createElement(ProductRelativeTitle, {
+                            key: item.id, 
+                            product: item, 
+                            view_state: tmp_view_state})
                     )
                 )
-            )            
-            // return (
-            //     <div key={item.id}>
-            //         <ProductInfoMini item={item} purchase_id={purchase_id} cpp_catalog={cpp_catalog}/>
-            //         <ProductForm key={item.id} product={item} cpp_catalog={cpp_catalog}/>
-            //     </div>
-            // )
+            )
         });
         return (
           React.createElement(Slider, React.__spread({},  settings), 
@@ -1832,8 +1810,9 @@ var SimpleSlider = React.createClass({displayName: "SimpleSlider",
 
 module.exports = SimpleSlider;
 
-},{"../../actions/PurchasesActions.js":1,"../../stores/PurchasesStore.js":4,"../customhelpers/IF.jsx":11,"./ProductForm.jsx":16,"./ProductRelativeTitle.jsx":18,"./ProductTileView.jsx":19,"material-ui":65,"material-ui/lib/styles/theme-manager":102,"react":372,"react-slick":180}],21:[function(require,module,exports){
+},{"../../actions/PurchasesActions.js":1,"../../stores/PurchasesStore.js":4,"../customhelpers/IF.jsx":11,"./ProductForm.jsx":16,"./ProductHoverTitle.jsx":17,"./ProductRelativeTitle.jsx":19,"material-ui":65,"material-ui/lib/styles/theme-manager":102,"react":372,"react-slick":180}],21:[function(require,module,exports){
 var React = require('react');
+var IF = require('../customhelpers/IF.jsx');
 
 
 var PurchaseDetailInfo = React.createClass({displayName: "PurchaseDetailInfo",
@@ -1851,12 +1830,22 @@ var PurchaseDetailInfo = React.createClass({displayName: "PurchaseDetailInfo",
     			)
         	};
         });
+        var link = "/purchases/" + this.props.purchase.id + "/";
 
         return (
             React.createElement("div", null, 
                 React.createElement("h2", null, this.props.purchase.name), 
-                status, 
-                React.createElement("div", {dangerouslySetInnerHTML: createDescription()})
+                React.createElement(IF, {condition: this.props.view_state.view_page == 'purchase'}, 
+                    React.createElement("div", null, 
+                        status, 
+                        React.createElement("div", {dangerouslySetInnerHTML: createDescription()})
+                    )
+                ), 
+                React.createElement(IF, {condition: this.props.view_state.view_page != 'purchase'}, 
+                    React.createElement("div", null, 
+                        React.createElement("a", {className: "btn btn-primary purchase_link", href: link}, "подробнее о закупке")
+                    )
+                )
             )
         )
         	
@@ -1866,7 +1855,7 @@ var PurchaseDetailInfo = React.createClass({displayName: "PurchaseDetailInfo",
 
 module.exports = PurchaseDetailInfo;
 
-},{"react":372}],22:[function(require,module,exports){
+},{"../customhelpers/IF.jsx":11,"react":372}],22:[function(require,module,exports){
 var React = require('react');
 var $ = require('jquery');
 var Purchases = require('../Purchases.jsx');
