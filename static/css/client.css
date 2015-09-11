@@ -212,6 +212,10 @@ a {
     background-color: #fff;
     color: #000;
 }
+.mobile #header_info .navbar-toggle{
+    display: none;
+}
+
 .dropdown-menu.scroll {
     display: none;
 }
@@ -353,6 +357,55 @@ input:-ms-input-placeholder {color: #000; padding: 5px; border: 1px solid #82828
 }
 .navbar-nav>li.open>.dropdown-menu {
     margin-top: 3px;
+}
+.navbar .navbar-nav>li>ul>li>a.dropdown-toggle-second {
+    position: absolute;
+    top:0;  
+    right: 0;
+}
+.navbar .navbar-nav .dropdown-menu li {
+    overflow: inherit;
+}
+.navbar .navbar-nav>li>ul>li>ul,
+.navbar ul.navbar-nav>li.dropdown:hover>ul>li>ul {
+    visibility: hidden;
+    display: block;
+    opacity: 0;
+    position: absolute;
+    top: 0px;
+    left: 100%;    
+    border-radius: 2px;
+    -webkit-box-shadow: 0 8px 33px rgba(0,0,0,0.375);
+    box-shadow: 0 8px 33px rgba(0,0,0,0.375);
+}
+.mobile .navbar ul.navbar-nav>li.dropdown:hover>ul>li>ul {
+    left: inherit;
+    right: 20px;
+    background: #fff;
+    color: #333;
+}
+.navbar ul.navbar-nav>li.dropdown:hover>ul>li:hover ul{
+    visibility: visible;
+    display: block;
+    opacity: 1;    
+}
+.navbar ul.navbar-nav>li.dropdown:hover>ul>li>ul:before{
+    content: "\f0d8";
+    height: 20px;
+    position: absolute;
+    top: 4px;
+    left: -9px;
+    margin-left: -5px;
+    color: #fff;
+    font-size: 21px;
+    font-family: "FontAwesome";
+    text-indent: 0;
+    opacity: 1;
+    -moz-transform: rotate(-90deg); /* Для Firefox */
+    -ms-transform: rotate(-90deg); /* Для IE */
+    -webkit-transform: rotate(-90deg); /* Для Safari, Chrome, iOS */
+    -o-transform: rotate(-90deg); /* Для Opera */
+    transform: rotate(-90deg);
 }
 /*End Main MENU*/
 
@@ -729,7 +782,7 @@ a.more-button:before {
 .catalog .slick-next {
     background: #fff;
     border: 1px solid #BDBDBD;
-    height: 60px;    
+    height: 25%;    
     width: 25px;
     left: -25px;
 }
@@ -755,7 +808,7 @@ a.more-button:before {
 .catalog .slick-next {    
 }
 .catalog .slick-prev {    
-    top: 32%;
+    top: 24%;
 }
 .slick-slider .image-wrapper:hover .btn-primary.fast-modal {
     opacity: 1;
@@ -1046,6 +1099,13 @@ h2.block-title {
     position: absolute; 
     top: 4px; 
     right: 12px; 
+    z-index: 888;
+}
+.mobile #cartmenu {
+    margin-right: -7px; 
+    position: absolute; 
+    top: 48px; 
+    right: 22px; 
     z-index: 888;
 }
 #cartmenu .full_count_product{
