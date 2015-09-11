@@ -1369,6 +1369,9 @@ h2.block-title {
     border:1px solid #E4E4E4;
     padding: 15px;
 }
+.benefits-header a{
+    cursor:pointer;
+}
 .benefits-separator {
     margin: 15px -15px;
     padding:15px 15px;

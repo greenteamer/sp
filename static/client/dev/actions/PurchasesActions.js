@@ -55,6 +55,13 @@ var PurchasesActions = {
             cpp_catalog: data.cpp_catalog
         });
     },
+    showPhoto: function (photo) {
+        console.log('showPhoto action ', photo);
+        PurchasesDispatcher.dispatch({
+            actionType: "show-photo",
+            photo: photo            
+        }); 
+    },
     getProduct: function(product_id){
         PurchasesDispatcher.dispatch({
             actionType: "get-product",

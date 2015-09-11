@@ -631,6 +631,12 @@ def product(request, purchase_id, catalog_id, product_id, template_name, edit=Fa
                             'crop': True,
                             'detail': True,
                         }).url
+                        productimages.cropping_url_cart = get_thumbnailer(productimages.image).get_thumbnail({
+                            'size': (890, 770),
+                            'box': productimages.cropping_890x770,
+                            'crop': True,
+                            'detail': True,
+                        }).url
                         productimages.save()
 
                 message = u"Новый товар %s успешно отредактирован." % request.POST['product_name']

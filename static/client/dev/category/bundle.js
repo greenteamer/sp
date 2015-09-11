@@ -56,6 +56,13 @@ var PurchasesActions = {
             cpp_catalog: data.cpp_catalog
         });
     },
+    showPhoto: function (photo) {
+        console.log('showPhoto action ', photo);
+        PurchasesDispatcher.dispatch({
+            actionType: "show-photo",
+            photo: photo            
+        }); 
+    },
     getProduct: function(product_id){
         PurchasesDispatcher.dispatch({
             actionType: "get-product",
@@ -170,10 +177,16 @@ var PurchasesStore = merge(MicroEvent.prototype, {
     cartitems: [],
     search_result_collection: [],
     query_text: '',
+
     product_fast_view: {},
     purchase_id_fast_view: 0,
     product: {},
     benefits: [],
+    modal_photo: {},
+    photoView: function(){
+        console.log('start trigger photoView');
+        this.trigger('photoView');
+    },
 
     // for purchase page
     purchase: [],
@@ -356,6 +369,12 @@ PurchasesDispatcher.register(function (payload) {
             PurchasesStore.product_fast_view.cpp_catalog = payload.cpp_catalog;
             PurchasesStore.purchase_id_fast_view = payload.purchase_id;
             PurchasesStore.modalView();
+            break;
+
+        case "show-photo":
+            PurchasesStore.modal_photo = payload.photo;
+            PurchasesStore.photoView();
+            console.log("PurchasesStore.modal_photo: ", PurchasesStore.modal_photo);
             break;
 
         case "get-product":

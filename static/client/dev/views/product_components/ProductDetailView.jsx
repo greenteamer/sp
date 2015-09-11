@@ -2,6 +2,7 @@ var React = require('react');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
 var PurchasesStore = require('../../stores/PurchasesStore.js');
 var ProductDetailForm = require('./ProductDetailForm.jsx');
+var PhotoModal = require('./PhotoModal.jsx');
 var Benefits = require('../Benefits.jsx');
 var Tabs = require('material-ui').Tabs;
 var Tab = require('material-ui').Tab;
@@ -32,6 +33,11 @@ var ProductFastView = React.createClass({
            accent1Color: Colors.amber400
         });
     },
+    showPhoto: function () {
+        photo = this.props.product.images[0];
+        PurchasesActions.showPhoto(photo);
+        console.log('showPhoto start');
+    },    
     render: function(){
         var description = this.props.product.description;
         description = (description.substr(0, 350));
@@ -45,7 +51,11 @@ var ProductFastView = React.createClass({
         return (
             <div className="product_view">
                 <div className="col-xs-12 col-sm-5 col-md-5 product_fast_view">
-                    <img src={this.props.product.images[0].image} alt="" />
+                    <img 
+                        onClick={this.showPhoto} 
+                        src={this.props.product.images[0].cropping_url_cart} 
+                        alt="" 
+                        style={{cursor: "pointer"}}/>
                 </div>
                 <div className="col-xs-12 col-sm-7 col-md-7 product_fast_view">
                     <div className="row">
@@ -59,45 +69,42 @@ var ProductFastView = React.createClass({
                                     <p className="price">{this.props.product.price} руб.</p>
                                 </div>
                             </div>
-                        </div>
-                        <div className="col-xs-12 col-sm-12 col-md-12">
-                            <p>{description} ...</p>
-                        </div>
+                        </div>                        
                         <div className="col-xs-12 col-sm-12 col-md-12">
                             <ProductDetailForm product={this.props.product} cpp_catalog={this.props.product.cpp_catalog} />
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12">
                             <Benefits />
-                        </div>
-                        <div className="col-xs-12 col-sm-12 col-md-12">
-                            <div className="full-description">
-                                <Tabs className="my_tabs" style={tabsStyle.tabs}>
-                                    <Tab label="Описание" style={tabsStyle.tab}>
-                                        <div>
-                                            <h2>Описание</h2>
-                                            <p>
-                                                {this.props.product.description}
-                                            </p>
-                                        </div>
-                                    </Tab>
-                                    <Tab label="Комментарии" style={tabsStyle.tab}>
-                                        <div>
-                                            <h2>Комментарии</h2>
-                                            <p>
-                                                This is another example of a tab template!
-                                            </p>
-                                            <p>
-                                                Fair warning - the next tab routes to home!
-                                            </p>
-                                        </div>
-                                    </Tab>
-
-                                </Tabs>
-                            </div>
-                        </div>
+                        </div>                        
                     </div>
                 </div>
-            </div>
+                <div className="col-xs-12 col-sm-12 col-md-12">
+                    <div className="full-description">
+                        <Tabs className="my_tabs" style={tabsStyle.tabs}>
+                            <Tab label="Описание" style={tabsStyle.tab}>
+                                <div>
+                                    <h2>Описание</h2>
+                                    <p>
+                                        {this.props.product.description}
+                                    </p>
+                                </div>
+                            </Tab>
+                            <Tab label="Комментарии" style={tabsStyle.tab}>
+                                <div>
+                                    <h2>Комментарии</h2>
+                                    <p>
+                                        This is another example of a tab template!
+                                    </p>
+                                    <p>
+                                        Fair warning - the next tab routes to home!
+                                    </p>
+                                </div>
+                            </Tab>
+                        </Tabs>
+                    </div>
+                </div>
+                <PhotoModal image={this.props.product.images[0]} />
+            </div>  
         )
 
     }
