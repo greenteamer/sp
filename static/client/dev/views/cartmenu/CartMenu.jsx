@@ -80,9 +80,9 @@ var CartMenu = React.createClass({
         });
 		return (
             <li className="dropdown">
-                <a href="" data-target="#" className="dropdown-toggle" data-toggle="dropdown">
+                <a href="/cart/" className="dropdown-toggle">
                     <span className="full_count_product label label-success">{count}</span>
-                    Корзина <b className="caret"></b>
+                    <i className="material-icons">shopping_basket</i>
                 </a>
                 <ul className="dropdown-menu">
                     <div className="cart_button_wrapper">

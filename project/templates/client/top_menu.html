@@ -18,7 +18,7 @@
                     {# добавляем категоризацию#}
 {#                    {% client_categories_tree request %}#}
                     <ul class="nav navbar-nav">
-                        <li class="dropdown">
+                        <li class="dropdown city-change">
                             <a href="http://fezvrasta.github.io/bootstrap-material-design/bootstrap-elements.html" data-target="#" class="dropdown-toggle" data-toggle="dropdown">Выбрать город <b class="caret"></b></a>
                             {% include 'client/city.html' %}
                         </li>
@@ -28,14 +28,20 @@
 {#                  <form class="navbar-form navbar-left">#}
 {#                      <input type="text" class="form-control col-lg-8" placeholder="Search">#}
 {#                  </form>#}
-                  <ul class="nav navbar-nav navbar-right">
+                  <ul class="nav navbar-nav navbar-right">                    
+                    {% if request.user.is_authenticated %}
                       <li class="dropdown">
-                          <a href="http://fezvrasta.github.io/bootstrap-material-design/bootstrap-elements.html" data-target="#" class="dropdown-toggle" data-toggle="dropdown">Личный кабинет <b class="caret"></b></a>
-                          <ul class="dropdown-menu">
-                              <li><a href="/profile/">Мой профиль</a></li>
-                              <li><a href="/cart/">Смотреть корзину</a></li>
-                          </ul>
+                        <a href="http://fezvrasta.github.io/bootstrap-material-design/bootstrap-elements.html" data-target="#" class="dropdown-toggle" data-toggle="dropdown">Личный кабинет <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                          <li><a href="/profile/">Мой профиль</a></li>
+                          <li><a href="/cart/">Смотреть корзину</a></li>
+                          <li><a href="/logout/">Выйти</a></li>
+                        </ul>
                       </li>
+                    {% else %}
+                      <li><a href="javascript:void(0)">Регистрация</a></li>
+                      <li><a href="javascript:void(0)">Вход</a></li>  
+                    {% endif %}                    
                   </ul>
                 </div>
 {#            </div>#}

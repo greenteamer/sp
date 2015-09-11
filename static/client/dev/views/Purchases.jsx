@@ -1,9 +1,10 @@
 var React = require('react');
 var $ = require('jquery');
+var _ = require('underscore');
 var Catalogs = require('./Catalogs.jsx');
 var PurchasesActions = require('../actions/PurchasesActions.js');
 var PurchasesStore = require('../stores/PurchasesStore.js');
-//var ProductForm = require('./product_components/ProductForm.jsx');
+var ButtonsView = require('./ButtonsView.jsx');
 var ProductModal = require('./product_components/ProductModal.jsx');
 var ProductTileView = require('./product_components/ProductTileView.jsx');
 var ProductRelativeTitle = require('./product_components/ProductRelativeTitle.jsx');
@@ -11,6 +12,7 @@ var PurchaseDetailInfo = require('./purchase/PurchaseDetailInfo.jsx');
 
 //material-ui
 var mui = require('material-ui');
+var IconButton = mui.IconButton;
 var ThemeManager = require('material-ui/lib/styles/theme-manager')();
 
 
@@ -163,19 +165,7 @@ var Purchases = React.createClass({
         this.setState({
             view_state: PurchasesStore.view_state          
         });
-    },
-    changeViewToList: function(){
-        PurchasesActions.changeViewType('list');        
-    },
-    changeViewToTite: function(){
-        PurchasesActions.changeViewType('tile');
-    },
-    viewByProducts: function  () {
-        PurchasesActions.viewBy('products');  
-    },
-    viewByPurchases: function  () {
-        PurchasesActions.viewBy('purchases');    
-    },
+    },    
     render: function () {        
         // Cоздаем условие при котором будет выводитсья PurchaseListView
         // state.view_state.view_type слушает Store
@@ -215,30 +205,10 @@ var Purchases = React.createClass({
             )
         });
 
-        console.log('Purchases state view_state: ', this.state.view_state);
-
+        console.log('Purchases state view_state: ', this.state.view_state);        
         return (
             <div className="purchases-list">
-                <div className="swich-view">
-                    <IF condition={this.state.view_state.view_by == 'products'}>                        
-                        <button onClick={this.viewByPurchases} type="button" className="btn btn-primary">
-                            по закупкам
-                        </button>
-                    </IF>
-                    <IF condition={this.state.view_state.view_by != 'products'}>
-                        <div> 
-                            <button onClick={this.viewByProducts} type="button" className="btn btn-primary">
-                                по продуктам
-                            </button>                    
-                            <button onClick={this.changeViewToList} type="button" className="btn btn-primary mini">
-                                <i className="mdi-action-view-list"></i>
-                            </button>
-                            <button onClick={this.changeViewToTite} type="button" className="btn btn-primary mini">
-                                <i className="mdi-action-view-module"></i>
-                            </button>
-                        </div>
-                    </IF>
-                </div>
+                <ButtonsView />
                 <IF condition={this.props.collection.length == 0}>
                     <MyRefreshIndicator relative_element_name={this.props.indicatorElementName} />
                 </IF>

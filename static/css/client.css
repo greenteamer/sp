@@ -228,7 +228,8 @@ input::-moz-placeholder     {color: #000; padding: 5px; border: 1px solid #82828
 input:-moz-placeholder      {color: #000; padding: 5px; border: 1px solid #828282; border-radius: 3px;}
 input:-ms-input-placeholder {color: #000; padding: 5px; border: 1px solid #828282; border-radius: 3px;}
 #react_search {
-    float: left;
+    float: right;
+    margin-right: 35px;
 }
 .custom-form {
     float: left;
@@ -290,6 +291,17 @@ input:-ms-input-placeholder {color: #000; padding: 5px; border: 1px solid #82828
     -o-transition: all 0.3s ease-out 0s;
     transition: all 0.3s ease-out 0s;
 }
+.desktop_menu .city-change.dropdown.open>.dropdown-menu {
+    display: block;
+}
+.desktop_menu .city-change.dropdown .dropdown-menu {
+    display: none;
+    visibility: inherit;
+    opacity: 1;
+}
+.city-change.dropdown:hover .dropdown-menu {
+    visibility: inherit;
+}
 .navbar.navbar, .navbar-default.navbar{
     background-color: #443f39;
 }
@@ -297,7 +309,7 @@ input:-ms-input-placeholder {color: #000; padding: 5px; border: 1px solid #82828
     top: 48px;
 }
 .navbar .navbar-nav>li>a.dropdown-toggle {
-    padding-right: 5px
+    /*padding-right: 5px;*/
 }
 .navbar .navbar-nav>li>a.dropdown-toggle-second {
     padding-left: 5px;
@@ -1029,20 +1041,37 @@ h2.block-title {
 /*end sidebar*/
 
 /*корзина*/
+#cartmenu {
+    margin-right: -7px; 
+    position: absolute; 
+    top: 4px; 
+    right: 12px; 
+    z-index: 888;
+}
 #cartmenu .full_count_product{
     position: absolute;
-    left: -20px;
-    top: 10px;
+    right: -5px;
+    top: 6px;
     background-color: #FFC229;
     color: #FFF;
     font-weight: 600;
     font-size: 13px;
+    border-radius: 15px;
+    height: 25px;
+    width: 25px;
+    padding: 0;
+    text-align: center;
+    line-height: 25px;
 }
 #cartmenu .dropdown-menu {
     min-width: 300px;
     max-height: 400px;
     overflow: scroll;
     padding: 15px;
+    /*margin-top: -20px;*/
+}
+.desktop_menu #cartmenu .dropdown:hover .dropdown-menu {
+    margin-top: -15px;    
 }
 #cartmenu .cart-image {
     width: 60px;

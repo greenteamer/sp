@@ -59,9 +59,25 @@
                             zIndex:"100"
                         });
                         $(".main-menu-container").addClass('container');
+                        $("#cartmenu").css({
+                            marginRight: "-7px",
+                            position: "absolute",
+                            top: "4px",
+                            right: "12px",
+                            zIndex: 888,
+                            color: "#333"
+                        });
                     } else if (top >= 150) {                        
-                        $(".scroll-class").css({position: "fixed", top: "-101px", left:0 , zIndex:"100", width: "100%"});
+                        $(".scroll-class").css({position: "fixed", top: "-109px", left:0 , zIndex:"100", width: "100%"});
                         $(".main-menu-container").removeClass('container');
+                        $("#cartmenu").css({
+                            marginRight: "-7px",
+                            position: "absolute",
+                            top: "67px",
+                            right: "28px",
+                            zIndex: 888,
+                            color: "#fff"
+                        });
                     }                    
                 });
             });
