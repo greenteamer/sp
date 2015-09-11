@@ -1,15 +1,18 @@
 var React = require('react');
 var $ = require('jquery');
+var _ = require('underscore');
 var Catalogs = require('./Catalogs.jsx');
 var PurchasesActions = require('../actions/PurchasesActions.js');
 var PurchasesStore = require('../stores/PurchasesStore.js');
-//var ProductForm = require('./product_components/ProductForm.jsx');
+var ButtonsView = require('./ButtonsView.jsx');
 var ProductModal = require('./product_components/ProductModal.jsx');
-var ProductTileView = require('./product_components/ProductTileView.jsx');
+var ProductHoverTitle = require('./product_components/ProductHoverTitle.jsx');
+var ProductRelativeTitle = require('./product_components/ProductRelativeTitle.jsx');
 var PurchaseDetailInfo = require('./purchase/PurchaseDetailInfo.jsx');
 
 //material-ui
 var mui = require('material-ui');
+var IconButton = mui.IconButton;
 var ThemeManager = require('material-ui/lib/styles/theme-manager')();
 
 
@@ -19,15 +22,31 @@ var MyRefreshIndicator = require('./customhelpers/MyRefreshIndicator.jsx');
 var Methods = require('./customhelpers/Methods.js');
 
 
-var CatalogTileView = React.createClass({
+var CatalogTileView = React.createClass({    
     render: function (){
+        // Устанавливаем классы для каждого товара в зависимости от view_state.view_page
+        // Получаем view_state из PurchaseTileView
+        var products_class = '';
+        if (this.props.view_state.view_page == 'purchase') {
+            products_class = "col-xs-12 col-sm-4 col-md-3";
+        } else {
+            products_class = "col-xs-12 col-sm-6 col-md-4";
+        } 
+        
         var tmp_cpp = this.props.catalog.cpp_catalog;
+        var tmp_view_state = this.props.view_state;
+        
         var items = this.props.catalog.product_catalog.map(function(product){
             console.log(tmp_cpp);
             product.cpp_catalog = tmp_cpp;
             return (
-                <div className="col-xs-12 col-sm-6 col-md-4">
-                    <ProductTileView product={product}/>
+                <div className={products_class}>
+                    <IF condition={tmp_view_state.view_page != 'category'}>
+                        <ProductHoverTitle product={product}/>
+                    </IF>
+                    <IF condition={tmp_view_state.view_page == 'category'}>
+                        <ProductRelativeTitle product={product}/>
+                    </IF>
                 </div>
             )
         });
@@ -44,26 +63,40 @@ var CatalogTileView = React.createClass({
 
 
 var PurchaseTileView = React.createClass({
-    getInitialState: function  () {
-        return {
-            view_state: PurchasesStore.view_state
-        }  
-    },
     render: function(){
+        // Устанавливаем классы для каждой закупки в зависимости от view_state.view_page
+        // Получаем view_state из Purchases
+        var info_class = '';
+        var products_class = '';
+        if (this.props.view_state.view_page == 'purchase') {
+            info_class = "col-xs-12 col-md-12";
+            products_class = "col-xs-12 col-md-12";
+        } else {
+            info_class = "col-xs-12 col-md-4";
+            products_class = "col-xs-12 col-md-8";
+        } 
+
+        var tmp_view_state = this.props.view_state;
         var items = this.props.purchase.catalogs.map(function(catalog){
-            return (<CatalogTileView catalog={catalog}/>);
+            return (
+                <CatalogTileView 
+                    catalog={catalog}
+                    view_state={tmp_view_state}/>
+            )
         });
-        var link = "/purchases/" + this.props.purchase.id + "/";
-        var condition = this.state.view_state.view_width === 9;
+
+        var link = "/purchases/" + this.props.purchase.id + "/";        
         return (
             <div className="purchase_tile_view">
                 <div className="row">
-                    <div className="col-xs-4">
+                    <div className={info_class}>
                         <div className="purchase_tile_title">
-                            <IF condition={condition}>
-                                <PurchaseDetailInfo purchase={this.props.purchase} />
+                            <IF condition={this.props.view_state.view_page == 'purchase'}>
+                                <PurchaseDetailInfo 
+                                    purchase={this.props.purchase}
+                                    view_state={this.props.view_state}/>
                             </IF>
-                            <IF condition={!condition}>
+                            <IF condition={this.props.view_state.view_page != 'purchase'}>
                                 <div>
                                     <h2 className="tile_view">{this.props.purchase.name}</h2>
                                     <a className="btn btn-primary purchase_link" href={link}>подробнее о закупке</a>
@@ -71,7 +104,7 @@ var PurchaseTileView = React.createClass({
                             </IF>
                         </div>
                     </div>
-                    <div className="col-xs-8">
+                    <div className={products_class}>
                         {items}
                     </div>
                 </div>                
@@ -82,30 +115,31 @@ var PurchaseTileView = React.createClass({
 
 
 var PurchaseListView = React.createClass({
-    getInitialState: function  () {
-        return {
-            view_state: PurchasesStore.view_state
-        }  
-    },
-    render: function () {
-        var link = "/purchases/" + this.props.purchase.id + "/";
-        var condition = this.state.view_state.view_width === 9;                
+    render: function () {     
+        // Устанавливаем классы для каждой закупки в зависимости от view_state.view_page
+        // Получаем view_state из purchases
+        var info_class = '';
+        var products_class = '';
+        if (this.props.view_state.view_page == 'purchase') {
+            info_class = "col-xs-12 col-md-12 purchase-info";
+            products_class = "col-xs-12 col-md-12 purchase-info";
+        } else {
+            info_class = "col-xs-12 col-md-4 purchase-info";
+            products_class = "col-xs-12 col-md-8 purchase-info";
+        }    
         return (
             <div className="purchase-item">
                 <div className="row">
-                    <div className="col-xs-12 col-md-4 purchase-info">
-                        <IF condition={condition}>
-                            <PurchaseDetailInfo purchase={this.props.purchase} />
-                        </IF>
-                        <IF condition={!condition}>
-                            <div> 
-                                <h2>{this.props.purchase.name}</h2>                             
-                                <a className="btn btn-primary purchase_link" href={link}>подробнее о закупке</a>
-                            </div>
-                        </IF>
+                    <div className={info_class}>                        
+                        <PurchaseDetailInfo 
+                            purchase={this.props.purchase} 
+                            view_state={this.props.view_state}/>
                     </div>
-                    <div className="col-xs-12 col-md-8 purchase-info">
-                        <Catalogs catalogs={this.props.purchase.catalogs} purchase_id={this.props.purchase.id} />
+                    <div className={products_class}>
+                        <Catalogs 
+                            catalogs={this.props.purchase.catalogs} 
+                            purchase_id={this.props.purchase.id} 
+                            view_state={this.props.view_state}/>
                     </div>
                 </div>
             </div>
@@ -139,19 +173,7 @@ var Purchases = React.createClass({
         this.setState({
             view_state: PurchasesStore.view_state          
         });
-    },
-    changeViewToList: function(){
-        PurchasesActions.changeViewType('list');        
-    },
-    changeViewToTite: function(){
-        PurchasesActions.changeViewType('tile');
-    },
-    viewByProducts: function  () {
-        PurchasesActions.viewBy('products');  
-    },
-    viewByPurchases: function  () {
-        PurchasesActions.viewBy('purchases');    
-    },
+    },    
     render: function () {        
         // Cоздаем условие при котором будет выводитсья PurchaseListView
         // state.view_state.view_type слушает Store
@@ -164,16 +186,22 @@ var Purchases = React.createClass({
 
         var length = this.props.collection.length;
         var condition = this.state.view_state.view_type === 'list' || this.state.view_state.view_type === '';
-        var view_by_condition = this.state.view_state.view_by == 'products';
-
+        // var view_by_condition = this.state.view_state.view_by == 'products';
+        var tmp_view_state = this.state.view_state;
         var items = this.props.collection.map(function (item, index) {            
             return (
                 <div>
                     <IF condition={condition == true}>
-                        <PurchaseListView key={item.id} purchase={item}/>
+                        <PurchaseListView 
+                            key={item.id}
+                            purchase={item}
+                            view_state={tmp_view_state}/>
                     </IF>
                     <IF condition={condition == false}>
-                        <PurchaseTileView key={item.id} purchase={item}/>
+                        <PurchaseTileView 
+                            key={item.id} 
+                            purchase={item}
+                            view_state={tmp_view_state}/>
                     </IF>                   
                     <IF condition={index != length - 1}>
                         <div className='separator'></div>
@@ -186,42 +214,22 @@ var Purchases = React.createClass({
         flat_items = flat_products.map(function (product) {
             return (
                 <div className="col-xs-12 col-sm-4 col-md-3 col-lg-3">
-                    <ProductTileView product={product}/>
+                    <ProductHoverTitle product={product}/>
                 </div>
             )
         });
 
-        console.log('Purchases state view_state: ', this.state.view_state);
-
+        console.log('Purchases state view_state: ', this.state.view_state);        
         return (
             <div className="purchases-list">
-                <div className="swich-view">
-                    <IF condition={view_by_condition}>                        
-                        <button onClick={this.viewByPurchases} type="button" className="btn btn-primary">
-                            по закупкам
-                        </button>
-                    </IF>
-                    <IF condition={!view_by_condition}>
-                        <div> 
-                            <button onClick={this.viewByProducts} type="button" className="btn btn-primary">
-                                по продуктам
-                            </button>                    
-                            <button onClick={this.changeViewToList} type="button" className="btn btn-primary mini">
-                                <i className="mdi-action-view-list"></i>
-                            </button>
-                            <button onClick={this.changeViewToTite} type="button" className="btn btn-primary mini">
-                                <i className="mdi-action-view-module"></i>
-                            </button>
-                        </div>
-                    </IF>
-                </div>
-                <IF condition={length == 0}>
+                <ButtonsView />
+                <IF condition={this.props.collection.length == 0}>
                     <MyRefreshIndicator relative_element_name={this.props.indicatorElementName} />
                 </IF>
-                <IF condition={!view_by_condition}>
+                <IF condition={this.state.view_state.view_by != 'products'}>
                     <div>{items}</div>
                 </IF>
-                <IF condition={view_by_condition}>
+                <IF condition={this.state.view_state.view_by == 'products'}>
                     <div className="row">{flat_items}</div>
                 </IF>
                 <ProductModal />

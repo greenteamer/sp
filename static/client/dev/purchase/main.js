@@ -5,6 +5,7 @@ var SearchForm = require('../views/search/SearchForm.jsx');
 var SearchResult = require('../views/search/SearchResult.jsx');
 var PurchaseDetail = require('../views/purchase/PurchaseDetail.jsx');
 var injectTapEventPlugin = require("react-tap-event-plugin");
+var Filters = require('../views/filters/Filters.jsx');
 
 
 injectTapEventPlugin();
@@ -33,3 +34,5 @@ React.render(
 	document.getElementById('react_search_result')
 );
 
+// React.render(React.createElement(Filters, null),
+	// document.getElementById('filters'));

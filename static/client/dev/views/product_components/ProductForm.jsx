@@ -9,6 +9,12 @@ var mui = require('material-ui');
     TextField = mui.TextField;
 var PurchasesActions = require('../../actions/PurchasesActions.js');
 
+var Methods = require('../customhelpers/Methods.js');
+
+var $ = require('jquery');
+var _ = require('underscore');
+var snackbar = require('../../../lib/snackbar.js');
+
 
 var Properties = React.createClass({
     getInitialState: function() {
@@ -25,7 +31,8 @@ var Properties = React.createClass({
         product.count = 1;
         return {
             cpp_properties: cpp_properties,
-            product: product
+            product: product,
+            chacked: false
         }
     },
     childContextTypes: {
@@ -35,10 +42,20 @@ var Properties = React.createClass({
         return {
             muiTheme: ThemeManager.getCurrentTheme()
         };
-    },
+    },    
     setProperties: function(val, e){
         //изменяем state когда выбирается какое либо свойство
         this.state.cpp_properties[e[0].index].value = e[0].value;
+
+        // РЕАЛИЗАЦИЯ ПРОВЕРКИ СУЩЕСТВОВАНИЯ КОМБИНАЦИИ СВОЙСТВ
+        // устанавливаем true в chacked если проверка успешна иначе false, undefined если не все параметры были выбраны
+        // подобное описание метода chackProperties смотри внутри файла customhelpers/Methods.js
+        // console.log('this.props.cpp_catalog: ', this.props.cpp_catalog);
+        // console.log('this.state.cpp_properties: ', this.state.cpp_properties);
+        this.setState({
+            chacked: Methods.chackProperties(this.state.cpp_properties, this.props.product.property)
+        }); 
+        
     },
     setCount: function(e){
         var new_product = this.state.product;
@@ -65,10 +82,15 @@ var Properties = React.createClass({
             cpp_properties: this.state.cpp_properties,
             product: new_product
         });
-    },
+    },    
     addToCart: function(e){
-        //добавляем товар в корзину
-        PurchasesActions.addToCart(this.state);
+        // если товар с такими свойствами существует добавляем товар в корзину
+        if (this.state.chacked) {
+            PurchasesActions.addToCart(this.state);
+        } else {
+            $.snackbar({timeout: 5000, content: 'Нет товара с такими характеристиками, пожалуйста, попробуйте другие варианты' });
+        }
+        
     },
     render: function(){
         // получаем свойства товара из общих возможных свойств каталога

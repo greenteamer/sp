@@ -12,24 +12,27 @@
     </head>
 
     <body class="client_body">
-        {% block header %}
-            <!-- Dropdown Structure Menu -->
-            {% include 'client/top_menu.html' %}
-        {% endblock %}
+
+        <div class="scroll-class">
+            {% block header %}
+                <!-- Dropdown Structure Menu -->
+                {% include 'client/top_menu.html' %}
+            {% endblock %}
+        
+            {% block header_info %}
+                <!-- Dropdown Structure Menu -->
+                {% include 'client/header_info.html' %}
+            {% endblock %}
+
+            {% block main_menu %}
+                <!-- Dropdown Structure Menu -->
+                {% include 'client/main_menu.html' %}
+            {% endblock %}
+        </div>
 
         {% block slider %}
             {% client_slider request %}
-        {% endblock %}
-
-        {% block header_info %}
-            <!-- Dropdown Structure Menu -->
-            {% include 'client/header_info.html' %}
-        {% endblock %}
-
-        {% block main_menu %}
-            <!-- Dropdown Structure Menu -->
-            {% include 'client/main_menu.html' %}
-        {% endblock %}
+        {% endblock %}        
 
         {% block wrapper %}
         {% endblock %}
@@ -39,19 +42,7 @@
         {% endblock %}
 
         <!--Import jQuery before materialize.js-->
-        {% include 'client/javascripts.html' %}
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $.material.init();
-                $(window).scroll(function() {
-                    var top = $(document).scrollTop();
-                    if (top < 410)
-                        $("#main-menu").removeClass("navbar-fixed-top");
-                    else
-                        $("#main-menu").addClass("navbar-fixed-top");
-                });
-        	});
-        </script>
+        {% include 'client/javascripts.html' %}        
         {% block client_js %}
         {% endblock %}
     </body>

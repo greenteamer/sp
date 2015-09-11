@@ -55,6 +55,13 @@ var PurchasesActions = {
             cpp_catalog: data.cpp_catalog
         });
     },
+    showPhoto: function (photo) {
+        console.log('showPhoto action ', photo);
+        PurchasesDispatcher.dispatch({
+            actionType: "show-photo",
+            photo: photo            
+        }); 
+    },
     getProduct: function(product_id){
         PurchasesDispatcher.dispatch({
             actionType: "get-product",
@@ -91,6 +98,13 @@ var PurchasesActions = {
         PurchasesDispatcher.dispatch({
             actionType: 'view-by',
             parametr: parametr  
+        });
+    },
+    setViewPage: function (view_page) {
+        console.log('Actions setViewPage view_page: ', view_page);
+        PurchasesDispatcher.dispatch({
+            actionType: 'set-view-page',
+            view_page: view_page
         });
     }
 };

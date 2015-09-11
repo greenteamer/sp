@@ -346,8 +346,11 @@ class ProductImages(models.Model):
         'image', '500x320', verbose_name=u'Обрезка для продукта')
     cropping_250x375 = ImageRatioField(
         'image', '250x375', verbose_name=u'Обрезка для продукта')
+    cropping_890x770 = ImageRatioField(
+        'image', '890x770', verbose_name=u'Обрезка для катрочки товара')
 
     cropping_url = models.CharField(max_length=200, blank=True)
+    cropping_url_cart = models.CharField(max_length=200, blank=True)    
 
     p_image_product = models.ForeignKey(Product, verbose_name=u'Выбрать товар', related_name='images')
     p_image_title = models.CharField(

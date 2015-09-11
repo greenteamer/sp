@@ -13,7 +13,8 @@ var PurchasesStore = merge(MicroEvent.prototype, {
     view_state: {
         view_type: '',
         view_width: 12,
-        view_by: ''
+        view_by: '',
+        view_page: ''
     },
     changeViewState: function(){
         this.trigger('changeViewState');
@@ -32,10 +33,16 @@ var PurchasesStore = merge(MicroEvent.prototype, {
     cartitems: [],
     search_result_collection: [],
     query_text: '',
+
     product_fast_view: {},
     purchase_id_fast_view: 0,
     product: {},
     benefits: [],
+    modal_photo: {},
+    photoView: function(){
+        console.log('start trigger photoView');
+        this.trigger('photoView');
+    },
 
     // for purchase page
     purchase: [],
@@ -170,7 +177,7 @@ PurchasesDispatcher.register(function (payload) {
                 })
             .error(
                 function (data) {
-                    var message = "что-то пошло не так, попробуйте перезагрузить страницу";
+                    var message = "Товара с такими свойствами нет, попробуйте другие варианты";
                     $.snackbar({timeout: 5000, content: message });
                     console.log("Ошибка post запроса");
                 });
@@ -218,6 +225,12 @@ PurchasesDispatcher.register(function (payload) {
             PurchasesStore.product_fast_view.cpp_catalog = payload.cpp_catalog;
             PurchasesStore.purchase_id_fast_view = payload.purchase_id;
             PurchasesStore.modalView();
+            break;
+
+        case "show-photo":
+            PurchasesStore.modal_photo = payload.photo;
+            PurchasesStore.photoView();
+            console.log("PurchasesStore.modal_photo: ", PurchasesStore.modal_photo);
             break;
 
         case "get-product":
@@ -290,10 +303,15 @@ PurchasesDispatcher.register(function (payload) {
             break;   
 
         case 'view-by':
-            PurchasesStore.view_state.view_by = payload.parametr
+            PurchasesStore.view_state.view_by = payload.parametr;
             PurchasesStore.changeViewState();
             console.log('Dispatcher view-by PurchasesStore.filter.view_by : ', PurchasesStore.view_state.view_by);
-            break;   
+            break;  
+
+        case 'set-view-page':
+            PurchasesStore.view_state.view_page = payload.view_page
+            PurchasesStore.changeViewState();
+            break; 
 
         default:
             console.log('default dispatcher');

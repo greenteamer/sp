@@ -1,7 +1,7 @@
 {% load client_category_tags %}
 
 {#<div class="navbar navbar-default">#}
-    <div class="container">
+    <div class="container main-menu-container">
         <div class="row">
 
             <div id="main-menu" class="navbar navbar-default">
@@ -19,10 +19,7 @@
                             <div class="navbar-collapse collapse navbar-responsive-collapse">
 
                                 {# добавляем категоризацию#}
-                                {% client_categories_tree request %}
-
-                                <ul id="cartmenu" class="nav navbar-nav navbar-right">
-                                </ul>
+                                {% client_categories_tree request %}                                
                             </div>
 
                         </div>

@@ -12,56 +12,6 @@ var ThemeManager = require('material-ui/lib/styles/theme-manager')();
 var RefreshIndicator = mui.RefreshIndicator;
 
 
-function emptyObject(obj) {
-    //вспомогательная функция проверяет пуст ли объект
-    for (var i in obj) {
-        return false;
-    }
-    return true;
-}
-
-
-var PurchaseDetail = React.createClass({
-    render: function () {
-        var description = this.props.purchase.description.slice(0,100);
-        description = description.replace(/(<([^>]+)>)/ig,"");
-        var link = "/client/purchases/" + this.props.purchase.id + "/";
-        return (
-            <div className="purchase-item">
-                <div className="row">
-                    <div className="col-xs-12 col-md-4 purchase-info">
-                        <h2>{this.props.purchase.name}</h2>
-                        <p>{description}</p>
-                        <a className="btn btn-primary purchase_link" href={link}>подробнее о закупке</a>
-                    </div>
-                    <div className="col-xs-12 col-md-8 purchase-info">
-                        <Catalogs catalogs={this.props.purchase.catalogs} purchase_id={this.props.purchase.id} />
-                    </div>
-                    <div className="col-xs-12">
-                        <div className="row fast-open out">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        )
-    }
-});
-
-    // render: function () {
-    //     if (emptyObject(this.state.purchase)) {
-    //         return (
-    //             <div>
-    //                 <h4>Эта закупка временно не доступна, попробуйте перезагрузить страницу пожзже</h4>
-    //             </div>                
-    //         )
-            
-    //     } else {
-    //         return (
-    //             <PurchaseDetail purchase={this.state.purchase} />
-    //             <Purchases collection={collection} title={title}/>
-    //         )
-    //     }
-    // }
 var PurchaseView = React.createClass({
     childContextTypes: {
         muiTheme: React.PropTypes.object
@@ -82,7 +32,7 @@ var PurchaseView = React.createClass({
         var id = location.pathname.slice(-2,-1);        
         PurchasesActions.getCurrentPurchaseDetail(id);
         // изменяем ширину отображения на 9
-        PurchasesActions.setViewStateWidth(9);
+        PurchasesActions.setViewPage('purchase');
         PurchasesStore.bind('chengePurchaseDetail', this.chengePurchase);
     },
     componentWillUnmount: function  () {        
