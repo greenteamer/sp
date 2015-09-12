@@ -37,7 +37,7 @@ body.mobile .dropdown {
     z-index: 10000;
 }
 .btn {
-    padding: 5px 10px;
+    /*padding: 5px 10px;*/
 }
 .btn-primary{
     background-color: #ffc229!important;
@@ -94,11 +94,11 @@ a {
     float: left;
 }
 .price {
-    font-size: 25px;
+    font-size: 38px;
     font-family: 'Raleway', sans-serif;
     font-weight: 400;
     color: #ffc229;
-    line-height: 25px;
+    line-height: 49px;
     margin-bottom: 5px;
 }
 
@@ -361,7 +361,7 @@ input:-ms-input-placeholder {color: #000; padding: 5px; border: 1px solid #82828
 .navbar .navbar-nav>li>ul>li>a.dropdown-toggle-second {
     position: absolute;
     top:0;  
-    right: 0;
+    right: -12px;
 }
 .navbar .navbar-nav .dropdown-menu li {
     overflow: inherit;
@@ -502,7 +502,7 @@ a.more-button:before {
     width: 100%;
 }
 .count_block  {
-    /*float: right;*/
+    margin-top:-10px;
 }
 .count_input {
     float: left;

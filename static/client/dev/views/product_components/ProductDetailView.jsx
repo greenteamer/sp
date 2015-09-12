@@ -64,10 +64,7 @@ var ProductFastView = React.createClass({
                                 <div className="col-xs-12 col-sm-8 col-md-9">
                                     <h2>{this.props.product.product_name}</h2>
                                     <p>Артикул: <b>{this.props.product.sku}</b></p>
-                                </div>
-                                <div className="col-xs-12 col-sm-4 col-md-3">
-                                    <p className="price">{this.props.product.price} руб.</p>
-                                </div>
+                                </div>                                
                             </div>
                         </div>                        
                         <div className="col-xs-12 col-sm-12 col-md-12">
