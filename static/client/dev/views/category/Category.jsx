@@ -23,8 +23,9 @@ var Category = React.createClass({
 
         //получаем текущий урл
         var url = $(location).attr('pathname');
-        var parse_url = url.split('/')[1];
+        var parse_url = url.split('/')[1];        
         var current_category = parse_url.slice(9);
+        console.log("category url :", url, parse_url, current_category);
 
         //обновляем store в соответствии с текущей категорией
 		PurchasesActions.getCategoryPurchases(current_category);
@@ -35,10 +36,13 @@ var Category = React.createClass({
         PurchasesStore.unbind( 'change', this.collectionChanged );
     },
     collectionChanged: function () {
-        var tmp_collection = [];
-        tmp_collection.push(PurchasesStore.collection);
-		this.setState({
-            collection: tmp_collection
+  //       var tmp_collection = [];
+  //       tmp_collection.push(PurchasesStore.collection);
+		// this.setState({
+  //           collection: tmp_collection
+  //       });        
+        this.setState({
+            collection: PurchasesStore.collection
         });
     },
     filterTrigger: function () {
@@ -70,7 +74,7 @@ var Category = React.createClass({
             <div>
                 <IF condition={this.state.filtered_collection.length == 0}>
                     <Purchases 
-                        collection={collection}
+                        collection={this.state.collection}
                         category_id={category_id}
                         title={title}
                         indicatorElementName='#category'/>

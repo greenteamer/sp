@@ -76,7 +76,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ('id', 'name', 'slug', 'category_purchase')
+        fields = ('id', 'name', 'slug', 'parent', 'category_purchase')
 
 
 class BenefitsSerializer(serializers.ModelSerializer):

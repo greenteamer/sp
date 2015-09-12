@@ -3,8 +3,11 @@ var PurchasesActions = require('../actions/PurchasesActions.js');
 var MicroEvent = require('microevent');
 var merge = require('merge');
 var $ = require('jquery');
+var _ = require('underscore');
 var Cookies = require('js-cookie');
 var snackbar = require('../../lib/snackbar.js');
+
+var Methods = require('../views/customhelpers/Methods.js');
 
 
 var PurchasesStore = merge(MicroEvent.prototype, {
@@ -188,15 +191,10 @@ PurchasesDispatcher.register(function (payload) {
                 url: '/api/v1/categories/',
                 dataType: 'json',
                 cache: false,
-                success: (function(data){
-                    //console.log(PurchasesStore.collection);
-                    //console.log(data);
-                    data.forEach(function(item){
-                        if (item.slug === payload.category){
-                            PurchasesStore.collection = item;
-                            PurchasesStore.collectionChange();
-                        }
-                    });
+                success: (function(data){                    
+                    // getPurchasesFromCategories - подробное описание в файле customhelpers/Methods.js
+                    PurchasesStore.collection = Methods.getPurchasesFromCategories(data, payload.category);
+                    PurchasesStore.collectionChange();    
                 }).bind(this),
                 error: (function (xhr, status, err) {
                         console.log('error fetchin collection');
