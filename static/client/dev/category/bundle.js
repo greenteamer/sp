@@ -147,8 +147,11 @@ var PurchasesActions = require('../actions/PurchasesActions.js');
 var MicroEvent = require('microevent');
 var merge = require('merge');
 var $ = require('jquery');
+var _ = require('underscore');
 var Cookies = require('js-cookie');
 var snackbar = require('../../lib/snackbar.js');
+
+var Methods = require('../views/customhelpers/Methods.js');
 
 
 var PurchasesStore = merge(MicroEvent.prototype, {
@@ -332,15 +335,10 @@ PurchasesDispatcher.register(function (payload) {
                 url: '/api/v1/categories/',
                 dataType: 'json',
                 cache: false,
-                success: (function(data){
-                    //console.log(PurchasesStore.collection);
-                    //console.log(data);
-                    data.forEach(function(item){
-                        if (item.slug === payload.category){
-                            PurchasesStore.collection = item;
-                            PurchasesStore.collectionChange();
-                        }
-                    });
+                success: (function(data){                    
+                    // getPurchasesFromCategories - подробное описание в файле customhelpers/Methods.js
+                    PurchasesStore.collection = Methods.getPurchasesFromCategories(data, payload.category);
+                    PurchasesStore.collectionChange();    
                 }).bind(this),
                 error: (function (xhr, status, err) {
                         console.log('error fetchin collection');
@@ -467,7 +465,7 @@ PurchasesDispatcher.register(function (payload) {
 
 module.exports = PurchasesStore;
 
-},{"../../lib/snackbar.js":24,"../actions/PurchasesActions.js":1,"../dispatcher/PurchasesDispatcher.js":3,"jquery":29,"js-cookie":30,"merge":169,"microevent":170}],5:[function(require,module,exports){
+},{"../../lib/snackbar.js":24,"../actions/PurchasesActions.js":1,"../dispatcher/PurchasesDispatcher.js":3,"../views/customhelpers/Methods.js":12,"jquery":29,"js-cookie":30,"merge":169,"microevent":170,"underscore":373}],5:[function(require,module,exports){
 var React = require('react');
 var PurchasesActions = require('../actions/PurchasesActions.js');
 var PurchasesStore = require('../stores/PurchasesStore.js');
@@ -1029,8 +1027,9 @@ var Category = React.createClass({displayName: "Category",
 
         //получаем текущий урл
         var url = $(location).attr('pathname');
-        var parse_url = url.split('/')[1];
+        var parse_url = url.split('/')[1];        
         var current_category = parse_url.slice(9);
+        console.log("category url :", url, parse_url, current_category);
 
         //обновляем store в соответствии с текущей категорией
 		PurchasesActions.getCategoryPurchases(current_category);
@@ -1041,10 +1040,13 @@ var Category = React.createClass({displayName: "Category",
         PurchasesStore.unbind( 'change', this.collectionChanged );
     },
     collectionChanged: function () {
-        var tmp_collection = [];
-        tmp_collection.push(PurchasesStore.collection);
-		this.setState({
-            collection: tmp_collection
+  //       var tmp_collection = [];
+  //       tmp_collection.push(PurchasesStore.collection);
+		// this.setState({
+  //           collection: tmp_collection
+  //       });        
+        this.setState({
+            collection: PurchasesStore.collection
         });
     },
     filterTrigger: function () {
@@ -1076,7 +1078,7 @@ var Category = React.createClass({displayName: "Category",
             React.createElement("div", null, 
                 React.createElement(IF, {condition: this.state.filtered_collection.length == 0}, 
                     React.createElement(Purchases, {
-                        collection: collection, 
+                        collection: this.state.collection, 
                         category_id: category_id, 
                         title: title, 
                         indicatorElementName: "#category"})
@@ -1144,21 +1146,74 @@ var snackbar = require('../../../lib/snackbar.js');
 var Methods = {
 	convertCategoriesToFlatProducts: function (collection) {
 		console.log('Methods convertCategoriesToFlatProducts collection:', collection);
-		tmp_collection = [];
-        collection.forEach(function (category){
-            var collection = category.category_purchase;            
-            category.category_purchase.forEach(function (purchase) {
-                purchase.catalogs.forEach(function (catalog) {
-                    catalog.product_catalog.forEach(function (product) {
-                        product.cpp_catalog = catalog.cpp_catalog;
-                        tmp_collection.push(product);
-                    });
+		tmp_collection = [];                             
+        collection.forEach(function (purchase) {
+            purchase.catalogs.forEach(function (catalog) {
+                catalog.product_catalog.forEach(function (product) {
+                    product.cpp_catalog = catalog.cpp_catalog;
+                    tmp_collection.push(product);
                 });
             });
-        });  
+        });        
         console.log('Methods convertCategoriesToFlatProducts collection result:', tmp_collection);
         return tmp_collection;	
 	},
+    getPurchasesFromCategories: function (data, category_slug) {
+        // ПОДГОТОВКА КОЛЛЕКЦИИ ЗАКУПОК КАТЕГОРИИ
+        // data - строковая переменная "slug" категории
+
+        var category = _.find(data, function (category) {
+            // находим категорию на которую перешел пользователь
+            return category.slug == category_slug;
+        });                    
+
+        var all_categores = _.filter(data, function (cat) {
+            // Фильтруем все дочерние категории основной
+            return cat.parent == category.id;
+        });
+
+        var all_categories_deep = _.map(all_categores, function (first_level_cat) {
+            // проходимся по всем дочерник категориям
+            // каждую итерацию фильтруем все категории по parent признаку
+            // получаем всех предков изначальной категории
+            return _.filter(data, function (cat) {
+                return cat.parent == first_level_cat.id;
+            });                          
+        });
+
+        // приводим массив к элементарному виду что бы избежать [ [a], [[b]]]
+        all_categories_deep = _.flatten(all_categories_deep, true);
+
+        // добавляем в массив родительскую категорию
+        all_categores.unshift(category);
+
+        // объединяем массивы (union образует массив уникальных элементов)
+        all_categores = _.union(all_categores, all_categories_deep);
+
+        // создаем массив из всех значений поля "category_purchase"
+        var all_purchases_arr = _.pluck(all_categores, "category_purchase");                    
+        // приводи к элементарному виду
+        var all_purchases = _.flatten(all_purchases_arr, true);
+
+        return all_purchases;
+    },
+    // convertCategoriesToFlatProducts: function (collection) {
+    //     console.log('Methods convertCategoriesToFlatProducts collection:', collection);
+    //     tmp_collection = [];
+    //     collection.forEach(function (category){
+    //         var collection = category.category_purchase;            
+    //         category.category_purchase.forEach(function (purchase) {
+    //             purchase.catalogs.forEach(function (catalog) {
+    //                 catalog.product_catalog.forEach(function (product) {
+    //                     product.cpp_catalog = catalog.cpp_catalog;
+    //                     tmp_collection.push(product);
+    //                 });
+    //             });
+    //         });
+    //     });  
+    //     console.log('Methods convertCategoriesToFlatProducts collection result:', tmp_collection);
+    //     return tmp_collection;  
+    // },
 	convertPurchasesToFlatProducts: function (collection) {
 		console.log('Methods convertPurchasesToFlatProducts collection:', collection);
 		tmp_collection = [];
@@ -1268,12 +1323,13 @@ var Filters = React.createClass({displayName: "Filters",
     	PurchasesStore.bind( 'change', this.collectionChanged );
     },
     collectionChanged: function () {
-        var tmp_collection = [];
-        tmp_collection.push(PurchasesStore.collection);    
+        // var tmp_collection = [];
+        // tmp_collection.push(PurchasesStore.collection);    
 
         // вызываем вспомогательный метод для преобразования массива категорий в
         // простой массив продуктов (используется файл customhelpers/Methods.js)
-        tmp_filter_collection = Methods.convertCategoriesToFlatProducts(tmp_collection);
+        // tmp_filter_collection = Methods.convertCategoriesToFlatProducts(tmp_collection);
+        tmp_filter_collection = Methods.convertCategoriesToFlatProducts(PurchasesStore.collection);
 
 		this.setState({
             collection: tmp_collection,

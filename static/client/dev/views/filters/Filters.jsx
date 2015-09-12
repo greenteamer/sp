@@ -33,12 +33,13 @@ var Filters = React.createClass({
     	PurchasesStore.bind( 'change', this.collectionChanged );
     },
     collectionChanged: function () {
-        var tmp_collection = [];
-        tmp_collection.push(PurchasesStore.collection);    
+        // var tmp_collection = [];
+        // tmp_collection.push(PurchasesStore.collection);    
 
         // вызываем вспомогательный метод для преобразования массива категорий в
         // простой массив продуктов (используется файл customhelpers/Methods.js)
-        tmp_filter_collection = Methods.convertCategoriesToFlatProducts(tmp_collection);
+        // tmp_filter_collection = Methods.convertCategoriesToFlatProducts(tmp_collection);
+        tmp_filter_collection = Methods.convertCategoriesToFlatProducts(PurchasesStore.collection);
 
 		this.setState({
             collection: tmp_collection,
