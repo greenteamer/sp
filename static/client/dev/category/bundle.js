@@ -1024,7 +1024,7 @@ var Category = React.createClass({displayName: "Category",
     componentDidMount: function () {
         // устанавливаем view_state.view_page как category
         PurchasesActions.setViewPage('category');
-
+        PurchasesActions.viewBy('products');
         //получаем текущий урл
         var url = $(location).attr('pathname');
         var parse_url = url.split('/')[1];        

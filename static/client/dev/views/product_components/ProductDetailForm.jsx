@@ -133,18 +133,19 @@ var Properties = React.createClass({
             <div className="row">
                 <div className="col-xs-12 col-sm-6">
                     {selects}
-                </div>
-                <div className="col-xs-12 col-sm-6">
-                    <div className="count_block">
+                    <div className="count_block">                    
                         <button type="button" className="btn btn-default pull-left minus" onClick={this.countMinus}>-</button>
                         <input
                             type="text"
                             name="count"
                             className="count_input"
                             onChange={this.setCount}
-                            value={this.state.product.count}/>
+                            value={this.state.product.count}/>                             
                         <button type="button" className="btn btn-default pull-left plus" onClick={this.countPlus}>+</button>
                     </div>
+                </div>
+                <div className="col-xs-12 col-sm-6">                    
+                    <p className="price">{this.state.product.price} руб.</p>             
                     <button type="button" className="btn btn-primary full-width" onClick={this.addToCart}>В корзину</button>
                 </div>
             </div>

@@ -1536,9 +1536,7 @@ var Properties = React.createClass({displayName: "Properties",
         return (
             React.createElement("div", {className: "row"}, 
                 React.createElement("div", {className: "col-xs-12 col-sm-6"}, 
-                    selects
-                ), 
-                React.createElement("div", {className: "col-xs-12 col-sm-6"}, 
+                    selects, 
                     React.createElement("div", {className: "count_block"}, 
                         React.createElement("button", {type: "button", className: "btn btn-default pull-left minus", onClick: this.countMinus}, "-"), 
                         React.createElement("input", {
@@ -1548,7 +1546,10 @@ var Properties = React.createClass({displayName: "Properties",
                             onChange: this.setCount, 
                             value: this.state.product.count}), 
                         React.createElement("button", {type: "button", className: "btn btn-default pull-left plus", onClick: this.countPlus}, "+")
-                    ), 
+                    )
+                ), 
+                React.createElement("div", {className: "col-xs-12 col-sm-6"}, 
+                    React.createElement("p", {className: "price"}, this.state.product.price, " руб."), 
                     React.createElement("button", {type: "button", className: "btn btn-primary full-width", onClick: this.addToCart}, "В корзину")
                 )
             )
@@ -1638,9 +1639,6 @@ var ProductFastView = React.createClass({displayName: "ProductFastView",
                                 React.createElement("div", {className: "col-xs-12 col-sm-8 col-md-9"}, 
                                     React.createElement("h2", null, this.props.product.product_name), 
                                     React.createElement("p", null, "Артикул: ", React.createElement("b", null, this.props.product.sku))
-                                ), 
-                                React.createElement("div", {className: "col-xs-12 col-sm-4 col-md-3"}, 
-                                    React.createElement("p", {className: "price"}, this.props.product.price, " руб.")
                                 )
                             )
                         ), 
