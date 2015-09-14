@@ -6,6 +6,9 @@ var PurchasesActions = require('../../actions/PurchasesActions.js');
 var Catalogs = require('../Catalogs.jsx');
 var Purchases = require('../Purchases.jsx');
 
+// приложение FAQ переехало из proslavlenie.ru
+var FAQ = require('../../faq/views/App.jsx');
+
 //material-ui
 var mui = require('material-ui');
 var ThemeManager = require('material-ui/lib/styles/theme-manager')();
@@ -25,7 +28,7 @@ var PurchaseView = React.createClass({
         return {
             view_state: PurchasesStore.view_state,
             purchase: []
-        }  
+        };
     },
     componentWillMount: function  () {        
         // получаем текущий урл и достаем из него id закупки
@@ -46,16 +49,22 @@ var PurchaseView = React.createClass({
     render: function () {
         var left = $('.container').width()/2;
         if (this.state.purchase.length > 0) {
-            return (                
-                <Purchases collection={this.state.purchase} view_state={this.state.view_state}/>
-            )
+            return (
+                <div>                    
+                    <Purchases collection={this.state.purchase} view_state={this.state.view_state}/>
+                    <h2>Комментарии</h2>
+                    <FAQ 
+                        purchase={this.state.purchase[0]}
+                        product={null}/>
+                </div>
+            );
             
         } else {
             return (
                 <div>                    
                     <RefreshIndicator size={40} left={left} top={5} status="loading" />
                 </div>  
-            )
+            );
         }
     }
 });

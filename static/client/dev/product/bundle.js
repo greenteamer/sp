@@ -777,7 +777,7 @@ var CatalogTileView = React.createClass({displayName: "CatalogTileView",
                         React.createElement(ProductRelativeTitle, {product: product})
                     )
                 )
-            )
+            );
         });
         return (
             React.createElement("div", {className: "row"}, 
@@ -786,7 +786,7 @@ var CatalogTileView = React.createClass({displayName: "CatalogTileView",
                 ), 
                 items
             )
-        )
+        );
     }
 });
 
@@ -811,7 +811,7 @@ var PurchaseTileView = React.createClass({displayName: "PurchaseTileView",
                 React.createElement(CatalogTileView, {
                     catalog: catalog, 
                     view_state: tmp_view_state})
-            )
+            );
         });
 
         var link = "/purchases/" + this.props.purchase.id + "/";        
@@ -838,7 +838,7 @@ var PurchaseTileView = React.createClass({displayName: "PurchaseTileView",
                     )
                 )
             )
-        )        
+        );
     }
 });
 
@@ -872,7 +872,7 @@ var PurchaseListView = React.createClass({displayName: "PurchaseListView",
                     )
                 )
             )
-        )
+        );
 
     }
 });
@@ -882,7 +882,7 @@ var Purchases = React.createClass({displayName: "Purchases",
     getInitialState: function(){
         return {
             view_state: PurchasesStore.view_state
-        }
+        };
     },
     childContextTypes: {
         muiTheme: React.PropTypes.object
@@ -936,7 +936,7 @@ var Purchases = React.createClass({displayName: "Purchases",
                         React.createElement("div", {className: "separator"})
                     )
                 )
-            )
+            );
         });
 
         var flat_products = Methods.convertPurchasesToFlatProducts(this.props.collection);
@@ -945,7 +945,7 @@ var Purchases = React.createClass({displayName: "Purchases",
                 React.createElement("div", {className: "col-xs-12 col-sm-4 col-md-3 col-lg-3"}, 
                     React.createElement(ProductHoverTitle, {product: product})
                 )
-            )
+            );
         });
 
         console.log('Purchases state view_state: ', this.state.view_state);        
@@ -963,7 +963,7 @@ var Purchases = React.createClass({displayName: "Purchases",
                 ), 
                 React.createElement(ProductModal, null)
             )
-        )
+        );
 
     }
 });
@@ -1171,7 +1171,7 @@ var Methods = {
         var all_purchases = _.flatten(all_purchases_arr, true);
 
         return all_purchases;
-    },
+    },    
     // convertCategoriesToFlatProducts: function (collection) {
     //     console.log('Methods convertCategoriesToFlatProducts collection:', collection);
     //     tmp_collection = [];
@@ -1209,7 +1209,7 @@ var Methods = {
         var properties_filled = _.every(cpp_properties,function (property) {
             // проверяем все ли свойства заполнены
             // _.every - возвращает true если все итерации функции вернули true
-            return property.value != undefined;
+            return property.value !== undefined;
         });        
         if (properties_filled) {
             var values_str = _.pluck(cpp_properties, 'value').join(',');
@@ -1224,9 +1224,9 @@ var Methods = {
                 $.snackbar({timeout: 5000, content: 'Нет товара с такими характеристиками, пожалуйста, попробуйте другие варианты' });
                 return false;
             }
-        };
+        }
     },
-}
+};
 
 
 module.exports = Methods;
@@ -1754,6 +1754,9 @@ var snackbar = require('../../../lib/snackbar.js');
 
 
 var Properties = React.createClass({displayName: "Properties",
+    test: function () {
+        
+    },
     getInitialState: function() {
         var cpp_properties = [];
         this.props.cpp_catalog.forEach(function(cpp_property){
@@ -1770,7 +1773,7 @@ var Properties = React.createClass({displayName: "Properties",
             cpp_properties: cpp_properties,
             product: product,
             chacked: false
-        }
+        };
     },
     childContextTypes: {
         muiTheme: React.PropTypes.object
@@ -1862,7 +1865,7 @@ var Properties = React.createClass({displayName: "Properties",
                     options: options, 
                     onChange: boundChange}
                      )
-            )
+            );
         });
 
         return (
@@ -1880,7 +1883,7 @@ var Properties = React.createClass({displayName: "Properties",
                 ), 
                 React.createElement("button", {type: "button", className: "btn btn-primary full-width", onClick: this.addToCart}, "В корзину")
             )
-        )
+        );
     }
 });
 
@@ -1892,7 +1895,7 @@ var ProductForm = React.createClass({displayName: "ProductForm",
                 React.createElement("input", {type: "hidden", name: "product", value: this.props.product.id}), 
                 React.createElement(Properties, {cpp_catalog: this.props.cpp_catalog, product: this.props.product})
             )
-        )
+        );
     }
 });
 
@@ -1932,12 +1935,6 @@ var ProductHoverTitle = React.createClass({displayName: "ProductHoverTitle",
             React.createElement("div", {className: "product_view product_tile_view row"}, 
                 React.createElement("div", {className: "col-xs-12"}, 
                     React.createElement("div", {className: "image_block"}, 
-                        React.createElement("button", {type: "button", className: "btn btn-primary fast-modal left", onClick: this.showProduct}, 
-                            React.createElement("i", {className: "mdi-content-content-copy"})
-                        ), 
-                        React.createElement("a", {href: link, className: "btn btn-primary fast-modal right"}, 
-                            React.createElement("i", {className: "mdi-action-search"})
-                        ), 
                         React.createElement("a", {href: link, className: ""}, 
                             React.createElement("img", {src: this.props.product.images[0].cropping_url, alt: ""})
                         ), 
@@ -1960,7 +1957,7 @@ var ProductHoverTitle = React.createClass({displayName: "ProductHoverTitle",
                     )
                 )
             )
-        )
+        );
 
     }
 });
@@ -1988,12 +1985,13 @@ function emptyObject(obj) {
     return true;
 }
 
+
 var ProductModal = React.createClass({displayName: "ProductModal",
     getInitialState: function(){
         return {
             product_fast_view: {},
             purchase_id_fast_view: 0
-        }
+        };
     },
     childContextTypes: {
         muiTheme: React.PropTypes.object
@@ -2054,8 +2052,8 @@ var ProductModal = React.createClass({displayName: "ProductModal",
         return (
             React.createElement("div", null, 
                 productModal
-            )
-        )
+            )            
+        );
     }
 });
 
@@ -2197,8 +2195,8 @@ var IF = require('../customhelpers/IF.jsx');
 var PurchaseDetailInfo = React.createClass({displayName: "PurchaseDetailInfo",
 	render: function  () {               
 		var description = this.props.purchase.description;
-        function createDescription() { 
-            return {__html: description }; 
+        function createDescription() {
+            return {__html: description };
         };
         var status = this.props.purchase.purchase_status.map(function (status) {
         	if (status.active) {
@@ -2206,7 +2204,7 @@ var PurchaseDetailInfo = React.createClass({displayName: "PurchaseDetailInfo",
         			React.createElement("div", null, 
         				React.createElement("h5", null, "Статус закупки: ", status.status.status_name)
         			)
-    			)
+    			);
         	};
         });
         var link = "/purchases/" + this.props.purchase.id + "/";
@@ -2226,7 +2224,7 @@ var PurchaseDetailInfo = React.createClass({displayName: "PurchaseDetailInfo",
                     )
                 )
             )
-        )
+        );
         	
 	}
 });

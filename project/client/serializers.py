@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from rest_framework import serializers, viewsets
-from project.core.models import Purchase, Product, Catalog, ProductImages, Promo, CatalogProductProperties, PurchaseStatusLinks, PurchaseStatus, Category
+from project.core.models import Purchase, Product, Catalog, ProductImages, Promo, CatalogProductProperties, PurchaseStatusLinks, PurchaseStatus, Category, PurchaseQuestion, PurchaseAnswer
 from project.accounts.models import OrganizerProfile
 from project.documentation.models import Page
+from django.contrib.auth.models import User
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -83,3 +84,22 @@ class BenefitsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Page
         fields = ('id', 'name', 'description')
+
+
+class AnswersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PurchaseAnswer
+        fields = ('id', 'user', 'text', 'question' )
+
+
+class QuestionsSerializer(serializers.ModelSerializer):
+    answers = AnswersSerializer(many=True, read_only=True)
+    class Meta:
+        model = PurchaseQuestion
+        fields = ('id', 'user', 'text', 'purchase', 'product', 'answers' )
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username')

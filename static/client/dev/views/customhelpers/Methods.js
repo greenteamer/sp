@@ -63,7 +63,7 @@ var Methods = {
         var all_purchases = _.flatten(all_purchases_arr, true);
 
         return all_purchases;
-    },
+    },    
     // convertCategoriesToFlatProducts: function (collection) {
     //     console.log('Methods convertCategoriesToFlatProducts collection:', collection);
     //     tmp_collection = [];
@@ -101,7 +101,7 @@ var Methods = {
         var properties_filled = _.every(cpp_properties,function (property) {
             // проверяем все ли свойства заполнены
             // _.every - возвращает true если все итерации функции вернули true
-            return property.value != undefined;
+            return property.value !== undefined;
         });        
         if (properties_filled) {
             var values_str = _.pluck(cpp_properties, 'value').join(',');
@@ -116,9 +116,9 @@ var Methods = {
                 $.snackbar({timeout: 5000, content: 'Нет товара с такими характеристиками, пожалуйста, попробуйте другие варианты' });
                 return false;
             }
-        };
+        }
     },
-}
+};
 
 
 module.exports = Methods;

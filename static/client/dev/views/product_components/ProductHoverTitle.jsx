@@ -29,14 +29,8 @@ var ProductHoverTitle = React.createClass({
         return (
             <div className="product_view product_tile_view row">
                 <div className="col-xs-12">
-                    <div className="image_block">
-                        <button type="button" className="btn btn-primary fast-modal left" onClick={this.showProduct}>
-                            <i className="mdi-content-content-copy"></i>
-                        </button>
-                        <a href={link} className="btn btn-primary fast-modal right">
-                            <i className="mdi-action-search"></i>
-                        </a>
-                        <a href={link} className="">
+                    <div className="image_block">                        
+                        <a href={link} className="">                            
                             <img src={this.props.product.images[0].cropping_url} alt="" />
                         </a>
                         <div className="gradient"></div>
@@ -58,7 +52,7 @@ var ProductHoverTitle = React.createClass({
                     </button>
                 </div>
             </div>
-        )
+        );
 
     }
 });

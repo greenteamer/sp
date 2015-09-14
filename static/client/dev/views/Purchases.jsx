@@ -48,7 +48,7 @@ var CatalogTileView = React.createClass({
                         <ProductRelativeTitle product={product}/>
                     </IF>
                 </div>
-            )
+            );
         });
         return (
             <div className="row">
@@ -57,7 +57,7 @@ var CatalogTileView = React.createClass({
                 </div>
                 {items}
             </div>
-        )
+        );
     }
 });
 
@@ -82,7 +82,7 @@ var PurchaseTileView = React.createClass({
                 <CatalogTileView 
                     catalog={catalog}
                     view_state={tmp_view_state}/>
-            )
+            );
         });
 
         var link = "/purchases/" + this.props.purchase.id + "/";        
@@ -109,7 +109,7 @@ var PurchaseTileView = React.createClass({
                     </div>
                 </div>                
             </div>
-        )        
+        );
     }
 });
 
@@ -143,7 +143,7 @@ var PurchaseListView = React.createClass({
                     </div>
                 </div>
             </div>
-        )
+        );
 
     }
 });
@@ -153,7 +153,7 @@ var Purchases = React.createClass({
     getInitialState: function(){
         return {
             view_state: PurchasesStore.view_state
-        }
+        };
     },
     childContextTypes: {
         muiTheme: React.PropTypes.object
@@ -207,7 +207,7 @@ var Purchases = React.createClass({
                         <div className='separator'></div>
                     </IF>                          
                 </div>
-            )
+            );
         });
 
         var flat_products = Methods.convertPurchasesToFlatProducts(this.props.collection);
@@ -216,7 +216,7 @@ var Purchases = React.createClass({
                 <div className="col-xs-12 col-sm-4 col-md-3 col-lg-3">
                     <ProductHoverTitle product={product}/>
                 </div>
-            )
+            );
         });
 
         console.log('Purchases state view_state: ', this.state.view_state);        
@@ -234,7 +234,7 @@ var Purchases = React.createClass({
                 </IF>
                 <ProductModal />
             </div>
-        )
+        );
 
     }
 });
