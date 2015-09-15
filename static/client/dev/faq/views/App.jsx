@@ -10,20 +10,16 @@ var FaqStore = require('../stores/FaqStore.js');
 var App = React.createClass({
 	getInitialState: function () {
         return {
-            collection: [],
-          	user: {}
+            collection: []
         };
     },
     
     componentDidMount: function () {       
-        FaqActions.getFaqTree();
-        FaqActions.getCurrentUser();
-        FaqStore.bind( 'change', this.collectionChanged );
-        FaqStore.bind( 'change', this.userChanged );          
+        FaqActions.getFaqTree();        
+        FaqStore.bind( 'change', this.collectionChanged );            
     },
     componentWillUnmount: function () {
-        FaqStore.unbind( 'change', this.collectionChanged );
-        FaqStore.unbind( 'change', this.userChanged );
+        FaqStore.unbind( 'change', this.collectionChanged );        
     },
     collectionChanged: function () {
         var purchase_id = this.props.purchase.id;
@@ -33,19 +29,15 @@ var App = React.createClass({
         this.setState({
             collection: tmp_collection
         });          
-    },
-    userChanged: function () {
-        this.setState({
-            user: FaqStore.user
-        });                 
-    },
+    },    
 	render: function () {		
 		return (
 			<QuestionList
                 collection={this.state.collection}
-                user={this.state.user}
+                user={this.props.user}
                 purchase={this.props.purchase}
-                product={this.props.product} />
+                product={this.props.product}
+                is_owner={this.props.is_owner} />
 		);
 	}
 });

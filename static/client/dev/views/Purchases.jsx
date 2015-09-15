@@ -37,7 +37,6 @@ var CatalogTileView = React.createClass({
         var tmp_view_state = this.props.view_state;
         
         var items = this.props.catalog.product_catalog.map(function(product){
-            console.log(tmp_cpp);
             product.cpp_catalog = tmp_cpp;
             return (
                 <div className={products_class}>
@@ -218,8 +217,6 @@ var Purchases = React.createClass({
                 </div>
             );
         });
-
-        console.log('Purchases state view_state: ', this.state.view_state);        
         return (
             <div className="purchases-list">
                 <ButtonsView />

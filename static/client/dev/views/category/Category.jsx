@@ -7,7 +7,7 @@ var ProductRelativeTitle = require('../product_components/ProductRelativeTitle.j
 var ProductModal = require('../product_components/ProductModal.jsx');
 
 var IF = require('../customhelpers/IF.jsx');
-
+var Methods = require('../customhelpers/Methods.js');
 
 var Category = React.createClass({
 	getInitialState: function () {
@@ -18,14 +18,12 @@ var Category = React.createClass({
         }
     },
     componentDidMount: function () {
+        // получаем slug категории по url      
+        var current_category = Methods.getCategorySlug();
+
         // устанавливаем view_state.view_page как category
         PurchasesActions.setViewPage('category');
-        PurchasesActions.viewBy('products');
-        //получаем текущий урл
-        var url = $(location).attr('pathname');
-        var parse_url = url.split('/')[1];        
-        var current_category = parse_url.slice(9);
-        console.log("category url :", url, parse_url, current_category);
+        PurchasesActions.viewBy('products');            
 
         //обновляем store в соответствии с текущей категорией
 		PurchasesActions.getCategoryPurchases(current_category);
@@ -34,13 +32,16 @@ var Category = React.createClass({
     },
     componentWillUnmount: function () {
         PurchasesStore.unbind( 'change', this.collectionChanged );
+        PurchasesStore.unbind( 'filterTrigger', this.filterTrigger );
     },
     collectionChanged: function () {
   //       var tmp_collection = [];
   //       tmp_collection.push(PurchasesStore.collection);
 		// this.setState({
   //           collection: tmp_collection
-  //       });        
+  //       });    
+        var current_category = Methods.getCategorySlug();
+        PurchasesActions.filterByCategory(current_category);    
         this.setState({
             collection: PurchasesStore.collection
         });

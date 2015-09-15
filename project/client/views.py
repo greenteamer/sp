@@ -48,7 +48,7 @@ def clientAddToCartView(request):
 
 @check_profile
 def indexView(request, template_name="client/pages/index.html"):
-    big_content_purchase = Purchase.objects.get(id=2)  # TODO: сделать вывод нормальной закупки
+    big_content_purchase = Purchase.objects.get(id=1)  # TODO: сделать вывод нормальной закупки
     main_content_purchase = big_content_purchase  # TODO: сделать вывод нормальной закупки
     # создание формы свойств товара
     main_content_purchase.catalogs = main_content_purchase.get_catalogs()
@@ -254,13 +254,28 @@ def pushQuestion(request):
     return HttpResponse(question_dump, content_type="application/json")
 
 
+def getOrganizers(request):
+    organizers = OrganizerProfile.objects.all()
+    organizers_for_dump = []
+    for organizer in organizers:
+        tmp_user = organizer.user
+        organizers_for_dump.append({
+            "id": organizer.id,
+            "user": organizer.user.id,
+            "username": organizer.user.username
+        })
+
+    dump = json.dumps(organizers_for_dump)
+    return HttpResponse(dump, content_type="application/json")
+
+
 class UsersViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
     @list_route()
     def current_user(self, request, **kwargs):
-        """тестовый метод вызывается через /api/v1/categories/first_category/ ...
+        """тестовый метод вызывается через /api/v1/users/current_user/ ...
         тез каких либо дополнительных записей в urls"""
         self.queryset = User.objects.filter(id=request.user.id)
         serializer = UserSerializer(instance=self.queryset, many=True)

@@ -27,7 +27,7 @@ TEMPLATE_DEBUG = DEBUG
 
 DEFAULT_CHARSET = 'utf-8'
 
-AUTH_PROFILE_MODULE = 'accounts.MemberProfile'
+# AUTH_PROFILE_MODULE = 'accounts.MemberProfile'
 ADMIN_EMAIL = 'greenteamer@bk.ru'
 ADMINS = (
 )
@@ -209,10 +209,10 @@ ADAPTOR_INPLACEEDIT = {
         AdaptorCKEDITORField',
 }
 INSTALLED_APPS = (
+    'django.contrib.sites',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.flatpages',

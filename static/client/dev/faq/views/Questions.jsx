@@ -46,6 +46,9 @@ var Question = React.createClass({
 				<div className="question-faq">					
 					<h2 ref="title_question">{this.props.question.title} <span className="small question-date">{this.props.question.date}</span></h2>
 					<IF condition={true}>
+						<div ref="text_question" dangerouslySetInnerHTML={createDescription()} />
+					</IF>
+					<IF condition={false}>
 						<div>
 							{checker}							
 							<div ref="text_question" dangerouslySetInnerHTML={createDescription()} />								
@@ -65,9 +68,10 @@ var Question = React.createClass({
 var QuestionList = React.createClass({
 	render: function () {
 		var user = this.props.user;
+		var is_owner = this.props.is_owner;
 		items = this.props.collection.map(function (item){
 			return (
-				<Question question={item} user={user}/>
+				<Question question={item} user={user} is_owner={is_owner}/>
 			);
 		});
 		return (			

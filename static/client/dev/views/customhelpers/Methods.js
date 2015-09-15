@@ -12,7 +12,6 @@ var snackbar = require('../../../lib/snackbar.js');
 
 var Methods = {
 	convertCategoriesToFlatProducts: function (collection) {
-		console.log('Methods convertCategoriesToFlatProducts collection:', collection);
 		tmp_collection = [];                             
         collection.forEach(function (purchase) {
             purchase.catalogs.forEach(function (catalog) {
@@ -22,80 +21,103 @@ var Methods = {
                 });
             });
         });        
-        console.log('Methods convertCategoriesToFlatProducts collection result:', tmp_collection);
         return tmp_collection;	
 	},
+    getAllNestedCategories: function (data, category_slug) {
+        // ПОДГОТОВКА КОЛЛЕКЦИИ ВСЕХ ВЛОЖЕННЫХ КАТЕГОРИЙ
+        // *** 
+        // ВАЖНО: работает только с вложенностью не более 3 уровней 
+        // ***
+        // data - коллекция всех категорий категорий
+        // category_slug - слаг категории относительно которой мы работаем
+        var all_categories = [];
+        if (category_slug != undefined && category_slug != '') {
+            var category = _.find(data, function (category) {
+                // находим категорию на которую перешел пользователь
+                return category.slug == category_slug;
+            });    
+
+            all_categories = _.filter(data, function (cat) {
+                // Фильтруем все дочерние категории основной
+                return cat.parent == category.id;
+            });
+
+            var all_categories_deep = _.map(all_categories, function (first_level_cat) {
+                // проходимся по всем дочерним категориям
+                // каждую итерацию фильтруем все категории по parent признаку
+                // получаем всех предков изначальной категории
+                return _.filter(data, function (cat) {
+                    return cat.parent == first_level_cat.id;
+                });                          
+            });
+
+            // приводим массив к элементарному виду что бы избежать [ [a], [[b]]]
+            all_categories_deep = _.flatten(all_categories_deep, true);
+
+            //объединяем полученные результаты по подкатегориям и по подподкатегориям
+            all_categories = _.union(all_categories, all_categories_deep);        
+        }else {
+            // если slug = undefined или '' то возвращаем весь массив
+            all_categories = data;
+        }
+        console.log('Methods getAllNestedCategories all_categories: ', all_categories);
+        return all_categories;
+    },
     getPurchasesFromCategories: function (data, category_slug) {
         // ПОДГОТОВКА КОЛЛЕКЦИИ ЗАКУПОК КАТЕГОРИИ
         // data - строковая переменная "slug" категории
-
+        console.log('Methods getPurchasesFromCategories data, category_slug: ', data, category_slug);
         var category = _.find(data, function (category) {
             // находим категорию на которую перешел пользователь
             return category.slug == category_slug;
-        });                    
+        });    
 
-        var all_categores = _.filter(data, function (cat) {
-            // Фильтруем все дочерние категории основной
-            return cat.parent == category.id;
-        });
-
-        var all_categories_deep = _.map(all_categores, function (first_level_cat) {
-            // проходимся по всем дочерник категориям
-            // каждую итерацию фильтруем все категории по parent признаку
-            // получаем всех предков изначальной категории
-            return _.filter(data, function (cat) {
-                return cat.parent == first_level_cat.id;
-            });                          
-        });
-
-        // приводим массив к элементарному виду что бы избежать [ [a], [[b]]]
-        all_categories_deep = _.flatten(all_categories_deep, true);
+        var all_categories = this.getAllNestedCategories(data, category_slug);
 
         // добавляем в массив родительскую категорию
-        all_categores.unshift(category);
-
-        // объединяем массивы (union образует массив уникальных элементов)
-        all_categores = _.union(all_categores, all_categories_deep);
+        all_categories.unshift(category);
 
         // создаем массив из всех значений поля "category_purchase"
-        var all_purchases_arr = _.pluck(all_categores, "category_purchase");                    
+        var all_purchases_arr = _.pluck(all_categories, "category_purchase");                    
         // приводи к элементарному виду
         var all_purchases = _.flatten(all_purchases_arr, true);
-
+        console.log('Methods getPurchasesFromCategories all_purchases: ', all_purchases);
         return all_purchases;
     },    
-    // convertCategoriesToFlatProducts: function (collection) {
-    //     console.log('Methods convertCategoriesToFlatProducts collection:', collection);
-    //     tmp_collection = [];
-    //     collection.forEach(function (category){
-    //         var collection = category.category_purchase;            
-    //         category.category_purchase.forEach(function (purchase) {
-    //             purchase.catalogs.forEach(function (catalog) {
-    //                 catalog.product_catalog.forEach(function (product) {
-    //                     product.cpp_catalog = catalog.cpp_catalog;
-    //                     tmp_collection.push(product);
-    //                 });
-    //             });
-    //         });
-    //     });  
-    //     console.log('Methods convertCategoriesToFlatProducts collection result:', tmp_collection);
-    //     return tmp_collection;  
-    // },
 	convertPurchasesToFlatProducts: function (collection) {
-		console.log('Methods convertPurchasesToFlatProducts collection:', collection);
 		tmp_collection = [];
-        
+        console.log('Methods convertPurchasesToFlatProducts collection: ', collection);
+        if (collection.length > 0) {
             collection.forEach(function (purchase) {
                 purchase.catalogs.forEach(function (catalog) {
                     catalog.product_catalog.forEach(function (product) {
-                        product.cpp_catalog = catalog.cpp_catalog;
+                        product.cpp_catalog = catalog.cpp_catalog;                        
                         tmp_collection.push(product);
                     });
                 });
             });       
-        console.log('Methods convertPurchasesToFlatProducts collection result:', tmp_collection);
+        };
         return tmp_collection;	
 	},
+    unionProductCollections: function (collection1, collection2) {
+        // функция объединения 2 коллекций продуктов
+        // если первая коллекция пуста - то объединяем в обратном порядке
+        var result = [];
+        if (collection1.length > 0 && collection2.length > 0) {            
+            result = _.filter(collection1, function (product1) {
+                return _.some(collection2, function function_name (product2) {
+                    return product1.id == product2.id;
+                });
+            });
+            console.log('Methods.unionProductCollections result: ', result);       
+        } else if (collection1 == undefined || collection2 == undefined){
+            console.log('in Methods.unionProductCollections some of collections is undefined');
+        } else {
+            console.log('in Methods.unionProductCollections some of collections is empty');
+        }           
+
+        return result;
+    },
     chackProperties: function(cpp_properties, product_properties){        
         // РЕАЛИЗАЦИЯ ПРОВЕРКИ СУЩЕСТВОВАНИЯ КОМБИНАЦИИ СВОЙСТВ        
         var properties_filled = _.every(cpp_properties,function (property) {
@@ -118,6 +140,13 @@ var Methods = {
             }
         }
     },
+    getCategorySlug: function() {
+        // получение slug категории по текущему url
+        var url = $(location).attr('pathname');
+        var parse_url = url.split('/')[1];        
+        var current_category_slug = parse_url.slice(9);
+        return current_category_slug;
+    }
 };
 
 

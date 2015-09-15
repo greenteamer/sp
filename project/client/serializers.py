@@ -50,10 +50,9 @@ class PurchaseStatusSerializer(serializers.ModelSerializer):
 class PurchaseSerializer(serializers.ModelSerializer):
     catalogs = CatalogSerializer(many=True, read_only=True)
     purchase_status = PurchaseStatusSerializer(many=True, read_only=True)
-
     class Meta:
         model = Purchase
-        fields = ('id', 'name', 'description', 'purchase_status', 'catalogs')
+        fields = ('id', 'name', 'organizerProfile', 'description', 'purchase_status', 'catalogs')
 
 
 class OrganizerSerializer(serializers.ModelSerializer):
@@ -61,7 +60,7 @@ class OrganizerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrganizerProfile
-        fields = ('icon', 'purchases')
+        fields = ('id', 'icon', 'user', 'purchases')
 
 
 class PromoSerializer(serializers.ModelSerializer):
