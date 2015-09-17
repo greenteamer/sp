@@ -482,15 +482,17 @@ PurchasesDispatcher.register(function (payload) {
             break;
 
         case 'get-current-purchase-datail':
-            var url = '/api/v1/purchases/' + payload.id + '/'
+            var url = '/api/v1/purchases/' + payload.id + '/';
             $.ajax({
                 url: url,
                 dataType: 'json',
                 cache: false,
                 success: (function(data){                    
-                    PurchasesStore.purchase = [];
-                    PurchasesStore.purchase.push(data);
-                    PurchasesStore.chengePurchaseDetail();
+                    // PurchasesStore.purchase = [];
+                    // PurchasesStore.purchase.push(data);
+                    // PurchasesStore.chengePurchaseDetail();                    
+                    PurchasesStore.collection.push(data);
+                    PurchasesStore.collectionChange();
                 }).bind(this),
                 error: (function(){
                     console.log('sory, something went wrong');
@@ -506,19 +508,31 @@ PurchasesDispatcher.register(function (payload) {
         case 'filter-by-category':
             PurchasesStore.filter.filter_state.category = payload.category_slug;
             // filterFlow - основной поток фильтра в который приходят исходные данные и который разруливает все остальное
-            PurchasesStore.filter.filtered_collection = FilterFunctions
-                .filterFlow(PurchasesStore.filter, PurchasesStore.collection, PurchasesStore.categories);
+            if (PurchasesStore.collection.length > 0 && PurchasesStore.categories.length > 0) {
+                // конвертируем изначальную коллекцию в простую (массив товаров)
+                console.log('filter-by-category PurchasesStore.collection', PurchasesStore.collection);
+                var initial_collection = Methods.convertPurchasesToFlatProducts(PurchasesStore.collection);
 
-            PurchasesStore.filterTrigger();
+                var result = FilterFunctions.filterFlow(PurchasesStore.filter, initial_collection, PurchasesStore.categories);
+
+                PurchasesStore.filter.filtered_collection = result;
+                PurchasesStore.filterTrigger();
+            };
             break;
 
         case 'filter-by-price':
             PurchasesStore.filter.filter_state.price = payload.price;            
             // filterFlow - основной поток фильтра в который приходят исходные данные и который разруливает все остальное
-            PurchasesStore.filter.filtered_collection = FilterFunctions
-                .filterFlow(PurchasesStore.filter, PurchasesStore.collection, PurchasesStore.categories);
+            if (PurchasesStore.collection.length > 0 && PurchasesStore.categories.length > 0) {
+                // конвертируем изначальную коллекцию в простую (массив товаров)
+                console.log('filter-by-price PurchasesStore.collection', PurchasesStore.collection);
+                var initial_collection = Methods.convertPurchasesToFlatProducts(PurchasesStore.collection);
 
-            PurchasesStore.filterTrigger();
+                var result = FilterFunctions.filterFlow(PurchasesStore.filter, initial_collection, PurchasesStore.categories);
+
+                PurchasesStore.filter.filtered_collection = result;
+                PurchasesStore.filterTrigger();
+            };            
             break;
 
         case 'view-by':
@@ -1092,7 +1106,7 @@ var Category = React.createClass({displayName: "Category",
             collection: [],
             filtered_collection: [],
           	user: {}            
-        }
+        };
     },
     componentDidMount: function () {
         // получаем slug категории по url      
@@ -1145,17 +1159,21 @@ var Category = React.createClass({displayName: "Category",
                     React.createElement("div", {className: "col-xs-12 col-sm-4 col-md-3 col-lg-3"}, 
                         React.createElement(ProductRelativeTitle, {product: product})
                     )
-                )
+                );
             });
         }      
+        console.log('filtered_collection: ', this.state.filtered_collection);
 		return (            
             React.createElement("div", null, 
                 React.createElement(IF, {condition: this.state.filtered_collection.length == 0}, 
-                    React.createElement(Purchases, {
-                        collection: this.state.collection, 
-                        category_id: category_id, 
-                        title: title, 
-                        indicatorElementName: "#category"})
+                    React.createElement("div", null, 
+                        React.createElement("h2", null, "Товары не отфильтрованы"), 
+                        React.createElement(Purchases, {
+                            collection: this.state.collection, 
+                            category_id: category_id, 
+                            title: title, 
+                            indicatorElementName: "#category"})
+                    )
                 ), 
                 React.createElement(IF, {condition: this.state.filtered_collection.length != 0}, 
                     React.createElement("div", null, 
@@ -1164,7 +1182,7 @@ var Category = React.createClass({displayName: "Category",
                     )
                 )
             )
-		)
+		);
 	}
 });
 
@@ -1183,57 +1201,70 @@ var Functions = {
 	filterByPrice: function (products_collection, values) {
 		var tmp_filtered_сollection = _.filter(products_collection, function (product) {
             return product.price >= values[0] && product.price <= values[1] ;
-        });        
+        });
 
         return tmp_filtered_сollection;
 	},
-	filterByCategory: function (purchases, products_collection) {
-		var flat_category_products = Methods.convertPurchasesToFlatProducts(purchases);		
-
+	filterByCategory: function (flat_products, products_collection) {
+		// var flat_products = Methods.convertPurchasesToFlatProducts(purchases);		
+		console.log('Filter.filterByCategory flat_products: ', flat_products);
+		console.log('Filter.filterByCategory products_collection: ', products_collection);
 		var result_collection = _.filter(products_collection, function (product) {
-			return _.some(flat_category_products, function function_name (cat_product) {
+			return _.some(flat_products, function function_name (cat_product) {
 				return product.id == cat_product.id;
 			});
 		});
 
 		return result_collection;
 	},	
-	filterFlow: function (filter, collection, categories){
-		
-		console.log('filterFlow PurchasesStore filter: ', filter.filter_state);
-		console.log('filterFlow PurchasesStore collection: ', collection);
+	filterFlow: function (filter, initial_collection, categories){
+		// ФУНКЦИЯ ФИЛЬТРАЦИИ ТОВАРОВ
+		// функция принимает 3 параметра:
+		// filter - текущие состояние фильтра из Store.filter
+		// initial_collection - изначальная коллекция преобразованная в Dispatcher.register во flat коллекцию продуктов
+		// categories  - коллекция всех категорий из Store.categories
+
+		// ПРОВЕРКА ВХОДЯЩИХ ДАННЫХ
+		// console.log('start filter flow');
+		// console.log('filterFlow PurchasesStore filter: ', filter.filter_state);
+		// console.log('filterFlow PurchasesStore initial_collection: ', initial_collection);
 		console.log('filterFlow PurchasesStore categories: ', categories);	
 
 		var result_by_cat = [];
 		var result_by_price = [];
 		var sorted_collection = [];
 
-	 	if (collection.length > 0 && categories.length > 0) {
+	 	// if (collection.length > 0 && categories.length > 0) {
 			// конвертируем изначальную коллекцию в простую (массив товаров)
-			var initial_collection = Methods.convertCategoriesToFlatProducts(collection);
-			console.log('filterFlow PurchasesStore initial_collection: ', initial_collection);	
+			// var initial_collection = Methods.convertCategoriesToFlatProducts(collection);
+			// console.log('filterFlow PurchasesStore initial_collection: ', initial_collection);	
 			
 			if (filter.filter_state.category != undefined){
 				// фильтруем начальную коллекцию по категории
 				var cat_purchases = Methods.getPurchasesFromCategories(categories, filter.filter_state.category);
-				console.log('filterFlow by cat cat_purchases: ', cat_purchases);	
-				result_by_cat = this.filterByCategory(cat_purchases, initial_collection);
+				// console.log('Filter.filterFlow Methods.getPurchasesFromCategories result: ', 'length: ', cat_purchases.length, cat_purchases);		
+				// result_by_cat = this.filterByCategory(cat_purchases, initial_collection);
+				var flat_category_products = Methods.convertPurchasesToFlatProducts(cat_purchases);	
+				// result_by_cat = this.filterByCategory(flat_category_products, initial_collection);
+				result_by_cat = flat_category_products;
+				console.log('Filter.filterFlow by category result_by_cat: ', 'length: ', result_by_cat.length, result_by_cat);
 			};	
+
 			if(filter.filter_state.price != undefined){			
-				// фильтруем начальную коллекцию по цене
+				// фильтруем начальную коллекцию по цене				
 				var result_by_price = this.filterByPrice(initial_collection, filter.filter_state.price);
+				console.log('Filter.filterFlow by category result_by_price: ', 'length: ', result_by_price.length, result_by_price);
 			};
 			
-			// объединяем результат
-			console.log('filterFlow result_by_price: ', result_by_price);
-			console.log('filterFlow result_by_cat: ', result_by_cat);
+			// объединяем результат			
 			var result = Methods.unionProductCollections(result_by_price, result_by_cat);
-			console.log('filterFlow PurchasesStore result: ', result);	
+			console.log('Filter.filterFlow filter result: ', result);	
 
 			sorted_collection = _.sortBy(result, function(product){ 
 	        	return product.price; 
 	        });
-        };
+	        console.log('Filter.filterFlow sorted_collection result: ','length: ', sorted_collection.length, sorted_collection);	
+        // };
 
 		return sorted_collection;			
 	}
@@ -1338,28 +1369,30 @@ var Methods = {
             // если slug = undefined или '' то возвращаем весь массив
             all_categories = data;
         }
-        console.log('Methods getAllNestedCategories all_categories: ', all_categories);
+        // console.log('Methods getAllNestedCategories all_categories: ', all_categories);
         return all_categories;
     },
     getPurchasesFromCategories: function (data, category_slug) {
         // ПОДГОТОВКА КОЛЛЕКЦИИ ЗАКУПОК КАТЕГОРИИ
         // data - строковая переменная "slug" категории
-        console.log('Methods getPurchasesFromCategories data, category_slug: ', data, category_slug);
+        // console.log('Methods getPurchasesFromCategories data, category_slug: ', data, category_slug);
         var category = _.find(data, function (category) {
             // находим категорию на которую перешел пользователь
             return category.slug == category_slug;
-        });    
-
-        var all_categories = this.getAllNestedCategories(data, category_slug);
-
+        });
+        // console.log('Methods getPurchasesFromCategories find category by slug: ', category);  
+        // получаем все вложенные категории
+        var all_categories = this.getAllNestedCategories(data, category_slug);        
         // добавляем в массив родительскую категорию
         all_categories.unshift(category);
+        // console.log('Methods getPurchasesFromCategories  getAllNestedCategories: ', all_categories);
 
         // создаем массив из всех значений поля "category_purchase"
-        var all_purchases_arr = _.pluck(all_categories, "category_purchase");                    
+        var all_purchases_arr = _.pluck(all_categories, "category_purchase");
+        // console.log('Methods getPurchasesFromCategories  get all purchases from all categories: ', all_purchases_arr);
         // приводи к элементарному виду
         var all_purchases = _.flatten(all_purchases_arr, true);
-        console.log('Methods getPurchasesFromCategories all_purchases: ', all_purchases);
+        // console.log('Methods getPurchasesFromCategories all_purchases: ', all_purchases);
         return all_purchases;
     },    
 	convertPurchasesToFlatProducts: function (collection) {
@@ -1377,22 +1410,41 @@ var Methods = {
         };
         return tmp_collection;	
 	},
-    unionProductCollections: function (collection1, collection2) {
-        // функция объединения 2 коллекций продуктов
-        // если первая коллекция пуста - то объединяем в обратном порядке
-        var result = [];
-        if (collection1.length > 0 && collection2.length > 0) {            
-            result = _.filter(collection1, function (product1) {
-                return _.some(collection2, function function_name (product2) {
-                    return product1.id == product2.id;
+    unique: function (arr) {
+        // ВОЗВРАЩАЕТ МАССИВ УНИКАЛЬНЫХ ЭЛЛЕМЕНТОВ массива arr
+        // обязательное условие: у объектов массива должен быть атрибут id
+        var arr_id = _.uniq(_.pluck(arr, 'id'));  // вернет массив уникальных id -шников массива arr
+        var result = _.map(arr_id, function (id) {
+                // возвращаем первый эллемент массива arr, 
+                // id которого есть в массиве уникальных id -шников
+                return _.find(arr, function (el) {
+                    return el.id === id;
                 });
             });
-            console.log('Methods.unionProductCollections result: ', result);       
-        } else if (collection1 == undefined || collection2 == undefined){
-            console.log('in Methods.unionProductCollections some of collections is undefined');
-        } else {
-            console.log('in Methods.unionProductCollections some of collections is empty');
-        }           
+        return result;
+    },
+    unionProductCollections: function (collection1, collection2) {
+        // функция объединения 2 коллекций продуктов
+        // если первая коллекция пуста - пишем в консоле лог
+        // console.log('Method.unionProductCollections COLLECTION1: ', 'length: ', collection1.length, collection1);
+        // console.log('Method.unionProductCollections COLLECTION2: ', 'length: ', collection2.length, collection2);
+        
+        // if (collection1.length > 0 && collection2.length > 0) {
+
+        var c1 = _.pluck(collection1, 'id');  // создаем массив id -шников 1 коллекции  
+        var c2 = _.pluck(collection2, 'id');  // создаем массив id -шников 2 коллекции
+        var index_arr = _.intersection(c1, c2);  // объединяем уникальные id -шники в один массив
+        var union = _.union(collection1, collection2);  // объединяем оба массива с прдуктами 
+        var result = _.map(index_arr, function (id) {
+            // возвращаем первый эллемент массива union, 
+            // id которого есть в массиве уникальных id -шников
+            return _.find(union, function (prod) {
+                return prod.id === id;
+            });
+        });
+
+        // console.log('test index_arr: ', 'length: ', index_arr.length, index_arr);
+        // console.log('test result: ', 'length: ', result.length, result);      
 
         return result;
     },
@@ -1423,7 +1475,20 @@ var Methods = {
         var url = $(location).attr('pathname');
         var parse_url = url.split('/')[1];        
         var current_category_slug = parse_url.slice(9);
-        return current_category_slug;
+
+        // console.log('get url', url);
+        if (url.split('/')[1] == 'purchases') {
+            // console.log('its purchase url');
+            current_category_slug = 'purchase';
+        };
+
+        return current_category_slug;    
+    },
+    getPurchaseIdByUrl: function () {
+        // получение категорий к которым привязаны каталоги закупки
+        var url = $(location).attr('pathname');
+        var purchase_id = url.split('/')[2];
+        return purchase_id;
     }
 };
 
@@ -1473,6 +1538,7 @@ var PurchasesStore = require('../../stores/PurchasesStore.js');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
 
 var Methods = require('../customhelpers/Methods.js');
+var IF = require('../customhelpers/IF.jsx');
 var FiltFunc = require('../customhelpers/FilterFunctions.js');
 
 var ReactSlider = require('react-slider');
@@ -1494,7 +1560,7 @@ var CategoryFilter = React.createClass({displayName: "CategoryFilter",
     },
     setChildrenCategory: function () {
         // получаем slug категории по url      
-        var current_category_slug = Methods.getCategorySlug();        
+        var current_category_slug = Methods.getCategorySlug();            
 
         // получаем все вложенные категории этой категории
         tmp_nested_categories = Methods.getAllNestedCategories(PurchasesStore.categories, current_category_slug);
@@ -1533,8 +1599,12 @@ var CategoryFilter = React.createClass({displayName: "CategoryFilter",
         });
         return (
             React.createElement("div", null, 
-                React.createElement("h3", {className: "font-decor"}, "Фильтры по категориям"), 
-                nested_categories
+                React.createElement(IF, {condition: this.state.nested_categories.length > 0}, 
+                    React.createElement("div", null, 
+                        React.createElement("h3", {className: "font-decor"}, "Фильтры по категориям"), 
+                        nested_categories
+                    )
+                )
             )
         );
     }
@@ -1557,8 +1627,7 @@ var Filters = React.createClass({displayName: "Filters",
     	return {
     		flat_collection: [],
     		filtered_сollection: [],
-    		values: [],
-            // max_price: 0
+    		values: []
     	};
     },
     componentWillMount: function  () {
@@ -1573,6 +1642,7 @@ var Filters = React.createClass({displayName: "Filters",
         // простой массив продуктов (используется файл customhelpers/Methods.js)
         // метод вызывается только когда меняется основная коллекция, скорее всего это перезагрузка страницы
         // flat_сollection - создаем примитивизированный вариант основной коллекции collection
+        console.log('filter for categoiries PurchasesStore.collection:', PurchasesStore.collection);
         flat_purchases_collection = Methods.convertCategoriesToFlatProducts(PurchasesStore.collection);
         var product_max_price = _.max(flat_purchases_collection, function (product) {
             //получаем продукт с максимальной ценой
@@ -1583,20 +1653,19 @@ var Filters = React.createClass({displayName: "Filters",
             flat_collection: flat_purchases_collection,
             filtered_сollection: flat_purchases_collection,
             values: [0, product_max_price.price + 100]
-            // max_price: product_max_price.price + 100
         });
     },    
-    onAfterChange: function  () {
-        // МЕНЯЕМ КОЛЛЕКЦИЮ ПОСЛЕ ТОГО КАК ИЗМЕНИТСЯ ДИАПАЗОН ЦЕН
-        var values = this.refs.reactSlider.getValue();        
+    // onAfterChange: function  () {
+    //     // МЕНЯЕМ КОЛЛЕКЦИЮ ПОСЛЕ ТОГО КАК ИЗМЕНИТСЯ ДИАПАЗОН ЦЕН
+    //     var values = this.refs.reactSlider.getValue();        
 
-        var tmp_filtered_collection = FiltFunc.filterByPrice(this.state.flat_collection, values);
-        PurchasesActions.filterCollection(tmp_filtered_collection);
-        // записываем в состояние компонента промежуточный результат фильтра
-        this.setState({
-            filtered_сollection: tmp_filtered_collection
-        });      
-    }, 
+    //     var tmp_filtered_collection = FiltFunc.filterByPrice(this.state.flat_collection, values);
+    //     PurchasesActions.filterCollection(tmp_filtered_collection);
+    //     // записываем в состояние компонента промежуточный результат фильтра
+    //     this.setState({
+    //         filtered_сollection: tmp_filtered_collection
+    //     });      
+    // }, 
     onAfterChange2: function () {
         var values = this.refs.reactSlider.getValue();        
         PurchasesActions.filterByPrice(values);
@@ -1618,7 +1687,7 @@ var Filters = React.createClass({displayName: "Filters",
 				React.createElement("h3", {className: "font-decor"}, "Фильтры"), 
                 React.createElement(ReactSlider, {
                         ref: "reactSlider", 
-                        defaultValue: [0, 1000], 
+                        defaultValue: [0, 100000], 
                         max: product_max_price.price+100, 
                         step: 100, 
                         minDistance: 100, 
@@ -1638,7 +1707,7 @@ var Filters = React.createClass({displayName: "Filters",
 
 module.exports = Filters;
 
-},{"../../actions/PurchasesActions.js":1,"../../stores/PurchasesStore.js":4,"../customhelpers/FilterFunctions.js":11,"../customhelpers/Methods.js":13,"material-ui":66,"material-ui/lib/styles/theme-manager":103,"react":373,"react-slider":196,"underscore":374}],16:[function(require,module,exports){
+},{"../../actions/PurchasesActions.js":1,"../../stores/PurchasesStore.js":4,"../customhelpers/FilterFunctions.js":11,"../customhelpers/IF.jsx":12,"../customhelpers/Methods.js":13,"material-ui":66,"material-ui/lib/styles/theme-manager":103,"react":373,"react-slider":196,"underscore":374}],16:[function(require,module,exports){
 var React = require('react');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
 var PurchasesStore = require('../../stores/PurchasesStore.js');

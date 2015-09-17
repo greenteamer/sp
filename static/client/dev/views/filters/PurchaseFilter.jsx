@@ -18,6 +18,7 @@ var ReactSlider = require('react-slider');
 var CategoryFilter = React.createClass({
     getInitialState: function () {
         return {
+            collection: [],
             categories: [],
             nested_categories: []
         };
@@ -25,38 +26,45 @@ var CategoryFilter = React.createClass({
     componentWillMount: function () {        
         PurchasesActions.getCategoriesTree();
         PurchasesStore.bind('categoryReceived', this.setChildrenCategory);
+        PurchasesStore.bind( 'change', this.collectionChanged );
     },
     componentWillUnmount: function () {                
         PurchasesStore.unbind('categoryReceived', this.setChildrenCategory);
+        PurchasesStore.unbind( 'change', this.collectionChanged );
+    },
+    collectionChanged: function () {        
+        this.setState({
+            collection: PurchasesStore.collection
+        });
     },
     setChildrenCategory: function () {
-        // получаем slug категории по url      
-        var current_category_slug = Methods.getCategorySlug();            
-
-        // получаем все вложенные категории этой категории
-        tmp_nested_categories = Methods.getAllNestedCategories(PurchasesStore.categories, current_category_slug);
+                    
+        // получаем все вложенные категории этой категории       
+        console.log('initial data PurchasesStore.collection[0].catalogs: ', PurchasesStore.collection[0].catalogs);
+        console.log('initial data PurchasesStore.categories: ', PurchasesStore.categories);
+        var tmp_nested_categories = []; 
+        _.each(PurchasesStore.collection[0].catalogs, function (catalog) {
+            _.each(PurchasesStore.categories, function (category) {                
+                if (catalog.categories[0] == category.id) {
+                    console.log('catalog.categories in map: ', catalog.categories[0]);
+                    console.log('category in all categories: ', category.id);
+                    tmp_nested_categories.push(category);
+                };                
+            });
+        });
+        console.log('tmp_nested_categories', tmp_nested_categories);
         this.setState({
             categories: PurchasesStore.categories,
             nested_categories: tmp_nested_categories
-        });  
+        });          
     },
     changeCategoryFilter: function (e) {
         console.log('cat filter: ', e.target.id);
         var category_slug = e.target.id;          
-        PurchasesActions.filterByCategory(category_slug);
-        // var category_slug = e.target.id;
-        // var category = _.find(this.state.nested_categories, function (cat) {
-        //     return cat.slug == category_slug;
-        // });
-
-        // var cat_purchases = Methods.getPurchasesFromCategories(this.state.categories, category_slug);
-
-        // var tmp_filtered_collection = FiltFunc.filterByCategory(cat_purchases, this.props.filtered_сollection);
-
-        // PurchasesActions.filterCollection(tmp_filtered_collection);        
+        PurchasesActions.filterByCategory(category_slug);      
     },     
     render: function () {
-        // биндим функцию что бы она была доступна внутри map
+        // биндим функцию что бы она была доступна внутри map        
         var bindFun = this.changeCategoryFilter;
 
         var nested_categories = this.state.nested_categories.map(function (tmp_cat) {
@@ -113,8 +121,8 @@ var Filters = React.createClass({
         // простой массив продуктов (используется файл customhelpers/Methods.js)
         // метод вызывается только когда меняется основная коллекция, скорее всего это перезагрузка страницы
         // flat_сollection - создаем примитивизированный вариант основной коллекции collection
-        console.log('filter for categoiries PurchasesStore.collection:', PurchasesStore.collection);
-        flat_purchases_collection = Methods.convertCategoriesToFlatProducts(PurchasesStore.collection);
+        console.log('filter for purchase PurchasesStore.collection:', PurchasesStore.collection);
+        flat_purchases_collection = Methods.convertPurchasesToFlatProducts(PurchasesStore.collection);
         var product_max_price = _.max(flat_purchases_collection, function (product) {
             //получаем продукт с максимальной ценой
             return product.price;
@@ -125,20 +133,10 @@ var Filters = React.createClass({
             filtered_сollection: flat_purchases_collection,
             values: [0, product_max_price.price + 100]
         });
-    },    
-    // onAfterChange: function  () {
-    //     // МЕНЯЕМ КОЛЛЕКЦИЮ ПОСЛЕ ТОГО КАК ИЗМЕНИТСЯ ДИАПАЗОН ЦЕН
-    //     var values = this.refs.reactSlider.getValue();        
-
-    //     var tmp_filtered_collection = FiltFunc.filterByPrice(this.state.flat_collection, values);
-    //     PurchasesActions.filterCollection(tmp_filtered_collection);
-    //     // записываем в состояние компонента промежуточный результат фильтра
-    //     this.setState({
-    //         filtered_сollection: tmp_filtered_collection
-    //     });      
-    // }, 
-    onAfterChange2: function () {
-        var values = this.refs.reactSlider.getValue();        
+    },        
+    onAfterChange: function () {
+        var values = this.refs.reactSlider.getValue();
+        console.log('onAfterChange function : ', values);
         PurchasesActions.filterByPrice(values);
     },
     setValues: function () {
@@ -158,11 +156,11 @@ var Filters = React.createClass({
 				<h3 className="font-decor">Фильтры</h3>            
                 <ReactSlider 
                         ref="reactSlider"                        
-                        defaultValue={[0, 100000]}
+                        defaultValue={[0, 1000]}                        
                         max={product_max_price.price+100}
                         step={100}
                         minDistance={100}
-                        onAfterChange={this.onAfterChange2}
+                        onAfterChange={this.onAfterChange}
                         onChange={this.setValues}
                         withBars >
                     <div className="my-handle">от: {this.state.values[0]} р.</div>

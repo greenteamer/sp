@@ -21,6 +21,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class CatalogPropertiesSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = CatalogProductProperties
         fields = ('id', 'cpp_name', 'cpp_slug', 'cpp_values')
@@ -32,7 +33,7 @@ class CatalogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Catalog
-        fields = ('id', 'catalog_name', 'cpp_catalog', 'product_catalog')
+        fields = ('id', 'categories', 'catalog_name', 'cpp_catalog', 'product_catalog')
 
 
 class StatusSerializer(serializers.ModelSerializer):
@@ -52,7 +53,7 @@ class PurchaseSerializer(serializers.ModelSerializer):
     purchase_status = PurchaseStatusSerializer(many=True, read_only=True)
     class Meta:
         model = Purchase
-        fields = ('id', 'name', 'organizerProfile', 'description', 'purchase_status', 'catalogs')
+        fields = ('id', 'name', 'organizerProfile', 'categories', 'description', 'purchase_status', 'catalogs')
 
 
 class OrganizerSerializer(serializers.ModelSerializer):

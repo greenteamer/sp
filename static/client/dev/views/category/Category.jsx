@@ -15,7 +15,7 @@ var Category = React.createClass({
             collection: [],
             filtered_collection: [],
           	user: {}            
-        }
+        };
     },
     componentDidMount: function () {
         // получаем slug категории по url      
@@ -68,17 +68,21 @@ var Category = React.createClass({
                     <div className="col-xs-12 col-sm-4 col-md-3 col-lg-3">
                         <ProductRelativeTitle product={product}/>
                     </div>
-                )
+                );
             });
         }      
+        console.log('filtered_collection: ', this.state.filtered_collection);
 		return (            
             <div>
                 <IF condition={this.state.filtered_collection.length == 0}>
-                    <Purchases 
-                        collection={this.state.collection}
-                        category_id={category_id}
-                        title={title}
-                        indicatorElementName='#category'/>
+                    <div>
+                        <h2>Товары не отфильтрованы</h2>
+                        <Purchases 
+                            collection={this.state.collection}
+                            category_id={category_id}
+                            title={title}
+                            indicatorElementName='#category'/>
+                    </div>
                 </IF>
                 <IF condition={this.state.filtered_collection.length != 0}>
                     <div>
@@ -87,7 +91,7 @@ var Category = React.createClass({
                     </div>                    
                 </IF>                
             </div>
-		)
+		);
 	}
 });
 

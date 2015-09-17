@@ -316,15 +316,17 @@ PurchasesDispatcher.register(function (payload) {
             break;
 
         case 'get-current-purchase-datail':
-            var url = '/api/v1/purchases/' + payload.id + '/'
+            var url = '/api/v1/purchases/' + payload.id + '/';
             $.ajax({
                 url: url,
                 dataType: 'json',
                 cache: false,
                 success: (function(data){                    
-                    PurchasesStore.purchase = [];
-                    PurchasesStore.purchase.push(data);
-                    PurchasesStore.chengePurchaseDetail();
+                    // PurchasesStore.purchase = [];
+                    // PurchasesStore.purchase.push(data);
+                    // PurchasesStore.chengePurchaseDetail();                    
+                    PurchasesStore.collection.push(data);
+                    PurchasesStore.collectionChange();
                 }).bind(this),
                 error: (function(){
                     console.log('sory, something went wrong');
@@ -340,19 +342,31 @@ PurchasesDispatcher.register(function (payload) {
         case 'filter-by-category':
             PurchasesStore.filter.filter_state.category = payload.category_slug;
             // filterFlow - основной поток фильтра в который приходят исходные данные и который разруливает все остальное
-            PurchasesStore.filter.filtered_collection = FilterFunctions
-                .filterFlow(PurchasesStore.filter, PurchasesStore.collection, PurchasesStore.categories);
+            if (PurchasesStore.collection.length > 0 && PurchasesStore.categories.length > 0) {
+                // конвертируем изначальную коллекцию в простую (массив товаров)
+                console.log('filter-by-category PurchasesStore.collection', PurchasesStore.collection);
+                var initial_collection = Methods.convertPurchasesToFlatProducts(PurchasesStore.collection);
 
-            PurchasesStore.filterTrigger();
+                var result = FilterFunctions.filterFlow(PurchasesStore.filter, initial_collection, PurchasesStore.categories);
+
+                PurchasesStore.filter.filtered_collection = result;
+                PurchasesStore.filterTrigger();
+            };
             break;
 
         case 'filter-by-price':
             PurchasesStore.filter.filter_state.price = payload.price;            
             // filterFlow - основной поток фильтра в который приходят исходные данные и который разруливает все остальное
-            PurchasesStore.filter.filtered_collection = FilterFunctions
-                .filterFlow(PurchasesStore.filter, PurchasesStore.collection, PurchasesStore.categories);
+            if (PurchasesStore.collection.length > 0 && PurchasesStore.categories.length > 0) {
+                // конвертируем изначальную коллекцию в простую (массив товаров)
+                console.log('filter-by-price PurchasesStore.collection', PurchasesStore.collection);
+                var initial_collection = Methods.convertPurchasesToFlatProducts(PurchasesStore.collection);
 
-            PurchasesStore.filterTrigger();
+                var result = FilterFunctions.filterFlow(PurchasesStore.filter, initial_collection, PurchasesStore.categories);
+
+                PurchasesStore.filter.filtered_collection = result;
+                PurchasesStore.filterTrigger();
+            };            
             break;
 
         case 'view-by':

@@ -60,28 +60,30 @@ var Methods = {
             // если slug = undefined или '' то возвращаем весь массив
             all_categories = data;
         }
-        console.log('Methods getAllNestedCategories all_categories: ', all_categories);
+        // console.log('Methods getAllNestedCategories all_categories: ', all_categories);
         return all_categories;
     },
     getPurchasesFromCategories: function (data, category_slug) {
         // ПОДГОТОВКА КОЛЛЕКЦИИ ЗАКУПОК КАТЕГОРИИ
         // data - строковая переменная "slug" категории
-        console.log('Methods getPurchasesFromCategories data, category_slug: ', data, category_slug);
+        // console.log('Methods getPurchasesFromCategories data, category_slug: ', data, category_slug);
         var category = _.find(data, function (category) {
             // находим категорию на которую перешел пользователь
             return category.slug == category_slug;
-        });    
-
-        var all_categories = this.getAllNestedCategories(data, category_slug);
-
+        });
+        // console.log('Methods getPurchasesFromCategories find category by slug: ', category);  
+        // получаем все вложенные категории
+        var all_categories = this.getAllNestedCategories(data, category_slug);        
         // добавляем в массив родительскую категорию
         all_categories.unshift(category);
+        // console.log('Methods getPurchasesFromCategories  getAllNestedCategories: ', all_categories);
 
         // создаем массив из всех значений поля "category_purchase"
-        var all_purchases_arr = _.pluck(all_categories, "category_purchase");                    
+        var all_purchases_arr = _.pluck(all_categories, "category_purchase");
+        // console.log('Methods getPurchasesFromCategories  get all purchases from all categories: ', all_purchases_arr);
         // приводи к элементарному виду
         var all_purchases = _.flatten(all_purchases_arr, true);
-        console.log('Methods getPurchasesFromCategories all_purchases: ', all_purchases);
+        // console.log('Methods getPurchasesFromCategories all_purchases: ', all_purchases);
         return all_purchases;
     },    
 	convertPurchasesToFlatProducts: function (collection) {
@@ -99,22 +101,41 @@ var Methods = {
         };
         return tmp_collection;	
 	},
-    unionProductCollections: function (collection1, collection2) {
-        // функция объединения 2 коллекций продуктов
-        // если первая коллекция пуста - то объединяем в обратном порядке
-        var result = [];
-        if (collection1.length > 0 && collection2.length > 0) {            
-            result = _.filter(collection1, function (product1) {
-                return _.some(collection2, function function_name (product2) {
-                    return product1.id == product2.id;
+    unique: function (arr) {
+        // ВОЗВРАЩАЕТ МАССИВ УНИКАЛЬНЫХ ЭЛЛЕМЕНТОВ массива arr
+        // обязательное условие: у объектов массива должен быть атрибут id
+        var arr_id = _.uniq(_.pluck(arr, 'id'));  // вернет массив уникальных id -шников массива arr
+        var result = _.map(arr_id, function (id) {
+                // возвращаем первый эллемент массива arr, 
+                // id которого есть в массиве уникальных id -шников
+                return _.find(arr, function (el) {
+                    return el.id === id;
                 });
             });
-            console.log('Methods.unionProductCollections result: ', result);       
-        } else if (collection1 == undefined || collection2 == undefined){
-            console.log('in Methods.unionProductCollections some of collections is undefined');
-        } else {
-            console.log('in Methods.unionProductCollections some of collections is empty');
-        }           
+        return result;
+    },
+    unionProductCollections: function (collection1, collection2) {
+        // функция объединения 2 коллекций продуктов
+        // если первая коллекция пуста - пишем в консоле лог
+        // console.log('Method.unionProductCollections COLLECTION1: ', 'length: ', collection1.length, collection1);
+        // console.log('Method.unionProductCollections COLLECTION2: ', 'length: ', collection2.length, collection2);
+        
+        // if (collection1.length > 0 && collection2.length > 0) {
+
+        var c1 = _.pluck(collection1, 'id');  // создаем массив id -шников 1 коллекции  
+        var c2 = _.pluck(collection2, 'id');  // создаем массив id -шников 2 коллекции
+        var index_arr = _.intersection(c1, c2);  // объединяем уникальные id -шники в один массив
+        var union = _.union(collection1, collection2);  // объединяем оба массива с прдуктами 
+        var result = _.map(index_arr, function (id) {
+            // возвращаем первый эллемент массива union, 
+            // id которого есть в массиве уникальных id -шников
+            return _.find(union, function (prod) {
+                return prod.id === id;
+            });
+        });
+
+        // console.log('test index_arr: ', 'length: ', index_arr.length, index_arr);
+        // console.log('test result: ', 'length: ', result.length, result);      
 
         return result;
     },
@@ -145,7 +166,20 @@ var Methods = {
         var url = $(location).attr('pathname');
         var parse_url = url.split('/')[1];        
         var current_category_slug = parse_url.slice(9);
-        return current_category_slug;
+
+        // console.log('get url', url);
+        if (url.split('/')[1] == 'purchases') {
+            // console.log('its purchase url');
+            current_category_slug = 'purchase';
+        };
+
+        return current_category_slug;    
+    },
+    getPurchaseIdByUrl: function () {
+        // получение категорий к которым привязаны каталоги закупки
+        var url = $(location).attr('pathname');
+        var purchase_id = url.split('/')[2];
+        return purchase_id;
     }
 };
 
