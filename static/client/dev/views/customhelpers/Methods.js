@@ -88,7 +88,7 @@ var Methods = {
     },    
 	convertPurchasesToFlatProducts: function (collection) {
 		tmp_collection = [];
-        console.log('Methods convertPurchasesToFlatProducts collection: ', collection);
+        // console.log('Methods convertPurchasesToFlatProducts collection: ', collection);
         if (collection.length > 0) {
             collection.forEach(function (purchase) {
                 purchase.catalogs.forEach(function (catalog) {
@@ -104,7 +104,9 @@ var Methods = {
     unique: function (arr) {
         // ВОЗВРАЩАЕТ МАССИВ УНИКАЛЬНЫХ ЭЛЛЕМЕНТОВ массива arr
         // обязательное условие: у объектов массива должен быть атрибут id
+        // console.log('Methods.unique start , arr: ', arr);
         var arr_id = _.uniq(_.pluck(arr, 'id'));  // вернет массив уникальных id -шников массива arr
+        // console.log('Methods.unique unoque id arr: ', arr_id);
         var result = _.map(arr_id, function (id) {
                 // возвращаем первый эллемент массива arr, 
                 // id которого есть в массиве уникальных id -шников
@@ -112,6 +114,7 @@ var Methods = {
                     return el.id === id;
                 });
             });
+        // console.log('Methods.unique unoque result: ', result);
         return result;
     },
     unionProductCollections: function (collection1, collection2) {

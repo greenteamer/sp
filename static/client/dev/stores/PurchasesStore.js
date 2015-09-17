@@ -344,7 +344,7 @@ PurchasesDispatcher.register(function (payload) {
             // filterFlow - основной поток фильтра в который приходят исходные данные и который разруливает все остальное
             if (PurchasesStore.collection.length > 0 && PurchasesStore.categories.length > 0) {
                 // конвертируем изначальную коллекцию в простую (массив товаров)
-                console.log('filter-by-category PurchasesStore.collection', PurchasesStore.collection);
+                // console.log('filter-by-category PurchasesStore.collection', PurchasesStore.collection);
                 var initial_collection = Methods.convertPurchasesToFlatProducts(PurchasesStore.collection);
 
                 var result = FilterFunctions.filterFlow(PurchasesStore.filter, initial_collection, PurchasesStore.categories);
@@ -359,7 +359,7 @@ PurchasesDispatcher.register(function (payload) {
             // filterFlow - основной поток фильтра в который приходят исходные данные и который разруливает все остальное
             if (PurchasesStore.collection.length > 0 && PurchasesStore.categories.length > 0) {
                 // конвертируем изначальную коллекцию в простую (массив товаров)
-                console.log('filter-by-price PurchasesStore.collection', PurchasesStore.collection);
+                // console.log('filter-by-price PurchasesStore.collection', PurchasesStore.collection);
                 var initial_collection = Methods.convertPurchasesToFlatProducts(PurchasesStore.collection);
 
                 var result = FilterFunctions.filterFlow(PurchasesStore.filter, initial_collection, PurchasesStore.categories);

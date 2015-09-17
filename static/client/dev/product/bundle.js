@@ -525,7 +525,7 @@ PurchasesDispatcher.register(function (payload) {
             // filterFlow - основной поток фильтра в который приходят исходные данные и который разруливает все остальное
             if (PurchasesStore.collection.length > 0 && PurchasesStore.categories.length > 0) {
                 // конвертируем изначальную коллекцию в простую (массив товаров)
-                console.log('filter-by-category PurchasesStore.collection', PurchasesStore.collection);
+                // console.log('filter-by-category PurchasesStore.collection', PurchasesStore.collection);
                 var initial_collection = Methods.convertPurchasesToFlatProducts(PurchasesStore.collection);
 
                 var result = FilterFunctions.filterFlow(PurchasesStore.filter, initial_collection, PurchasesStore.categories);
@@ -540,7 +540,7 @@ PurchasesDispatcher.register(function (payload) {
             // filterFlow - основной поток фильтра в который приходят исходные данные и который разруливает все остальное
             if (PurchasesStore.collection.length > 0 && PurchasesStore.categories.length > 0) {
                 // конвертируем изначальную коллекцию в простую (массив товаров)
-                console.log('filter-by-price PurchasesStore.collection', PurchasesStore.collection);
+                // console.log('filter-by-price PurchasesStore.collection', PurchasesStore.collection);
                 var initial_collection = Methods.convertPurchasesToFlatProducts(PurchasesStore.collection);
 
                 var result = FilterFunctions.filterFlow(PurchasesStore.filter, initial_collection, PurchasesStore.categories);
@@ -1177,8 +1177,8 @@ var Functions = {
 	},
 	filterByCategory: function (flat_products, products_collection) {
 		// var flat_products = Methods.convertPurchasesToFlatProducts(purchases);		
-		console.log('Filter.filterByCategory flat_products: ', flat_products);
-		console.log('Filter.filterByCategory products_collection: ', products_collection);
+		// console.log('Filter.filterByCategory flat_products: ', flat_products);
+		// console.log('Filter.filterByCategory products_collection: ', products_collection);
 		var result_collection = _.filter(products_collection, function (product) {
 			return _.some(flat_products, function function_name (cat_product) {
 				return product.id == cat_product.id;
@@ -1198,7 +1198,7 @@ var Functions = {
 		// console.log('start filter flow');
 		// console.log('filterFlow PurchasesStore filter: ', filter.filter_state);
 		// console.log('filterFlow PurchasesStore initial_collection: ', initial_collection);
-		console.log('filterFlow PurchasesStore categories: ', categories);	
+		// console.log('filterFlow PurchasesStore categories: ', categories);	
 
 		var result_by_cat = [];
 		var result_by_price = [];
@@ -1217,23 +1217,23 @@ var Functions = {
 				var flat_category_products = Methods.convertPurchasesToFlatProducts(cat_purchases);	
 				// result_by_cat = this.filterByCategory(flat_category_products, initial_collection);
 				result_by_cat = flat_category_products;
-				console.log('Filter.filterFlow by category result_by_cat: ', 'length: ', result_by_cat.length, result_by_cat);
+				// console.log('Filter.filterFlow by category result_by_cat: ', 'length: ', result_by_cat.length, result_by_cat);
 			};	
 
 			if(filter.filter_state.price != undefined){			
 				// фильтруем начальную коллекцию по цене				
 				var result_by_price = this.filterByPrice(initial_collection, filter.filter_state.price);
-				console.log('Filter.filterFlow by category result_by_price: ', 'length: ', result_by_price.length, result_by_price);
+				// console.log('Filter.filterFlow by category result_by_price: ', 'length: ', result_by_price.length, result_by_price);
 			};
 			
 			// объединяем результат			
 			var result = Methods.unionProductCollections(result_by_price, result_by_cat);
-			console.log('Filter.filterFlow filter result: ', result);	
+			// console.log('Filter.filterFlow filter result: ', result);	
 
 			sorted_collection = _.sortBy(result, function(product){ 
 	        	return product.price; 
 	        });
-	        console.log('Filter.filterFlow sorted_collection result: ','length: ', sorted_collection.length, sorted_collection);	
+	        // console.log('Filter.filterFlow sorted_collection result: ','length: ', sorted_collection.length, sorted_collection);	
         // };
 
 		return sorted_collection;			
@@ -1367,7 +1367,7 @@ var Methods = {
     },    
 	convertPurchasesToFlatProducts: function (collection) {
 		tmp_collection = [];
-        console.log('Methods convertPurchasesToFlatProducts collection: ', collection);
+        // console.log('Methods convertPurchasesToFlatProducts collection: ', collection);
         if (collection.length > 0) {
             collection.forEach(function (purchase) {
                 purchase.catalogs.forEach(function (catalog) {
@@ -1383,7 +1383,9 @@ var Methods = {
     unique: function (arr) {
         // ВОЗВРАЩАЕТ МАССИВ УНИКАЛЬНЫХ ЭЛЛЕМЕНТОВ массива arr
         // обязательное условие: у объектов массива должен быть атрибут id
+        // console.log('Methods.unique start , arr: ', arr);
         var arr_id = _.uniq(_.pluck(arr, 'id'));  // вернет массив уникальных id -шников массива arr
+        // console.log('Methods.unique unoque id arr: ', arr_id);
         var result = _.map(arr_id, function (id) {
                 // возвращаем первый эллемент массива arr, 
                 // id которого есть в массиве уникальных id -шников
@@ -1391,6 +1393,7 @@ var Methods = {
                     return el.id === id;
                 });
             });
+        // console.log('Methods.unique unoque result: ', result);
         return result;
     },
     unionProductCollections: function (collection1, collection2) {

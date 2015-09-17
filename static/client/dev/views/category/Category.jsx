@@ -42,8 +42,10 @@ var Category = React.createClass({
   //       });    
         var current_category = Methods.getCategorySlug();
         PurchasesActions.filterByCategory(current_category);    
+        var uniqueCollection = Methods.unique(PurchasesStore.collection);
+        
         this.setState({
-            collection: PurchasesStore.collection
+            collection: uniqueCollection
         });
     },
     filterTrigger: function () {
@@ -71,7 +73,7 @@ var Category = React.createClass({
                 );
             });
         }      
-        console.log('filtered_collection: ', this.state.filtered_collection);
+        // console.log('filtered_collection: ', this.state.filtered_collection);
 		return (            
             <div>
                 <IF condition={this.state.filtered_collection.length == 0}>

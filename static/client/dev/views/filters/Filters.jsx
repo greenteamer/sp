@@ -113,7 +113,7 @@ var Filters = React.createClass({
         // простой массив продуктов (используется файл customhelpers/Methods.js)
         // метод вызывается только когда меняется основная коллекция, скорее всего это перезагрузка страницы
         // flat_сollection - создаем примитивизированный вариант основной коллекции collection
-        console.log('filter for categoiries PurchasesStore.collection:', PurchasesStore.collection);
+        // console.log('filter for categoiries PurchasesStore.collection:', PurchasesStore.collection);
         flat_purchases_collection = Methods.convertCategoriesToFlatProducts(PurchasesStore.collection);
         var product_max_price = _.max(flat_purchases_collection, function (product) {
             //получаем продукт с максимальной ценой
