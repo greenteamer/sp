@@ -77,7 +77,7 @@ var ProductModal = React.createClass({
                     }}
                     title="Быстрый просмотр товара"
                     actions={modalActions}>
-                    <ProductFastView  product={this.state.product_fast_view}/>
+                    <ProductFastView  product={this.state.product_fast_view}/>                    
                 </Dialog>
                 ];
         }

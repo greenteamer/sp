@@ -72,7 +72,7 @@ var CategoryFilter = React.createClass({
             <div>
                 <IF condition={this.state.nested_categories.length > 0}>
                     <div> 
-                        <h3 className="font-decor">Фильтры по категориям</h3>
+                        <h3 className="font-decor">Фильтровать по категориям</h3>
                         {nested_categories}
                     </div>
                 </IF>
@@ -126,18 +126,7 @@ var Filters = React.createClass({
             values: [0, product_max_price.price + 100]
         });
     },    
-    // onAfterChange: function  () {
-    //     // МЕНЯЕМ КОЛЛЕКЦИЮ ПОСЛЕ ТОГО КАК ИЗМЕНИТСЯ ДИАПАЗОН ЦЕН
-    //     var values = this.refs.reactSlider.getValue();        
-
-    //     var tmp_filtered_collection = FiltFunc.filterByPrice(this.state.flat_collection, values);
-    //     PurchasesActions.filterCollection(tmp_filtered_collection);
-    //     // записываем в состояние компонента промежуточный результат фильтра
-    //     this.setState({
-    //         filtered_сollection: tmp_filtered_collection
-    //     });      
-    // }, 
-    onAfterChange2: function () {
+    onAfterChange: function () {
         var values = this.refs.reactSlider.getValue();        
         PurchasesActions.filterByPrice(values);
     },
@@ -155,14 +144,14 @@ var Filters = React.createClass({
 		});     
 		return (            
 			<div>
-				<h3 className="font-decor">Фильтры</h3>            
+				<h3 className="font-decor">Фильтровать по цене</h3>            
                 <ReactSlider 
                         ref="reactSlider"                        
                         defaultValue={[0, 100000]}
                         max={product_max_price.price+100}
                         step={100}
                         minDistance={100}
-                        onAfterChange={this.onAfterChange2}
+                        onAfterChange={this.onAfterChange}
                         onChange={this.setValues}
                         withBars >
                     <div className="my-handle">от: {this.state.values[0]} р.</div>

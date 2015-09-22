@@ -33,46 +33,39 @@ var Functions = {
 		// categories  - коллекция всех категорий из Store.categories
 
 		// ПРОВЕРКА ВХОДЯЩИХ ДАННЫХ
-		// console.log('start filter flow');
-		// console.log('filterFlow PurchasesStore filter: ', filter.filter_state);
-		// console.log('filterFlow PurchasesStore initial_collection: ', initial_collection);
-		// console.log('filterFlow PurchasesStore categories: ', categories);	
-
+		console.log('start filter flow');
+		console.log('filterFlow PurchasesStore filter: ', filter.filter_state);
+		console.log('filterFlow PurchasesStore initial_collection: ', initial_collection);
+		console.log('filterFlow PurchasesStore categories: ', categories);	
 		var result_by_cat = [];
 		var result_by_price = [];
-		var sorted_collection = [];
+		if (filter.filter_state.category != undefined && filter.filter_state.category != ''){
+			console.log('Filter.filterFlow start category filter');
+			var cat_catalogs = Methods.getCatalogsFromCategories(categories, filter.filter_state.category);
+			console.log('Filter.filterFlow Methods.getCatalogsFromCategories cat_catalogs:', cat_catalogs);
 
-	 	// if (collection.length > 0 && categories.length > 0) {
-			// конвертируем изначальную коллекцию в простую (массив товаров)
-			// var initial_collection = Methods.convertCategoriesToFlatProducts(collection);
-			// console.log('filterFlow PurchasesStore initial_collection: ', initial_collection);	
-			
-			if (filter.filter_state.category != undefined){
-				// фильтруем начальную коллекцию по категории
-				var cat_purchases = Methods.getPurchasesFromCategories(categories, filter.filter_state.category);
-				// console.log('Filter.filterFlow Methods.getPurchasesFromCategories result: ', 'length: ', cat_purchases.length, cat_purchases);		
-				// result_by_cat = this.filterByCategory(cat_purchases, initial_collection);
-				var flat_category_products = Methods.convertPurchasesToFlatProducts(cat_purchases);	
-				// result_by_cat = this.filterByCategory(flat_category_products, initial_collection);
-				result_by_cat = flat_category_products;
-				// console.log('Filter.filterFlow by category result_by_cat: ', 'length: ', result_by_cat.length, result_by_cat);
-			};	
+			var flat_category_products = Methods.convertCatalogsToFlatProducts(cat_catalogs);	
+			console.log('Filter.filterFlow flat_category_products:', flat_category_products);
+			result_by_cat = flat_category_products;
+		} else if (filter.filter_state.category == ''){
+			// если приходит пустой фильтр с категорией - возвращаем все изначальные товары
+			var result_by_cat = initial_collection;
+		}
 
-			if(filter.filter_state.price != undefined){			
-				// фильтруем начальную коллекцию по цене				
-				var result_by_price = this.filterByPrice(initial_collection, filter.filter_state.price);
-				// console.log('Filter.filterFlow by category result_by_price: ', 'length: ', result_by_price.length, result_by_price);
-			};
-			
-			// объединяем результат			
-			var result = Methods.unionProductCollections(result_by_price, result_by_cat);
-			// console.log('Filter.filterFlow filter result: ', result);	
+		if(filter.filter_state.price != undefined){			
+			// фильтруем начальную коллекцию по цене				
+			result_by_price = this.filterByPrice(initial_collection, filter.filter_state.price);
+			console.log('Filter.filterFlow by category result_by_price: ', 'length: ', result_by_price.length, result_by_price);
+		};
+		
+		// объединяем результат			
+		var result = Methods.unionProductCollections(result_by_price, result_by_cat);
+		console.log('Filter.filterFlow filter result: ', result);	
 
-			sorted_collection = _.sortBy(result, function(product){ 
-	        	return product.price; 
-	        });
-	        // console.log('Filter.filterFlow sorted_collection result: ','length: ', sorted_collection.length, sorted_collection);	
-        // };
+		var sorted_collection = _.sortBy(result, function(product){ 
+        	return product.price; 
+        });
+        console.log('Filter.filterFlow sorted_collection result: ','length: ', sorted_collection.length, sorted_collection);	        
 
 		return sorted_collection;			
 	}

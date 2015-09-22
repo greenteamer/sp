@@ -19,7 +19,7 @@ var Product = React.createClass({
         return {
             product: {},
           	user: {}
-        }
+        };
     },
     componentWillMount: function () {
         //получаем текущий урл
@@ -44,11 +44,11 @@ var Product = React.createClass({
                 <div>
                     <ProductDetailView  product={this.state.product}/>
                 </div>
-            )
+            );
         } else {
             return (
                 <div></div>
-            )
+            );
         }
 	}
 });

@@ -40,6 +40,7 @@ var CategoryFilter = React.createClass({
     setChildrenCategory: function () {
                     
         // получаем все вложенные категории этой категории       
+        console.log('initial data PurchasesStore.collection: ', PurchasesStore.collection);
         console.log('initial data PurchasesStore.collection[0].catalogs: ', PurchasesStore.collection[0].catalogs);
         console.log('initial data PurchasesStore.categories: ', PurchasesStore.categories);
         var tmp_nested_categories = []; 

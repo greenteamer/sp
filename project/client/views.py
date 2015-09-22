@@ -254,6 +254,23 @@ def pushQuestion(request):
     return HttpResponse(question_dump, content_type="application/json")
 
 
+def postAnswer(request):
+    answer = PurchaseAnswer()
+    answer.user = request.user
+    answer.question = PurchaseQuestion.objects.get(id=request.POST['id'])
+    answer.text = request.POST['text']
+    answer.save()
+
+    answer_dict = {
+        "id": answer.id,
+        "user": answer.user.id,
+        "question": answer.question.id,
+        "text": answer.text
+    }
+    answer_dict = json.dumps(answer_dict)
+    return HttpResponse(answer_dict, content_type="application/json")
+
+
 def getOrganizers(request):
     organizers = OrganizerProfile.objects.all()
     organizers_for_dump = []

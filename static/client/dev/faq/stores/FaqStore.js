@@ -1,6 +1,7 @@
 var FaqDispatcher = require('../dispatcher/FaqDispatcher.js');
 var MicroEvent = require('microevent');
 var $ = require('jquery');
+var _ = require('underscore');
 var snackbar = require('../lib/snackbar.js');
 var merge = require('merge');
 var Cookies = require('js-cookie');
@@ -15,13 +16,13 @@ var Cookies = require('js-cookie');
 var FaqStore = merge(MicroEvent.prototype, {
 
     user: {},
-    collection: [],
+    questions: [],
 
     userChange: function() {
         this.trigger('change');
     },
-    collectionChange: function () {
-        this.trigger('change');
+    questionsChange: function () {
+        this.trigger('questionsChange');
     }
 
 });
@@ -37,11 +38,11 @@ FaqDispatcher.register(function (payload) {
                 dataType: 'json',
                 cache: false,
                 success: (function (data) {
-                    FaqStore.collection = data;
-                    FaqStore.collectionChange();
+                    FaqStore.questions = data;
+                    FaqStore.questionsChange();
                 }).bind(this),
                 error: (function (xhr, status, err) {
-                    console.log('error fetchin collection');
+                    console.log('error fetchin questions');
                 }).bind(this)
             });
 
@@ -67,7 +68,7 @@ FaqDispatcher.register(function (payload) {
         case 'post-answer-action':
             var csrftoken = Cookies.get('csrftoken');
             $.post(
-                "/api/v1/post-answer/",
+                "/api/v2/post-answer/",
                 {
                     csrfmiddlewaretoken: csrftoken,
                     id: payload.answer.id,
@@ -75,21 +76,20 @@ FaqDispatcher.register(function (payload) {
                 }
             ).success(
                 function (data) {
-                    $.snackbar({timeout: 5000, content: data.message });                
+                    $.snackbar({timeout: 5000, content: "Ваш ответ добавлен" });     
 
-                    for (var i = 0; i < FaqStore.collection.length; i++){                        
-                        if (FaqStore.collection[i].id == data.question_id){                            
-                            FaqStore.collection[i].answers.push({
-                                photo: data.photo,
-                                name: data.name,
-                                date: data.date,
-                                text: data.text
+                    _.each(FaqStore.questions, function (question) {
+                        if (question.id == data.question){
+                            question.answers.push({
+                                id: data.id,
+                                text: data.text,
+                                user: data.user,
+                                question: data.question
                             });
-                            break;
-                        }
-                    }
+                        };
+                    });
 
-                    FaqStore.collectionChange();
+                    FaqStore.questionsChange();
                 })
             .error(
                 function (data) {
@@ -114,14 +114,14 @@ FaqDispatcher.register(function (payload) {
             ).success(
                 function (data) {
                     $.snackbar({timeout: 5000, content: "Ваш комментарий добавлен"}); 
-                    FaqStore.collection.unshift({
+                    FaqStore.questions.unshift({
                         id: data.id,
                         user: data.user,
                         text: data.text,
                         purchase: data.purchase,
                         answers: data.answers
                     });
-                    FaqStore.collectionChange();
+                    FaqStore.questionsChange();
                 })
             .error(
                 function (data) {

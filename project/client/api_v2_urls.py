@@ -7,4 +7,5 @@ urlpatterns = patterns('project.client.views',
     url(r'^cart-items/$', 'getCartItems', name='client_home'),
     url(r'^push-question/$', 'pushQuestion', name='push_question'),
     url(r'^organizers/$', 'getOrganizers', name='custom_get_organizers'),
+    url(r'^post-answer/$', 'postAnswer', name='post_answer')
 )

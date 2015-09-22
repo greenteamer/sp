@@ -32,7 +32,11 @@
 
         {% block slider %}
             {% client_slider request %}
-        {% endblock %}        
+        {% endblock %}     
+
+        {% block breadcrumbs %}
+            <div id="breadcrumbs"></div>            
+        {% endblock breadcrumbs %}           
 
         {% block wrapper %}
         {% endblock %}

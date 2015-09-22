@@ -48,10 +48,8 @@ var Question = React.createClass({
 					<IF condition={true}>
 						<div ref="text_question" dangerouslySetInnerHTML={createDescription()} />
 					</IF>
-					<IF condition={false}>
-						<div>
-							{checker}							
-							<div ref="text_question" dangerouslySetInnerHTML={createDescription()} />								
+					<IF condition={this.props.is_owner}>
+						<div>							
 							<AnswerModal id={this.props.question.id} user={this.props.user} />
 						</div>
 					</IF>

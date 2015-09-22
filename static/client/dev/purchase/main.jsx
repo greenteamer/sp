@@ -7,12 +7,14 @@ var CartMenu = require('../views/cartmenu/CartMenu.jsx');
 var Cart = require('../views/cartmenu/Cart.jsx');
 var SearchForm = require('../views/search/SearchForm.jsx');
 var SearchResult = require('../views/search/SearchResult.jsx');
+var Breadcrumbs = require('../views/breadcrumbs/Breadcrumbs.jsx');
 
 
 injectTapEventPlugin();
 
 
 React.render(<PurchaseDetail />, document.getElementById('purchase'));
+React.render(<Breadcrumbs />, document.getElementById('breadcrumbs'));
 React.render(<PurchaseFilter />, document.getElementById('filters'));
 React.render(<CartMenu />, document.getElementById('cartmenu'));
 React.render(<SearchForm />, document.getElementById('react_search'));

@@ -86,6 +86,54 @@ var Methods = {
         // console.log('Methods getPurchasesFromCategories all_purchases: ', all_purchases);
         return all_purchases;
     },    
+    getCatalogsFromCategories: function (initial_categories, category_slug) {
+        // console.log('Methods.getCatalogsFromCategories all_categories: ', all_categories);
+        var category = _.find(initial_categories, function (category) {
+            // находим категорию на которую перешел пользователь
+            return category.slug == category_slug;
+        });
+        // console.log('Methods getPurchasesFromCategories find category by slug: ', category);  
+        // получаем все вложенные категории
+        var all_categories = this.getAllNestedCategories(initial_categories, category_slug);        
+        // добавляем в массив родительскую категорию
+        all_categories.unshift(category);
+
+        // получаем id всех категорий включая вложенные
+        var category_id_arr = _.pluck(all_categories, 'id');
+        // console.log('Methods getPurchasesFromCategories  category_id_arr: ', category_id_arr);
+
+        // ПОЛУЧАЕМ ВСЕ КАТАЛОГИ
+        // создаем массив из всех значений поля "category_purchase"
+        var all_purchases_arr = _.pluck(initial_categories, "category_purchase");
+        // console.log('Methods getPurchasesFromCategories  get all purchases from all categories: ', all_purchases_arr);
+        // приводим к элементарному виду
+        var all_purchases = _.flatten(all_purchases_arr, true);
+        // console.log('Methods getPurchasesFromCategories all_purchases: ', all_purchases);
+        var all_catalogs_arr = _.pluck(all_purchases, "catalogs");
+        // приводи к элементарному виду
+        var all_catalogs = _.flatten(all_catalogs_arr, true);
+
+        // ФИЛЬТРУЕМ СОГЛАСНО category_id_arr
+        var result = _.map(category_id_arr, function (id) {
+            // генерируем массив каталогов
+            return _.filter(all_catalogs, function (catalog) {
+                // получаем каталог если хоть один id его категрии совпадает
+                return _.some(catalog.categories, function (category_id) {                    
+                    return category_id === id; 
+                });
+            });
+        });
+        result = this.unique(_.flatten(result, true));
+        // console.log('Methods getCatalogsFromCategories result: ', result);
+        return result;
+    },
+    convertCatalogsToFlatProducts: function (catalogs) {
+        // console.log('Methods convertCatalogsToFlatProducts catalogs: ', catalogs);
+        // делаем из массива каталогов массив продуктов
+        var new_products_arr = _.pluck(catalogs, 'product_catalog');
+        new_products_arr = _.flatten(new_products_arr, true);
+        return new_products_arr;
+    },
 	convertPurchasesToFlatProducts: function (collection) {
 		tmp_collection = [];
         // console.log('Methods convertPurchasesToFlatProducts collection: ', collection);

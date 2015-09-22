@@ -42,7 +42,8 @@ var PurchasesStore = merge(MicroEvent.prototype, {
         this.trigger('organizersTrigger');  
     },
 
-    collection: [],
+    // collection - массив закупок
+    collection: [], 
     cartitems: [],
     
     categories: [],
@@ -55,7 +56,12 @@ var PurchasesStore = merge(MicroEvent.prototype, {
 
     product_fast_view: {},
     purchase_id_fast_view: 0,
+    
     product: {},
+    getProduct: function(){
+        this.trigger('get-product');
+    },
+
     benefits: [],
     modal_photo: {},
     photoView: function(){
@@ -73,10 +79,7 @@ var PurchasesStore = merge(MicroEvent.prototype, {
     },
     modalView: function(){
         this.trigger('modal');
-    },
-    getProduct: function(){
-        this.trigger('get-product');
-    },
+    },    
     changeBenefits: function(){
         this.trigger('changeBenefits');
     }    
@@ -199,7 +202,7 @@ PurchasesDispatcher.register(function (payload) {
         case "get-categories":
             $.get("/api/v1/categories/")
                 .success(function (data) {
-                    console.log("Store get categories success data: ", data);
+                    // console.log("Store get categories success data: ", data);
                     PurchasesStore.categories = data;
                     PurchasesStore.categoryReceived();
                 })
@@ -286,6 +289,7 @@ PurchasesDispatcher.register(function (payload) {
                         cache: false,
                         success: (function(data){
                             tmp_product.cpp_catalog = data.cpp_catalog;
+                            tmp_product.catalog_obj = data;
                             PurchasesStore.product = tmp_product;
                             PurchasesStore.getProduct();
                         }).bind(this),
@@ -361,9 +365,10 @@ PurchasesDispatcher.register(function (payload) {
                 // конвертируем изначальную коллекцию в простую (массив товаров)
                 // console.log('filter-by-price PurchasesStore.collection', PurchasesStore.collection);
                 var initial_collection = Methods.convertPurchasesToFlatProducts(PurchasesStore.collection);
-
+                // console.log('filter-by-price initial_collection', initial_collection);
+                // console.log('filter-by-price PurchasesStore.categories', PurchasesStore.categories);
                 var result = FilterFunctions.filterFlow(PurchasesStore.filter, initial_collection, PurchasesStore.categories);
-
+                // console.log('filter-by-price result', result);
                 PurchasesStore.filter.filtered_collection = result;
                 PurchasesStore.filterTrigger();
             };            

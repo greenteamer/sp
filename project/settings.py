@@ -143,7 +143,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'pybb.middleware.PybbMiddleware',
-    #'webshop.SSLMiddleware.SSLRedirect',
+    'breadcrumbs.middleware.BreadcrumbsMiddleware'
+    #'webshop.SSLMiddleware.SSLRedirect',    
 )
 
 TEMPLATE_DIRS = (
@@ -241,6 +242,7 @@ INSTALLED_APPS = (
     'project.documentation',
     'tastypie',
     'rest_framework',
+    'breadcrumbs'
 )
 
 

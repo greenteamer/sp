@@ -48,14 +48,30 @@ var ProductFastView = React.createClass({
             'tab': {
                 'background': '#443f39'}
             };
+        var images = this.props.product.images.map(function (image, count) {
+            if (count != 0 && count < 5) {
+                return (
+                    <div className="product_small_image" style={{paddingRight: '12px'}}>
+                        <a className="fancybox" rel="gallery1" href={image.image}>
+                            <img style={{marginTop: '10px'}} src={image.cropping_url}/>
+                        </a>
+                    </div> 
+                );
+            };
+        });
         return (
             <div className="product_view">
                 <div className="col-xs-12 col-sm-5 col-md-5 product_fast_view">
-                    <img 
-                        onClick={this.showPhoto} 
-                        src={this.props.product.images[0].cropping_url_cart} 
-                        alt="" 
-                        style={{cursor: "pointer"}}/>
+                    <div className="row">
+                        <div className="col-xs-12">
+                            <a className="fancybox" rel="gallery1" href={this.props.product.images[0].image}>
+                                <img src={this.props.product.images[0].cropping_url_cart}/>
+                            </a>
+                        </div>
+                        <div className="product_small_image_container">
+                            {images}
+                        </div>
+                    </div>
                 </div>
                 <div className="col-xs-12 col-sm-7 col-md-7 product_fast_view">
                     <div className="row">

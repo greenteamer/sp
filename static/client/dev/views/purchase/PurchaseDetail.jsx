@@ -56,15 +56,21 @@ var PurchaseView = React.createClass({
         var id = location.pathname.slice(-2,-1);                
         PurchasesActions.getCurrentPurchaseDetail(id);
         PurchasesActions.setViewPage('purchase');
+        FaqActions.getCurrentUser();
+        PurchasesActions.getOrganizers();
 
         PurchasesStore.bind('chengePurchaseDetail', this.chengePurchase);        
         PurchasesStore.bind( 'change', this.collectionChanged ); 
-        PurchasesStore.bind( 'filterTrigger', this.filterTrigger );  
+        PurchasesStore.bind( 'filterTrigger', this.filterTrigger ); 
+        FaqStore.bind( 'change', this.userChanged );   
+        PurchasesStore.bind('organizersTrigger', this.changeOrganizers);
     },
     componentWillUnmount: function  () {        
         PurchasesStore.unbind('chengePurchaseDetail', this.chengePurchase);
         PurchasesStore.unbind( 'change', this.collectionChanged );
         PurchasesStore.unbind( 'filterTrigger', this.filterTrigger );
+        FaqStore.unbind( 'change', this.userChanged );  
+        PurchasesStore.unbind('organizersTrigger', this.changeOrganizers);
     },
     collectionChanged: function () {
         this.setState({
@@ -74,6 +80,36 @@ var PurchaseView = React.createClass({
     filterTrigger: function () {
         this.setState({
             filtered_collection: PurchasesStore.filter.filtered_collection
+        });
+    },
+    userChanged: function () {
+        this.setState({
+            user: FaqStore.user,
+            collection: PurchasesStore.collection
+        });                 
+    },
+    changeOrganizers: function () {
+        // при получении всех профайлов находим профайл текущего пользователя state.user        
+        tmp_user = this.state.user;
+        console.log('organizer_profiles: ', PurchasesStore.organizer_profiles); 
+        tmp_profile = _.find(PurchasesStore.organizer_profiles, function (profile) {
+            console.log('profile in organizer_profiles: ', profile);    
+            return profile.user = tmp_user.id;
+        });
+        // 
+        tmp_this_purchase = this.state.collection[0];
+        console.log('find profile in organizer_profiles: ', tmp_profile);
+        var check = _.some(tmp_profile.purchases, function (purchase) {
+            // проходимя по всем его закупкам (tmp_profile.purchases) и возвращяем true в check если 
+            // id текущей закупки хоть однажды совпадет с id одной из его закупок
+            return purchase.id == tmp_this_purchase.id;
+        });
+
+        // меняем состояние компонента
+        console.log('is_owner: ', check);
+        this.setState({
+            organizers: PurchasesStore.organizer_profiles,
+            is_owner: check
         });
     },
     render: function () {
@@ -95,6 +131,11 @@ var PurchaseView = React.createClass({
                     <div>                    
                         <Purchases collection={this.state.collection} view_state={this.state.view_state}/>
                         <h2>Комментарии</h2>
+                        <FAQ 
+                            purchase={this.state.collection[0]}
+                            product={null}
+                            user={this.state.user}
+                            is_owner={this.state.is_owner}/>
                     </div>
                 </IF>                
                 <IF condition={this.state.filtered_collection.length != 0}>

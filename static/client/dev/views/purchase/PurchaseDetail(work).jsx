@@ -76,7 +76,8 @@ var PurchaseView = React.createClass({
         tmp_this_purchase = this.state.purchase[0];
         console.log('find profile in organizer_profiles: ', tmp_profile);
         var check = _.some(tmp_profile.purchases, function (purchase) {
-            // проходимя по всем его закупкам (tmp_profile.purchases) и возвращяем true в check если id текущей закупки хоть однажды совпадет с id одной из его закупок
+            // проходимя по всем его закупкам (tmp_profile.purchases) и возвращяем true в check если 
+            // id текущей закупки хоть однажды совпадет с id одной из его закупок
             return purchase.id == tmp_this_purchase.id;
         });
 
@@ -86,7 +87,6 @@ var PurchaseView = React.createClass({
             organizers: PurchasesStore.organizer_profiles,
             is_owner: check
         });
-
     },
     userChanged: function () {
         this.setState({
