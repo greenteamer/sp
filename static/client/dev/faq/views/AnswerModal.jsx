@@ -31,8 +31,8 @@ var AnswerModal = React.createClass({
     },
     _DialogSubmit: function (e) {
     	e.preventDefault();
-    	console.log('AnswerModal this.refs.text_ref.getValue(): ', this.refs.text_ref.getValue());
-    	console.log('AnswerModal this.props.id: ', this.props.id);
+    	// console.log('AnswerModal this.refs.text_ref.getValue(): ', this.refs.text_ref.getValue());
+    	// console.log('AnswerModal this.props.id: ', this.props.id);
         FaqActions.answer({
         	id: this.props.id,
             text: this.refs.text_ref.getValue()
@@ -80,7 +80,7 @@ var AnswerModal = React.createClass({
 					</div>
 					{modalAnswer}
 				</div>
-        )        
+        );
     }
 });
 

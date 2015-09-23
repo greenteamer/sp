@@ -103,21 +103,21 @@ var Breadcrumbs = React.createClass({
 		PurchasesStore.unbind('get-product', this.productReceived);
 	},
 	changeCollection: function () {
-		console.log('breadcrumbs collection:', PurchasesStore.collection);
+		// console.log('breadcrumbs collection:', PurchasesStore.collection);
 		PurchasesActions.getCategoriesTree();
 		this.setState({
 			collection: PurchasesStore.collection
 		});				
 	},
 	productReceived: function () {
-		console.log('breadcrumbs product:', PurchasesStore.product);
+		// console.log('breadcrumbs product:', PurchasesStore.product);
 		PurchasesActions.getCategoriesTree();
 		this.setState({
 			product: PurchasesStore.product
 		});			
 	},
 	categoryReceived: function () {
-		console.log('breadcrumbs categories:', PurchasesStore.categories);
+		// console.log('breadcrumbs categories:', PurchasesStore.categories);
 		this.setState({
 			categories: PurchasesStore.categories
 		});		
@@ -130,13 +130,13 @@ var Breadcrumbs = React.createClass({
         // Проверяем где находимся на момент загрузки страницы
         // проверка что это категория
         var is_category = parse_url.slice(0,8) == 'category';
-        console.log('is_category: ', is_category);
+        // console.log('is_category: ', is_category);
         // проверка что это закупка
         var is_purchase = url.split('/')[1] == 'purchases';
-        console.log('is_purchase: ', is_purchase);
+        // console.log('is_purchase: ', is_purchase);
         // проверка что это продукт
         var is_product = url.split('/')[1] == 'products';
-        console.log('is_product: ', is_product);
+        // console.log('is_product: ', is_product);
         
 		if (url == '/') {
         	this.setState({

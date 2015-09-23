@@ -80,7 +80,7 @@ var QuestionModal = React.createClass({
             		<button onClick={this._showModal} className="btn btn-primary">Задать вопрос</button>
 					{modalQuestion}
 				</div>
-        )        
+        );
     }
 });
 

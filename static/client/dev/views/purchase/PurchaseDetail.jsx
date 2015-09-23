@@ -41,6 +41,7 @@ var PurchaseView = React.createClass({
         return {
             view_state: PurchasesStore.view_state,            
             collection: [],
+            questions: [],
             filtered_collection: [],
             organizers: [],
             user: {},
@@ -64,6 +65,7 @@ var PurchaseView = React.createClass({
         PurchasesStore.bind( 'filterTrigger', this.filterTrigger ); 
         FaqStore.bind( 'change', this.userChanged );   
         PurchasesStore.bind('organizersTrigger', this.changeOrganizers);
+        FaqStore.bind( 'questionsChange', this.questionsChange );   
     },
     componentWillUnmount: function  () {        
         PurchasesStore.unbind('chengePurchaseDetail', this.chengePurchase);
@@ -71,6 +73,7 @@ var PurchaseView = React.createClass({
         PurchasesStore.unbind( 'filterTrigger', this.filterTrigger );
         FaqStore.unbind( 'change', this.userChanged );  
         PurchasesStore.unbind('organizersTrigger', this.changeOrganizers);
+        FaqStore.unbind( 'questionsChange', this.questionsChange );   
     },
     collectionChanged: function () {
         this.setState({
@@ -89,6 +92,7 @@ var PurchaseView = React.createClass({
         });                 
     },
     changeOrganizers: function () {
+        FaqActions.getFaqTree();
         // при получении всех профайлов находим профайл текущего пользователя state.user        
         tmp_user = this.state.user;
         console.log('organizer_profiles: ', PurchasesStore.organizer_profiles); 
@@ -112,6 +116,18 @@ var PurchaseView = React.createClass({
             is_owner: check
         });
     },
+    questionsChange: function () {
+        console.log('FAQ start questionsChange, FaqStore.questions: ', FaqStore.questions);
+        var purchase_id = this.state.collection[0].id;
+        console.log('FAQ start questionsChange purchase_id: ', purchase_id);
+        var tmp_questions = _.filter(FaqStore.questions, function (question) {
+            return question.purchase == purchase_id;
+        });
+        console.log('FAQ questionsChange tmp_questions: ', tmp_questions);
+        this.setState({
+            questions: tmp_questions
+        });    
+    },
     render: function () {
         // console.log('PurchaseDetail render filtered_collection.length: ', this.state.filtered_collection.length);
         var left = $('.container').width()/2;
@@ -131,7 +147,8 @@ var PurchaseView = React.createClass({
                     <div>                    
                         <Purchases collection={this.state.collection} view_state={this.state.view_state}/>
                         <h2>Комментарии</h2>
-                        <FAQ 
+                        <FAQ
+                            questions={this.state.questions}
                             purchase={this.state.collection[0]}
                             product={null}
                             user={this.state.user}

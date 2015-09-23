@@ -248,7 +248,7 @@ PurchasesDispatcher.register(function (payload) {
                 dataType: 'json',
                 cache: false,
                 success: (function(data){
-                    console.log('Store get-organizers data: ', data);
+                    // console.log('Store get-organizers data: ', data);
                     PurchasesStore.organizer_profiles = data;
                     PurchasesStore.organizerCollectionChange();
                 }).bind(this),

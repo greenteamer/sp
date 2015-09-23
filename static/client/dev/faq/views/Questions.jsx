@@ -65,6 +65,7 @@ var Question = React.createClass({
 
 var QuestionList = React.createClass({
 	render: function () {
+		// console.log('QuestionList this.props.collection: ', this.props.collection);
 		var user = this.props.user;
 		var is_owner = this.props.is_owner;
 		items = this.props.collection.map(function (item){
@@ -73,11 +74,13 @@ var QuestionList = React.createClass({
 			);
 		});
 		return (			
-			<div className="row">				
-				<QuestionModal 
-					purchase={this.props.purchase} 
-					product={this.props.product} 
-					user={this.props.user}/>
+			<div className="row">
+				<div className="col-xs-12">				
+					<QuestionModal 
+						purchase={this.props.purchase} 
+						product={this.props.product} 
+						user={this.props.user}/>
+				</div>
 				{items}
 			</div>
 		);

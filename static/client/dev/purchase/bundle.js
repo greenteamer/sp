@@ -480,7 +480,7 @@ FaqDispatcher.register(function (payload) {
 
         case 'post-question-checked':
             var csrftoken = Cookies.get('csrftoken');
-            console.log(payload.question);
+            // console.log(payload.question);
             $.post(
                 "/api/v1/post-question-checked/",
                 {
@@ -554,8 +554,8 @@ var AnswerModal = React.createClass({displayName: "AnswerModal",
     },
     _DialogSubmit: function (e) {
     	e.preventDefault();
-    	console.log('AnswerModal this.refs.text_ref.getValue(): ', this.refs.text_ref.getValue());
-    	console.log('AnswerModal this.props.id: ', this.props.id);
+    	// console.log('AnswerModal this.refs.text_ref.getValue(): ', this.refs.text_ref.getValue());
+    	// console.log('AnswerModal this.props.id: ', this.props.id);
         FaqActions.answer({
         	id: this.props.id,
             text: this.refs.text_ref.getValue()
@@ -603,7 +603,7 @@ var AnswerModal = React.createClass({displayName: "AnswerModal",
 					), 
 					modalAnswer
 				)
-        )        
+        );
     }
 });
 
@@ -665,6 +665,8 @@ var QuestionList = require('./Questions.jsx');
 var FaqActions = require('../actions/FaqActions.js');
 var FaqStore = require('../stores/FaqStore.js');
 
+var IF = require('../../views/customhelpers/IF.jsx');
+
 
 var App = React.createClass({displayName: "App",
 	getInitialState: function () {
@@ -673,37 +675,39 @@ var App = React.createClass({displayName: "App",
         };
     },
     
-    componentDidMount: function () {       
-        FaqActions.getFaqTree();        
-        FaqStore.bind( 'questionsChange', this.questionsChange );            
+    componentDidMount: function () {                     
     },
-    componentWillUnmount: function () {
-        FaqStore.unbind( 'questionsChange', this.questionsChange );        
+    componentWillUnmount: function () {        
     },
     questionsChange: function () {
+        // console.log('FAQ start questionsChange, FaqStore.questions: ', FaqStore.questions);
         var purchase_id = this.props.purchase.id;
+        // console.log('FAQ start questionsChange purchase_id: ', purchase_id);
         tmp_questions = _.filter(FaqStore.questions, function (question) {
             return question.purchase == purchase_id;
         });
+        // console.log('FAQ questionsChange tmp_questions: ', tmp_questions);
         this.setState({
             questions: tmp_questions
         });          
     },    
 	render: function () {
 		return (
-			React.createElement(QuestionList, {
-                collection: this.state.questions, 
-                user: this.props.user, 
-                purchase: this.props.purchase, 
-                product: this.props.product, 
-                is_owner: this.props.is_owner})
+            React.createElement(IF, {condition: this.props.questions}, 
+    			React.createElement(QuestionList, {
+                    collection: this.props.questions, 
+                    user: this.props.user, 
+                    purchase: this.props.purchase, 
+                    product: this.props.product, 
+                    is_owner: this.props.is_owner})
+            )
 		);
 	}
 });
 
 module.exports = App;
 
-},{"../actions/FaqActions.js":3,"../stores/FaqStore.js":6,"./Questions.jsx":11,"jquery":44,"react":387,"underscore":388}],10:[function(require,module,exports){
+},{"../../views/customhelpers/IF.jsx":22,"../actions/FaqActions.js":3,"../stores/FaqStore.js":6,"./Questions.jsx":11,"jquery":44,"react":387,"underscore":388}],10:[function(require,module,exports){
 var React = require('react');
 
 var FlatButton = require('material-ui').FlatButton;
@@ -786,7 +790,7 @@ var QuestionModal = React.createClass({displayName: "QuestionModal",
             		React.createElement("button", {onClick: this._showModal, className: "btn btn-primary"}, "Задать вопрос"), 
 					modalQuestion
 				)
-        )        
+        );
     }
 });
 
@@ -861,6 +865,7 @@ var Question = React.createClass({displayName: "Question",
 
 var QuestionList = React.createClass({displayName: "QuestionList",
 	render: function () {
+		// console.log('QuestionList this.props.collection: ', this.props.collection);
 		var user = this.props.user;
 		var is_owner = this.props.is_owner;
 		items = this.props.collection.map(function (item){
@@ -869,11 +874,13 @@ var QuestionList = React.createClass({displayName: "QuestionList",
 			);
 		});
 		return (			
-			React.createElement("div", {className: "row"}, 				
-				React.createElement(QuestionModal, {
-					purchase: this.props.purchase, 
-					product: this.props.product, 
-					user: this.props.user}), 
+			React.createElement("div", {className: "row"}, 
+				React.createElement("div", {className: "col-xs-12"}, 				
+					React.createElement(QuestionModal, {
+						purchase: this.props.purchase, 
+						product: this.props.product, 
+						user: this.props.user})
+				), 
 				items
 			)
 		);
@@ -1157,7 +1164,7 @@ PurchasesDispatcher.register(function (payload) {
                 dataType: 'json',
                 cache: false,
                 success: (function(data){
-                    console.log('Store get-organizers data: ', data);
+                    // console.log('Store get-organizers data: ', data);
                     PurchasesStore.organizer_profiles = data;
                     PurchasesStore.organizerCollectionChange();
                 }).bind(this),
@@ -1897,21 +1904,21 @@ var Breadcrumbs = React.createClass({displayName: "Breadcrumbs",
 		PurchasesStore.unbind('get-product', this.productReceived);
 	},
 	changeCollection: function () {
-		console.log('breadcrumbs collection:', PurchasesStore.collection);
+		// console.log('breadcrumbs collection:', PurchasesStore.collection);
 		PurchasesActions.getCategoriesTree();
 		this.setState({
 			collection: PurchasesStore.collection
 		});				
 	},
 	productReceived: function () {
-		console.log('breadcrumbs product:', PurchasesStore.product);
+		// console.log('breadcrumbs product:', PurchasesStore.product);
 		PurchasesActions.getCategoriesTree();
 		this.setState({
 			product: PurchasesStore.product
 		});			
 	},
 	categoryReceived: function () {
-		console.log('breadcrumbs categories:', PurchasesStore.categories);
+		// console.log('breadcrumbs categories:', PurchasesStore.categories);
 		this.setState({
 			categories: PurchasesStore.categories
 		});		
@@ -1924,13 +1931,13 @@ var Breadcrumbs = React.createClass({displayName: "Breadcrumbs",
         // Проверяем где находимся на момент загрузки страницы
         // проверка что это категория
         var is_category = parse_url.slice(0,8) == 'category';
-        console.log('is_category: ', is_category);
+        // console.log('is_category: ', is_category);
         // проверка что это закупка
         var is_purchase = url.split('/')[1] == 'purchases';
-        console.log('is_purchase: ', is_purchase);
+        // console.log('is_purchase: ', is_purchase);
         // проверка что это продукт
         var is_product = url.split('/')[1] == 'products';
-        console.log('is_product: ', is_product);
+        // console.log('is_product: ', is_product);
         
 		if (url == '/') {
         	this.setState({
@@ -2938,6 +2945,13 @@ var Tab = require('material-ui').Tab;
 var ThemeManager = require('material-ui/lib/styles/theme-manager')();
 var Colors = require('material-ui').Styles.Colors;
 
+// for FAQ
+var FaqStore = require('../../faq/stores/FaqStore.js');
+var FaqActions = require('../../faq/actions/FaqActions.js');
+var FAQ = require('../../faq/views/App.jsx');
+
+var $ = require('jquery');
+var _ = require('underscore');
 
 function emptyObject(obj) {
     //вспомогательная функция проверяет пуст ли объект
@@ -2957,17 +2971,131 @@ var ProductFastView = React.createClass({displayName: "ProductFastView",
             muiTheme: ThemeManager.getCurrentTheme()
         };
     },
-    componentWillMount: function(){
+    getInitialState: function () {
+        return {
+            purchase: {},
+            questions: [],
+            user: {},
+            organizers: [],
+            
+            // для проверки может ли user отвечать на комментарии
+            is_owner: false,
+            
+            // для изменения стиля по scroll для формы
+            fixed_style: {
+                position: 'relative',
+                top: '0px'
+            }
+
+        };
+    },
+    componentWillMount: function(){        
         ThemeManager.setPalette({
            accent1Color: Colors.amber400
         });
-    },
-    showPhoto: function () {
-        photo = this.props.product.images[0];
-        PurchasesActions.showPhoto(photo);
-        console.log('showPhoto start');
+        FaqActions.getCurrentUser();        
+        FaqStore.bind( 'change', this.userChanged );   
+        PurchasesStore.bind('organizersTrigger', this.changeOrganizers);
+        FaqStore.bind( 'questionsChange', this.questionsChange );      
     },    
+    componentWillUnmount: function  () {               
+        FaqStore.unbind( 'change', this.userChanged );  
+        PurchasesStore.unbind('organizersTrigger', this.changeOrganizers);
+        FaqStore.unbind( 'questionsChange', this.questionsChange );
+    },
+    componentDidMount: function () {
+        window.addEventListener('scroll', this.handleScroll);  
+    },
+    componentDidUnmount: function () {
+        window.removeEventListener('scroll', this.handleScroll);    
+    },
+    handleScroll: function () {
+        // изменяем позицию формы по скролу
+        var top = $(document).scrollTop();
+        var fixed_style = {}; 
+        if (top < 750) {
+            fixed_style = {
+                position: 'relative',
+                top: '0px'            
+            };
+        } else {
+            fixed_style = {
+                position: 'fixed',
+                top: '50px',             
+                width: '250px',
+                zIndex: 100,
+                right: '15px'
+            };
+        }
+        this.setState({
+            fixed_style : fixed_style
+        });
+    },  
+    userChanged: function () {
+        PurchasesActions.getOrganizers();
+        this.setState({
+            user: FaqStore.user
+        });                 
+    },
+    changeOrganizers: function () {
+        // только когда получили профили делаем get запрос на список вопросов
+        FaqActions.getFaqTree();
+        // при получении всех профайлов находим профайл текущего пользователя state.user        
+        tmp_user = this.state.user;
+        // console.log('organizer_profiles: ', PurchasesStore.organizer_profiles); 
+        tmp_profile = _.find(PurchasesStore.organizer_profiles, function (profile) {
+            // console.log('profile in organizer_profiles: ', profile);    
+            return profile.user = tmp_user.id;
+        });
+
+        // находим текущую закупку
+        var tmp_this_purchase = {};
+        var tmp_product = this.props.product;
+        _.each(PurchasesStore.categories, function (cat) {
+            _.each(cat.category_purchase, function (purch) {
+                _.each(purch.catalogs, function (catalog) {
+                    if (catalog.id == tmp_product.catalog) {
+                        tmp_this_purchase = purch;
+                    };
+                });
+            });
+        });    
+
+
+        // console.log('find profile in PurchasesStore.collection: ', PurchasesStore.collection);
+        var check = _.some(tmp_profile.purchases, function (purchase) {
+            // проходимя по всем его закупкам (tmp_profile.purchases) и возвращяем true в check если 
+            // id текущей закупки хоть однажды совпадет с id одной из его закупок
+            return purchase.id == tmp_this_purchase.id;
+        });
+
+        // меняем состояние компонента
+        // console.log('is_owner: ', check);
+        this.setState({
+            purchase: tmp_this_purchase,
+            organizers: PurchasesStore.organizer_profiles,
+            is_owner: check
+        });
+    },
+    questionsChange: function () {
+        // console.log('FAQ start questionsChange, FaqStore.questions: ', FaqStore.questions);
+        var purchase_id = this.state.purchase.id;
+        // console.log('FAQ start questionsChange purchase_id: ', purchase_id);
+        var product_id = this.props.product.id;
+        var tmp_questions = _.filter(FaqStore.questions, function (question) {
+            return (question.purchase == purchase_id && question.product == product_id);
+        });
+        // console.log('FAQ questionsChange tmp_questions: ', tmp_questions);
+        this.setState({
+            questions: tmp_questions
+        });    
+    },
     render: function(){
+        // console.log('ProductDetailView start render');
+        // console.log('ProductDetailView this.props.product', this.props.product);
+        // console.log('ProductDetailView PurchasesStore.categories', PurchasesStore.categories);
+        // console.log('ProductDetailView this.state.purchase', this.state.purchase);
+        // console.log('ProductDetailView this.state.questions', this.state.questions);
         var description = this.props.product.description;
         description = (description.substr(0, 350));
         var tabsStyle = {
@@ -2988,6 +3116,7 @@ var ProductFastView = React.createClass({displayName: "ProductFastView",
                 );
             };
         });
+
         return (
             React.createElement("div", {className: "product_view"}, 
                 React.createElement("div", {className: "col-xs-12 col-sm-5 col-md-5 product_fast_view"}, 
@@ -3013,7 +3142,9 @@ var ProductFastView = React.createClass({displayName: "ProductFastView",
                             )
                         ), 
                         React.createElement("div", {className: "col-xs-12 col-sm-12 col-md-12"}, 
-                            React.createElement(ProductDetailForm, {product: this.props.product, cpp_catalog: this.props.product.cpp_catalog})
+                            React.createElement("div", {style: this.state.fixed_style}, 
+                                React.createElement(ProductDetailForm, {product: this.props.product, cpp_catalog: this.props.product.cpp_catalog})
+                            )
                         ), 
                         React.createElement("div", {className: "col-xs-12 col-sm-12 col-md-12"}, 
                             React.createElement(Benefits, null)
@@ -3034,20 +3165,20 @@ var ProductFastView = React.createClass({displayName: "ProductFastView",
                             React.createElement(Tab, {label: "Комментарии", style: tabsStyle.tab}, 
                                 React.createElement("div", null, 
                                     React.createElement("h2", null, "Комментарии"), 
-                                    React.createElement("p", null, 
-                                        "This is another example of a tab template!"
-                                    ), 
-                                    React.createElement("p", null, 
-                                        "Fair warning - the next tab routes to home!"
-                                    )
+                                    React.createElement(FAQ, {
+                                        questions: this.state.questions, 
+                                        purchase: this.state.purchase, 
+                                        product: this.props.product, 
+                                        user: this.state.user, 
+                                        is_owner: this.state.is_owner})
                                 )
                             )
                         )
                     )
                 ), 
                 React.createElement(PhotoModal, {image: this.props.product.images[0]})
-            )  
-        )
+            )
+        );
 
     }
 });
@@ -3055,7 +3186,7 @@ var ProductFastView = React.createClass({displayName: "ProductFastView",
 
 module.exports = ProductFastView;
 
-},{"../../actions/PurchasesActions.js":1,"../../stores/PurchasesStore.js":13,"../Benefits.jsx":14,"./PhotoModal.jsx":26,"./ProductDetailForm.jsx":27,"material-ui":80,"material-ui/lib/styles/theme-manager":117,"react":387}],29:[function(require,module,exports){
+},{"../../actions/PurchasesActions.js":1,"../../faq/actions/FaqActions.js":3,"../../faq/stores/FaqStore.js":6,"../../faq/views/App.jsx":9,"../../stores/PurchasesStore.js":13,"../Benefits.jsx":14,"./PhotoModal.jsx":26,"./ProductDetailForm.jsx":27,"jquery":44,"material-ui":80,"material-ui/lib/styles/theme-manager":117,"react":387,"underscore":388}],29:[function(require,module,exports){
 var React = require('react');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
 var PurchasesStore = require('../../stores/PurchasesStore.js');
@@ -3602,6 +3733,7 @@ var PurchaseView = React.createClass({displayName: "PurchaseView",
         return {
             view_state: PurchasesStore.view_state,            
             collection: [],
+            questions: [],
             filtered_collection: [],
             organizers: [],
             user: {},
@@ -3625,6 +3757,7 @@ var PurchaseView = React.createClass({displayName: "PurchaseView",
         PurchasesStore.bind( 'filterTrigger', this.filterTrigger ); 
         FaqStore.bind( 'change', this.userChanged );   
         PurchasesStore.bind('organizersTrigger', this.changeOrganizers);
+        FaqStore.bind( 'questionsChange', this.questionsChange );   
     },
     componentWillUnmount: function  () {        
         PurchasesStore.unbind('chengePurchaseDetail', this.chengePurchase);
@@ -3632,6 +3765,7 @@ var PurchaseView = React.createClass({displayName: "PurchaseView",
         PurchasesStore.unbind( 'filterTrigger', this.filterTrigger );
         FaqStore.unbind( 'change', this.userChanged );  
         PurchasesStore.unbind('organizersTrigger', this.changeOrganizers);
+        FaqStore.unbind( 'questionsChange', this.questionsChange );   
     },
     collectionChanged: function () {
         this.setState({
@@ -3650,6 +3784,7 @@ var PurchaseView = React.createClass({displayName: "PurchaseView",
         });                 
     },
     changeOrganizers: function () {
+        FaqActions.getFaqTree();
         // при получении всех профайлов находим профайл текущего пользователя state.user        
         tmp_user = this.state.user;
         console.log('organizer_profiles: ', PurchasesStore.organizer_profiles); 
@@ -3673,6 +3808,18 @@ var PurchaseView = React.createClass({displayName: "PurchaseView",
             is_owner: check
         });
     },
+    questionsChange: function () {
+        console.log('FAQ start questionsChange, FaqStore.questions: ', FaqStore.questions);
+        var purchase_id = this.state.collection[0].id;
+        console.log('FAQ start questionsChange purchase_id: ', purchase_id);
+        var tmp_questions = _.filter(FaqStore.questions, function (question) {
+            return question.purchase == purchase_id;
+        });
+        console.log('FAQ questionsChange tmp_questions: ', tmp_questions);
+        this.setState({
+            questions: tmp_questions
+        });    
+    },
     render: function () {
         // console.log('PurchaseDetail render filtered_collection.length: ', this.state.filtered_collection.length);
         var left = $('.container').width()/2;
@@ -3693,6 +3840,7 @@ var PurchaseView = React.createClass({displayName: "PurchaseView",
                         React.createElement(Purchases, {collection: this.state.collection, view_state: this.state.view_state}), 
                         React.createElement("h2", null, "Комментарии"), 
                         React.createElement(FAQ, {
+                            questions: this.state.questions, 
                             purchase: this.state.collection[0], 
                             product: null, 
                             user: this.state.user, 

@@ -133,7 +133,7 @@ FaqDispatcher.register(function (payload) {
 
         case 'post-question-checked':
             var csrftoken = Cookies.get('csrftoken');
-            console.log(payload.question);
+            // console.log(payload.question);
             $.post(
                 "/api/v1/post-question-checked/",
                 {
