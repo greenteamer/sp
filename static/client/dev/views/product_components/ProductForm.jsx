@@ -17,6 +17,9 @@ var snackbar = require('../../../lib/snackbar.js');
 
 
 var Properties = React.createClass({
+    test: function () {
+        
+    },
     getInitialState: function() {
         var cpp_properties = [];
         this.props.cpp_catalog.forEach(function(cpp_property){
@@ -33,7 +36,7 @@ var Properties = React.createClass({
             cpp_properties: cpp_properties,
             product: product,
             chacked: false
-        }
+        };
     },
     childContextTypes: {
         muiTheme: React.PropTypes.object
@@ -118,14 +121,14 @@ var Properties = React.createClass({
             }
 
             return (
-                <Select
+                <Select                    
                     name="property_value"
                     ref="my_select"
                     value={tmp_name}
                     options={options}
                     onChange={boundChange}
                      />
-            )
+            );
         });
 
         return (
@@ -143,7 +146,7 @@ var Properties = React.createClass({
                 </div>
                 <button type="button" className="btn btn-primary full-width" onClick={this.addToCart}>В корзину</button>
             </div>
-        )
+        );
     }
 });
 
@@ -155,7 +158,7 @@ var ProductForm = React.createClass({
                 <input type="hidden" name="product" value={this.props.product.id} />
                 <Properties cpp_catalog={this.props.cpp_catalog} product={this.props.product}/>
             </div>
-        )
+        );
     }
 });
 

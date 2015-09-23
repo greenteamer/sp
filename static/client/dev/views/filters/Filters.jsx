@@ -9,8 +9,77 @@ var PurchasesStore = require('../../stores/PurchasesStore.js');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
 
 var Methods = require('../customhelpers/Methods.js');
+var IF = require('../customhelpers/IF.jsx');
+var FiltFunc = require('../customhelpers/FilterFunctions.js');
 
 var ReactSlider = require('react-slider');
+
+
+var CategoryFilter = React.createClass({
+    getInitialState: function () {
+        return {
+            categories: [],
+            nested_categories: []
+        };
+    },
+    componentWillMount: function () {        
+        PurchasesActions.getCategoriesTree();
+        PurchasesStore.bind('categoryReceived', this.setChildrenCategory);
+    },
+    componentWillUnmount: function () {                
+        PurchasesStore.unbind('categoryReceived', this.setChildrenCategory);
+    },
+    setChildrenCategory: function () {
+        // получаем slug категории по url      
+        var current_category_slug = Methods.getCategorySlug();            
+
+        // получаем все вложенные категории этой категории
+        tmp_nested_categories = Methods.getAllNestedCategories(PurchasesStore.categories, current_category_slug);
+        this.setState({
+            categories: PurchasesStore.categories,
+            nested_categories: tmp_nested_categories
+        });  
+    },
+    changeCategoryFilter: function (e) {
+        console.log('cat filter: ', e.target.id);
+        var category_slug = e.target.id;          
+        PurchasesActions.filterByCategory(category_slug);
+        // var category_slug = e.target.id;
+        // var category = _.find(this.state.nested_categories, function (cat) {
+        //     return cat.slug == category_slug;
+        // });
+
+        // var cat_purchases = Methods.getPurchasesFromCategories(this.state.categories, category_slug);
+
+        // var tmp_filtered_collection = FiltFunc.filterByCategory(cat_purchases, this.props.filtered_сollection);
+
+        // PurchasesActions.filterCollection(tmp_filtered_collection);        
+    },     
+    render: function () {
+        // биндим функцию что бы она была доступна внутри map
+        var bindFun = this.changeCategoryFilter;
+
+        var nested_categories = this.state.nested_categories.map(function (tmp_cat) {
+            // генерируем кнопки с фильтрами
+            var link = "/category-" + tmp_cat.slug;
+            return (
+                <button onClick={bindFun} id={tmp_cat.slug} className="btn btn-primary">                    
+                    {tmp_cat.name}
+                </button>
+            );
+        });
+        return (
+            <div>
+                <IF condition={this.state.nested_categories.length > 0}>
+                    <div> 
+                        <h3 className="font-decor">Фильтровать по категориям</h3>
+                        {nested_categories}
+                    </div>
+                </IF>
+            </div>
+        );
+    }
+});
 
 
 var Filters = React.createClass({
@@ -23,56 +92,62 @@ var Filters = React.createClass({
         };
     },
     getInitialState: function  () {
+        // values - для отслеживания изменений бегунков и отрисовки их текущих значений
+        // flat_collection - создаем из сложной коллекции категорий массив продуктов для фильтрации
+        // filtered_сollection - отфильтрованный результат (используется другими фильтрами)
     	return {
-    		collection: [],
+    		flat_collection: [],
     		filtered_сollection: [],
-    		values: [100, 1000]
-    	}	
+    		values: []
+    	};
     },
     componentWillMount: function  () {
     	PurchasesStore.bind( 'change', this.collectionChanged );
     },
-    collectionChanged: function () {
-        // var tmp_collection = [];
-        // tmp_collection.push(PurchasesStore.collection);    
-
+    componentWillUnmount: function () {
+        PurchasesStore.unbind( 'change', this.collectionChanged );
+    },
+    collectionChanged: function () { 
+        // УСТАНАВЛИВАЕМ ЗНАЧЕНИЯ СОСТОЯНИЯ КОМПОНЕНТА
         // вызываем вспомогательный метод для преобразования массива категорий в
         // простой массив продуктов (используется файл customhelpers/Methods.js)
-        // tmp_filter_collection = Methods.convertCategoriesToFlatProducts(tmp_collection);
-        tmp_filter_collection = Methods.convertCategoriesToFlatProducts(PurchasesStore.collection);
-
+        // метод вызывается только когда меняется основная коллекция, скорее всего это перезагрузка страницы
+        // flat_сollection - создаем примитивизированный вариант основной коллекции collection
+        // console.log('filter for categoiries PurchasesStore.collection:', PurchasesStore.collection);
+        flat_purchases_collection = Methods.convertCategoriesToFlatProducts(PurchasesStore.collection);
+        var product_max_price = _.max(flat_purchases_collection, function (product) {
+            //получаем продукт с максимальной ценой
+            return product.price;
+        });
+        PurchasesActions.filterByPrice([0, product_max_price.price + 100]);
 		this.setState({
-            collection: tmp_collection,
-            filtered_сollection: tmp_filter_collection
+            flat_collection: flat_purchases_collection,
+            filtered_сollection: flat_purchases_collection,
+            values: [0, product_max_price.price + 100]
         });
     },    
-    onAfterChange: function  () {
-        var values = this.refs.reactSlider.getValue();
-        console.log('test slider', values);
-        var tmp_filtered_сollection = _.filter(this.state.filtered_сollection, function (product) {
-            return product.price >= values[0] && product.price <= values[1] ;
-        });
-        var sorted_collection = _.sortBy(tmp_filtered_сollection, function(product){ return product.price; });
-        PurchasesActions.filterCollection(sorted_collection);        
+    onAfterChange: function () {
+        var values = this.refs.reactSlider.getValue();        
+        PurchasesActions.filterByPrice(values);
     },
     setValues: function () {
+        // МЕНЯЕМ ЗАНЧЕНИЯ БЕГУНКОВ СЛАЙДЕРА НА АКТУАЛЬНЫЕ
         var values = this.refs.reactSlider.getValue();
         this.setState({
             values: values
         });
     },
 	render: function  () {		
-		var product_max_price = _.max(this.state.filtered_сollection, function (product) {
+		var product_max_price = _.max(this.state.flat_collection, function (product) {
 			//получаем продукт с максимальной ценой
 			return product.price;
-		});
-        console.log('max price: ', product_max_price);
-		return (
+		});     
+		return (            
 			<div>
-				<h3 className="font-decor">Фильтры</h3>            
+				<h3 className="font-decor">Фильтровать по цене</h3>            
                 <ReactSlider 
-                        ref="reactSlider"
-                        defaultValue={[100, 1000]}
+                        ref="reactSlider"                        
+                        defaultValue={[0, 100000]}
                         max={product_max_price.price+100}
                         step={100}
                         minDistance={100}
@@ -82,9 +157,10 @@ var Filters = React.createClass({
                     <div className="my-handle">от: {this.state.values[0]} р.</div>
                     <div className="my-handle">до: {this.state.values[1]} р.</div>                    
                 </ReactSlider>
-                
+
+                <CategoryFilter />                
 			</div>
-		)
+		);
 	}
 });
 

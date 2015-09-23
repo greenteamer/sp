@@ -235,30 +235,6 @@ class PurchaseStatusLinks(models.Model):
             force_insert, force_update, using, update_fields)
 
 
-class PurchaseQuestion(models.Model):
-    purchase = models.ForeignKey(Purchase, verbose_name=u'Закупка')
-    text = RichTextField(verbose_name=u'Задайте вопрос')
-    user = models.ForeignKey(User, verbose_name=u'Автор вопроса', default=1)
-    created_at = models.DateTimeField(
-        verbose_name=u'Создан', null=True, auto_now_add=True)
-
-    def user_profile(self):
-        return getProfile(self.user)
-
-    def get_answer(self):
-        return PurchaseAnswer.objects.filter(question_id=self.id)
-
-class PurchaseAnswer(models.Model):
-    question = models.ForeignKey(PurchaseQuestion, verbose_name=u'Напишите ответ')
-    text = RichTextField(verbose_name=u'Добавьте ответ')
-    user = models.ForeignKey(User, verbose_name=u'Автор ответа', default=1)
-    created_at = models.DateTimeField(
-        verbose_name=u'Создан', null=True, auto_now_add=True)
-
-    def user_profile(self):
-        return getProfile(self.user)
-
-
 class Catalog(models.Model):
     catalog_name = models.CharField(
         max_length=100, verbose_name=u'Название каталога', unique=False)
@@ -383,6 +359,46 @@ class CatalogProductProperties(models.Model):
             self.cpp_catalog.id)
 
         super(CatalogProductProperties, self).save()
+
+
+class PurchaseQuestion(models.Model):
+    purchase = models.ForeignKey(Purchase, verbose_name=u'Закупка')
+    product = models.ForeignKey(
+        Product, 
+        verbose_name=u'Товар к которому задан вопрос', 
+        blank=True, 
+        null=True)
+    
+    text = RichTextField(verbose_name=u'Задайте вопрос')
+    user = models.ForeignKey(User, verbose_name=u'Автор вопроса', default=1)
+    created_at = models.DateTimeField(
+        verbose_name=u'Создан', null=True, auto_now_add=True)
+
+    def user_profile(self):
+        return getProfile(self.user)
+
+    def get_answer(self):
+        return PurchaseAnswer.objects.filter(question_id=self.id)
+
+    def __unicode__(self):
+        return "%s - %s" % (self.purchase.name, self.user.username)
+
+class PurchaseAnswer(models.Model):
+    question = models.ForeignKey(
+        PurchaseQuestion,
+        verbose_name=u'Напишите ответ',
+        related_name='answers')
+
+    text = RichTextField(verbose_name=u'Добавьте ответ')
+    user = models.ForeignKey(User, verbose_name=u'Автор ответа', default=1)
+    created_at = models.DateTimeField(
+        verbose_name=u'Создан', null=True, auto_now_add=True)
+
+    def user_profile(self):
+        return getProfile(self.user)
+
+    def __unicode__(self):
+        return u"ответ на вопрос id:%s от %s" % (self.question.id, self.user.username)        
 
 
 class ImportFiles(models.Model):

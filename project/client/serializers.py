@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from rest_framework import serializers, viewsets
-from project.core.models import Purchase, Product, Catalog, ProductImages, Promo, CatalogProductProperties, PurchaseStatusLinks, PurchaseStatus, Category
+from project.core.models import Purchase, Product, Catalog, ProductImages, Promo, CatalogProductProperties, PurchaseStatusLinks, PurchaseStatus, Category, PurchaseQuestion, PurchaseAnswer
 from project.accounts.models import OrganizerProfile
 from project.documentation.models import Page
+from django.contrib.auth.models import User
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -20,6 +21,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class CatalogPropertiesSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = CatalogProductProperties
         fields = ('id', 'cpp_name', 'cpp_slug', 'cpp_values')
@@ -31,7 +33,7 @@ class CatalogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Catalog
-        fields = ('id', 'catalog_name', 'cpp_catalog', 'product_catalog')
+        fields = ('id', 'categories', 'catalog_name', 'cpp_catalog', 'product_catalog')
 
 
 class StatusSerializer(serializers.ModelSerializer):
@@ -49,10 +51,9 @@ class PurchaseStatusSerializer(serializers.ModelSerializer):
 class PurchaseSerializer(serializers.ModelSerializer):
     catalogs = CatalogSerializer(many=True, read_only=True)
     purchase_status = PurchaseStatusSerializer(many=True, read_only=True)
-
     class Meta:
         model = Purchase
-        fields = ('id', 'name', 'description', 'purchase_status', 'catalogs')
+        fields = ('id', 'name', 'organizerProfile', 'categories', 'description', 'purchase_status', 'catalogs')
 
 
 class OrganizerSerializer(serializers.ModelSerializer):
@@ -60,7 +61,7 @@ class OrganizerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrganizerProfile
-        fields = ('icon', 'purchases')
+        fields = ('id', 'icon', 'user', 'purchases')
 
 
 class PromoSerializer(serializers.ModelSerializer):
@@ -83,3 +84,22 @@ class BenefitsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Page
         fields = ('id', 'name', 'description')
+
+
+class AnswersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PurchaseAnswer
+        fields = ('id', 'user', 'text', 'question' )
+
+
+class QuestionsSerializer(serializers.ModelSerializer):
+    answers = AnswersSerializer(many=True, read_only=True)
+    class Meta:
+        model = PurchaseQuestion
+        fields = ('id', 'user', 'text', 'purchase', 'product', 'answers' )
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username')

@@ -11,8 +11,7 @@ v1_api.register(NotificationResource())
 
 # rest_framework
 from rest_framework import routers
-from project.client.views import PurchasesViewSet, OrganizersViewSet, PopularPromoViewSet, NewPromoViewSet,\
-    HotPurchasesViewSet, CategoriesViewSet, SearchViewSet, ProductsViewSet, CatalogsViewSet, BenefitsViewSet
+from project.client.views import PurchasesViewSet, OrganizersViewSet, PopularPromoViewSet, NewPromoViewSet, HotPurchasesViewSet, CategoriesViewSet, SearchViewSet, ProductsViewSet, CatalogsViewSet, BenefitsViewSet, QuestionsViewSet, AnswersViewSet, UsersViewSet
 
 router = routers.DefaultRouter()
 router.register(r'api/v1/purchases', PurchasesViewSet)
@@ -25,6 +24,9 @@ router.register(r'api/v1/search', SearchViewSet)
 router.register(r'api/v1/products', ProductsViewSet)
 router.register(r'api/v1/catalogs', CatalogsViewSet)
 router.register(r'api/v1/benefits', BenefitsViewSet)
+router.register(r'api/v1/questions', QuestionsViewSet)
+router.register(r'api/v1/answers', AnswersViewSet)
+router.register(r'api/v1/users', UsersViewSet)
 
 
 urlpatterns = patterns(

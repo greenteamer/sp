@@ -34,6 +34,7 @@ var ProductFastView = React.createClass({
                         <div className="col-xs-12 col-sm-12 col-md-6">
                             <p className="price">{this.props.product.price} руб.</p>
                             <ProductForm product={this.props.product} cpp_catalog={this.props.product.cpp_catalog} />
+                            <a className="btn btn-default" href={'/products/'+this.props.product.id}>смотреть подробнее</a>
                         </div>
                     </div>
                 </div>

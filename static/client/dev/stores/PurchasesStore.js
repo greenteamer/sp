@@ -8,6 +8,7 @@ var Cookies = require('js-cookie');
 var snackbar = require('../../lib/snackbar.js');
 
 var Methods = require('../views/customhelpers/Methods.js');
+var FilterFunctions = require('../views/customhelpers/FilterFunctions.js');
 
 
 var PurchasesStore = merge(MicroEvent.prototype, {
@@ -23,8 +24,12 @@ var PurchasesStore = merge(MicroEvent.prototype, {
         this.trigger('changeViewState');
     },
 
-    // filter
+    // состояние фильтра приложения
     filter: {
+        filter_state: {
+            price: [],
+            category: ''
+        },
         filtered_collection: []
     },
     filterTrigger : function () {
@@ -32,40 +37,52 @@ var PurchasesStore = merge(MicroEvent.prototype, {
     },
 
     user: {},
-    collection: [],
+    organizer_profiles: [],
+    organizerCollectionChange: function () {
+        this.trigger('organizersTrigger');  
+    },
+
+    // collection - массив закупок
+    collection: [], 
     cartitems: [],
+    
+    categories: [],
+    categoryReceived: function () {
+        this.trigger('categoryReceived');  
+    },
+
     search_result_collection: [],
     query_text: '',
 
     product_fast_view: {},
     purchase_id_fast_view: 0,
+    
     product: {},
+    getProduct: function(){
+        this.trigger('get-product');
+    },
+
     benefits: [],
     modal_photo: {},
     photoView: function(){
-        console.log('start trigger photoView');
         this.trigger('photoView');
     },
 
     // for purchase page
     purchase: [],
-
+    chengePurchaseDetail: function  () {
+        this.trigger('chengePurchaseDetail');
+    },
     
     collectionChange: function(){
         this.trigger('change');
     },
     modalView: function(){
         this.trigger('modal');
-    },
-    getProduct: function(){
-        this.trigger('get-product');
-    },
+    },    
     changeBenefits: function(){
         this.trigger('changeBenefits');
-    },
-    chengePurchaseDetail: function  () {
-        this.trigger('chengePurchaseDetail');
-    }
+    }    
 });
 
 
@@ -122,10 +139,8 @@ PurchasesDispatcher.register(function (payload) {
                 dataType: 'json',
                 cache: false,
                 success: (function (data) {
-                    console.log(PurchasesStore.collection);
                     PurchasesStore.collection[0].promo_purchase = data;
                     PurchasesStore.collection[0].name = "Горящие закупки";
-                    console.log(PurchasesStore.collection);
                     PurchasesStore.collectionChange();
 
                 }).bind(this),
@@ -152,7 +167,6 @@ PurchasesDispatcher.register(function (payload) {
             break;
 
         case 'add-to-cart':
-            console.log('ajax start');
             var csrftoken = Cookies.get('csrftoken');
             var tmp_properties = '';
             payload.item.cpp_properties.forEach(function (property, index){
@@ -162,7 +176,6 @@ PurchasesDispatcher.register(function (payload) {
                     tmp_properties = payload.item.cpp_properties[index].value;
                 }
             });
-            console.log(tmp_properties);
             $.post(
                 "/add-to-cart/",
                 {
@@ -183,6 +196,18 @@ PurchasesDispatcher.register(function (payload) {
                     var message = "Товара с такими свойствами нет, попробуйте другие варианты";
                     $.snackbar({timeout: 5000, content: message });
                     console.log("Ошибка post запроса");
+                });
+            break;
+
+        case "get-categories":
+            $.get("/api/v1/categories/")
+                .success(function (data) {
+                    // console.log("Store get categories success data: ", data);
+                    PurchasesStore.categories = data;
+                    PurchasesStore.categoryReceived();
+                })
+                .error(function () {
+                    console.log("get-categories Ошибка get запроса"); 
                 });
             break;
 
@@ -217,6 +242,22 @@ PurchasesDispatcher.register(function (payload) {
                 });
             break;
 
+        case "get-organizers":
+            $.ajax({
+                url: '/api/v1/organizers/',
+                dataType: 'json',
+                cache: false,
+                success: (function(data){
+                    // console.log('Store get-organizers data: ', data);
+                    PurchasesStore.organizer_profiles = data;
+                    PurchasesStore.organizerCollectionChange();
+                }).bind(this),
+                error: (function (xhr, status, err) {
+                        console.log('error fetch organizers collection');
+                    }).bind(this)
+                });
+            break;
+
         case "fast-show-product":
             //передаем продукт которй быстро хочет посмотреть человек
             PurchasesStore.product_fast_view = payload.product;
@@ -228,7 +269,6 @@ PurchasesDispatcher.register(function (payload) {
         case "show-photo":
             PurchasesStore.modal_photo = payload.photo;
             PurchasesStore.photoView();
-            console.log("PurchasesStore.modal_photo: ", PurchasesStore.modal_photo);
             break;
 
         case "get-product":
@@ -249,6 +289,7 @@ PurchasesDispatcher.register(function (payload) {
                         cache: false,
                         success: (function(data){
                             tmp_product.cpp_catalog = data.cpp_catalog;
+                            tmp_product.catalog_obj = data;
                             PurchasesStore.product = tmp_product;
                             PurchasesStore.getProduct();
                         }).bind(this),
@@ -279,15 +320,17 @@ PurchasesDispatcher.register(function (payload) {
             break;
 
         case 'get-current-purchase-datail':
-            var url = '/api/v1/purchases/' + payload.id + '/'
+            var url = '/api/v1/purchases/' + payload.id + '/';
             $.ajax({
                 url: url,
                 dataType: 'json',
                 cache: false,
                 success: (function(data){                    
-                    PurchasesStore.purchase = [];
-                    PurchasesStore.purchase.push(data);
-                    PurchasesStore.chengePurchaseDetail();
+                    // PurchasesStore.purchase = [];
+                    // PurchasesStore.purchase.push(data);
+                    // PurchasesStore.chengePurchaseDetail();                    
+                    PurchasesStore.collection.push(data);
+                    PurchasesStore.collectionChange();
                 }).bind(this),
                 error: (function(){
                     console.log('sory, something went wrong');
@@ -298,16 +341,46 @@ PurchasesDispatcher.register(function (payload) {
         case 'filter-collection':
             PurchasesStore.filter.filtered_collection = payload.filtered_collection;
             PurchasesStore.filterTrigger();
-            break;   
+            break;
+
+        case 'filter-by-category':
+            PurchasesStore.filter.filter_state.category = payload.category_slug;
+            // filterFlow - основной поток фильтра в который приходят исходные данные и который разруливает все остальное
+            if (PurchasesStore.collection.length > 0 && PurchasesStore.categories.length > 0) {
+                // конвертируем изначальную коллекцию в простую (массив товаров)
+                // console.log('filter-by-category PurchasesStore.collection', PurchasesStore.collection);
+                var initial_collection = Methods.convertPurchasesToFlatProducts(PurchasesStore.collection);
+
+                var result = FilterFunctions.filterFlow(PurchasesStore.filter, initial_collection, PurchasesStore.categories);
+
+                PurchasesStore.filter.filtered_collection = result;
+                PurchasesStore.filterTrigger();
+            };
+            break;
+
+        case 'filter-by-price':
+            PurchasesStore.filter.filter_state.price = payload.price;            
+            // filterFlow - основной поток фильтра в который приходят исходные данные и который разруливает все остальное
+            if (PurchasesStore.collection.length > 0 && PurchasesStore.categories.length > 0) {
+                // конвертируем изначальную коллекцию в простую (массив товаров)
+                // console.log('filter-by-price PurchasesStore.collection', PurchasesStore.collection);
+                var initial_collection = Methods.convertPurchasesToFlatProducts(PurchasesStore.collection);
+                // console.log('filter-by-price initial_collection', initial_collection);
+                // console.log('filter-by-price PurchasesStore.categories', PurchasesStore.categories);
+                var result = FilterFunctions.filterFlow(PurchasesStore.filter, initial_collection, PurchasesStore.categories);
+                // console.log('filter-by-price result', result);
+                PurchasesStore.filter.filtered_collection = result;
+                PurchasesStore.filterTrigger();
+            };            
+            break;
 
         case 'view-by':
             PurchasesStore.view_state.view_by = payload.parametr;
             PurchasesStore.changeViewState();
-            console.log('Dispatcher view-by PurchasesStore.filter.view_by : ', PurchasesStore.view_state.view_by);
             break;  
 
         case 'set-view-page':
-            PurchasesStore.view_state.view_page = payload.view_page
+            PurchasesStore.view_state.view_page = payload.view_page;
             PurchasesStore.changeViewState();
             break; 
 

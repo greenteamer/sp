@@ -27,7 +27,7 @@ TEMPLATE_DEBUG = DEBUG
 
 DEFAULT_CHARSET = 'utf-8'
 
-AUTH_PROFILE_MODULE = 'accounts.MemberProfile'
+# AUTH_PROFILE_MODULE = 'accounts.MemberProfile'
 ADMIN_EMAIL = 'greenteamer@bk.ru'
 ADMINS = (
 )
@@ -143,7 +143,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'pybb.middleware.PybbMiddleware',
-    #'webshop.SSLMiddleware.SSLRedirect',
+    'breadcrumbs.middleware.BreadcrumbsMiddleware'
+    #'webshop.SSLMiddleware.SSLRedirect',    
 )
 
 TEMPLATE_DIRS = (
@@ -209,10 +210,10 @@ ADAPTOR_INPLACEEDIT = {
         AdaptorCKEDITORField',
 }
 INSTALLED_APPS = (
+    'django.contrib.sites',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.flatpages',
@@ -241,6 +242,7 @@ INSTALLED_APPS = (
     'project.documentation',
     'tastypie',
     'rest_framework',
+    'breadcrumbs'
 )
 
 
@@ -248,7 +250,8 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        # 'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        'rest_framework.permissions.AllowAny'
     ]
 }
 

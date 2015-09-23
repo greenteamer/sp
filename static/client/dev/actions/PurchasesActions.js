@@ -36,9 +36,19 @@ var PurchasesActions = {
             category: category
         });
     },
+    getCategoriesTree: function () {
+        PurchasesDispatcher.dispatch({
+            actionType: "get-categories"
+        });  
+    },
     getCartItems: function(){
         PurchasesDispatcher.dispatch({
             actionType: "get-cart-items"
+        });
+    },
+    getOrganizers: function () {
+        PurchasesDispatcher.dispatch({
+            actionType: "get-organizers"
         });
     },
     getSearchResults: function(query){
@@ -56,7 +66,6 @@ var PurchasesActions = {
         });
     },
     showPhoto: function (photo) {
-        console.log('showPhoto action ', photo);
         PurchasesDispatcher.dispatch({
             actionType: "show-photo",
             photo: photo            
@@ -80,7 +89,7 @@ var PurchasesActions = {
         });
     },
 
-    // фильтры, сортировки, режимы отображения
+    // ФИЛЬТРЫ, СОРТИРОВКИ, РЕЖИМЫ ОТОБРАЖЕНИЯ
     setViewStateWidth: function  (num) {
         PurchasesDispatcher.dispatch({
             actionType: 'set-view-width',
@@ -93,15 +102,28 @@ var PurchasesActions = {
             filtered_collection: filtered_collection
         });  
     },
+
+    filterByCategory: function (category_slug) {        
+        // отправляем только slug
+        PurchasesDispatcher.dispatch({
+            actionType: 'filter-by-category',
+            category_slug: category_slug
+        });
+    },
+    filterByPrice: function (values) {        
+        // отправляем только values
+        PurchasesDispatcher.dispatch({
+            actionType: 'filter-by-price',
+            price: values
+        });
+    },
     viewBy: function (parametr) {
-        console.log('Actions viewBy parametr: ', parametr);
         PurchasesDispatcher.dispatch({
             actionType: 'view-by',
             parametr: parametr  
         });
     },
     setViewPage: function (view_page) {
-        console.log('Actions setViewPage view_page: ', view_page);
         PurchasesDispatcher.dispatch({
             actionType: 'set-view-page',
             view_page: view_page

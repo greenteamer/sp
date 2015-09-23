@@ -7,7 +7,7 @@ var ProductRelativeTitle = require('../product_components/ProductRelativeTitle.j
 var ProductModal = require('../product_components/ProductModal.jsx');
 
 var IF = require('../customhelpers/IF.jsx');
-
+var Methods = require('../customhelpers/Methods.js');
 
 var Category = React.createClass({
 	getInitialState: function () {
@@ -15,17 +15,15 @@ var Category = React.createClass({
             collection: [],
             filtered_collection: [],
           	user: {}            
-        }
+        };
     },
     componentDidMount: function () {
+        // получаем slug категории по url      
+        var current_category = Methods.getCategorySlug();
+
         // устанавливаем view_state.view_page как category
         PurchasesActions.setViewPage('category');
-        PurchasesActions.viewBy('products');
-        //получаем текущий урл
-        var url = $(location).attr('pathname');
-        var parse_url = url.split('/')[1];        
-        var current_category = parse_url.slice(9);
-        console.log("category url :", url, parse_url, current_category);
+        PurchasesActions.viewBy('products');            
 
         //обновляем store в соответствии с текущей категорией
 		PurchasesActions.getCategoryPurchases(current_category);
@@ -34,15 +32,20 @@ var Category = React.createClass({
     },
     componentWillUnmount: function () {
         PurchasesStore.unbind( 'change', this.collectionChanged );
+        PurchasesStore.unbind( 'filterTrigger', this.filterTrigger );
     },
     collectionChanged: function () {
   //       var tmp_collection = [];
   //       tmp_collection.push(PurchasesStore.collection);
 		// this.setState({
   //           collection: tmp_collection
-  //       });        
+  //       });    
+        var current_category = Methods.getCategorySlug();
+        PurchasesActions.filterByCategory(current_category);    
+        var uniqueCollection = Methods.unique(PurchasesStore.collection);
+        
         this.setState({
-            collection: PurchasesStore.collection
+            collection: uniqueCollection
         });
     },
     filterTrigger: function () {
@@ -67,17 +70,21 @@ var Category = React.createClass({
                     <div className="col-xs-12 col-sm-4 col-md-3 col-lg-3">
                         <ProductRelativeTitle product={product}/>
                     </div>
-                )
+                );
             });
         }      
+        // console.log('filtered_collection: ', this.state.filtered_collection);
 		return (            
             <div>
                 <IF condition={this.state.filtered_collection.length == 0}>
-                    <Purchases 
-                        collection={this.state.collection}
-                        category_id={category_id}
-                        title={title}
-                        indicatorElementName='#category'/>
+                    <div>
+                        <h2>Товары не отфильтрованы</h2>
+                        <Purchases 
+                            collection={this.state.collection}
+                            category_id={category_id}
+                            title={title}
+                            indicatorElementName='#category'/>
+                    </div>
                 </IF>
                 <IF condition={this.state.filtered_collection.length != 0}>
                     <div>
@@ -86,7 +93,7 @@ var Category = React.createClass({
                     </div>                    
                 </IF>                
             </div>
-		)
+		);
 	}
 });
 

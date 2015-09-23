@@ -5,8 +5,8 @@ var IF = require('../customhelpers/IF.jsx');
 var PurchaseDetailInfo = React.createClass({
 	render: function  () {               
 		var description = this.props.purchase.description;
-        function createDescription() { 
-            return {__html: description }; 
+        function createDescription() {
+            return {__html: description };
         };
         var status = this.props.purchase.purchase_status.map(function (status) {
         	if (status.active) {
@@ -14,7 +14,7 @@ var PurchaseDetailInfo = React.createClass({
         			<div>
         				<h5>Статус закупки: {status.status.status_name}</h5>
         			</div>
-    			)
+    			);
         	};
         });
         var link = "/purchases/" + this.props.purchase.id + "/";
@@ -34,7 +34,7 @@ var PurchaseDetailInfo = React.createClass({
                     </div>
                 </IF>
             </div>
-        )
+        );
         	
 	}
 });

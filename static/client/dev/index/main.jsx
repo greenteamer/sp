@@ -14,6 +14,7 @@ var RouteHandler = Router.RouteHandler;
 var PopularIndex = require('../views/PopularIndex.jsx');
 var CartMenu = require('../views/cartmenu/CartMenu.jsx');
 var Cart = require('../views/cartmenu/Cart.jsx');
+var Breadcrumbs = require('../views/breadcrumbs/Breadcrumbs.jsx');
 var SearchForm = require('../views/search/SearchForm.jsx');
 var SearchResult = require('../views/search/SearchResult.jsx');
 var injectTapEventPlugin = require("react-tap-event-plugin");
@@ -25,7 +26,7 @@ var About = React.createClass({
 	getInitialState: function  () {
 		return {
 			message: ''
-		}
+		};
 	},
 	render: function(){
 		console.log('message: ', this.props.params.id);	
@@ -33,7 +34,7 @@ var About = React.createClass({
 			<div>
 				<p>типа страничка о нас</p>
 			</div>
-		)
+		);
 	
 	}
 });
@@ -45,7 +46,7 @@ var Message = React.createClass({
 			<div>
 				<h4>Message</h4>
 			</div>
-		)
+		);
 	}
 });
 
@@ -56,7 +57,7 @@ var Company = React.createClass({
 			<div>
 				<h3>This is the nested url Company</h3>
 			</div>
-		)
+		);
 	}
 });
 
@@ -67,7 +68,7 @@ var App = React.createClass({
 	      	<div>
 		        <RouteHandler/>
 	      	</div>
-	    )
+	    );
   	}
 });
 
@@ -88,6 +89,7 @@ var routes = (
 
 
 React.render(<PopularIndex />, document.getElementById('popular'));
+React.render(<Breadcrumbs />, document.getElementById('breadcrumbs'));
 React.render(<CartMenu />, document.getElementById('cartmenu'));
 React.render(<SearchForm />, document.getElementById('react_search'));
 React.render(<SearchResult />, document.getElementById('react_search_result'));

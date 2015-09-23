@@ -10,7 +10,7 @@ $(document).ready(function() {
                 position: "fixed",
                 top:"0px",
                 left:0,                            
-                zIndex:"100"                            
+                zIndex:"10"                            
             });
             $(".scroll-class #main-menu").css({
                 padding: "0"
@@ -38,13 +38,13 @@ $(document).ready(function() {
                 position: "fixed", 
                 top: "-109px", 
                 left:0 , 
-                zIndex:"100", 
+                zIndex:"10", 
                 width: "100%"                            
             });
             $(".scroll-class #main-menu").css({
                 padding: "0 15px"
             });
-            $(".mobile .scroll-class").css({position: "fixed", top: "-159px", left:0 , zIndex:"100", width: "100%"});
+            $(".mobile .scroll-class").css({position: "fixed", top: "-159px", left:0 , zIndex:"10", width: "100%"});
             $(".main-menu-container").removeClass('container');
             $("#cartmenu").css({
                 marginRight: "-7px",

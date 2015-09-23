@@ -17,12 +17,13 @@ function emptyObject(obj) {
     return true;
 }
 
+
 var ProductModal = React.createClass({
     getInitialState: function(){
         return {
             product_fast_view: {},
             purchase_id_fast_view: 0
-        }
+        };
     },
     childContextTypes: {
         muiTheme: React.PropTypes.object
@@ -76,15 +77,15 @@ var ProductModal = React.createClass({
                     }}
                     title="Быстрый просмотр товара"
                     actions={modalActions}>
-                    <ProductFastView  product={this.state.product_fast_view}/>
+                    <ProductFastView  product={this.state.product_fast_view}/>                    
                 </Dialog>
                 ];
         }
         return (
             <div>
                 {productModal}
-            </div>
-        )
+            </div>            
+        );
     }
 });
 

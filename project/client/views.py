@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404, render_to_response, redi
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponse
 from project.accounts.models import getProfile, OrganizerProfile, MemberProfile
-from project.core.models import Purchase, Product, Promo, Catalog, Category
+from project.core.models import Purchase, Product, Promo, Catalog, Category, PurchaseQuestion, PurchaseAnswer
 from project.cart.models import CartItem
 from project.cart.forms import CartItemForm
 from project.documentation.models import Page
@@ -13,14 +13,14 @@ from project.helpers import check_profile
 from project.cart.cart import add_to_cart
 from project.accounts.forms import propertyForm, clientPropertyForm
 import json
+from django.contrib.auth.models import User
 
 # rest
 from rest_framework import serializers, viewsets, generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import detail_route, list_route
-from serializers import PurchaseSerializer, OrganizerSerializer, PromoSerializer, CategorySerializer, ProductSerializer,\
-    CatalogSerializer, BenefitsSerializer
+from serializers import PurchaseSerializer, OrganizerSerializer, PromoSerializer, CategorySerializer, ProductSerializer, CatalogSerializer, BenefitsSerializer, QuestionsSerializer, AnswersSerializer, UserSerializer
 
 
 # Просмотр каталога
@@ -48,7 +48,7 @@ def clientAddToCartView(request):
 
 @check_profile
 def indexView(request, template_name="client/pages/index.html"):
-    big_content_purchase = Purchase.objects.get(id=2)  # TODO: сделать вывод нормальной закупки
+    big_content_purchase = Purchase.objects.get(id=1)  # TODO: сделать вывод нормальной закупки
     main_content_purchase = big_content_purchase  # TODO: сделать вывод нормальной закупки
     # создание формы свойств товара
     main_content_purchase.catalogs = main_content_purchase.get_catalogs()
@@ -218,3 +218,83 @@ def getCartItems(request):
 class BenefitsViewSet(viewsets.ModelViewSet):
     queryset = Page.objects.filter(is_benefits=True)
     serializer_class = BenefitsSerializer
+
+
+class QuestionsViewSet(viewsets.ModelViewSet):
+    queryset = PurchaseQuestion.objects.all()
+    serializer_class = QuestionsSerializer
+
+
+class AnswersViewSet(viewsets.ModelViewSet):
+    queryset = PurchaseAnswer.objects.all()
+    serializer_class = AnswersSerializer
+
+
+# добавление вопроса без использования REST (нужно исправить)
+def pushQuestion(request):
+    question = PurchaseQuestion()
+    question.user = User.objects.get(id=request.POST['user'])
+    question.purchase = Purchase.objects.get(id=request.POST['purchase'])
+    question.text = request.POST['text']
+    try:
+        question.product = Product.objects.get(id=request.POST['product'])
+    except:
+        pass
+    question.save()
+
+    question_dict = {
+        "id": question.id,
+        "user": question.user.id,
+        "purchase": question.purchase.id,
+        "product": None,
+        "text": question.text,
+        "answers": []
+    }
+    question_dump = json.dumps(question_dict)
+    return HttpResponse(question_dump, content_type="application/json")
+
+
+def postAnswer(request):
+    answer = PurchaseAnswer()
+    answer.user = request.user
+    answer.question = PurchaseQuestion.objects.get(id=request.POST['id'])
+    answer.text = request.POST['text']
+    answer.save()
+
+    answer_dict = {
+        "id": answer.id,
+        "user": answer.user.id,
+        "question": answer.question.id,
+        "text": answer.text
+    }
+    answer_dict = json.dumps(answer_dict)
+    return HttpResponse(answer_dict, content_type="application/json")
+
+
+def getOrganizers(request):
+    organizers = OrganizerProfile.objects.all()
+    organizers_for_dump = []
+    for organizer in organizers:
+        tmp_user = organizer.user
+        organizers_for_dump.append({
+            "id": organizer.id,
+            "user": organizer.user.id,
+            "username": organizer.user.username
+        })
+
+    dump = json.dumps(organizers_for_dump)
+    return HttpResponse(dump, content_type="application/json")
+
+
+class UsersViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    @list_route()
+    def current_user(self, request, **kwargs):
+        """тестовый метод вызывается через /api/v1/users/current_user/ ...
+        тез каких либо дополнительных записей в urls"""
+        self.queryset = User.objects.filter(id=request.user.id)
+        serializer = UserSerializer(instance=self.queryset, many=True)
+        return Response(serializer.data)
+

@@ -2,13 +2,11 @@
 #!/usr/bin/env python
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-from project.cart.cart import get_cart_items, remove_from_cart,\
-    update_cart
+from project.cart.cart import get_cart_items, remove_from_cart, update_cart, send_messages
 
 from project.cart import cart
 from project.cart.forms import ExportForm
-from project.cart.purchases import get_purchases_dict,\
-    get_purchases_dict_for_user
+from project.cart.purchases import get_purchases_dict, get_purchases_dict_for_user
 
 from project.core.views import check_profile
 from project.accounts.models import getProfile
@@ -17,6 +15,16 @@ from excel_response import ExcelResponse
 
 @check_profile
 def cartView(request, template_name):
+
+    cart_items = get_cart_items(request)
+    # возвращает Helper класс который содержит статистику по корзине    
+    cart_stat = cart.cart_stat(cart_items)
+
+    orders_dict = cart.getOrders(request)
+
+    # возвращает очень замученый словарь
+    dict = get_purchases_dict_for_user(request)
+
     if request.method == 'POST':
         if 'remove' in request.POST:
             remove_from_cart(request)
@@ -24,13 +32,8 @@ def cartView(request, template_name):
         if 'update' in request.POST:
             update_cart(request)
 
-    cart_items = get_cart_items(request)
-
-    # возвращает Helper класс который содержит статистику по корзине
-    cart_stat = cart.cart_stat(cart_items)
-
-    # возвращает очень замущеный словарь
-    dict = get_purchases_dict_for_user(request)
+        if 'cart_order' in request.POST:            
+            send_messages(request, dict)
 
     return render_to_response(
         template_name, locals(), context_instance=RequestContext(request))

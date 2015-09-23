@@ -1,0 +1,39 @@
+<h3>Здравствуйте, {{name}}!</h3>
+
+<p>По вашей закупке был сделан заказ</p>
+<div>
+    <p>Выбранные товары: </p>
+    <table>
+        <thead>
+            <tr>
+                <th scope="col">sku</th>
+                <th scope="col">Наименование</th>
+                <th scope="col">Колличество</th>
+                <th scope="col">Свойства</th>                
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}            
+                <tr>
+                    <td>{{ item.product.sku }}</td>
+                    <td>{{ item.product.product_name }}</td>                
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.properties }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <br/>
+    <p>Спасибо за Ваш труд!</p>
+    <h3>С уважением, www.buybox.ru</h3>
+    {# <p><img width="400px" src="http://way.ru/static/images/logo3.png" alt="логотип"/></p> #}
+    <p><strong>Контактный телефон по всей России:</strong>&nbsp;<a href="tel:+79175773322">+78887773322</a></p>
+    <p><strong>Москва:</strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<strong>&nbsp;Казань:</strong></p>
+    <p>тел: +7(495)888-77-22 &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;тел: <a href="tel:+7(888)777-33-22">+7(888)777-33-22</a></p>
+    <p>Метро "Вднх" &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Метро "Яшлек" &nbsp;</p>
+    <p>Ул.Маломосковская 2 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Ул.Выданая 112</p>
+    <p><strong>КУРЬЕРСКАЯ ДОСТАВКА ПО МОСКВЕ&nbsp;</strong></p>
+</div>

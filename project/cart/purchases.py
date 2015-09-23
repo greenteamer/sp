@@ -57,7 +57,7 @@ def get_purchases_dict_for_user(request):
     # purchases_dict.keys() - Объекты закупок товары которых были добавлены в корзину участниками (купленных товаров)
     # purchases_dict.values() - словари вида {Каталог: [список объектов купленных товароов(cart_items)]}
     profile = getProfile(request.user)
-    cart_items = CartItem.objects.filter(user=request.user)
+    cart_items = CartItem.objects.filter(user=request.user, is_ordered=False)
 
     products = set([])
     catalogs = set([])
@@ -95,6 +95,8 @@ def get_purchases_dict_for_user(request):
         global_dict.update({purchase: tmp_dict})
 
     return global_dict
+
+
 
 # purchases_dict = {}
 # for purchase in Purchase.objects.filter(organizerProfile=profile):
