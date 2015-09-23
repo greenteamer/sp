@@ -48,7 +48,7 @@ def clientAddToCartView(request):
 
 @check_profile
 def indexView(request, template_name="client/pages/index.html"):
-    big_content_purchase = Purchase.objects.get(id=1)  # TODO: сделать вывод нормальной закупки
+    big_content_purchase = Purchase.objects.get(id=2)  # TODO: сделать вывод нормальной закупки
     main_content_purchase = big_content_purchase  # TODO: сделать вывод нормальной закупки
     # создание формы свойств товара
     main_content_purchase.catalogs = main_content_purchase.get_catalogs()
