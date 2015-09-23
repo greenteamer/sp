@@ -62,7 +62,6 @@ var Question = React.createClass({
 	}
 });
 
-
 var QuestionList = React.createClass({
 	render: function () {
 		// console.log('QuestionList this.props.collection: ', this.props.collection);

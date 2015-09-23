@@ -862,7 +862,6 @@ var Question = React.createClass({displayName: "Question",
 	}
 });
 
-
 var QuestionList = React.createClass({displayName: "QuestionList",
 	render: function () {
 		// console.log('QuestionList this.props.collection: ', this.props.collection);
