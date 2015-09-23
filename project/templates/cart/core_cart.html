@@ -45,7 +45,7 @@
                                             <tbody>
                                                 {% if value %}
                                                     {% for item in value %}
-                                                <tr>
+                                                <tr {% if item.is_ordered %}class="item_is_ordered"{% endif %}>                                                
                                                     <td>
                                                         {% with 'http://'|add:request.META.HTTP_HOST|add:item.product.get_image.url as path %}
                                                             {% thumbnail path "50x50" crop="center" as im %}
@@ -66,17 +66,29 @@
                                                         <form method="post" action="." class="cart">{% csrf_token %}
                                                             <input type="text" name="quantity" value="{{ item.quantity }}" id="quantity" size="2" class="quantity" maxlength="5" />
                                                             <input type="hidden" name="item_id" value="{{ item.id }}" />
-        {#                                            </td>#}
-        {#                                            <td>#}
-                                                            <button class="btn btn-success" type="submit" name="update">
-                                                            <i class="icon-refresh icon-white"></i> <span>Обновить</span></button>
+                                                            <button 
+                                                                class="btn btn-primary" 
+                                                                {% if item.is_ordered %}
+                                                                    disabled="disabled"
+                                                                {% endif %} 
+                                                                type="submit" 
+                                                                name="update">
+                                                                Обновить
+                                                            </button>
                                                         </form>
                                                     </td>
                                                     <td>
                                                         <form method="post" action="." class="cart">{% csrf_token %}
                                                             <input type="hidden" name="item_id" value="{{ item.id }}" />
-                                                            <button class="btn btn-danger" type="submit" name="remove">
-                                                            <i class="icon-trash icon-white"></i> Удалить</button>
+                                                            <button 
+                                                                class="btn btn-default" 
+                                                                {% if item.is_ordered %}
+                                                                    disabled="disabled"
+                                                                {% endif %} 
+                                                                type="submit"                                                                 
+                                                                name="remove">
+                                                                Удалить товар
+                                                            </button>
                                                         </form>
                                                     </td>
                                                     <td class="right">{{ item.total_price }} <i class="fa fa-rub"></i></td>
@@ -90,17 +102,14 @@
                                             </tbody>
 
                                             <tfoot>
-                                                <tr>
-                                                    <th colspan="5">Стоимость товаров:</th>
-                                                    <th>{{ key.total }} руб.</th>
-                                                </tr>
+                                               
                                             </tfoot>
                                         </table>
                                     </div>
 
                                 {% endfor %}
                         
-                                    <h4>Инфо по оплате товаров и статусу:</h4>
+                                    <h4 style="font-weight: bold; margin-top: -8px;">Инфо по оплате товаров и статусу:</h4>
                                     <div class="table-responsive" style="width:80%">
                                         <table class="table">
                                             <thead>
@@ -116,7 +125,13 @@
                                                     <td>{{ key.organizerProfile.get_full_name }}</td>
                                                     <td>{{ key.get_current_status.status_name }}</td>
                                                     <td>{{ key.get_current_status_link.data }}</td>
-                                                    <td>{{ key.total }} руб.</td>
+                                                    <td>
+                                                        {{ key.total }} руб.
+                                                        <form action="." method="post">{% csrf_token %}
+                                                            <input type="hidden" name="purchase_id" value='{{ key.id }}'>
+                                                            <button type="submit" name="cart_order" class="btn btn-primary">оформить заказ</button>
+                                                        </form>                                                        
+                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -125,15 +140,98 @@
                             {% endfor %}
 
                         </div>
+                        
+                         
+                            <div class="col-xs-12 col-md-8">
+                                <div class="cart_is_ordered"> 
+                                    <h2 style="">Оформленные заказы:</h2>
+                                    {{orders_dict}}
+                                    {% for key, value in orders_dict.items %}
+                                        <h3>Заказ №: {{ key.id }}</h3>
+                                        <div class="purchase">                                
+                                            
 
-                        <div class="col-xs-12">
-                            <h2>Общая информация:</h2>
+                                                <div class="table-responsive">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col">Продукты</th>
+                                                                <th scope="col">Характеристики</th>
+                                                                <th scope="col">Цена</th>
+                                                                <th>Кол-во</th>
+                                                                <th scope="col" class="right">Итого:</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <h4>Заказанные товары:</h4>
+                                                            {% for item in value %}
+                                                                
+                                                                <tr>
+                                                                    <td>
+                                                                        {% with 'http://'|add:request.META.HTTP_HOST|add:item.product.get_image.url as path %}
+                                                                            {% thumbnail path "50x50" crop="center" as im %}
+                                                                                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                                                                            {% endthumbnail %}
+                                                                        {% endwith %}
+                                                                        <a href="{{ item.product.url_core }}" class="cart">
+                                                                        {{ item.product.product_name }}
+                                                                        </a>
+                                                                    </td>
+                                                                    <td>
+                                                                        {{ item.properties }}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{ item.product.price }} <i class="fa fa-rub"></i>
+                                                                    </td>
+                                                                    <td>{{ item.quantity }}</td>
+                                                                    
+                                                                    <td class="right">{{ item.total_price }} <i class="fa fa-rub"></i></td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+
+                                                        <tfoot>
+                                                           
+                                                        </tfoot>
+                                                    </table>
+                                                </div>
+                                    
+                                                <h4 style="font-weight: bold; margin-top: -8px;">Инфо по оплате товаров и статусу:</h4>
+                                                <div class="table-responsive">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Организатор</th>
+                                                                <th>Статус</th>
+                                                                <th>Инфо</th>
+                                                                <th>Всего к оплате по закупке</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>{{ key.purchase.organizerProfile.get_full_name }}</td>
+                                                                <td>{{ key.purchase.get_current_status.status_name }}</td>
+                                                                <td>{{ key.purchase.get_current_status_link.data }}</td>
+                                                                <td style="min-width: 200px;">
+                                                                    {{ key.total }} руб.                                                            
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                        <div class="col-xs-12 col-md-4">
+                            <h2 style="text-align: right;">Общая информация:</h2>
                             <div class="table-responsive">
-                                <table class="table">
+                                <table style="text-align: right;" class="table">
                                     <thead>
                                         <tr>
-                                            <th>Всего товаров</th>
-                                            <th>Общая стоимость</th>
+                                            <th style="text-align: right;">Всего товаров</th>
+                                            <th style="text-align: right;">Общая стоимость</th>
                                         </tr>
                                     </thead>
                                     <tbody>

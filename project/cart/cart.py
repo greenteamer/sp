@@ -2,10 +2,14 @@
 #!/usr/bin/env python
 import random
 import copy
-from models import CartItem
-from project.core.models import Product
+from underscore import _
+from models import CartItem, Order
+from project.core.models import Product, Purchase
+from project.accounts.models import getProfile, OrganizerProfile
+from project.settings import ADMIN_EMAIL
 from django.shortcuts import get_object_or_404
-from project.accounts.models import getProfile
+from django.core.mail import send_mail, EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 
 CART_ID_SESSION_KEY = 'cart_id'
@@ -172,6 +176,82 @@ def create_data_for_export_cart_items(cart_items):
         """добавляем в data новый объект-список для xls"""
 
     return data
+
+
+def getOrders(request):
+    order_dict = {}
+    total = 0
+    # try:
+    orders = Order.objects.filter(user=request.user)
+    for order in orders:
+        items = CartItem.objects.filter(order=order)                
+        order.total = 0
+        for item in items:
+            order.total += item.quantity*item.product.price
+        order_dict.update({order: items})
+    # except:
+    #     pass
+    return order_dict
+
+
+def send_messages(request ,dict):
+    """ отправка сообщений организатору о том что человек заказл товары """
+
+    purchase = Purchase.objects.get(id=request.POST['purchase_id'])    
+    user_profile = getProfile(request.user)
+
+    """список cartitems"""
+
+    cart_items = []
+    catalogs = dict[purchase]    
+    for key, value in catalogs.items():
+        for item in value:                    
+            cart_items.append(item)
+    
+    is_no_ordered = _.some(cart_items, lambda x, *a: x.is_ordered == False)
+    filtered_items = _.filter(cart_items, lambda x, *a: x.is_ordered == False)
+    if is_no_ordered:
+        # отправка организатору письма и заказчику
+        # только при условии что есть незаказанные товары
+
+        # создаем новый заказ и сохраняем в базу что бы обновить в дальнейшем наши cart итемы
+        order = Order()
+        order.user = request.user
+        order.cart_id = filtered_items[0].cart_id
+        order.purchase = purchase
+        order.save()
+        for item in filtered_items:
+            item.is_ordered = True    
+            item.order = order
+            item.save()           
+
+        context_dict = {
+            'cart_items': cart_items,
+            'name':  u"{}".format(purchase.organizerProfile.firstName)
+        }
+        subject = u'buybox.ru пользователь заказал товары'
+        message = render_to_string('cart/organizer_email.html', context_dict)
+        from_email = 'teamer777@gmail.com'
+        to = purchase.organizerProfile.email
+        msg = EmailMultiAlternatives(subject, message, from_email, [to])
+        msg.content_subtype = "html"
+        msg.send()
+
+        # отправка письма участнику
+        context_dict = {
+            'cart_items': cart_items,
+            'name':  u"{}".format(user_profile.firstName)
+        }
+        subject = u'buybox.ru Ваш заказа оформлен'
+        message = render_to_string('cart/member_email.html', context_dict)
+        from_email = 'teamer777@gmail.com'
+        to = user_profile.email
+        msg = EmailMultiAlternatives(subject, message, from_email, [to])
+        msg.content_subtype = "html"
+        msg.send()
+
+
+
 
 
 

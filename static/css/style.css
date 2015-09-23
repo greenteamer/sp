@@ -220,7 +220,13 @@ button.close.pull-right {
     border-top: 1px solid #BDBDBD;
     border-bottom: 1px solid #BDBDBD;
 }
-
+.cart_page .cart_is_ordered {
+    border: 1px solid #c4c4c4;
+    padding: 15px;
+}
+.cart_page .item_is_ordered {
+    background-color: #D4D4D4;
+}
 .cart_page .table-responsive,
 .cart_page h4 {
     padding-left: 50px;
