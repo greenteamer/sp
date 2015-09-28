@@ -23,6 +23,10 @@ from rest_framework.decorators import detail_route, list_route
 from serializers import PurchaseSerializer, OrganizerSerializer, PromoSerializer, CategorySerializer, ProductSerializer, CatalogSerializer, BenefitsSerializer, QuestionsSerializer, AnswersSerializer, UserSerializer
 
 
+from django.db import connection, connections
+
+
+
 # Просмотр каталога
 @check_profile
 def clientAddToCartView(request):
@@ -171,16 +175,49 @@ class SearchViewSet(viewsets.ModelViewSet):
     serializer_class = PurchaseSerializer
     permission_classes = [IsAuthenticated]
 
+    def dictfetchall(self, cursor):
+        "Return all rows from a cursor as a dict"
+        desc = cursor.description
+        return [
+            dict(zip([col[0] for col in desc], row))
+            for row in cursor.fetchall()
+        ]
+
     @list_route()
     def purchases(self, request, **kwargs):
         result = Purchase.objects.all()
-        try:
-            result = Purchase.objects.filter(name__icontains=request.query_params['query'])
-        except:
-            pass
-        self.queryset = result
-        serializer = PurchaseSerializer(instance=self.queryset, many=True)
-        return Response(serializer.data)
+        escape_query = '%'+request.query_params["query"]+'%'
+        print escape_query
+        cursor = connection.cursor()
+        # cursor.execute("SELECT distinct(product_id), purchase_id, catalog_id from megaview where product_name LIKE %s OR LIKE category_name %s OR LIKE purchase_name %s OR LIKE catalog_name %s", [escape_query, escape_query, escape_query, escape_query])
+        cursor.execute("SELECT distinct(product_id), purchase_id, catalog_id from megaview where product_name LIKE %s OR category_name LIKE %s OR purchase_name LIKE %s OR catalog_name LIKE %s", [escape_query, escape_query, escape_query, escape_query])
+        result_sql = self.dictfetchall(cursor)
+        # tree_id =
+        # cursor.execute("SELECT distinct(product_id), purchase_id, catalog_id from megaview where ", [tree_id, level])
+        data = json.dumps(result_sql)
+        # print result_sql
+        # получить id закупок
+        # list_purchases_id = []
+        # for dict in result_sql:
+        #     for key, value in dict.items():
+        #         if key == 'purchase_id':
+        #             list_purchases_id.append(value)
+        # list_prod_id = []
+        # for dict in result_sql:
+        #     for key, value in dict.items():
+        #         if key == 'product_id':
+        #             list_prod_id.append(value)
+        # try:
+        #     result = Purchase.objects.filter(id__in=list_purchases_id)
+        #     # print result
+        # except:
+        #     pass
+        # self.queryset = result
+        # serializer = PurchaseSerializer(instance=self.queryset, many=True)
+        # result_data = serializer.data
+
+        # return Response(result_data)
+        return HttpResponse(data, content_type="application/json")
 
 
 class CategoriesViewSet(viewsets.ModelViewSet):
@@ -198,7 +235,7 @@ class CategoriesViewSet(viewsets.ModelViewSet):
 
 def getCartItems(request):
     items = []
-    cart_items = CartItem.objects.filter(user=request.user)
+    cart_items = CartItem.objects.filter(user=request.user.id)
     for item in cart_items:
         items.append({
             'product_id': item.product.id,

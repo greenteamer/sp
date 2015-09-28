@@ -12,7 +12,6 @@ from project.core.views import check_profile
 from project.accounts.models import getProfile
 from excel_response import ExcelResponse
 
-
 @check_profile
 def cartView(request, template_name):
 

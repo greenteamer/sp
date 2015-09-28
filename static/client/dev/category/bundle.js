@@ -8,6 +8,11 @@ var PurchasesActions = {
             actionType: "get-popular-promo",
         });
     },
+    getInitialPurchases: function () {
+        PurchasesDispatcher.dispatch({
+            actionType: "get-initial-purchases"
+        });  
+    },
     getNewPromo: function() {
         PurchasesDispatcher.dispatch({
             actionType: "get-new-promo",
@@ -71,6 +76,12 @@ var PurchasesActions = {
             actionType: "show-photo",
             photo: photo            
         }); 
+    },
+    showMessageModal: function (message) {
+        PurchasesDispatcher.dispatch({
+            actionType: "show-message-modal",
+            message: message
+        });
     },
     getProduct: function(product_id){
         PurchasesDispatcher.dispatch({
@@ -210,6 +221,12 @@ var PurchasesStore = merge(MicroEvent.prototype, {
         this.trigger('organizersTrigger');  
     },
 
+    // начальная коллекция всех закупок
+    initial_purchases: [],
+    getInitialPurchases: function () {
+        this.trigger('getInitialPurchases');  
+    },
+
     // collection - массив закупок
     collection: [], 
     cartitems: [],
@@ -234,6 +251,11 @@ var PurchasesStore = merge(MicroEvent.prototype, {
     modal_photo: {},
     photoView: function(){
         this.trigger('photoView');
+    },
+
+    message_modal: {},
+    messageView: function () {
+        this.trigger('messageView');
     },
 
     // for purchase page
@@ -325,6 +347,7 @@ PurchasesDispatcher.register(function (payload) {
                 cache: false,
                 success: (function (data) {
                     PurchasesStore.search_result_collection = data;
+                    console.log('Store search result data: ', data);
                     PurchasesStore.query_text = payload.query;
                     PurchasesStore.collectionChange();
                 }).bind(this),
@@ -439,6 +462,11 @@ PurchasesDispatcher.register(function (payload) {
             PurchasesStore.photoView();
             break;
 
+        case "show-message-modal":
+            PurchasesStore.message_modal = payload.message;
+            PurchasesStore.messageView();
+            break;
+
         case "get-product":
             //получаем продукт по id
             var url = '/api/v1/products/' + payload.product_id + "/";
@@ -483,6 +511,21 @@ PurchasesDispatcher.register(function (payload) {
                 },
                 error: function(){
                     console.log('oups, something went wrong');
+                }
+            });
+            break;
+
+        case "get-initial-purchases":
+            $.ajax({
+                url: "/api/v1/purchases/",
+                dataType: 'json',
+                cache: false,
+                success: function (data) {
+                    PurchasesStore.initial_purchases = data;
+                    PurchasesStore.getInitialPurchases();
+                },
+                error: function () {
+                    console.log('error ajax initial purchases fetch');
                 }
             });
             break;
@@ -2532,6 +2575,7 @@ module.exports = Search;
 },{"../../actions/PurchasesActions.js":1,"../../stores/PurchasesStore.js":4,"../Purchases.jsx":7,"jquery":31,"react":374}],25:[function(require,module,exports){
 var React = require('react');
 var $ = require('jquery');
+var _ = require('underscore');
 var Purchases = require('../Purchases.jsx');
 var PurchasesStore = require('../../stores/PurchasesStore.js');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
@@ -2542,36 +2586,87 @@ var SearchResult = React.createClass({displayName: "SearchResult",
 	getInitialState: function () {
         return {
             search_result_collection: [],
-            query_text: ''
+            query_text: '',
+            initial_purchases: [],
+            result_purchases: []            
         }
     },
-    componentDidMount: function () {
+    componentWillMount: function () {        
         //обновляем store в соответствии с текущей категорией
         PurchasesStore.bind( 'change', this.collectionChanged );
-    },
+        PurchasesStore.bind( 'getInitialPurchases', this.getPurchases );
+    },    
     componentWillUnmount: function () {
         PurchasesStore.unbind( 'change', this.collectionChanged );
+        PurchasesStore.unbind( 'getInitialPurchases', this.getPurchases );
     },
     collectionChanged: function () {
+        // отправляем ajax и получаем все закупки 
+        PurchasesActions.getInitialPurchases();
+
         var tmp_collection = [];
-        tmp_collection.push(PurchasesStore.search_result_collection);
+        console.log('PurchasesStore.search_result_collection : ', PurchasesStore.search_result_collection)
+        tmp_collection = PurchasesStore.search_result_collection;
+        
 		this.setState({
             search_result_collection: tmp_collection,
-            query_text: PurchasesStore.query_text
+            query_text: PurchasesStore.query_text            
+        });
+    },
+    getPurchases: function () {
+        console.log('get initial Purchases: ', PurchasesStore.initial_purchases);
+        if (PurchasesStore.initial_purchases.length > 0) {
+            var purch_id = _.pluck(this.state.search_result_collection, 'purchase_id');  
+            var catal_id = _.pluck(this.state.search_result_collection, 'catalog_id');  
+            var prod_id = _.pluck(this.state.search_result_collection, 'product_id');  
+            console.log('purch_id : ', purch_id)
+
+            var init_purch = PurchasesStore.initial_purchases;            
+            var tmp_purch = _.filter(init_purch, function (purch) {
+                return purch_id.indexOf(purch.id) != -1 ;
+            });
+            var new_purch = _.map(tmp_purch, function (purch) {
+                purch.catalogs = _.map(
+                    _.filter(purch.catalogs, function (cat) {
+                        // фильтруем массив каталогов этой закупки и 
+                        // оставляем в очередной закупке только наши каталоги                        
+                        return catal_id.indexOf(cat.id) != -1 ;
+                        // затем проходим по каждой фильтруя продукты
+                    }), function (cat) {
+                            // ЧИТАТЬ ОТСЮДА
+                            cat.product_catalog = _.filter(cat.product_catalog, function (prod) {
+                                // меняем очередной каталог так что в нем остаются только наши продукты
+                                return prod_id.indexOf(prod.id) != -1;
+                            });
+                            return cat;
+                        });
+                return purch;                
+            });
+            console.log('tmp_purch : ', tmp_purch);
+            console.log('new_purch', new_purch);
+            // console.log('tmp_catal : ', tmp_catal)
+            // _.each(tmp_purch, function (purch) {
+                
+            // });
+        };
+
+        this.setState({
+            initial_purchases: PurchasesStore.initial_purchases,
+            result_purchases: new_purch
         });
     },
 	render: function () {
-
-        var search_result_collection = [];
+        console.log('search render this.state.result_purchases: ', this.state.result_purchases);
+        // var search_result_collection = [];
 		var title = 'поиск по ' + '"' + this.state.query_text + '"';
-		this.state.search_result_collection.forEach(function(item){
-			search_result_collection = item;
-		});
+		// this.state.search_result_collection.forEach(function(item){
+		// 	search_result_collection = item;
+		// });
         return (
-            React.createElement(IF, {condition: search_result_collection.length != 0}, 
+            React.createElement(IF, {condition: this.state.result_purchases.length != 0}, 
                 React.createElement("div", {className: ""}, 
                     React.createElement("h3", null, title), 
-                    React.createElement(Purchases, {collection: search_result_collection})
+                    React.createElement(Purchases, {collection: this.state.result_purchases})
                 )
             )
         )
@@ -2581,7 +2676,7 @@ var SearchResult = React.createClass({displayName: "SearchResult",
 
 module.exports = SearchResult;
 
-},{"../../actions/PurchasesActions.js":1,"../../stores/PurchasesStore.js":4,"../Purchases.jsx":7,"../customhelpers/IF.jsx":13,"jquery":31,"react":374}],26:[function(require,module,exports){
+},{"../../actions/PurchasesActions.js":1,"../../stores/PurchasesStore.js":4,"../Purchases.jsx":7,"../customhelpers/IF.jsx":13,"jquery":31,"react":374,"underscore":375}],26:[function(require,module,exports){
 /* SnackbarJS - MIT LICENSE (https://github.com/FezVrasta/snackbarjs/blob/master/LICENSE.md) */
 
 (function (factory) {

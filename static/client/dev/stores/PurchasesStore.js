@@ -42,6 +42,12 @@ var PurchasesStore = merge(MicroEvent.prototype, {
         this.trigger('organizersTrigger');  
     },
 
+    // начальная коллекция всех закупок
+    initial_purchases: [],
+    getInitialPurchases: function () {
+        this.trigger('getInitialPurchases');  
+    },
+
     // collection - массив закупок
     collection: [], 
     cartitems: [],
@@ -66,6 +72,11 @@ var PurchasesStore = merge(MicroEvent.prototype, {
     modal_photo: {},
     photoView: function(){
         this.trigger('photoView');
+    },
+
+    message_modal: {},
+    messageView: function () {
+        this.trigger('messageView');
     },
 
     // for purchase page
@@ -157,6 +168,7 @@ PurchasesDispatcher.register(function (payload) {
                 cache: false,
                 success: (function (data) {
                     PurchasesStore.search_result_collection = data;
+                    console.log('Store search result data: ', data);
                     PurchasesStore.query_text = payload.query;
                     PurchasesStore.collectionChange();
                 }).bind(this),
@@ -271,6 +283,11 @@ PurchasesDispatcher.register(function (payload) {
             PurchasesStore.photoView();
             break;
 
+        case "show-message-modal":
+            PurchasesStore.message_modal = payload.message;
+            PurchasesStore.messageView();
+            break;
+
         case "get-product":
             //получаем продукт по id
             var url = '/api/v1/products/' + payload.product_id + "/";
@@ -315,6 +332,21 @@ PurchasesDispatcher.register(function (payload) {
                 },
                 error: function(){
                     console.log('oups, something went wrong');
+                }
+            });
+            break;
+
+        case "get-initial-purchases":
+            $.ajax({
+                url: "/api/v1/purchases/",
+                dataType: 'json',
+                cache: false,
+                success: function (data) {
+                    PurchasesStore.initial_purchases = data;
+                    PurchasesStore.getInitialPurchases();
+                },
+                error: function () {
+                    console.log('error ajax initial purchases fetch');
                 }
             });
             break;

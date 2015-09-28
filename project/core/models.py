@@ -426,3 +426,7 @@ class Slide(models.Model):
 
     def __unicode__(self):
         return "%s" % self.name
+
+
+class SqlViewProducts(models.Model):
+    product_name = models.CharField(max_length=244, default='')

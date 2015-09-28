@@ -7,6 +7,11 @@ var PurchasesActions = {
             actionType: "get-popular-promo",
         });
     },
+    getInitialPurchases: function () {
+        PurchasesDispatcher.dispatch({
+            actionType: "get-initial-purchases"
+        });  
+    },
     getNewPromo: function() {
         PurchasesDispatcher.dispatch({
             actionType: "get-new-promo",
@@ -70,6 +75,12 @@ var PurchasesActions = {
             actionType: "show-photo",
             photo: photo            
         }); 
+    },
+    showMessageModal: function (message) {
+        PurchasesDispatcher.dispatch({
+            actionType: "show-message-modal",
+            message: message
+        });
     },
     getProduct: function(product_id){
         PurchasesDispatcher.dispatch({
