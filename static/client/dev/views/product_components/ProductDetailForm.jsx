@@ -8,12 +8,15 @@ var mui = require('material-ui');
     DropDownMenu = mui.DropDownMenu;
     TextField = mui.TextField;
 var PurchasesActions = require('../../actions/PurchasesActions.js');
+var PurchasesStore = require('../../stores/PurchasesStore.js');
+var RegisterModal = require('./RegisterModal.jsx');
 
 var $ = require('jquery');
 var _ = require('underscore');
 var snackbar = require('../../../lib/snackbar.js');
 
 var Methods = require('../customhelpers/Methods.js');
+var IF = require('../customhelpers/IF.jsx');
 
 
 var Properties = React.createClass({
@@ -43,6 +46,7 @@ var Properties = React.createClass({
             muiTheme: ThemeManager.getCurrentTheme()
         };
     },
+
     setProperties: function(val, e){
         //изменяем state когда выбирается какое либо свойство
         this.state.cpp_properties[e[0].index].value = e[0].value;        
@@ -91,9 +95,16 @@ var Properties = React.createClass({
         }
         
     },
+    messageUser: function (){
+        console.log('message user start');
+        var message = {
+            text: "Пройдите регистрацию чтобы заказать товары",
+            link: "/profile/registration/"
+        };
+        PurchasesActions.showMessageModal(message);
+    },
     render: function(){
         // получаем свойства товара из общих возможных свойств каталога
-        //var product = this.props.product;
         var boundChange = this.setProperties.bind(this);
 
         //проходимся по каждому свойству что бы сгенерировать select
@@ -129,6 +140,7 @@ var Properties = React.createClass({
             )
         });
         console.log('form is chacked: ', this.state.chacked);
+        console.log('ProductDetailForm render user: ', this.props.user);
         return (
             <div className="row">
                 <div className="col-xs-12 col-sm-6">
@@ -145,9 +157,15 @@ var Properties = React.createClass({
                     </div>
                 </div>
                 <div className="col-xs-12 col-sm-6">                    
-                    <p className="price">{this.state.product.price} руб.</p>             
-                    <button type="button" className="btn btn-primary full-width" onClick={this.addToCart}>В корзину</button>
+                    <p className="price">{this.state.product.price} руб.</p>
+                    <IF condition={this.props.user}>
+                        <button type="button" className="btn btn-primary full-width" onClick={this.addToCart}>В корзину</button>
+                    </IF>
+                    <IF condition={this.props.user == undefined}>
+                        <button type="button" className="btn btn-primary full-width" onClick={this.messageUser}>В корзину</button>
+                    </IF>
                 </div>
+                <RegisterModal is_show={this.state.is_show} />
             </div>
         )
     }
@@ -159,7 +177,7 @@ var ProductDetailForm = React.createClass({
         return (
             <div className="properties">
                 <input type="hidden" name="product" value={this.props.product.id} />
-                <Properties cpp_catalog={this.props.cpp_catalog} product={this.props.product}/>
+                <Properties cpp_catalog={this.props.cpp_catalog} product={this.props.product} user={this.props.user}/>
             </div>
         )
     }

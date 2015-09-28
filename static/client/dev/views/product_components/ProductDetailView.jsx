@@ -96,7 +96,9 @@ var ProductFastView = React.createClass({
         });
     },  
     userChanged: function () {
-        PurchasesActions.getOrganizers();
+        if (FaqStore.user != undefined) {
+            PurchasesActions.getOrganizers();
+        }
         this.setState({
             user: FaqStore.user
         });                 
@@ -106,6 +108,8 @@ var ProductFastView = React.createClass({
         FaqActions.getFaqTree();
         // при получении всех профайлов находим профайл текущего пользователя state.user        
         tmp_user = this.state.user;
+        console.log('ProductDetailView changeOrganizers user: ', this.state.user);
+
         // console.log('organizer_profiles: ', PurchasesStore.organizer_profiles); 
         tmp_profile = _.find(PurchasesStore.organizer_profiles, function (profile) {
             // console.log('profile in organizer_profiles: ', profile);    
@@ -180,7 +184,7 @@ var ProductFastView = React.createClass({
                 );
             };
         });
-
+        console.log('ProductDetailView render this.state.user: ', this.state.user);
         return (
             <div className="product_view">
                 <div className="col-xs-12 col-sm-5 col-md-5 product_fast_view">
@@ -207,7 +211,7 @@ var ProductFastView = React.createClass({
                         </div>                        
                         <div className="col-xs-12 col-sm-12 col-md-12">
                             <div style={this.state.fixed_style}>
-                                <ProductDetailForm product={this.props.product} cpp_catalog={this.props.product.cpp_catalog} />
+                                <ProductDetailForm product={this.props.product} cpp_catalog={this.props.product.cpp_catalog} user={this.state.user} />
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12">
