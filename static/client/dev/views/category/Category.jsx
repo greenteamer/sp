@@ -78,7 +78,7 @@ var Category = React.createClass({
             <div>
                 <IF condition={this.state.filtered_collection.length == 0}>
                     <div>
-                        <h2>Товары не отфильтрованы</h2>
+                        <h2>{title}</h2>
                         <Purchases 
                             collection={this.state.collection}
                             category_id={category_id}

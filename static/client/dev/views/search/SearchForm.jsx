@@ -6,18 +6,18 @@ var SearchActions = require('../../actions/SearchActions.js');
 
 var Search = React.createClass({
     searchFunc: function(e){
-        var query = React.findDOMNode(this.refs.query_text).value;
-        SearchActions.changeSearchState(query);
         e.preventDefault();
+        var query = React.findDOMNode(this.refs.query_text).value;
+        SearchActions.changeSearchState(query);        
     },
 	render: function () {
 		return (            
-            <div className="custom-form">
+            <form className="custom-form" onSubmit={this.searchFunc}>
                 <input type="text" ref="query_text" className="col-lg-8" placeholder="поиск товаров"/>
-                <button onClick={this.searchFunc} type="submit" className="btn btn-primary pull-left btn-search">
+                <button type="submit" className="btn btn-primary pull-left btn-search">
                     <i className="mdi-action-search"></i>
                 </button>
-            </div>            
+            </form>            
 		);
 	}
 });
