@@ -199,7 +199,7 @@ a {
     font-family: 'Raleway', sans-serif;
     font-weight: 400;
     color: #ffc229;
-    line-height: 49px;
+    line-height: 20px;
     margin-bottom: 5px;
 }
 
@@ -937,6 +937,9 @@ a.more-button:before {
 }
 .slick-slider .image-wrapper:hover .btn-primary.fast-modal.bottom {
     bottom: 50%
+}
+.product-relative-tittle {
+    margin-bottom: 20px;
 }
 .product-info {
     padding: 18px 20px 68px;

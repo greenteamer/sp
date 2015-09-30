@@ -19,7 +19,7 @@ var CartItem = React.createClass({
         var properties = property_values.map(function(property){
             return(
                 <li><i className="fa fa-check"></i> {property}</li>
-            )
+            );
         });
         var link = "/products/" + this.props.item.product_id + "/";
         return (
@@ -38,7 +38,7 @@ var CartItem = React.createClass({
                     </div>
                 </div>            
             </div>
-        )
+        );
     }
 });
 
@@ -47,7 +47,7 @@ var CartMenu = React.createClass({
 	getInitialState: function () {
         return {
             cartitems: []
-        }
+        };
     },
     componentWillMount: function(){
         PurchasesActions.getCartItems();
@@ -76,13 +76,13 @@ var CartMenu = React.createClass({
                         <div className="separator"></div>
                     </IF>
                 </div>
-            )
+            );
         });
 		return (
             <li className="dropdown">
-                <a href="/cart/" className="dropdown-toggle">
-                    <span className="full_count_product label label-success">{count}</span>
-                    <i className="material-icons">shopping_basket</i>
+                <a href="/cart/" className="dropdown-toggle">                    
+                    <span className="full_count_product label label-success">{count}</span>                    
+                    <i className="mdi-action-shopping-cart"></i>
                 </a>
                 <ul className="dropdown-menu">
                     <div className="cart_button_wrapper">
@@ -91,7 +91,7 @@ var CartMenu = React.createClass({
                     {items}
                 </ul>
             </li>
-		)
+		);
 	}
 });
 

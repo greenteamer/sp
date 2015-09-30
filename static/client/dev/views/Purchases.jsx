@@ -10,6 +10,7 @@ var ProductHoverTitle = require('./product_components/ProductHoverTitle.jsx');
 var ProductRelativeTitle = require('./product_components/ProductRelativeTitle.jsx');
 var PurchaseDetailInfo = require('./purchase/PurchaseDetailInfo.jsx');
 
+
 //material-ui
 var mui = require('material-ui');
 var IconButton = mui.IconButton;
@@ -173,7 +174,8 @@ var Purchases = React.createClass({
             view_state: PurchasesStore.view_state          
         });
     },    
-    render: function () {        
+    render: function () {     
+        console.log('PurchasesStore: ', PurchasesStore);   
         // Cоздаем условие при котором будет выводитсья PurchaseListView
         // state.view_state.view_type слушает Store
         // Компонент использует IF Helper из customhelpers (смотри описание внутри файла IF.jsx)
@@ -213,7 +215,12 @@ var Purchases = React.createClass({
         flat_items = flat_products.map(function (product) {
             return (
                 <div className="col-xs-12 col-sm-4 col-md-3 col-lg-3">
-                    <ProductHoverTitle product={product}/>
+                    <IF condition={tmp_view_state.view_page != 'category'}>
+                        <ProductHoverTitle product={product}/>
+                    </IF>
+                    <IF condition={tmp_view_state.view_page == 'category'}>
+                        <ProductRelativeTitle product={product}/>
+                    </IF>                        
                 </div>
             );
         });

@@ -27,7 +27,7 @@ var ProductTileView = React.createClass({
         description = (description.substr(0, 100));
         var link = "/products/" + this.props.product.id + "/";
         return (                        
-            <div className="product_view image-wrapper row">
+            <div className="product_view image-wrapper product-relative-tittle row">
                 <div className="col-xs-12">
                     <div className="image_block">                        
                         <a href={link} className="">

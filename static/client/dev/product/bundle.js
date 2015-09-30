@@ -1747,6 +1747,7 @@ var ProductHoverTitle = require('./product_components/ProductHoverTitle.jsx');
 var ProductRelativeTitle = require('./product_components/ProductRelativeTitle.jsx');
 var PurchaseDetailInfo = require('./purchase/PurchaseDetailInfo.jsx');
 
+
 //material-ui
 var mui = require('material-ui');
 var IconButton = mui.IconButton;
@@ -1910,7 +1911,8 @@ var Purchases = React.createClass({displayName: "Purchases",
             view_state: PurchasesStore.view_state          
         });
     },    
-    render: function () {        
+    render: function () {     
+        console.log('PurchasesStore: ', PurchasesStore);   
         // Cоздаем условие при котором будет выводитсья PurchaseListView
         // state.view_state.view_type слушает Store
         // Компонент использует IF Helper из customhelpers (смотри описание внутри файла IF.jsx)
@@ -1950,7 +1952,12 @@ var Purchases = React.createClass({displayName: "Purchases",
         flat_items = flat_products.map(function (product) {
             return (
                 React.createElement("div", {className: "col-xs-12 col-sm-4 col-md-3 col-lg-3"}, 
-                    React.createElement(ProductHoverTitle, {product: product})
+                    React.createElement(IF, {condition: tmp_view_state.view_page != 'category'}, 
+                        React.createElement(ProductHoverTitle, {product: product})
+                    ), 
+                    React.createElement(IF, {condition: tmp_view_state.view_page == 'category'}, 
+                        React.createElement(ProductRelativeTitle, {product: product})
+                    )
                 )
             );
         });
@@ -2201,7 +2208,7 @@ var CartItem = React.createClass({displayName: "CartItem",
         var properties = property_values.map(function(property){
             return(
                 React.createElement("li", null, React.createElement("i", {className: "fa fa-check"}), " ", property)
-            )
+            );
         });
         var link = "/products/" + this.props.item.product_id + "/";
         return (
@@ -2220,7 +2227,7 @@ var CartItem = React.createClass({displayName: "CartItem",
                     )
                 )
             )
-        )
+        );
     }
 });
 
@@ -2229,7 +2236,7 @@ var CartMenu = React.createClass({displayName: "CartMenu",
 	getInitialState: function () {
         return {
             cartitems: []
-        }
+        };
     },
     componentWillMount: function(){
         PurchasesActions.getCartItems();
@@ -2258,13 +2265,13 @@ var CartMenu = React.createClass({displayName: "CartMenu",
                         React.createElement("div", {className: "separator"})
                     )
                 )
-            )
+            );
         });
 		return (
             React.createElement("li", {className: "dropdown"}, 
                 React.createElement("a", {href: "/cart/", className: "dropdown-toggle"}, 
                     React.createElement("span", {className: "full_count_product label label-success"}, count), 
-                    React.createElement("i", {className: "material-icons"}, "shopping_basket")
+                    React.createElement("i", {className: "mdi-action-shopping-cart"})
                 ), 
                 React.createElement("ul", {className: "dropdown-menu"}, 
                     React.createElement("div", {className: "cart_button_wrapper"}, 
@@ -2273,7 +2280,7 @@ var CartMenu = React.createClass({displayName: "CartMenu",
                     items
                 )
             )
-		)
+		);
 	}
 });
 
@@ -3793,7 +3800,7 @@ var ProductTileView = React.createClass({displayName: "ProductTileView",
         description = (description.substr(0, 100));
         var link = "/products/" + this.props.product.id + "/";
         return (                        
-            React.createElement("div", {className: "product_view image-wrapper row"}, 
+            React.createElement("div", {className: "product_view image-wrapper product-relative-tittle row"}, 
                 React.createElement("div", {className: "col-xs-12"}, 
                     React.createElement("div", {className: "image_block"}, 
                         React.createElement("a", {href: link, className: ""}, 
@@ -4026,15 +4033,15 @@ var SearchActions = require('../../actions/SearchActions.js');
 
 var Search = React.createClass({displayName: "Search",
     searchFunc: function(e){
-        var query = React.findDOMNode(this.refs.query_text).value;
-        SearchActions.changeSearchState(query);
         e.preventDefault();
+        var query = React.findDOMNode(this.refs.query_text).value;
+        SearchActions.changeSearchState(query);        
     },
 	render: function () {
 		return (            
-            React.createElement("div", {className: "custom-form"}, 
+            React.createElement("form", {className: "custom-form", onSubmit: this.searchFunc}, 
                 React.createElement("input", {type: "text", ref: "query_text", className: "col-lg-8", placeholder: "поиск товаров"}), 
-                React.createElement("button", {onClick: this.searchFunc, type: "submit", className: "btn btn-primary pull-left btn-search"}, 
+                React.createElement("button", {type: "submit", className: "btn btn-primary pull-left btn-search"}, 
                     React.createElement("i", {className: "mdi-action-search"})
                 )
             )            
