@@ -8,6 +8,7 @@ var PurchasesActions = {
         });
     },
     getInitialPurchases: function () {
+        console.log('Actions get initial purchases start');
         PurchasesDispatcher.dispatch({
             actionType: "get-initial-purchases"
         });  
@@ -44,6 +45,11 @@ var PurchasesActions = {
     getCategoriesTree: function () {
         PurchasesDispatcher.dispatch({
             actionType: "get-categories"
+        });  
+    },
+    getCatalogs: function () {
+        PurchasesDispatcher.dispatch({
+            actionType: 'get-catalogs'
         });  
     },
     getCartItems: function(){

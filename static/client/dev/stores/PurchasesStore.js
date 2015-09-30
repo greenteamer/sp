@@ -11,6 +11,17 @@ var Methods = require('../views/customhelpers/Methods.js');
 var FilterFunctions = require('../views/customhelpers/FilterFunctions.js');
 
 
+function get_search_result_purchases(query){
+    console.log('start get_search_result_purchases function');
+    console.log('get_search_result_purchases function query:', query);
+    result = [];
+    PurchasesStore.search_result_collection = result;
+    PurchasesStore.query_text = query;
+    PurchasesStore.searchResult();
+    return result;
+}
+
+
 var PurchasesStore = merge(MicroEvent.prototype, {
     
     // состояние отображений
@@ -57,8 +68,17 @@ var PurchasesStore = merge(MicroEvent.prototype, {
         this.trigger('categoryReceived');  
     },
 
+    catalogs: [],
+    catalogsReceived: function () {
+        this.trigger('catalogsReceived');  
+    },
+
     search_result_collection: [],
     query_text: '',
+    searchResult: function () {
+        console.log('Store searchResult start');
+        this.trigger('searchResult');  
+    },
 
     product_fast_view: {},
     purchase_id_fast_view: 0,
@@ -162,20 +182,22 @@ PurchasesDispatcher.register(function (payload) {
             break;
 
         case 'get-search-results':
-            $.ajax({
-                url: '/api/v1/search/purchases/' + '?query=' + payload.query,
-                dataType: 'json',
-                cache: false,
-                success: (function (data) {
-                    PurchasesStore.search_result_collection = data;
-                    console.log('Store search result data: ', data);
-                    PurchasesStore.query_text = payload.query;
-                    PurchasesStore.collectionChange();
-                }).bind(this),
-                error: (function (xhr, status, err) {
-                    console.log('error fetchin collection');
-                }).bind(this)
-            });
+            var result = get_search_result_purchases(payload.query);
+            console.log('Store get_search_result_purchases: ');
+            //$.ajax({
+            //    url: '/api/v1/search/purchases/' + '?query=' + payload.query,
+            //    dataType: 'json',
+            //    cache: false,
+            //    success: (function (data) {
+            //        PurchasesStore.search_result_collection = data;
+            //        console.log('Store search result data: ', data);
+            //        PurchasesStore.query_text = payload.query;
+            //        PurchasesStore.collectionChange();
+            //    }).bind(this),
+            //    error: (function (xhr, status, err) {
+            //        console.log('error fetchin collection');
+            //    }).bind(this)
+            //});
             break;
 
         case 'add-to-cart':
@@ -217,6 +239,18 @@ PurchasesDispatcher.register(function (payload) {
                     // console.log("Store get categories success data: ", data);
                     PurchasesStore.categories = data;
                     PurchasesStore.categoryReceived();
+                })
+                .error(function () {
+                    console.log("get-categories Ошибка get запроса"); 
+                });
+            break;
+
+        case "get-catalogs":
+            $.get("/api/v1/catalogs/")
+                .success(function (data) {
+                    // console.log("Store get categories success data: ", data);
+                    PurchasesStore.catalogs = data;
+                    PurchasesStore.catalogsReceived();
                 })
                 .error(function () {
                     console.log("get-categories Ошибка get запроса"); 
@@ -337,6 +371,7 @@ PurchasesDispatcher.register(function (payload) {
             break;
 
         case "get-initial-purchases":
+            console.log('Store get-initial-purchases start');
             $.ajax({
                 url: "/api/v1/purchases/",
                 dataType: 'json',
