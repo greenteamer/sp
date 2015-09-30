@@ -2885,7 +2885,7 @@ var CategoryFilter = React.createClass({displayName: "CategoryFilter",
             // генерируем кнопки с фильтрами
             var link = "/category-" + tmp_cat.slug;
             return (
-                React.createElement("button", {onClick: bindFun, id: tmp_cat.slug, className: "btn btn-primary"}, 
+                React.createElement("button", {onClick: bindFun, id: tmp_cat.slug, className: "btn btn-primary category-filter"}, 
                     tmp_cat.name
                 )
             );
