@@ -1,25 +1,24 @@
 var React = require('react');
-var $ = require('jquery');
-var Purchases = require('../Purchases.jsx');
-var PurchasesStore = require('../../stores/PurchasesStore.js');
-var PurchasesActions = require('../../actions/PurchasesActions.js');
+// var PurchasesActions = require('../../actions/PurchasesActions.js');
+var SearchStore = require('../../stores/SearchStore.js');
+var SearchActions = require('../../actions/SearchActions.js');
 
 
 var Search = React.createClass({
-    search: function(e){
+    searchFunc: function(e){
         var query = React.findDOMNode(this.refs.query_text).value;
-        PurchasesActions.getSearchResults(query);
+        SearchActions.changeSearchState(query);
         e.preventDefault();
     },
 	render: function () {
-		return (
-            <form className="custom-form" onSubmit={this.search}>
+		return (            
+            <div className="custom-form">
                 <input type="text" ref="query_text" className="col-lg-8" placeholder="поиск товаров"/>
-                <button type="submit" className="btn btn-primary pull-left btn-search">
+                <button onClick={this.searchFunc} type="submit" className="btn btn-primary pull-left btn-search">
                     <i className="mdi-action-search"></i>
                 </button>
-            </form>
-		)
+            </div>            
+		);
 	}
 });
 

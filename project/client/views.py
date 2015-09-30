@@ -216,7 +216,7 @@ class SearchViewSet(viewsets.ModelViewSet):
         # serializer = PurchaseSerializer(instance=self.queryset, many=True)
         # result_data = serializer.data
 
-        # return Response(result_data)
+        # return Response(result_sql)
         return HttpResponse(data, content_type="application/json")
 
 

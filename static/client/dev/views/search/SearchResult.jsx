@@ -3,90 +3,67 @@ var $ = require('jquery');
 var _ = require('underscore');
 var Purchases = require('../Purchases.jsx');
 var PurchasesStore = require('../../stores/PurchasesStore.js');
+var SearchStore = require('../../stores/SearchStore.js');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
-var IF = require('../customhelpers/IF.jsx');
 
+var IF = require('../customhelpers/IF.jsx');
+var SearchFunctions = require('../customhelpers/SearchFunctions.js');
 
 var SearchResult = React.createClass({
 	getInitialState: function () {
         return {
-            search_result_collection: [],
-            query_text: '',
-            initial_purchases: [],
+            query: '',
             result_purchases: []            
-        }
+        };
     },
-    componentWillMount: function () {        
+    componentWillMount: function () {               
         //обновляем store в соответствии с текущей категорией
-        PurchasesStore.bind( 'change', this.collectionChanged );
-        PurchasesStore.bind( 'getInitialPurchases', this.getPurchases );
+        SearchStore.bind('searchStateTrigger', this.searchStateTrigger);
+        PurchasesStore.bind( 'getInitialPurchases', this.getAllPurchases );
+        PurchasesStore.bind('categoryReceived', this.categoryReceived);
+        PurchasesStore.bind('catalogsReceived', this.catalogsReceived);
     },    
     componentWillUnmount: function () {
-        PurchasesStore.unbind( 'change', this.collectionChanged );
-        PurchasesStore.unbind( 'getInitialPurchases', this.getPurchases );
+        SearchStore.unbind('searchStateTrigger', this.searchStateTrigger);
+        PurchasesStore.unbind( 'getInitialPurchases', this.getAllPurchases );
+        PurchasesStore.unbind('catalogsReceived', this.catalogsReceived);
     },
-    collectionChanged: function () {
-        // отправляем ajax и получаем все закупки 
-        PurchasesActions.getInitialPurchases();
+    searchStateTrigger: function(){
+        console.log('SearchResult searchStateTrigger start', SearchStore.search.search_state.query);
 
-        var tmp_collection = [];
-        console.log('PurchasesStore.search_result_collection : ', PurchasesStore.search_result_collection)
-        tmp_collection = PurchasesStore.search_result_collection;
+        setTimeout(function() {
+            PurchasesActions.getCatalogs(); 
+        }, 10);
         
-		this.setState({
-            search_result_collection: tmp_collection,
-            query_text: PurchasesStore.query_text            
+        this.setState({
+            search: SearchStore.search
         });
     },
-    getPurchases: function () {
-        console.log('get initial Purchases: ', PurchasesStore.initial_purchases);
-        if (PurchasesStore.initial_purchases.length > 0) {
-            var purch_id = _.pluck(this.state.search_result_collection, 'purchase_id');  
-            var catal_id = _.pluck(this.state.search_result_collection, 'catalog_id');  
-            var prod_id = _.pluck(this.state.search_result_collection, 'product_id');  
-            console.log('purch_id : ', purch_id)
-
-            var init_purch = PurchasesStore.initial_purchases;            
-            var tmp_purch = _.filter(init_purch, function (purch) {
-                return purch_id.indexOf(purch.id) != -1 ;
-            });
-            var new_purch = _.map(tmp_purch, function (purch) {
-                purch.catalogs = _.map(
-                    _.filter(purch.catalogs, function (cat) {
-                        // фильтруем массив каталогов этой закупки и 
-                        // оставляем в очередной закупке только наши каталоги                        
-                        return catal_id.indexOf(cat.id) != -1 ;
-                        // затем проходим по каждой фильтруя продукты
-                    }), function (cat) {
-                            // ЧИТАТЬ ОТСЮДА
-                            cat.product_catalog = _.filter(cat.product_catalog, function (prod) {
-                                // меняем очередной каталог так что в нем остаются только наши продукты
-                                return prod_id.indexOf(prod.id) != -1;
-                            });
-                            return cat;
-                        });
-                return purch;                
-            });
-            console.log('tmp_purch : ', tmp_purch);
-            console.log('new_purch', new_purch);
-            // console.log('tmp_catal : ', tmp_catal)
-            // _.each(tmp_purch, function (purch) {
-                
-            // });
-        };
+    categoryReceived: function () {
+        console.log('SearchResult categoryReceived done: ', PurchasesStore.categories);
+        // PurchasesActions.getInitialPurchases();
+    },
+    catalogsReceived: function  () {
+        setTimeout(function() {
+            PurchasesActions.getInitialPurchases(); 
+        }, 10);
+    },
+    getAllPurchases: function () {
+        var result = SearchFunctions.search(
+                        PurchasesStore.initial_purchases, 
+                        PurchasesStore.categories, 
+                        PurchasesStore.catalogs, 
+                        SearchStore.search);
+        console.log('SearchResult jsx getAllPurchases search result: ', result);
 
         this.setState({
-            initial_purchases: PurchasesStore.initial_purchases,
-            result_purchases: new_purch
+            query: SearchStore.search.search_state.query,
+            result_purchases: result
         });
     },
 	render: function () {
         console.log('search render this.state.result_purchases: ', this.state.result_purchases);
-        // var search_result_collection = [];
-		var title = 'поиск по ' + '"' + this.state.query_text + '"';
-		// this.state.search_result_collection.forEach(function(item){
-		// 	search_result_collection = item;
-		// });
+		var title = 'поиск по ' + '"' + this.state.query + '"';
         return (
             <IF condition={this.state.result_purchases.length != 0}>
                 <div className=''>            
@@ -94,7 +71,7 @@ var SearchResult = React.createClass({
                     <Purchases collection={this.state.result_purchases}/>
                 </div>
             </IF>
-        )
+        );
 	}
 });
 
