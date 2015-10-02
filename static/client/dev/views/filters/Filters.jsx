@@ -19,14 +19,17 @@ var CategoryFilter = React.createClass({
     getInitialState: function () {
         return {
             categories: [],
-            nested_categories: []
+            nested_categories: [],
+            filter: {}
         };
     },
     componentWillMount: function () {        
         PurchasesActions.getCategoriesTree();
+        PurchasesStore.bind('filterTrigger', this.filterChanged);
         PurchasesStore.bind('categoryReceived', this.setChildrenCategory);
     },
-    componentWillUnmount: function () {                
+    componentWillUnmount: function () {  
+        PurchasesStore.unbind('filterTrigger', this.filterChanged);              
         PurchasesStore.unbind('categoryReceived', this.setChildrenCategory);
     },
     setChildrenCategory: function () {
@@ -37,7 +40,12 @@ var CategoryFilter = React.createClass({
         tmp_nested_categories = Methods.getAllNestedCategories(PurchasesStore.categories, current_category_slug);
         this.setState({
             categories: PurchasesStore.categories,
-            nested_categories: tmp_nested_categories
+            nested_categories: tmp_nested_categories,
+            filter: {
+                filter_state: {
+                    category: current_category_slug
+                }
+            }
         });  
     },
     changeCategoryFilter: function (e) {
@@ -53,18 +61,32 @@ var CategoryFilter = React.createClass({
 
         // var tmp_filtered_collection = FiltFunc.filterByCategory(cat_purchases, this.props.filtered_сollection);
 
-        // PurchasesActions.filterCollection(tmp_filtered_collection);        
-    },     
+        // PurchasesActions.filterCollection(tmp_filtered_collection);  
+
+    },   
+    filterChanged: function () {
+        this.setState({
+            filter: PurchasesStore.filter
+        });
+    },  
     render: function () {
         // биндим функцию что бы она была доступна внутри map
         var bindFun = this.changeCategoryFilter;
-
+        var current_category_slug = '';
+        if (this.state.filter.filter_state) {
+            current_category_slug = this.state.filter.filter_state.category;
+        };        
         var nested_categories = this.state.nested_categories.map(function (tmp_cat) {
             // генерируем кнопки с фильтрами
             var link = "/category-" + tmp_cat.slug;
             return (
                 <li>
-                    <a onClick={bindFun} id={tmp_cat.slug} name="" className="category-filter">{tmp_cat.name}</a>
+                    <IF condition={tmp_cat.slug == current_category_slug}>
+                        <a id={tmp_cat.slug} name="" className="category-filter disable">{tmp_cat.name} <i className="mdi-navigation-check"></i></a>
+                    </IF>
+                    <IF condition={tmp_cat.slug != current_category_slug}>
+                        <a onClick={bindFun} id={tmp_cat.slug} name="" className="category-filter">{tmp_cat.name}</a>
+                    </IF>  
                 </li>
             );
         });
@@ -103,10 +125,10 @@ var Filters = React.createClass({
     		values: []
     	};
     },
-    componentWillMount: function  () {
+    componentWillMount: function  () {        
     	PurchasesStore.bind( 'change', this.collectionChanged );
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function () {        
         PurchasesStore.unbind( 'change', this.collectionChanged );
     },
     collectionChanged: function () { 
@@ -138,7 +160,7 @@ var Filters = React.createClass({
         this.setState({
             values: values
         });
-    },
+    },    
 	render: function  () {		
 		var product_max_price = _.max(this.state.flat_collection, function (product) {
 			//получаем продукт с максимальной ценой
