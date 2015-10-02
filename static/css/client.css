@@ -916,6 +916,12 @@ a.more-button:before {
     margin: 3px 3px;
     padding: 3px 10px
 }
+#filters ul {
+    padding: 10px 19px 20px 19px;
+}
+a.category-filter:hover {
+    cursor: pointer;
+}
 .slick-slider .image-wrapper:hover .btn-primary.fast-modal {
     opacity: 1;
     filter: alpha(opacity=50);

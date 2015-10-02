@@ -22,6 +22,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import detail_route, list_route
 from serializers import PurchaseSerializer, OrganizerSerializer, PromoSerializer, CategorySerializer, ProductSerializer, CatalogSerializer, BenefitsSerializer, QuestionsSerializer, AnswersSerializer, UserSerializer
 
+from project.settings import ADMIN_EMAIL
+from django.core.mail import send_mail
 
 from django.db import connection, connections
 
@@ -66,18 +68,23 @@ def indexView(request, template_name="client/pages/index.html"):
             purchase.products.update(catalog.get_products())
         purchase.products = list(purchase.products)[:3]
 
-    if request.method == 'POST':
-        """Добавляем товар в корзину
-        используем стндартную форму для добавления товара
-        котору мы дополучаем раньше для каждого товара"""
-        product = Product.objects.get(id=request.POST['product'])
-        product_properties = product.property   # все возможные свойства Этого товара
-        if request.POST['product_properties'] in product_properties and request.POST['product_properties'] != '':
-            # если выбранные св-ва есть в товаре
-            cart_item = CartItem(product=product)
-            form = CartItemForm(request.POST or None, instance=cart_item)
-            if form.is_valid():
-                cart_item = add_to_cart(request)    # Добавление в корзину
+    # if request.method == 'POST':
+    #     """Добавляем товар в корзину
+    #     используем стндартную форму для добавления товара
+    #     котору мы дополучаем раньше для каждого товара"""
+    #     product = Product.objects.get(id=request.POST['product'])
+    #     product_properties = product.property   # все возможные свойства Этого товара
+    #     if request.POST['product_properties'] in product_properties and request.POST['product_properties'] != '':
+    #         # если выбранные св-ва есть в товаре
+    #         cart_item = CartItem(product=product)
+    #         form = CartItemForm(request.POST or None, instance=cart_item)
+    #         if form.is_valid():
+    #             cart_item = add_to_cart(request)    # Добавление в корзину
+
+    if request.method == 'POST' and 'subscribe' in request.POST:
+        subject = u'Заявка на подписку baybox.ru'
+        message = u'почта: %s' % request.POST['email']
+        send_mail(subject, message, 'teamer777@gmail.com', [ADMIN_EMAIL], fail_silently=False)
 
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))

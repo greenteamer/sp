@@ -63,9 +63,9 @@ var CategoryFilter = React.createClass({
             // генерируем кнопки с фильтрами
             var link = "/category-" + tmp_cat.slug;
             return (
-                <button onClick={bindFun} id={tmp_cat.slug} className="btn btn-primary category-filter">                    
-                    {tmp_cat.name}
-                </button>
+                <li>
+                    <a onClick={bindFun} id={tmp_cat.slug} name="" className="category-filter">{tmp_cat.name}</a>
+                </li>
             );
         });
         return (
@@ -73,7 +73,9 @@ var CategoryFilter = React.createClass({
                 <IF condition={this.state.nested_categories.length > 0}>
                     <div> 
                         <h3 className="font-decor">Фильтровать по категориям</h3>
-                        {nested_categories}
+                        <ul>
+                            {nested_categories}
+                        </ul>
                     </div>
                 </IF>
             </div>
@@ -144,6 +146,7 @@ var Filters = React.createClass({
 		});     
 		return (            
 			<div>
+                <CategoryFilter />    
 				<h3 className="font-decor">Фильтровать по цене</h3>            
                 <ReactSlider 
                         ref="reactSlider"                        
@@ -156,9 +159,7 @@ var Filters = React.createClass({
                         withBars >
                     <div className="my-handle">от: {this.state.values[0]} р.</div>
                     <div className="my-handle">до: {this.state.values[1]} р.</div>                    
-                </ReactSlider>
-
-                <CategoryFilter />                
+                </ReactSlider>                        
 			</div>
 		);
 	}

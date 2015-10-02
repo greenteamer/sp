@@ -2543,8 +2543,8 @@ var CategoryFilter = React.createClass({displayName: "CategoryFilter",
             // генерируем кнопки с фильтрами
             var link = "/category-" + tmp_cat.slug;
             return (
-                React.createElement("button", {onClick: bindFun, id: tmp_cat.slug, className: "btn btn-primary category-filter"}, 
-                    tmp_cat.name
+                React.createElement("li", null, 
+                    React.createElement("a", {onClick: bindFun, id: tmp_cat.slug, name: "", className: "category-filter"}, tmp_cat.name)
                 )
             );
         });
@@ -2553,7 +2553,9 @@ var CategoryFilter = React.createClass({displayName: "CategoryFilter",
                 React.createElement(IF, {condition: this.state.nested_categories.length > 0}, 
                     React.createElement("div", null, 
                         React.createElement("h3", {className: "font-decor"}, "Фильтровать по категориям"), 
-                        nested_categories
+                        React.createElement("ul", null, 
+                            nested_categories
+                        )
                     )
                 )
             )
@@ -2624,6 +2626,7 @@ var Filters = React.createClass({displayName: "Filters",
 		});     
 		return (            
 			React.createElement("div", null, 
+                React.createElement(CategoryFilter, null), 
 				React.createElement("h3", {className: "font-decor"}, "Фильтровать по цене"), 
                 React.createElement(ReactSlider, {
                         ref: "reactSlider", 
@@ -2636,9 +2639,7 @@ var Filters = React.createClass({displayName: "Filters",
                         withBars: true}, 
                     React.createElement("div", {className: "my-handle"}, "от: ", this.state.values[0], " р."), 
                     React.createElement("div", {className: "my-handle"}, "до: ", this.state.values[1], " р.")
-                ), 
-
-                React.createElement(CategoryFilter, null)
+                )
 			)
 		);
 	}
