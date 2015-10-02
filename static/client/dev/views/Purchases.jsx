@@ -10,6 +10,8 @@ var ProductHoverTitle = require('./product_components/ProductHoverTitle.jsx');
 var ProductRelativeTitle = require('./product_components/ProductRelativeTitle.jsx');
 var PurchaseDetailInfo = require('./purchase/PurchaseDetailInfo.jsx');
 
+var FaqActions = require('../faq/actions/FaqActions.js');
+
 
 //material-ui
 var mui = require('material-ui');
@@ -164,6 +166,7 @@ var Purchases = React.createClass({
         };
     },    
     componentWillMount: function  () {
+        FaqActions.getCurrentUser();                
         PurchasesStore.bind('changeViewState', this.changeViewState);    
     },
     componentWillUnmount: function  () {

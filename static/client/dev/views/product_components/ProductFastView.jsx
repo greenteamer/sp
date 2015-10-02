@@ -14,10 +14,10 @@ function emptyObject(obj) {
 
 
 var ProductFastView = React.createClass({
-    render: function(){
-
+    render: function(){        
         var description = this.props.product.description;
         description = (description.substr(0, 500));
+        console.log('ProductFastView render start');
         return (
             <div className="product_view">
                 <div className="col-xs-12 col-sm-6 col-md-4 product_fast_view">
@@ -39,7 +39,7 @@ var ProductFastView = React.createClass({
                     </div>
                 </div>
             </div>
-        )
+        );
 
     }
 });

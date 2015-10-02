@@ -34,18 +34,20 @@ var ProductModal = React.createClass({
         };
     },
     componentDidMount: function () {
-        PurchasesStore.bind( 'modal', this.collectionChanged );
+        PurchasesStore.bind( 'modal', this.showModal );
     },
     componentWillUnmount: function () {
-        PurchasesStore.unbind( 'modal', this.collectionChanged );
+        PurchasesStore.unbind( 'modal', this.showModal );
     },
-    collectionChanged: function () {
+    showModal: function () {
+        console.log('ProductModal showModal start');
         this.setState({
             product_fast_view: PurchasesStore.product_fast_view,
             purchase_id_fast_view: PurchasesStore.purchase_id_fast_view
         });
         this.state.product_fast_view = PurchasesStore.product_fast_view;
         if (emptyObject(this.state.product_fast_view) != true) {
+            console.log('ProductModal showModal start this.refs.productDialog.show');
             this.refs.productDialog.show();
         }
     },
@@ -53,6 +55,7 @@ var ProductModal = React.createClass({
     	this.refs.productDialog.dismiss();
     },
     render: function(){
+        console.log('ProductModal render start');
         var modalActions = [
 			  <FlatButton
 			    label="Закрыть"
@@ -80,7 +83,8 @@ var ProductModal = React.createClass({
                     <ProductFastView  product={this.state.product_fast_view}/>                    
                 </Dialog>
                 ];
-        }
+        };
+        console.log('ProductModal render before return');        
         return (
             <div>
                 {productModal}

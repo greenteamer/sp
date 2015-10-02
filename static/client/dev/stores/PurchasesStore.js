@@ -96,6 +96,7 @@ var PurchasesStore = merge(MicroEvent.prototype, {
 
     message_modal: {},
     messageView: function () {
+        console.log('PurchasesStore messageView trigger message_modal: ', this.message_modal);
         this.trigger('messageView');
     },
 
@@ -305,6 +306,7 @@ PurchasesDispatcher.register(function (payload) {
             break;
 
         case "fast-show-product":
+            console.log('PurchasesStore start fast-show-product');
             //передаем продукт которй быстро хочет посмотреть человек
             PurchasesStore.product_fast_view = payload.product;
             PurchasesStore.product_fast_view.cpp_catalog = payload.cpp_catalog;
@@ -318,8 +320,9 @@ PurchasesDispatcher.register(function (payload) {
             break;
 
         case "show-message-modal":
+            console.log('PurchasesStore start show-message-modal');
             PurchasesStore.message_modal = payload.message;
-            PurchasesStore.messageView();
+            PurchasesStore.messageView();            
             break;
 
         case "get-product":
