@@ -235,12 +235,11 @@
                         </div>
                         <div class="box-right">
                             <p class="desc">Подпишитесь на свежую информацию, плюс купон на 150р в подарок</p>
-                            <form action="http://demo.7uptheme.com/canifa/newsletter/subscriber/new/" method="post" id="newsletter-validate-detail">
-                                <input name="form_key" type="hidden" value="UAkGtfJpfNvP9to9">
+                            <form action="." method="post" id="newsletter-validate-detail">{%csrf_token%}
                                 <div class="block-content">
                                     <div class="input-box">
                                        <input type="text" name="email" id="newsletter" title="Sign up for our newsletter" value="Your email" class="input-text required-entry validate-email">
-                                       <button type="submit" title="Subscribe" class="btn btn-primary">Подписаться</button>
+                                       <button type="submit" name="subscribe" title="Subscribe" class="btn btn-primary">Подписаться</button>
                                     </div>
                                 </div>
                             </form>

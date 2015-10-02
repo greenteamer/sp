@@ -12,7 +12,7 @@ var Catalog = React.createClass({
                     purchase_id={this.props.purchase_id}
                     view_state={this.props.view_state}/>
             </div>
-        )
+        );
     }
 });
 
@@ -29,14 +29,14 @@ var Catalogs = React.createClass({
                         catalog={item} 
                         purchase_id={purchase_id} 
                         view_state={tmp_view_state}/>
-                )
+                );
             }
         });
         return (
             <div className="catalogs">
                 {items}
             </div>
-        )
+        );
     }
 });
 

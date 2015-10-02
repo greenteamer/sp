@@ -1690,7 +1690,7 @@ var Catalog = React.createClass({displayName: "Catalog",
                     purchase_id: this.props.purchase_id, 
                     view_state: this.props.view_state})
             )
-        )
+        );
     }
 });
 
@@ -1707,14 +1707,14 @@ var Catalogs = React.createClass({displayName: "Catalogs",
                         catalog: item, 
                         purchase_id: purchase_id, 
                         view_state: tmp_view_state})
-                )
+                );
             }
         });
         return (
             React.createElement("div", {className: "catalogs"}, 
                 items
             )
-        )
+        );
     }
 });
 
@@ -3995,7 +3995,7 @@ var ProductTileView = React.createClass({displayName: "ProductTileView",
                     )
                 )
             )
-        )
+        );
 
     }
 });
@@ -4009,7 +4009,6 @@ module.exports = ProductTileView;
 var React = require('react');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
 var PurchasesStore = require('../../stores/PurchasesStore.js');
-var ProductForm = require('./ProductForm.jsx');
 
 var Dialog = require('material-ui').Dialog;
 var ThemeManager = require('material-ui/lib/styles/theme-manager')();
@@ -4081,7 +4080,7 @@ var RegisterModal = React.createClass({displayName: "RegisterModal",
 
 module.exports = RegisterModal;
 
-},{"../../actions/PurchasesActions.js":1,"../../stores/PurchasesStore.js":14,"./ProductForm.jsx":33,"material-ui":84,"material-ui/lib/styles/theme-manager":121,"react":391}],38:[function(require,module,exports){
+},{"../../actions/PurchasesActions.js":1,"../../stores/PurchasesStore.js":14,"material-ui":84,"material-ui/lib/styles/theme-manager":121,"react":391}],38:[function(require,module,exports){
 var React = require('react');
 var Slider = require('react-slick');
 var ProductForm = require('./ProductForm.jsx');
@@ -4138,7 +4137,7 @@ var SimpleSlider = React.createClass({displayName: "SimpleSlider",
                             view_state: tmp_view_state})
                     )
                 )
-            )
+            );
         });
         return (
           React.createElement(Slider, React.__spread({},  settings), 

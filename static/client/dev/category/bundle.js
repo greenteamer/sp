@@ -1246,7 +1246,7 @@ var Catalog = React.createClass({displayName: "Catalog",
                     purchase_id: this.props.purchase_id, 
                     view_state: this.props.view_state})
             )
-        )
+        );
     }
 });
 
@@ -1263,14 +1263,14 @@ var Catalogs = React.createClass({displayName: "Catalogs",
                         catalog: item, 
                         purchase_id: purchase_id, 
                         view_state: tmp_view_state})
-                )
+                );
             }
         });
         return (
             React.createElement("div", {className: "catalogs"}, 
                 items
             )
-        )
+        );
     }
 });
 
@@ -2543,8 +2543,8 @@ var CategoryFilter = React.createClass({displayName: "CategoryFilter",
             // генерируем кнопки с фильтрами
             var link = "/category-" + tmp_cat.slug;
             return (
-                React.createElement("button", {onClick: bindFun, id: tmp_cat.slug, className: "btn btn-primary category-filter"}, 
-                    tmp_cat.name
+                React.createElement("li", null, 
+                    React.createElement("a", {onClick: bindFun, id: tmp_cat.slug, name: "", className: "category-filter"}, tmp_cat.name)
                 )
             );
         });
@@ -2553,7 +2553,9 @@ var CategoryFilter = React.createClass({displayName: "CategoryFilter",
                 React.createElement(IF, {condition: this.state.nested_categories.length > 0}, 
                     React.createElement("div", null, 
                         React.createElement("h3", {className: "font-decor"}, "Фильтровать по категориям"), 
-                        nested_categories
+                        React.createElement("ul", null, 
+                            nested_categories
+                        )
                     )
                 )
             )
@@ -2624,6 +2626,7 @@ var Filters = React.createClass({displayName: "Filters",
 		});     
 		return (            
 			React.createElement("div", null, 
+                React.createElement(CategoryFilter, null), 
 				React.createElement("h3", {className: "font-decor"}, "Фильтровать по цене"), 
                 React.createElement(ReactSlider, {
                         ref: "reactSlider", 
@@ -2636,9 +2639,7 @@ var Filters = React.createClass({displayName: "Filters",
                         withBars: true}, 
                     React.createElement("div", {className: "my-handle"}, "от: ", this.state.values[0], " р."), 
                     React.createElement("div", {className: "my-handle"}, "до: ", this.state.values[1], " р.")
-                ), 
-
-                React.createElement(CategoryFilter, null)
+                )
 			)
 		);
 	}
@@ -3118,7 +3119,7 @@ var ProductTileView = React.createClass({displayName: "ProductTileView",
                     )
                 )
             )
-        )
+        );
 
     }
 });
@@ -3132,7 +3133,6 @@ module.exports = ProductTileView;
 var React = require('react');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
 var PurchasesStore = require('../../stores/PurchasesStore.js');
-var ProductForm = require('./ProductForm.jsx');
 
 var Dialog = require('material-ui').Dialog;
 var ThemeManager = require('material-ui/lib/styles/theme-manager')();
@@ -3204,7 +3204,7 @@ var RegisterModal = React.createClass({displayName: "RegisterModal",
 
 module.exports = RegisterModal;
 
-},{"../../actions/PurchasesActions.js":1,"../../stores/PurchasesStore.js":9,"./ProductForm.jsx":25,"material-ui":75,"material-ui/lib/styles/theme-manager":112,"react":382}],30:[function(require,module,exports){
+},{"../../actions/PurchasesActions.js":1,"../../stores/PurchasesStore.js":9,"material-ui":75,"material-ui/lib/styles/theme-manager":112,"react":382}],30:[function(require,module,exports){
 var React = require('react');
 var Slider = require('react-slick');
 var ProductForm = require('./ProductForm.jsx');
@@ -3261,7 +3261,7 @@ var SimpleSlider = React.createClass({displayName: "SimpleSlider",
                             view_state: tmp_view_state})
                     )
                 )
-            )
+            );
         });
         return (
           React.createElement(Slider, React.__spread({},  settings), 

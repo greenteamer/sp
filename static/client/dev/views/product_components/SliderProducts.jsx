@@ -54,7 +54,7 @@ var SimpleSlider = React.createClass({
                             view_state={tmp_view_state}/>
                     </IF>
                 </div>
-            )
+            );
         });
         return (
           <Slider {...settings}>
