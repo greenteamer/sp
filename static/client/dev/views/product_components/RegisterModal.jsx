@@ -3,7 +3,6 @@
 var React = require('react');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
 var PurchasesStore = require('../../stores/PurchasesStore.js');
-var ProductForm = require('./ProductForm.jsx');
 
 var Dialog = require('material-ui').Dialog;
 var ThemeManager = require('material-ui/lib/styles/theme-manager')();

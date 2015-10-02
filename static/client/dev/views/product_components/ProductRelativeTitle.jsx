@@ -46,7 +46,7 @@ var ProductTileView = React.createClass({
                     </button>
                 </div>
             </div>
-        )
+        );
 
     }
 });
