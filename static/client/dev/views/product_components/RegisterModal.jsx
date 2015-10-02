@@ -1,24 +1,17 @@
+'use strict';
+
 var React = require('react');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
 var PurchasesStore = require('../../stores/PurchasesStore.js');
 var ProductForm = require('./ProductForm.jsx');
-var ProductFastView = require('./ProductFastView.jsx');
+
 var Dialog = require('material-ui').Dialog;
 var ThemeManager = require('material-ui/lib/styles/theme-manager')();
 var FlatButton = require('material-ui').FlatButton;
 var Colors = require('material-ui').Styles.Colors;
 
 
-function emptyObject(obj) {
-    //вспомогательная функция проверяет пуст ли объект
-    for (var i in obj) {
-        return false;
-    }
-    return true;
-}
-
-
-var ProductModal = React.createClass({
+var RegisterModal = React.createClass({
     childContextTypes: {
         muiTheme: React.PropTypes.object
     },
@@ -28,17 +21,20 @@ var ProductModal = React.createClass({
         };
     },
     getInitialState: function(){
+        console.log('RegisterModal getInitialState');
         return {
             message: {}
-        }
+        };
     },
-    componentWillMount: function () {
+    componentWillMount: function() {
+        console.log('RegisterModal componentWillMount');
         PurchasesStore.bind('messageView', this._DialogShow);
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         PurchasesStore.unbind('messageView', this._DialogShow);
     },
     _DialogShow: function (){
+        console.log('dialog show');
         this.setState({
             message: PurchasesStore.message_modal
         });
@@ -77,4 +73,4 @@ var ProductModal = React.createClass({
 });
 
 
-module.exports = ProductModal;
+module.exports = RegisterModal;

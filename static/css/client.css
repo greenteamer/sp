@@ -912,6 +912,10 @@ a.more-button:before {
 .catalog .slick-next {    
     top: 32%;
 }
+.btn.btn-primary.category-filter {
+    margin: 3px 3px;
+    padding: 3px 10px
+}
 .slick-slider .image-wrapper:hover .btn-primary.fast-modal {
     opacity: 1;
     filter: alpha(opacity=50);

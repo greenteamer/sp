@@ -36,7 +36,7 @@ var Properties = React.createClass({
             cpp_properties: cpp_properties,
             product: product,
             chacked: false
-        }
+        };
     },
     childContextTypes: {
         muiTheme: React.PropTypes.object
@@ -137,7 +137,7 @@ var Properties = React.createClass({
                         onChange={boundChange}
                          />
                 </p>
-            )
+            );
         });
         console.log('form is chacked: ', this.state.chacked);
         console.log('ProductDetailForm render user: ', this.props.user);
@@ -165,9 +165,9 @@ var Properties = React.createClass({
                         <button type="button" className="btn btn-primary full-width" onClick={this.messageUser}>В корзину</button>
                     </IF>
                 </div>
-                <RegisterModal is_show={this.state.is_show} />
+                <RegisterModal />
             </div>
-        )
+        );
     }
 });
 
@@ -179,7 +179,7 @@ var ProductDetailForm = React.createClass({
                 <input type="hidden" name="product" value={this.props.product.id} />
                 <Properties cpp_catalog={this.props.cpp_catalog} product={this.props.product} user={this.props.user}/>
             </div>
-        )
+        );
     }
 });
 

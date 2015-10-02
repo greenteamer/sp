@@ -1,5 +1,6 @@
 var React = require('react');
 var Select = require('react-select');
+
 var ThemeManager = require('material-ui/lib/styles/theme-manager')();
 var injectTapEventPlugin = require("react-tap-event-plugin");
 var mui = require('material-ui');
@@ -7,9 +8,13 @@ var mui = require('material-ui');
     SelectField = mui.SelectField;
     DropDownMenu = mui.DropDownMenu;
     TextField = mui.TextField;
+
 var PurchasesActions = require('../../actions/PurchasesActions.js');
+var FaqStore = require('../../faq/stores/FaqStore.js');
+var RegisterModal = require('./RegisterModal.jsx');
 
 var Methods = require('../customhelpers/Methods.js');
+var IF = require('../customhelpers/IF.jsx');
 
 var $ = require('jquery');
 var _ = require('underscore');
@@ -95,6 +100,14 @@ var Properties = React.createClass({
         }
         
     },
+    messageUser: function (){
+        console.log('message user start');
+        var message = {
+            text: "Пройдите регистрацию чтобы заказать товары",
+            link: "/profile/registration/"
+        };
+        PurchasesActions.showMessageModal(message);
+    },
     render: function(){
         // получаем свойства товара из общих возможных свойств каталога
         //var product = this.props.product;
@@ -130,7 +143,7 @@ var Properties = React.createClass({
                      />
             );
         });
-
+        console.log('user: ', this.props.user);
         return (
             <div>
                 {selects}
@@ -144,7 +157,13 @@ var Properties = React.createClass({
                         value={this.state.product.count}/>
                     <button type="button" className="btn btn-default pull-left plus" onClick={this.countPlus}>+</button>
                 </div>
-                <button type="button" className="btn btn-primary full-width" onClick={this.addToCart}>В корзину</button>
+                <IF condition={this.props.user}>
+                    <button type="button" className="btn btn-primary full-width" onClick={this.addToCart}>В корзину</button>
+                </IF>
+                <IF condition={this.props.user == undefined}>
+                    <button type="button" className="btn btn-primary full-width" onClick={this.messageUser}>В корзину</button>
+                </IF>
+                <RegisterModal/>
             </div>
         );
     }
@@ -152,14 +171,36 @@ var Properties = React.createClass({
 
 
 var ProductForm = React.createClass({
-    render: function(){        
-        return (
-            <div className="properties">
-                <input type="hidden" name="product" value={this.props.product.id} />
-                <Properties cpp_catalog={this.props.cpp_catalog} product={this.props.product}/>
-            </div>
-        );
-    }
+  getInitialState: function () {
+    console.log('ProductForm getInitialState start');
+    return {
+      user: undefined
+    };
+  },  
+  componentWillMount: function () {
+    console.log('ProductForm componentWillMount start');
+    FaqStore.bind( 'change', this.userChanged );
+  },
+  componentWillUnmount: function () {
+    FaqStore.unbind( 'change', this.userChanged );
+  },
+  userChanged: function () {
+    this.setState({
+      user: FaqStore.user
+    });
+  },
+  render: function(){  
+  console.log('ProductForm render start');
+    return (
+      <div className="properties">
+        <input type="hidden" name="product" value={this.props.product.id} />
+        <Properties 
+          cpp_catalog={this.props.cpp_catalog} 
+          product={this.props.product} 
+          user={this.state.user}/>
+      </div>
+    );
+  }
 });
 
 

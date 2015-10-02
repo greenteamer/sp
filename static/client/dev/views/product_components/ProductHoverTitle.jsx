@@ -15,6 +15,7 @@ function emptyObject(obj) {
 
 var ProductHoverTitle = React.createClass({
     showProduct: function(){
+        console.log('ProductHoverTitle start showProduct');
         var data = {
             item: this.props.product,
             //purchase_id: this.props.purchase_id,

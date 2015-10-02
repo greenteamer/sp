@@ -69,6 +69,7 @@ var PurchasesActions = {
         });
     },
     fastShowProduct: function(data){
+        console.log('PurchasesActions start fastShowProduct, data:', data);
         PurchasesDispatcher.dispatch({
             actionType: "fast-show-product",
             product: data.item,
@@ -83,6 +84,7 @@ var PurchasesActions = {
         }); 
     },
     showMessageModal: function (message) {
+        console.log('PurchasesActions start showMessageModal, message:', message);
         PurchasesDispatcher.dispatch({
             actionType: "show-message-modal",
             message: message

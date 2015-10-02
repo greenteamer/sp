@@ -70,6 +70,7 @@ var PurchasesActions = {
         });
     },
     fastShowProduct: function(data){
+        console.log('PurchasesActions start fastShowProduct, data:', data);
         PurchasesDispatcher.dispatch({
             actionType: "fast-show-product",
             product: data.item,
@@ -84,6 +85,7 @@ var PurchasesActions = {
         }); 
     },
     showMessageModal: function (message) {
+        console.log('PurchasesActions start showMessageModal, message:', message);
         PurchasesDispatcher.dispatch({
             actionType: "show-message-modal",
             message: message
@@ -1045,6 +1047,7 @@ var PurchasesStore = merge(MicroEvent.prototype, {
 
     message_modal: {},
     messageView: function () {
+        console.log('PurchasesStore messageView trigger message_modal: ', this.message_modal);
         this.trigger('messageView');
     },
 
@@ -1254,6 +1257,7 @@ PurchasesDispatcher.register(function (payload) {
             break;
 
         case "fast-show-product":
+            console.log('PurchasesStore start fast-show-product');
             //передаем продукт которй быстро хочет посмотреть человек
             PurchasesStore.product_fast_view = payload.product;
             PurchasesStore.product_fast_view.cpp_catalog = payload.cpp_catalog;
@@ -1267,8 +1271,9 @@ PurchasesDispatcher.register(function (payload) {
             break;
 
         case "show-message-modal":
+            console.log('PurchasesStore start show-message-modal');
             PurchasesStore.message_modal = payload.message;
-            PurchasesStore.messageView();
+            PurchasesStore.messageView();            
             break;
 
         case "get-product":
@@ -1729,6 +1734,8 @@ var ProductHoverTitle = require('./product_components/ProductHoverTitle.jsx');
 var ProductRelativeTitle = require('./product_components/ProductRelativeTitle.jsx');
 var PurchaseDetailInfo = require('./purchase/PurchaseDetailInfo.jsx');
 
+var FaqActions = require('../faq/actions/FaqActions.js');
+
 
 //material-ui
 var mui = require('material-ui');
@@ -1883,6 +1890,7 @@ var Purchases = React.createClass({displayName: "Purchases",
         };
     },    
     componentWillMount: function  () {
+        FaqActions.getCurrentUser();                
         PurchasesStore.bind('changeViewState', this.changeViewState);    
     },
     componentWillUnmount: function  () {
@@ -1965,7 +1973,7 @@ var Purchases = React.createClass({displayName: "Purchases",
 
 module.exports = Purchases;
 
-},{"../actions/PurchasesActions.js":1,"../stores/PurchasesStore.js":14,"./ButtonsView.jsx":17,"./Catalogs.jsx":18,"./customhelpers/IF.jsx":24,"./customhelpers/Methods.js":25,"./customhelpers/MyRefreshIndicator.jsx":26,"./product_components/ProductHoverTitle.jsx":34,"./product_components/ProductModal.jsx":35,"./product_components/ProductRelativeTitle.jsx":36,"./purchase/PurchaseDetailInfo.jsx":40,"jquery":48,"material-ui":84,"material-ui/lib/styles/theme-manager":121,"react":391,"underscore":392}],20:[function(require,module,exports){
+},{"../actions/PurchasesActions.js":1,"../faq/actions/FaqActions.js":4,"../stores/PurchasesStore.js":14,"./ButtonsView.jsx":17,"./Catalogs.jsx":18,"./customhelpers/IF.jsx":24,"./customhelpers/Methods.js":25,"./customhelpers/MyRefreshIndicator.jsx":26,"./product_components/ProductHoverTitle.jsx":34,"./product_components/ProductModal.jsx":35,"./product_components/ProductRelativeTitle.jsx":36,"./purchase/PurchaseDetailInfo.jsx":40,"jquery":48,"material-ui":84,"material-ui/lib/styles/theme-manager":121,"react":391,"underscore":392}],20:[function(require,module,exports){
 var React = require('react');
 var _ = require('underscore');
 
@@ -2885,7 +2893,7 @@ var CategoryFilter = React.createClass({displayName: "CategoryFilter",
             // генерируем кнопки с фильтрами
             var link = "/category-" + tmp_cat.slug;
             return (
-                React.createElement("button", {onClick: bindFun, id: tmp_cat.slug, className: "btn btn-primary"}, 
+                React.createElement("button", {onClick: bindFun, id: tmp_cat.slug, className: "btn btn-primary category-filter"}, 
                     tmp_cat.name
                 )
             );
@@ -3109,7 +3117,7 @@ var Properties = React.createClass({displayName: "Properties",
             cpp_properties: cpp_properties,
             product: product,
             chacked: false
-        }
+        };
     },
     childContextTypes: {
         muiTheme: React.PropTypes.object
@@ -3210,7 +3218,7 @@ var Properties = React.createClass({displayName: "Properties",
                         onChange: boundChange}
                          )
                 )
-            )
+            );
         });
         console.log('form is chacked: ', this.state.chacked);
         console.log('ProductDetailForm render user: ', this.props.user);
@@ -3238,9 +3246,9 @@ var Properties = React.createClass({displayName: "Properties",
                         React.createElement("button", {type: "button", className: "btn btn-primary full-width", onClick: this.messageUser}, "В корзину")
                     )
                 ), 
-                React.createElement(RegisterModal, {is_show: this.state.is_show})
+                React.createElement(RegisterModal, null)
             )
-        )
+        );
     }
 });
 
@@ -3252,7 +3260,7 @@ var ProductDetailForm = React.createClass({displayName: "ProductDetailForm",
                 React.createElement("input", {type: "hidden", name: "product", value: this.props.product.id}), 
                 React.createElement(Properties, {cpp_catalog: this.props.cpp_catalog, product: this.props.product, user: this.props.user})
             )
-        )
+        );
     }
 });
 
@@ -3533,10 +3541,10 @@ function emptyObject(obj) {
 
 
 var ProductFastView = React.createClass({displayName: "ProductFastView",
-    render: function(){
-
+    render: function(){        
         var description = this.props.product.description;
         description = (description.substr(0, 500));
+        console.log('ProductFastView render start');
         return (
             React.createElement("div", {className: "product_view"}, 
                 React.createElement("div", {className: "col-xs-12 col-sm-6 col-md-4 product_fast_view"}, 
@@ -3558,7 +3566,7 @@ var ProductFastView = React.createClass({displayName: "ProductFastView",
                     )
                 )
             )
-        )
+        );
 
     }
 });
@@ -3569,6 +3577,7 @@ module.exports = ProductFastView;
 },{"../../actions/PurchasesActions.js":1,"../../stores/PurchasesStore.js":14,"./ProductForm.jsx":33,"react":391}],33:[function(require,module,exports){
 var React = require('react');
 var Select = require('react-select');
+
 var ThemeManager = require('material-ui/lib/styles/theme-manager')();
 var injectTapEventPlugin = require("react-tap-event-plugin");
 var mui = require('material-ui');
@@ -3576,9 +3585,13 @@ var mui = require('material-ui');
     SelectField = mui.SelectField;
     DropDownMenu = mui.DropDownMenu;
     TextField = mui.TextField;
+
 var PurchasesActions = require('../../actions/PurchasesActions.js');
+var FaqStore = require('../../faq/stores/FaqStore.js');
+var RegisterModal = require('./RegisterModal.jsx');
 
 var Methods = require('../customhelpers/Methods.js');
+var IF = require('../customhelpers/IF.jsx');
 
 var $ = require('jquery');
 var _ = require('underscore');
@@ -3664,6 +3677,14 @@ var Properties = React.createClass({displayName: "Properties",
         }
         
     },
+    messageUser: function (){
+        console.log('message user start');
+        var message = {
+            text: "Пройдите регистрацию чтобы заказать товары",
+            link: "/profile/registration/"
+        };
+        PurchasesActions.showMessageModal(message);
+    },
     render: function(){
         // получаем свойства товара из общих возможных свойств каталога
         //var product = this.props.product;
@@ -3699,7 +3720,7 @@ var Properties = React.createClass({displayName: "Properties",
                      )
             );
         });
-
+        console.log('user: ', this.props.user);
         return (
             React.createElement("div", null, 
                 selects, 
@@ -3713,7 +3734,13 @@ var Properties = React.createClass({displayName: "Properties",
                         value: this.state.product.count}), 
                     React.createElement("button", {type: "button", className: "btn btn-default pull-left plus", onClick: this.countPlus}, "+")
                 ), 
-                React.createElement("button", {type: "button", className: "btn btn-primary full-width", onClick: this.addToCart}, "В корзину")
+                React.createElement(IF, {condition: this.props.user}, 
+                    React.createElement("button", {type: "button", className: "btn btn-primary full-width", onClick: this.addToCart}, "В корзину")
+                ), 
+                React.createElement(IF, {condition: this.props.user == undefined}, 
+                    React.createElement("button", {type: "button", className: "btn btn-primary full-width", onClick: this.messageUser}, "В корзину")
+                ), 
+                React.createElement(RegisterModal, null)
             )
         );
     }
@@ -3721,20 +3748,42 @@ var Properties = React.createClass({displayName: "Properties",
 
 
 var ProductForm = React.createClass({displayName: "ProductForm",
-    render: function(){        
-        return (
-            React.createElement("div", {className: "properties"}, 
-                React.createElement("input", {type: "hidden", name: "product", value: this.props.product.id}), 
-                React.createElement(Properties, {cpp_catalog: this.props.cpp_catalog, product: this.props.product})
-            )
-        );
-    }
+  getInitialState: function () {
+    console.log('ProductForm getInitialState start');
+    return {
+      user: undefined
+    };
+  },  
+  componentWillMount: function () {
+    console.log('ProductForm componentWillMount start');
+    FaqStore.bind( 'change', this.userChanged );
+  },
+  componentWillUnmount: function () {
+    FaqStore.unbind( 'change', this.userChanged );
+  },
+  userChanged: function () {
+    this.setState({
+      user: FaqStore.user
+    });
+  },
+  render: function(){  
+  console.log('ProductForm render start');
+    return (
+      React.createElement("div", {className: "properties"}, 
+        React.createElement("input", {type: "hidden", name: "product", value: this.props.product.id}), 
+        React.createElement(Properties, {
+          cpp_catalog: this.props.cpp_catalog, 
+          product: this.props.product, 
+          user: this.state.user})
+      )
+    );
+  }
 });
 
 
 module.exports = ProductForm;
 
-},{"../../../lib/snackbar.js":43,"../../actions/PurchasesActions.js":1,"../customhelpers/Methods.js":25,"jquery":48,"material-ui":84,"material-ui/lib/styles/theme-manager":121,"react":391,"react-select":191,"react-tap-event-plugin":218,"underscore":392}],34:[function(require,module,exports){
+},{"../../../lib/snackbar.js":43,"../../actions/PurchasesActions.js":1,"../../faq/stores/FaqStore.js":7,"../customhelpers/IF.jsx":24,"../customhelpers/Methods.js":25,"./RegisterModal.jsx":37,"jquery":48,"material-ui":84,"material-ui/lib/styles/theme-manager":121,"react":391,"react-select":191,"react-tap-event-plugin":218,"underscore":392}],34:[function(require,module,exports){
 var React = require('react');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
 var PurchasesStore = require('../../stores/PurchasesStore.js');
@@ -3752,6 +3801,7 @@ function emptyObject(obj) {
 
 var ProductHoverTitle = React.createClass({displayName: "ProductHoverTitle",
     showProduct: function(){
+        console.log('ProductHoverTitle start showProduct');
         var data = {
             item: this.props.product,
             //purchase_id: this.props.purchase_id,
@@ -3834,18 +3884,20 @@ var ProductModal = React.createClass({displayName: "ProductModal",
         };
     },
     componentDidMount: function () {
-        PurchasesStore.bind( 'modal', this.collectionChanged );
+        PurchasesStore.bind( 'modal', this.showModal );
     },
     componentWillUnmount: function () {
-        PurchasesStore.unbind( 'modal', this.collectionChanged );
+        PurchasesStore.unbind( 'modal', this.showModal );
     },
-    collectionChanged: function () {
+    showModal: function () {
+        console.log('ProductModal showModal start');
         this.setState({
             product_fast_view: PurchasesStore.product_fast_view,
             purchase_id_fast_view: PurchasesStore.purchase_id_fast_view
         });
         this.state.product_fast_view = PurchasesStore.product_fast_view;
         if (emptyObject(this.state.product_fast_view) != true) {
+            console.log('ProductModal showModal start this.refs.productDialog.show');
             this.refs.productDialog.show();
         }
     },
@@ -3853,6 +3905,7 @@ var ProductModal = React.createClass({displayName: "ProductModal",
     	this.refs.productDialog.dismiss();
     },
     render: function(){
+        console.log('ProductModal render start');
         var modalActions = [
 			  React.createElement(FlatButton, {
 			    label: "Закрыть", 
@@ -3880,7 +3933,8 @@ var ProductModal = React.createClass({displayName: "ProductModal",
                     React.createElement(ProductFastView, {product: this.state.product_fast_view})
                 )
                 ];
-        }
+        };
+        console.log('ProductModal render before return');        
         return (
             React.createElement("div", null, 
                 productModal
@@ -3950,27 +4004,20 @@ var ProductTileView = React.createClass({displayName: "ProductTileView",
 module.exports = ProductTileView;
 
 },{"../../actions/PurchasesActions.js":1,"../../stores/PurchasesStore.js":14,"./ProductForm.jsx":33,"react":391}],37:[function(require,module,exports){
+'use strict';
+
 var React = require('react');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
 var PurchasesStore = require('../../stores/PurchasesStore.js');
 var ProductForm = require('./ProductForm.jsx');
-var ProductFastView = require('./ProductFastView.jsx');
+
 var Dialog = require('material-ui').Dialog;
 var ThemeManager = require('material-ui/lib/styles/theme-manager')();
 var FlatButton = require('material-ui').FlatButton;
 var Colors = require('material-ui').Styles.Colors;
 
 
-function emptyObject(obj) {
-    //вспомогательная функция проверяет пуст ли объект
-    for (var i in obj) {
-        return false;
-    }
-    return true;
-}
-
-
-var ProductModal = React.createClass({displayName: "ProductModal",
+var RegisterModal = React.createClass({displayName: "RegisterModal",
     childContextTypes: {
         muiTheme: React.PropTypes.object
     },
@@ -3980,17 +4027,20 @@ var ProductModal = React.createClass({displayName: "ProductModal",
         };
     },
     getInitialState: function(){
+        console.log('RegisterModal getInitialState');
         return {
             message: {}
-        }
+        };
     },
-    componentWillMount: function () {
+    componentWillMount: function() {
+        console.log('RegisterModal componentWillMount');
         PurchasesStore.bind('messageView', this._DialogShow);
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         PurchasesStore.unbind('messageView', this._DialogShow);
     },
     _DialogShow: function (){
+        console.log('dialog show');
         this.setState({
             message: PurchasesStore.message_modal
         });
@@ -4029,9 +4079,9 @@ var ProductModal = React.createClass({displayName: "ProductModal",
 });
 
 
-module.exports = ProductModal;
+module.exports = RegisterModal;
 
-},{"../../actions/PurchasesActions.js":1,"../../stores/PurchasesStore.js":14,"./ProductFastView.jsx":32,"./ProductForm.jsx":33,"material-ui":84,"material-ui/lib/styles/theme-manager":121,"react":391}],38:[function(require,module,exports){
+},{"../../actions/PurchasesActions.js":1,"../../stores/PurchasesStore.js":14,"./ProductForm.jsx":33,"material-ui":84,"material-ui/lib/styles/theme-manager":121,"react":391}],38:[function(require,module,exports){
 var React = require('react');
 var Slider = require('react-slick');
 var ProductForm = require('./ProductForm.jsx');
