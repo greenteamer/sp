@@ -396,7 +396,7 @@ var React = require('react');
 var FlatButton = require('material-ui').FlatButton;
 var Dialog = require('material-ui').Dialog;
 var TextField = require('material-ui').TextField;
-var ThemeManager = require('material-ui/lib/styles/theme-manager')();
+ThemeManager = mui.Styles.ThemeManager();
 var injectTapEventPlugin = require("react-tap-event-plugin");
 
 var FaqActions = require('../actions/FaqActions.js');
@@ -573,7 +573,7 @@ var React = require('react');
 var FlatButton = require('material-ui').FlatButton;
 var Dialog = require('material-ui').Dialog;
 var TextField = require('material-ui').TextField;
-var ThemeManager = require('material-ui/lib/styles/theme-manager')();
+ThemeManager = mui.Styles.ThemeManager();
 var injectTapEventPlugin = require("react-tap-event-plugin");
 
 var FaqActions = require('../actions/FaqActions.js');
@@ -660,7 +660,7 @@ var React = require('react');
 var FlatButton = require('material-ui').FlatButton;
 var Dialog = require('material-ui').Dialog;
 var Checkbox = require('material-ui').Checkbox;
-var ThemeManager = require('material-ui/lib/styles/theme-manager')();
+ThemeManager = mui.Styles.ThemeManager();
 var injectTapEventPlugin = require("react-tap-event-plugin");
 
 var AnswerList = require('./Answers.jsx');

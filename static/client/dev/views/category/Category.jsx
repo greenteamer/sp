@@ -77,7 +77,7 @@ var Category = React.createClass({
 		return (            
             <div>
                 <IF condition={this.state.filtered_collection.length == 0}>
-                    <div>
+                    <div>                        
                         <h2>{title}</h2>
                         <Purchases 
                             collection={this.state.collection}

@@ -14,7 +14,8 @@
 
 
 {% block client_js %}
-    <script type="text/javascript" src="{% static 'client/dev/product/bundle.js' %}"></script>
+    {# // <script type="text/javascript" src="{% static 'client/dev/product/bundle.js' %}"></script> #}
+    <script type="text/javascript" src="{% static 'client/build/product-build.js' %}"></script>
     {# fancybox #}
     <link rel="stylesheet" type="text/css" href="{% static 'client/lib/fancybox/source/jquery.fancybox.css' %}" />
     {# // <script type="text/javascript" src="{% static 'client/lib/fancybox/lib/jquery-1.10.1.min.js' %}"></script> #}
