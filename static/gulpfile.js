@@ -37,17 +37,17 @@ var path = {
 		ENTRY_POINT: './client/dev/index/main.jsx'
 	},
 	category: {
-		MINIFIED_OUT: 'index-category.min.js',		
+		MINIFIED_OUT: 'category-build.min.js',		
 		OUT: 'category-build.js',
 		ENTRY_POINT: './client/dev/category/main.jsx'
 	},
 	product: {
-		MINIFIED_OUT: 'index-product.min.js',		
+		MINIFIED_OUT: 'product-build.min.js',		
 		OUT: 'product-build.js',
 		ENTRY_POINT: './client/dev/product/main.jsx'	
 	},
 	purchase: {
-		MINIFIED_OUT: 'index-purchase.min.js',		
+		MINIFIED_OUT: 'purchase-build.min.js',		
 		OUT: 'purchase-build.js',
 		ENTRY_POINT: './client/dev/purchase/main.jsx'
 	}	
