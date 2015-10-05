@@ -255,7 +255,13 @@
 {% endblock %}
 
 {% block client_js %}
-    <script type="text/javascript" src="{% static 'client/dev/index/bundle.js' %}"></script>
+    {# // <script type="text/javascript" src="{% static 'client/dev/index/bundle.js' %}"></script> #}
+    {% if server == 'develop' %}
+        <script type="text/javascript" src="{% static 'client/build/index-build.js' %}"></script>
+    {% endif %}
+    {% if server == 'production' %}
+        <script type="text/javascript" src="{% static 'client/build/production/index-build.min.js' %}"></script>
+    {% endif %}    
     <script type="text/javascript" src="{% static 'bower_components/swiper/dist/js/swiper.min.js' %}"></script>
     <script type="text/javascript">
         var swiper = new Swiper('.swiper1', {
