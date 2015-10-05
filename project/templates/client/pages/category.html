@@ -13,6 +13,11 @@
 
 
 {% block client_js %}
-    {# // <script type="text/javascript" src="{% static 'client/dev/category/bundle.js' %}"></script> #}
-    <script type="text/javascript" src="{% static 'client/build/category-build.js' %}"></script>
+    {# // <script type="text/javascript" src="{% static 'client/dev/category/bundle.js' %}"></script> #}    
+    {% if server == 'develop' %}
+        <script type="text/javascript" src="{% static 'client/build/category-build.js' %}"></script>
+    {% endif %}
+    {% if server == 'production' %}
+        <script type="text/javascript" src="{% static 'client/build/production/category-build.min.js' %}"></script>
+    {% endif %}    
 {% endblock %}
