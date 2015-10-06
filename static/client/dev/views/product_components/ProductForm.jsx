@@ -13,7 +13,7 @@ var PurchasesActions = require('../../actions/PurchasesActions.js');
 var FaqStore = require('../../faq/stores/FaqStore.js');
 var RegisterModal = require('./RegisterModal.jsx');
 
-var Methods = require('../customhelpers/Methods.js');
+var Methods = require('../customhelpers/Methods.coffee');
 var IF = require('../customhelpers/IF.jsx');
 
 var $ = require('jquery');

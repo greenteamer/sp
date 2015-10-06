@@ -7,7 +7,7 @@ var _ = require('underscore');
 var Cookies = require('js-cookie');
 var snackbar = require('../../lib/snackbar.js');
 
-var Methods = require('../views/customhelpers/Methods.js');
+var Methods = require('../views/customhelpers/Methods.coffee');
 var FilterFunctions = require('../views/customhelpers/FilterFunctions.js');
 
 

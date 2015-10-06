@@ -12,7 +12,7 @@ var PopularIndex = React.createClass({
             collection: [],
           	user: {},
             title: ''
-        }
+        };
     },
     componentDidMount: function () {
 		PurchasesActions.getPopularPromo();
@@ -42,7 +42,7 @@ var PopularIndex = React.createClass({
                     title={title}
                     indicatorElementName='#popular'/>
             </div>
-		)
+		);
 	}
 });
 

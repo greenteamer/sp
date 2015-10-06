@@ -22,7 +22,7 @@ var ThemeManager = require('material-ui/lib/styles/theme-manager')();
 //my custom helpers
 var IF = require('./customhelpers/IF.jsx');
 var MyRefreshIndicator = require('./customhelpers/MyRefreshIndicator.jsx');
-var Methods = require('./customhelpers/Methods.js');
+var Methods = require('./customhelpers/Methods.coffee');
 
 
 var CatalogTileView = React.createClass({    

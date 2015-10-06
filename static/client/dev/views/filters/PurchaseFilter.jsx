@@ -8,7 +8,7 @@ var Slider = mui.Slider;
 var PurchasesStore = require('../../stores/PurchasesStore.js');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
 
-var Methods = require('../customhelpers/Methods.js');
+var Methods = require('../customhelpers/Methods.coffee');
 var IF = require('../customhelpers/IF.jsx');
 var FiltFunc = require('../customhelpers/FilterFunctions.js');
 

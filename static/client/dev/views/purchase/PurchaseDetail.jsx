@@ -24,7 +24,7 @@ var mui = require('material-ui');
 var ThemeManager = require('material-ui/lib/styles/theme-manager')();
 var RefreshIndicator = mui.RefreshIndicator;
 
-var Methods = require('../customhelpers/Methods.js');
+var Methods = require('../customhelpers/Methods.coffee');
 var IF = require('../customhelpers/IF.jsx');
 
 

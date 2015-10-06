@@ -15,7 +15,7 @@ var $ = require('jquery');
 var _ = require('underscore');
 var snackbar = require('../../../lib/snackbar.js');
 
-var Methods = require('../customhelpers/Methods.js');
+var Methods = require('../customhelpers/Methods.coffee');
 var IF = require('../customhelpers/IF.jsx');
 
 

@@ -7,7 +7,7 @@ var ProductRelativeTitle = require('../product_components/ProductRelativeTitle.j
 var ProductModal = require('../product_components/ProductModal.jsx');
 
 var IF = require('../customhelpers/IF.jsx');
-var Methods = require('../customhelpers/Methods.js');
+var Methods = require('../customhelpers/Methods.coffee');
 
 var Category = React.createClass({
 	getInitialState: function () {

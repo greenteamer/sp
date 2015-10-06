@@ -257,7 +257,7 @@
 {% block client_js %}
     {# // <script type="text/javascript" src="{% static 'client/dev/index/bundle.js' %}"></script> #}
     {% if server == 'develop' %}
-        <script type="text/javascript" src="{% static 'client/build/index-build.js' %}"></script>
+        <script type="text/javascript" src="{% static 'client/build/dev_cjsx/index-build.js' %}"></script>
     {% endif %}
     {% if server == 'production' %}
         <script type="text/javascript" src="{% static 'client/build/production/index-build.min.js' %}"></script>
