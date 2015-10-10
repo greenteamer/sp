@@ -29,7 +29,7 @@ path = {
   index: {
     MINIFIED_OUT: 'index-build.min.js',
     OUT: 'index-build.js',
-    ENTRY_POINT: './client/dev/index/main.cjsx'
+    ENTRY_POINT: './client/dev/index/main.jsx'
   },
   category: {
     MINIFIED_OUT: 'category-build.min.js',
@@ -86,7 +86,7 @@ function handleErrors() {
   this.emit('end'); // Keep gulp from hanging on this task
 }
 
-function buildScript(file, entry, watch) {
+function buildScript(file, entry, watch, prod) {
     var props = {
         entries: [entry],
         debug: true,
@@ -101,24 +101,74 @@ function buildScript(file, entry, watch) {
             .pipe(source(file))
             .pipe(gulp.dest(path.DEST_BUILD));
     }
-    bundler.on('update', function() {
-        rebundle();
-        gutil.log('Rebundle...');
-    });
-    return rebundle();
+    function prodRebundle() {
+        var stream = bundler.bundle();
+        return stream.on('error', console.log.bind(console))
+            .pipe(source(file))
+            .pipe(streamify(uglify({sequences: true})))
+            .pipe(gulp.dest(path.PROD_DEST_BUILD));
+    }
+
+    console.log('prod: ', prod);
+    if (prod == false) {
+      bundler.on('update', function() {
+          rebundle();
+          gutil.log('Rebundle...');
+      });
+      return rebundle();
+    } else {
+      bundler.on('update', function() {
+          prodRebundle();
+          gutil.log('Rebundle...');
+      });
+      return prodRebundle();
+    }
+
 }
 
 
 gulp.task('index-build', function() {
-  return buildScript( path.index.OUT, path.index.ENTRY_POINT, false);
+  return buildScript( path.index.OUT, path.index.ENTRY_POINT, false, false);
 });
-
+gulp.task('category-build', function() {
+  return buildScript( path.category.OUT, path.category.ENTRY_POINT, false, false);
+});
+gulp.task('product-build', function() {
+  return buildScript( path.product.OUT, path.product.ENTRY_POINT, false, false);
+});
+gulp.task('purchase-build', function() {
+  return buildScript( path.purchase.OUT, path.purchase.ENTRY_POINT, false, false);
+});
 
 gulp.task('index-watch', ['index-build'], function() {
-  return buildScript( path.index.OUT, path.index.ENTRY_POINT, true);
+  return buildScript( path.index.OUT, path.index.ENTRY_POINT, true, false);
+});
+gulp.task('category-watch', ['category-build'], function() {
+  return buildScript( path.category.OUT, path.category.ENTRY_POINT, true, false);
+});
+gulp.task('product-watch', ['product-build'], function() {
+  return buildScript( path.product.OUT, path.product.ENTRY_POINT, true, false);
+});
+gulp.task('purchase-watch', ['purchase-build'], function() {
+  return buildScript( path.purchase.OUT, path.purchase.ENTRY_POINT, true, false);
+});
+
+
+// production
+gulp.task('index-prod', function() {
+  return buildScript( path.index.MINIFIED_OUT, path.index.ENTRY_POINT, false, true);
+});
+gulp.task('category-prod', function() {
+  return buildScript( path.category.MINIFIED_OUT, path.category.ENTRY_POINT, false, true);
+});
+gulp.task('product-prod', function() {
+  return buildScript( path.product.MINIFIED_OUT, path.product.ENTRY_POINT, false, true);
+});
+gulp.task('purchase-prod', function() {
+  return buildScript( path.purchase.MINIFIED_OUT, path.purchase.ENTRY_POINT, false, true);
 });
 
 
 
-gulp.task('production', ['index-build', 'category-build', 'product-build', 'purchase-build']);
-gulp.task('coffee', ['coffee-index-watch', 'coffee-category-watch', 'coffee-product-watch', 'coffee-purchase-watch']);
+gulp.task('production', ['index-prod', 'category-prod', 'product-prod', 'purchase-prod']);
+gulp.task('watch-all', ['index-watch', 'category-watch', 'product-watch', 'purchase-watch']);
