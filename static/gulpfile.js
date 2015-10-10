@@ -1,29 +1,16 @@
-var browserify, cjsx, coffeeReactify, concatCss, gulp, gutil, minifyCss, path, reactify, rename, source, streamify, uglify, watchify;
+var browserify, coffeeReactify, concatCss, gulp, gutil, minifyCss, path, reactify, rename, source, streamify, uglify, watchify;
 
 gulp = require('gulp');
-
 concatCss = require('gulp-concat-css');
-
 minifyCss = require('gulp-minify-css');
-
 rename = require('gulp-rename');
-
-cjsx = require('gulp-cjsx');
-
 uglify = require('gulp-uglify');
-
+notify = require("gulp-notify");
 source = require('vinyl-source-stream');
-
 browserify = require('browserify');
-
-reactify = require('reactify');
-
 coffeeReactify = require('coffee-reactify');
-
 watchify = require('watchify');
-
 gutil = require('gutil');
-
 streamify = require('gulp-streamify');
 
 gulp.task('default', function() {
@@ -36,7 +23,7 @@ gulp.task('watch-css', function() {
 
 path = {
   DEST: 'client',
-  DEST_BUILD: 'client/build/dev_cjsx',
+  DEST_BUILD: 'client/build/dev',
   PROD_DEST_BUILD: 'client/build/production',
   DEST_SRC: 'client/dev',
   index: {
@@ -70,32 +57,7 @@ gulp.task('index-build', function() {
   }))).pipe(gulp.dest(path.PROD_DEST_BUILD));
 });
 
-gulp.task('category-build', function() {
-  browserify({
-    entries: [path.category.ENTRY_POINT],
-    transform: [coffeeReactify]
-  }).bundle().pipe(source(path.category.MINIFIED_OUT)).pipe(streamify(uglify({
-    sequences: true
-  }))).pipe(gulp.dest(path.PROD_DEST_BUILD));
-});
 
-gulp.task('product-build', function() {
-  browserify({
-    entries: [path.product.ENTRY_POINT],
-    transform: [coffeeReactify]
-  }).bundle().pipe(source(path.product.MINIFIED_OUT)).pipe(streamify(uglify({
-    sequences: true
-  }))).pipe(gulp.dest(path.PROD_DEST_BUILD));
-});
-
-gulp.task('purchase-build', function() {
-  browserify({
-    entries: [path.purchase.ENTRY_POINT],
-    transform: [coffeeReactify]
-  }).bundle().pipe(source(path.purchase.MINIFIED_OUT)).pipe(streamify(uglify({
-    sequences: true
-  }))).pipe(gulp.dest(path.PROD_DEST_BUILD));
-});
 
 gulp.task('coffee-index-watch', function() {
   var watcher;
@@ -113,56 +75,50 @@ gulp.task('coffee-index-watch', function() {
   }).bundle().pipe(source(path.index.OUT)).pipe(gulp.dest(path.DEST_BUILD));
 });
 
-gulp.task('coffee-category-watch', function() {
-  var watcher;
-  watcher = watchify(browserify({
-    entries: [path.category.ENTRY_POINT],
-    transform: [coffeeReactify],
-    debug: true,
-    cache: {},
-    packageCache: {},
-    fullPath: true
-  }));
-  return watcher.on('update', function() {
-    watcher.bundle().pipe(source(path.category.OUT)).pipe(gulp.dest(path.DEST_BUILD));
-    return console.log('category-watch Update');
-  }).bundle().pipe(source(path.category.OUT)).pipe(gulp.dest(path.DEST_BUILD));
+
+
+function handleErrors() {
+  var args = Array.prototype.slice.call(arguments);
+  notify.onError({
+    title: "Compile Error",
+    message: "<%= error.message %>"
+  }).apply(this, args);
+  this.emit('end'); // Keep gulp from hanging on this task
+}
+
+function buildScript(file, entry, watch) {
+    var props = {
+        entries: [entry],
+        debug: true,
+        cache: {},
+        packageCache: {},
+    };
+    var bundler = watch ? watchify(browserify(props)) : browserify(props);
+    bundler.transform(coffeeReactify);
+    function rebundle() {
+        var stream = bundler.bundle();
+        return stream.on('error', console.log.bind(console))
+            .pipe(source(file))
+            .pipe(gulp.dest(path.DEST_BUILD));
+    }
+    bundler.on('update', function() {
+        rebundle();
+        gutil.log('Rebundle...');
+    });
+    return rebundle();
+}
+
+
+gulp.task('index-build', function() {
+  return buildScript( path.index.OUT, path.index.ENTRY_POINT, false);
 });
 
-gulp.task('coffee-product-watch', function() {
-  var watcher;
-  watcher = watchify(browserify({
-    entries: [path.product.ENTRY_POINT],
-    transform: [coffeeReactify],
-    debug: true,
-    cache: {},
-    packageCache: {},
-    fullPath: true
-  }));
-  return watcher.on('update', function() {
-    watcher.bundle().pipe(source(path.product.OUT)).pipe(gulp.dest(path.DEST_BUILD));
-    return console.log('product-watch Update');
-  }).bundle().pipe(source(path.product.OUT)).pipe(gulp.dest(path.DEST_BUILD));
+
+gulp.task('index-watch', ['index-build'], function() {
+  return buildScript( path.index.OUT, path.index.ENTRY_POINT, true);
 });
 
-gulp.task('coffee-purchase-watch', function() {
-  var watcher;
-  watcher = watchify(browserify({
-    entries: [path.purchase.ENTRY_POINT],
-    transform: [coffeeReactify],
-    debug: true,
-    cache: {},
-    packageCache: {},
-    fullPath: true
-  }));
-  return watcher.on('update', function() {
-    watcher.bundle().pipe(source(path.purchase.OUT)).pipe(gulp.dest(path.DEST_BUILD));
-    return console.log('purchase-watch Update');
-  }).bundle().pipe(source(path.purchase.OUT)).pipe(gulp.dest(path.DEST_BUILD));
-});
 
-gulp.task('default', ['index-watch', 'category-watch', 'product-watch', 'purchase-watch']);
 
 gulp.task('production', ['index-build', 'category-build', 'product-build', 'purchase-build']);
-
 gulp.task('coffee', ['coffee-index-watch', 'coffee-category-watch', 'coffee-product-watch', 'coffee-purchase-watch']);

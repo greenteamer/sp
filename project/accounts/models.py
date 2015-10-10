@@ -66,7 +66,7 @@ class MemberProfile(BaseUserInfo):
     icon = models.FileField(
         u'Image', upload_to='accounts/images/', help_text=u'Фото', blank=True)
 
-    member_checked = models.BooleanField(default=False)
+    member_checked = models.BooleanField(default=True)
 
     def is_checked(self):
         return self.member_checked is True

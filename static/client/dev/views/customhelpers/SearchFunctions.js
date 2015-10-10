@@ -1,7 +1,7 @@
 var $ = require('jquery');
 var _ = require('underscore');
 
-var Methods = require('./Methods.coffee');
+var Methods = require('./Methods.js');
 var PurchasesActions = require('../../actions/PurchasesActions.js');
 
 

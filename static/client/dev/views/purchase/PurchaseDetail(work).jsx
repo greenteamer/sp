@@ -22,7 +22,7 @@ var mui = require('material-ui');
 var ThemeManager = require('material-ui/lib/styles/theme-manager')();
 var RefreshIndicator = mui.RefreshIndicator;
 
-var Methods = require('../customhelpers/Methods.coffee');
+var Methods = require('../customhelpers/Methods.js');
 var IF = require('../customhelpers/IF.jsx');
 
 

@@ -9,24 +9,24 @@
 
 {% block content %}
 	<div id="lightbox_modal"></div>
-    <div id="product"></div>    
+    <div id="product"></div>
 {% endblock %}
 
 
 {% block client_js %}
     {# // <script type="text/javascript" src="{% static 'client/dev/product/bundle.js' %}"></script> #}
     {% if server == 'develop' %}
-        <script type="text/javascript" src="{% static 'client/build/dev_cjsx/product-build.js' %}"></script>
+        <script type="text/javascript" src="{% static 'client/build/dev/product-build.js' %}"></script>
     {% endif %}
     {% if server == 'production' %}
         <script type="text/javascript" src="{% static 'client/build/production/product-build.min.js' %}"></script>
-    {% endif %}   
-    
+    {% endif %}
+
     {# fancybox #}
     <link rel="stylesheet" type="text/css" href="{% static 'client/lib/fancybox/source/jquery.fancybox.css' %}" />
     {# // <script type="text/javascript" src="{% static 'client/lib/fancybox/lib/jquery-1.10.1.min.js' %}"></script> #}
     <script type="text/javascript" src="{% static 'client/lib/fancybox/source/jquery.fancybox.js' %}"></script>
-    <script type="text/javascript" src="{% static 'client/lib/fancybox/source/jquery.fancybox.js' %}"></script>    
+    <script type="text/javascript" src="{% static 'client/lib/fancybox/source/jquery.fancybox.js' %}"></script>
     <script>
 	    $(document).ready(function() {
 			$(".fancybox").fancybox({
