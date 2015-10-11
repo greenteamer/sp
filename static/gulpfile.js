@@ -1,7 +1,8 @@
-var browserify, coffeeReactify, concatCss, gulp, gutil, minifyCss, path, reactify, rename, source, streamify, uglify, watchify;
+var browserify, coffeeReactify, concatCss, concat, gulp, gutil, minifyCss, path, reactify, rename, source, streamify, uglify, watchify, sourcemaps;
 
 gulp = require('gulp');
 concatCss = require('gulp-concat-css');
+concat = require('gulp-concat');
 minifyCss = require('gulp-minify-css');
 rename = require('gulp-rename');
 uglify = require('gulp-uglify');
@@ -12,35 +13,50 @@ coffeeReactify = require('coffee-reactify');
 watchify = require('watchify');
 gutil = require('gutil');
 streamify = require('gulp-streamify');
+sourcemaps = require('gulp-sourcemaps');
 
 // CSS
+gulp.task('minify-css', function() {
+  return gulp.src('css/dev/**/*.css')
+    .pipe(sourcemaps.init())
+      .pipe(concat('client-bundle.css'))
+    .pipe(sourcemaps.write('./'))
+    .pipe(gulp.dest('css/test/'));
+});
+
 gulp.task('client-production-css', function() {
   gulp.src(['css/dev/**/*.css', '!css/dev/dashboard/**'])
-  .pipe(concatCss('client-bundle.css'))
-  .pipe(minifyCss())
-  .pipe(rename('client-bundle.min.css'))
+  .pipe(sourcemaps.init())
+    .pipe(concat('client-bundle.css'))
+    .pipe(minifyCss())
+    .pipe(rename('client-bundle.min.css'))
+  .pipe(sourcemaps.write('./'))
   .pipe(gulp.dest('css/bundle/'));
 });
 
 gulp.task('client-dev-css', function() {
   gulp.src(['css/dev/**/*.css', '!css/dev/dashboard/**'])
-  .pipe(concatCss('client-bundle.css'))
-  .pipe(rename('client-bundle.css'))
+  .pipe(sourcemaps.init())
+    .pipe(concat('client-bundle.css'))
+  .pipe(sourcemaps.write('./'))
   .pipe(gulp.dest('css/bundle/'));
 });
 
 gulp.task('dash-production-css', function() {
   gulp.src(['css/dev/**/*.css', '!css/dev/client/**'])
-  .pipe(concatCss('dash-bundle.css'))
-  .pipe(minifyCss())
-  .pipe(rename('dash-bundle.min.css'))
+  .pipe(sourcemaps.init())
+    .pipe(concat('dash-bundle.css'))
+    .pipe(minifyCss())
+    .pipe(rename('dash-bundle.min.css'))
+  .pipe(sourcemaps.write('./'))
   .pipe(gulp.dest('css/bundle/'));
 });
 
 gulp.task('dash-dev-css', function() {
   gulp.src(['css/dev/**/*.css', '!css/dev/client/**'])
-  .pipe(concatCss('dash-bundle.css'))
-  .pipe(rename('dash-bundle.css'))
+  .pipe(sourcemaps.init())
+    .pipe(concat('dash-bundle.css'))
+  .pipe(sourcemaps.write('./'))
   .pipe(gulp.dest('css/bundle/'));
 });
 

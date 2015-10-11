@@ -1,6 +1,11 @@
-@import "http://webfonts.ru/import/nautilus.css";
+/*@import "http://webfonts.ru/import/nautilus.css";*/
 @import url(http://fonts.googleapis.com/css?family=Raleway:200,300,500,700,400);
-
+@font-face {
+    font-family: 'Nautilus Pompilius';
+    src: local('Nautilus Pompilius Regular'), local('NautilusPompilius'), url('http://64424.selcdn.ru/webfont/nautilus/nautilus.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
 
 /*react-lightbox*/
 /*html, body {
@@ -145,7 +150,7 @@ body {
 .color-primary {
     color: #ffc229!important;
 }
-a {
+.client_body a {
     /*color: #ffc229!important;*/
     color: #333333;
     font-weight: bold;
@@ -372,8 +377,9 @@ input:-ms-input-placeholder {color: #000; padding: 5px; border: 1px solid #82828
 .city-change.dropdown:hover .dropdown-menu {
     visibility: inherit;
 }
-.navbar.navbar, .navbar-default.navbar{
+.client_body .navbar.navbar, .navbar-default.navbar{
     background-color: #443f39;
+    margin-bottom: 0;
 }
 .navbar .navbar-nav>li>a.dropdown-toggle {
     /*padding-right: 5px;*/

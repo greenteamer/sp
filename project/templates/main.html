@@ -24,7 +24,12 @@
         <link href="{{ STATIC_URL }}AdminLte/plugins/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
         <!-- bootstrap wysihtml5 - text editor -->
         <link href="{{ STATIC_URL }}AdminLte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet" type="text/css" />
-        <link href="{{ STATIC_URL }}css/style.css" rel="stylesheet" type="text/css" />
+        {% if server == 'develop' %}
+          <link rel="stylesheet" type="text/css" href="{% static 'css/bundle/dash-bundle.css' %}" />
+        {% endif %}
+        {% if server == 'production' %}
+          <link rel="stylesheet" type="text/css" href="{% static 'css/bundle/dash-bundle.min.css' %}" />
+        {% endif %}
         <!-- Bootstrap -->
         {% block head %}
         {% endblock %}
@@ -59,19 +64,19 @@
             <script type="text/javascript" src="{% static 'bower_components/bootstrap-material-design/dist/js/material.js' %}"></script>
             <script type="text/javascript" src="{% static 'bower_components/bootstrap-material-design/dist/js/ripples.js' %}"></script>
             <script type="text/javascript" src="{% static 'bower_components/json2/json2.js' %}"></script>
-            <script type="text/javascript" src="{% static 'bower_components/intro.js/minified/intro.min.js' %}"></script>    
+            <script type="text/javascript" src="{% static 'bower_components/intro.js/minified/intro.min.js' %}"></script>
             <script>
                 (function($){
                     $(document).ready(function(){
                         $('#start_intro_top').click(function(){
-                            introJs().goToStep(1).start();    
-                        });                        
+                            introJs().goToStep(1).start();
+                        });
                         $('#start_intro_side').click(function(){
-                            introJs().goToStep(6).start();    
-                        });                        
+                            introJs().goToStep(6).start();
+                        });
                     });
                 })(jQuery);
-            </script>        
+            </script>
             <script type="text/javascript" src="{% static 'bower_components/fastclick/lib/fastclick.js' %}"></script>
             <script>$.material.init()</script>
         {% endblock %}
