@@ -109,7 +109,6 @@ function buildScript(file, entry, watch, prod) {
             .pipe(gulp.dest(path.PROD_DEST_BUILD));
     }
 
-    console.log('prod: ', prod);
     if (prod == false) {
       bundler.on('update', function() {
           rebundle();

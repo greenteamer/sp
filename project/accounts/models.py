@@ -68,6 +68,9 @@ class MemberProfile(BaseUserInfo):
 
     member_checked = models.BooleanField(default=True)
 
+    class Meta:
+        verbose_name_plural = _(u'Профили участников')
+
     def is_checked(self):
         return self.member_checked is True
 
@@ -77,9 +80,9 @@ class MemberProfile(BaseUserInfo):
     def __unicode__(self):
         return _(u'Профиль: ') + self.user.username
 
-    class Meta:
-        verbose_name_plural = _(u'Профили участников')
-
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        self.member_checked = True
+        return super(MemberProfile, self).save(force_insert, force_update, using, update_fields)
 
 def getProfile(user):
     try:

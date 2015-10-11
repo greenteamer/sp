@@ -110,22 +110,21 @@ def populateProfileView(request, template_name):
 
             elif form.is_valid() and terms == 'on' and is_organizer == 'on':
                 form.save(request.user)
+                messages.info(request, "Спасибо, вы успешно создали профиль организатора,\
+                    ожидайте его подтверждения от администратора")
                 return HttpResponseRedirect(
                     urlresolvers.reverse('populateProfileView'))
 
             elif form.is_valid() and terms == 'on' and is_organizer == '':
                 form = MemberProfileForm(request.POST, request.FILES)
                 form.save(request.user)
-                messages.text(
-                    request,
-                    "Спасибо, вы успешно создали профиль, ожидайте его\
-                    подтверждения от администратора")
+                messages.info(request, "Спасибо, вы успешно создали профиль. Теперь вы можете участвовать в закупках.")
 
                 return HttpResponseRedirect(
                     urlresolvers.reverse('populateProfileView'))
 
             elif form.is_valid() and terms == '':
-                messages.text(
+                messages.info(
                     request, "Вы должны согласиться с условиями")
 
             else:  # TODO: должна быть обработка ошибок
@@ -647,7 +646,7 @@ def product(request, purchase_id, catalog_id, product_id, template_name, edit=Fa
 
         images = product.get_all_image()
 
-        product_form = ProductForm(instance=product)                    # заполненная форма текущей товара        
+        product_form = ProductForm(instance=product)                    # заполненная форма текущей товара
         catalog_product_properties = CatalogProductProperties.objects.select_related().filter(cpp_catalog=catalog_id)
         properties = get_propeties(catalog_id, 'list')  # получим все возможные свойства для товаров этой категории
         # указанные свойства товара

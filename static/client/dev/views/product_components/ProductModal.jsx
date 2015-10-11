@@ -22,7 +22,7 @@ var ProductModal = React.createClass({
     getInitialState: function(){
         return {
             product_fast_view: {},
-            purchase_id_fast_view: 0
+            purchase_id_fast_view: 0,
         };
     },
     childContextTypes: {
@@ -84,11 +84,11 @@ var ProductModal = React.createClass({
                 </Dialog>
                 ];
         };
-        console.log('ProductModal render before return');        
+        console.log('ProductModal render before return');
         return (
             <div>
                 {productModal}
-            </div>            
+            </div>
         );
     }
 });

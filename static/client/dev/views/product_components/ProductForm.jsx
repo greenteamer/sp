@@ -11,6 +11,7 @@ var mui = require('material-ui');
 
 var PurchasesActions = require('../../actions/PurchasesActions.js');
 var FaqStore = require('../../faq/stores/FaqStore.js');
+var FaqActions = require('../../faq/actions/FaqActions.js');
 var RegisterModal = require('./RegisterModal.jsx');
 
 var Methods = require('../customhelpers/Methods.js');
@@ -23,7 +24,7 @@ var snackbar = require('../../../lib/snackbar.js');
 
 var Properties = React.createClass({
     test: function () {
-        
+
     },
     getInitialState: function() {
         var cpp_properties = [];
@@ -50,7 +51,7 @@ var Properties = React.createClass({
         return {
             muiTheme: ThemeManager.getCurrentTheme()
         };
-    },    
+    },
     setProperties: function(val, e){
         //изменяем state когда выбирается какое либо свойство
         this.state.cpp_properties[e[0].index].value = e[0].value;
@@ -62,8 +63,8 @@ var Properties = React.createClass({
         // console.log('this.state.cpp_properties: ', this.state.cpp_properties);
         this.setState({
             chacked: Methods.chackProperties(this.state.cpp_properties, this.props.product.property)
-        }); 
-        
+        });
+
     },
     setCount: function(e){
         var new_product = this.state.product;
@@ -90,7 +91,7 @@ var Properties = React.createClass({
             cpp_properties: this.state.cpp_properties,
             product: new_product
         });
-    },    
+    },
     addToCart: function(e){
         // если товар с такими свойствами существует добавляем товар в корзину
         if (this.state.chacked) {
@@ -98,7 +99,7 @@ var Properties = React.createClass({
         } else {
             $.snackbar({timeout: 5000, content: 'Нет товара с такими характеристиками, пожалуйста, попробуйте другие варианты' });
         }
-        
+
     },
     messageUser: function (){
         console.log('message user start');
@@ -134,7 +135,7 @@ var Properties = React.createClass({
             }
 
             return (
-                <Select                    
+                <Select
                     name="property_value"
                     ref="my_select"
                     value={tmp_name}
@@ -143,7 +144,7 @@ var Properties = React.createClass({
                      />
             );
         });
-        console.log('user: ', this.props.user);
+        console.log('ProductForm user: ', this.props.user);
         return (
             <div>
                 {selects}
@@ -174,29 +175,31 @@ var ProductForm = React.createClass({
   getInitialState: function () {
     console.log('ProductForm getInitialState start');
     return {
-      user: undefined
+      user: FaqStore.user
     };
-  },  
-  componentWillMount: function () {
-    console.log('ProductForm componentWillMount start');
-    FaqStore.bind( 'change', this.userChanged );
   },
-  componentWillUnmount: function () {
-    FaqStore.unbind( 'change', this.userChanged );
-  },
+  // componentWillMount: function () {
+  //   console.log('ProductForm componentWillMount start');
+  //   FaqActions.getCurrentUser();
+  //   FaqStore.bind( 'change', this.userChanged );
+  // },
+  // componentWillUnmount: function () {
+  //   FaqStore.unbind( 'change', this.userChanged );
+  // },
   userChanged: function () {
+    console.log('ProductForm  FaqStore.user: ', FaqStore.user);
     this.setState({
       user: FaqStore.user
     });
   },
-  render: function(){  
-  console.log('ProductForm render start');
+  render: function(){
+  console.log('ProductForm user', this.state.user);
     return (
       <div className="properties">
         <input type="hidden" name="product" value={this.props.product.id} />
-        <Properties 
-          cpp_catalog={this.props.cpp_catalog} 
-          product={this.props.product} 
+        <Properties
+          cpp_catalog={this.props.cpp_catalog}
+          product={this.props.product}
           user={this.state.user}/>
       </div>
     );

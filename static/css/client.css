@@ -8,11 +8,11 @@
   height: 100%;
   overflow: hidden;
 }
- 
+
 .react-lightbox {
-  
+
 }
- 
+
 .react-lightbox-image {
   float: left;
   width: 50px;
@@ -21,7 +21,7 @@
   margin: 10px;
   cursor: pointer;
 }
- 
+
 .react-lightbox-overlay {
   position: absolute;
   opacity: 0;
@@ -32,11 +32,11 @@
   background: radial-gradient(ellipse at center, rgba(25,25,25,0.5) 0%,rgba(25,25,25,0.25) 100%);
   transition: opacity 0.5s ease-in-out;
 }
- 
+
 .react-lightbox-overlay-open {
   opacity: 1;
 }
- 
+
 .react-lightbox-carousel-image {
   position: absolute;
   border-radius: 50%;
@@ -61,7 +61,7 @@
   transform: translate3d(400px, 0, 0);
   opacity: 0;
 }
- 
+
 .my-controls {
   position: absolute;
   width: 600px;
@@ -225,9 +225,9 @@ a {
     border: 1px solid #B3B3B3;
     top: -3px;
 }
-.my-handle:after {    
+.my-handle:after {
     height: 20px;
-    position: absolute;    
+    position: absolute;
     color: #333;
     font-size: 15px;
     font-family: "FontAwesome";
@@ -316,7 +316,9 @@ a {
 .mobile #header_info .navbar-toggle{
     display: none;
 }
-
+.mobile #header_info .navbar-header {
+  float: left;
+}
 .dropdown-menu.scroll {
     display: none;
 }
@@ -364,8 +366,8 @@ input:-ms-input-placeholder {color: #000; padding: 5px; border: 1px solid #82828
     -webkit-transition: all 0.3s ease-out 0s;
     -moz-transition: all 0.3s ease-out 0s;
     -o-transition: all 0.3s ease-out 0s;
-    transition: all 0.3s ease-out 0s;   
-} 
+    transition: all 0.3s ease-out 0s;
+}
 #main-menu.navbar-fixed-top {
     top: 100px;
     -webkit-transition: all 1s;
@@ -421,7 +423,7 @@ input:-ms-input-placeholder {color: #000; padding: 5px; border: 1px solid #82828
     padding-right: 5px;
 }
 .mobile .navbar .navbar-nav>li>a.dropdown-toggle {
-    padding-right: 20px;    
+    padding-right: 20px;
 }
 .mobile .navbar .navbar-nav>li>a.dropdown-toggle-second {
     padding: 2px 7px 2px 5px;
@@ -461,7 +463,7 @@ input:-ms-input-placeholder {color: #000; padding: 5px; border: 1px solid #82828
 }
 .navbar .navbar-nav>li>ul>li>a.dropdown-toggle-second {
     position: absolute;
-    top:0;  
+    top:0;
     right: -12px;
 }
 .navbar .navbar-nav .dropdown-menu li {
@@ -474,7 +476,7 @@ input:-ms-input-placeholder {color: #000; padding: 5px; border: 1px solid #82828
     opacity: 0;
     position: absolute;
     top: 0px;
-    left: 100%;    
+    left: 100%;
     border-radius: 2px;
     -webkit-box-shadow: 0 8px 33px rgba(0,0,0,0.375);
     box-shadow: 0 8px 33px rgba(0,0,0,0.375);
@@ -488,7 +490,7 @@ input:-ms-input-placeholder {color: #000; padding: 5px; border: 1px solid #82828
 .navbar ul.navbar-nav>li.dropdown:hover>ul>li:hover ul{
     visibility: visible;
     display: block;
-    opacity: 1;    
+    opacity: 1;
 }
 .navbar ul.navbar-nav>li.dropdown:hover>ul>li>ul:before{
     content: "\f0d8";
@@ -793,13 +795,13 @@ a.more-button:before {
 }
 .small-banner .info {
     float: left;
-    width: 185px;    
+    width: 185px;
     -webkit-transition: all 0.3s ease-out 0s;
     -moz-transition: all 0.3s ease-out 0s;
     -o-transition: all 0.3s ease-out 0s;
     transition: all 0.3s ease-out 0s;
 }
-.small-banner .info .inner {    
+.small-banner .info .inner {
     float: left;
     width: 100%;
 }
@@ -883,7 +885,7 @@ a.more-button:before {
 .catalog .slick-next {
     background: #fff;
     border: 1px solid #BDBDBD;
-    height: 25%;    
+    height: 25%;
     width: 25px;
     /*left: -25px;*/
 }
@@ -906,10 +908,10 @@ a.more-button:before {
     background: #fff;
     border: 1px solid #BDBDBD;
 }
-.catalog .slick-next {    
+.catalog .slick-next {
 }
 .catalog .slick-prev,
-.catalog .slick-next {    
+.catalog .slick-next {
     top: 32%;
 }
 .btn.btn-primary.category-filter {
@@ -1009,7 +1011,7 @@ a.category-filter.disable i {
 .slick-slide .image-wrapper img {
     padding: 10px;
 }
-.image-wrapper img {    
+.image-wrapper img {
     border: 1px solid #E4E4E4;
     width:100%;
 }
@@ -1179,7 +1181,7 @@ a.category-filter.disable i {
 }
 .swich-view {
     text-align: right;
-    margin: 0 5px 5px 0;    
+    margin: 0 5px 5px 0;
 }
 .swich-view .btn.mini {
     padding: 2px 5px 1px 4px;
@@ -1192,7 +1194,7 @@ a.category-filter.disable i {
 #category .purchases-list{
     margin-top: 30px;
     margin-bottom: 30px;
-    /*width: 100%;*/    
+    /*width: 100%;*/
 }
 .product_name_mini  {
     height: 32px;
@@ -1216,7 +1218,7 @@ h2.block-title {
 }
 .purchases-list .separator {
     margin-bottom: 30px;
-    margin-top: 30px;   
+    margin-top: 30px;
 }
 .purchases-lis ..slick-slider {
     margin-bottom: 0;
@@ -1225,18 +1227,18 @@ h2.block-title {
 
 /*корзина*/
 #cartmenu {
-    margin-right: -7px; 
-    position: absolute; 
-    top: 4px; 
-    right: 12px; 
+    margin-right: -7px;
+    position: absolute;
+    top: 4px;
+    right: 12px;
     z-index: 888;
 }
 .mobile #cartmenu {
-    margin-right: -7px; 
-    position: absolute; 
-    top: 48px; 
-    right: 22px; 
-    z-index: 888;
+  margin: 0 -7px 0 0;
+  position: absolute;
+  top: -2px;
+  right: 22px;
+  z-index: 888;
 }
 #cartmenu .full_count_product{
     position: absolute;
@@ -1261,13 +1263,13 @@ h2.block-title {
     /*margin-top: -20px;*/
 }
 .desktop_menu #cartmenu .dropdown:hover .dropdown-menu {
-    margin-top: -15px;    
+    margin-top: -15px;
 }
 #cartmenu .cart-image {
     width: 60px;
     float: left;
     margin-right: 10px;
-}   
+}
 #cartmenu .dropdown-menu,
 #cartmenu .dropdown-menu p,
 #cartmenu .dropdown-menu h3,
@@ -1290,9 +1292,9 @@ h2.block-title {
     font-weight: bold;
 }
 #cartmenu .dropdown-menu a {
-    font-weight: 300;    
+    font-weight: 300;
 }
-#cartmenu .dropdown-menu a:hover {    
+#cartmenu .dropdown-menu a:hover {
     text-decoration: none;
 }
 #cartmenu .dropdown-menu a:hover p {
@@ -1433,7 +1435,7 @@ h2.block-title {
     color: #fff!important;
 }
 .product_tile_view .count_block .btn:hover:not(.btn-link):not(.btn-flat):not(.btn-fab) {
-    color: #333!important;   
+    color: #333!important;
 }
 .product_tile_view .gradient {
     position: absolute;
@@ -1470,8 +1472,8 @@ h2.block-title {
     margin-bottom: 0;
     color: #464646;
     font-weight: bold;
-    font-size: 15px;   
-    line-height: 20px; 
+    font-size: 15px;
+    line-height: 20px;
 }
 .product_tile_view .info {
     position: absolute;
