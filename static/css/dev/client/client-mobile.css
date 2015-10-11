@@ -1,0 +1,10 @@
+.mobile .email-block .box-right {
+    width: 100%;
+    padding: 10px;
+}
+.mobile .email-block .box-left {
+    display: none;
+}
+.mobile .email-block .box-right {
+    text-align: center;
+}

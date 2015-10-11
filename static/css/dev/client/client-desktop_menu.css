@@ -1,0 +1,34 @@
+.desktop_menu {
+    /*margin-bottom: 10px;*/
+}
+.desktop_menu .dropdown-menu {
+    visibility: hidden;
+    display: block;
+    opacity: 0;
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
+
+}
+.desktop_menu .dropdown:hover .dropdown-menu {
+    margin-top: 0;
+    visibility: visible;
+    opacity: 1;
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
+}
+.desktop_menu .city-change.dropdown.open>.dropdown-menu {
+    display: block;
+}
+.desktop_menu .city-change.dropdown .dropdown-menu {
+    display: none;
+    visibility: inherit;
+    opacity: 1;
+}
+
+.desktop_menu #cartmenu .dropdown:hover .dropdown-menu {
+    margin-top: -15px;
+}

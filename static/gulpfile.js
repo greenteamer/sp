@@ -13,14 +13,51 @@ watchify = require('watchify');
 gutil = require('gutil');
 streamify = require('gulp-streamify');
 
-gulp.task('default', function() {
-  gulp.src('css/test/*.css').pipe(concatCss('bundle.css')).pipe(minifyCss()).pipe(rename('bundle.min.css')).pipe(gulp.dest('css/'));
+// CSS
+gulp.task('client-production-css', function() {
+  gulp.src(['css/dev/**/*.css', '!css/dev/dashboard/**'])
+  .pipe(concatCss('client-bundle.css'))
+  .pipe(minifyCss())
+  .pipe(rename('client-bundle.min.css'))
+  .pipe(gulp.dest('css/bundle/'));
 });
 
-gulp.task('watch-css', function() {
-  gulp.watch('css/test/*.css', ['default']);
+gulp.task('client-dev-css', function() {
+  gulp.src(['css/dev/**/*.css', '!css/dev/dashboard/**'])
+  .pipe(concatCss('client-bundle.css'))
+  .pipe(rename('client-bundle.css'))
+  .pipe(gulp.dest('css/bundle/'));
 });
 
+gulp.task('dash-production-css', function() {
+  gulp.src(['css/dev/**/*.css', '!css/dev/client/**'])
+  .pipe(concatCss('dash-bundle.css'))
+  .pipe(minifyCss())
+  .pipe(rename('dash-bundle.min.css'))
+  .pipe(gulp.dest('css/bundle/'));
+});
+
+gulp.task('dash-dev-css', function() {
+  gulp.src(['css/dev/**/*.css', '!css/dev/client/**'])
+  .pipe(concatCss('dash-bundle.css'))
+  .pipe(rename('dash-bundle.css'))
+  .pipe(gulp.dest('css/bundle/'));
+});
+
+gulp.task('client-watch-css', function() {
+  gulp.watch('css/dev/**/*.css', ['client-dev-css', 'client-production-css']);
+});
+
+gulp.task('dash-watch-css', function() {
+  gulp.watch('css/dev/**/*.css', ['dash-dev-css', 'dash-production-css']);
+});
+
+gulp.task('watch-all-css', function() {
+  gulp.watch('css/dev/**/*.css', ['client-dev-css', 'client-production-css', 'dash-dev-css', 'dash-production-css']);
+});
+
+
+// javascript
 path = {
   DEST: 'client',
   DEST_BUILD: 'client/build/dev',

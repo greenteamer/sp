@@ -178,20 +178,6 @@ var ProductForm = React.createClass({
       user: FaqStore.user
     };
   },
-  // componentWillMount: function () {
-  //   console.log('ProductForm componentWillMount start');
-  //   FaqActions.getCurrentUser();
-  //   FaqStore.bind( 'change', this.userChanged );
-  // },
-  // componentWillUnmount: function () {
-  //   FaqStore.unbind( 'change', this.userChanged );
-  // },
-  userChanged: function () {
-    console.log('ProductForm  FaqStore.user: ', FaqStore.user);
-    this.setState({
-      user: FaqStore.user
-    });
-  },
   render: function(){
   console.log('ProductForm user', this.state.user);
     return (

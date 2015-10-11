@@ -1,16 +1,16 @@
 $(document).ready(function() {
     $.material.init();
-    var width = $(window).width();    
+    var width = $(window).width();
     $(window).scroll(function() {
         // фиксируем основное меню при скроле
         var bool = false;
         var top = $(document).scrollTop();
-        if (top < 50) {                        
+        if (top < 50) {
             $(".scroll-class").css({
                 position: "fixed",
                 top:"0px",
-                left:0,                            
-                zIndex:"100"                            
+                left:0,
+                zIndex:"100"
             });
             $(".scroll-class #main-menu").css({
                 padding: "0"
@@ -20,31 +20,31 @@ $(document).ready(function() {
                 marginRight: "-7px",
                 position: "absolute",
                 top: "4px",
-                right: "12px",                            
+                right: "12px",
                 zIndex: 888,
                 color: "#333"
             });
             $(".mobile #cartmenu").css({
                 marginRight: "-7px",
                 position: "absolute",
-                top: "48px",
+                top: "6px",
                 right: "22px",
                 left: "initial",
                 zIndex: 888,
                 color: "#333"
             });
-        } else if (top >= 150) {                        
+        } else if (top >= 150) {
             $(".scroll-class").css({
-                position: "fixed", 
-                top: "-109px", 
-                left:0 , 
-                zIndex:"100", 
-                width: "100%"                            
+                position: "fixed",
+                top: "-109px",
+                left:0 ,
+                zIndex:"100",
+                width: "100%"
             });
             $(".scroll-class #main-menu").css({
                 padding: "0 15px"
             });
-            $(".mobile .scroll-class").css({position: "fixed", top: "-159px", left:0 , zIndex:"100", width: "100%"});
+            $(".mobile .scroll-class").css({position: "fixed", top: "-109px", left:0 , zIndex:"100", width: "100%"});
             $(".main-menu-container").removeClass('container');
             $("#cartmenu").css({
                 marginRight: "-7px",
@@ -57,12 +57,12 @@ $(document).ready(function() {
             $(".mobile #cartmenu").css({
                 marginRight: "-7px",
                 position: "absolute",
-                top: "105px",
+                top: "61px",
                 left: "28px",
                 right: "initial",
                 zIndex: 888,
                 color: "#fff"
             });
-        }                    
+        }
     });
 });

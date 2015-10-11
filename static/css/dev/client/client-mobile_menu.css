@@ -1,0 +1,32 @@
+body.mobile .dropdown {
+    width: 100%;
+}
+.mobile #header_info .navbar-toggle{
+    display: none;
+}
+.mobile #header_info .navbar-header {
+  float: left;
+}
+.mobile .navbar-nav>li>.dropdown-menu:before {
+    top: 48px;
+}
+.mobile .navbar .navbar-nav>li>a.dropdown-toggle-second {
+    padding: 2px 7px 2px 5px;
+    margin: 17px 20px 10px 0;
+    border: 1px solid #B5B5B5;
+    background-color: #443F39;
+    float: right;
+}
+.mobile .navbar ul.navbar-nav>li.dropdown:hover>ul>li>ul {
+    left: inherit;
+    right: 20px;
+    background: #fff;
+    color: #333;
+}
+.mobile #cartmenu {
+  margin: 0 -7px 0 0;
+  position: absolute;
+  top: -2px;
+  right: 22px;
+  z-index: 888;
+}

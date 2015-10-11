@@ -144,7 +144,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'pybb.middleware.PybbMiddleware',
     'breadcrumbs.middleware.BreadcrumbsMiddleware'
-    #'webshop.SSLMiddleware.SSLRedirect',    
+    #'webshop.SSLMiddleware.SSLRedirect',
 )
 
 TEMPLATE_DIRS = (
@@ -164,8 +164,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
     'pybb.context_processors.processor',
+    'project.core.context_processors.settings_processor'
 )
-
 
 # DAJAXICE_MEDIA_PREFIX="dajaxice"
 

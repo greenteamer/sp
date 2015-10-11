@@ -22,9 +22,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import detail_route, list_route
 from serializers import PurchaseSerializer, OrganizerSerializer, PromoSerializer, CategorySerializer, ProductSerializer, CatalogSerializer, BenefitsSerializer, QuestionsSerializer, AnswersSerializer, UserSerializer
 
-# переменная сервер нужна для подключения разных js и css файлов в 
+# переменная сервер нужна для подключения разных js и css файлов в
 # зависимости от сервера (develop или production)
-from project.settings import ADMIN_EMAIL, SERVER 
+from project.settings import ADMIN_EMAIL
 from django.core.mail import send_mail
 
 from django.db import connection, connections
@@ -52,8 +52,7 @@ def clientAddToCartView(request):
                 pass
 
 
-def indexView(request, template_name="client/pages/index.html"):    
-    server = SERVER
+def indexView(request, template_name="client/pages/index.html"):
     big_content_purchase = Purchase.objects.get(id=2)  # TODO: сделать вывод нормальной закупки
     main_content_purchase = big_content_purchase  # TODO: сделать вывод нормальной закупки
     # создание формы свойств товара
@@ -96,17 +95,14 @@ def indexView(request, template_name="client/pages/index.html"):
 # вьюхи для пустых страниц ract
 # шаблоны содержат div куда рендериться react
 def clientCategoryView(request, category_slug, template_name="client/pages/category.html"):
-    server = SERVER
     return render_to_response(template_name, locals(), context_instance=RequestContext(request))
 
 
 def clientProductView(request, id, template_name="client/pages/product.html"):
-    server = SERVER
     return render_to_response(template_name, locals(), context_instance=RequestContext(request))
 
 
 def clientPurchaseView(request, id, template_name="client/pages/purchase.html"):
-    server = SERVER
     return render_to_response(template_name, locals(), context_instance=RequestContext(request))
 
 
@@ -344,4 +340,3 @@ class UsersViewSet(viewsets.ModelViewSet):
         self.queryset = User.objects.filter(id=request.user.id)
         serializer = UserSerializer(instance=self.queryset, many=True)
         return Response(serializer.data)
-
