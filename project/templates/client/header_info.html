@@ -1,29 +1,35 @@
 {% load client_category_tags %}
 
-{#<div class="navbar navbar-default">#}
-    <div class="container">
-        <div class="row">
+{% if device != 'mobile' and device != 'tablet' %}
+  {#<div class="navbar navbar-default">#}
+      <div class="container">
+          <div class="row">
 
-                <div id="header_info" class="navbar navbar-default">
-                    <div class="col-xs-12">
-                        <div class="row">
-                            <div class="container">
-                                <div class="navbar-header">
-                                    <button typ e="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-header-info">
-                                        <span class="icon-bar"></span>
-                                        <span class="icon-bar"></span>
-                                        <span class="icon-bar"></span>
-                                    </button>
-                                    <a class="navbar-brand" href="/">Brand</a>
-                    
-                                </div>                                
-                                    <ul id="cartmenu" class="nav navbar-nav navbar-right"></ul>
-                                    <div id="react_search"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                  <div id="header_info" class="navbar navbar-default">
+                      <div class="col-xs-12">
+                          <div class="row">
+                              <div class="container">
+                                  <div class="navbar-header">
+                                      <button typ e="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-header-info">
+                                          <span class="icon-bar"></span>
+                                          <span class="icon-bar"></span>
+                                          <span class="icon-bar"></span>
+                                      </button>
+                                      <a class="navbar-brand" href="/">Brand</a>
 
-        </div>
-    </div>
-{#</div>#}
+                                  </div>
+                                      <ul id="cartmenu" class="nav navbar-nav navbar-right"></ul>
+                                      <div id="react_search"></div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+          </div>
+      </div>
+  {#</div>#}
+{% endif %}
+
+{# для мобильного меню#}
+{% if device == 'mobile' or device == 'tablet' %}
+{% endif %}

@@ -24,15 +24,15 @@ $(document).ready(function() {
                 zIndex: 888,
                 color: "#333"
             });
-            $(".mobile #cartmenu").css({
-                marginRight: "-7px",
-                position: "absolute",
-                top: "6px",
-                right: "22px",
-                left: "initial",
-                zIndex: 888,
-                color: "#333"
-            });
+            // $(".mobile #cartmenu").css({
+            //     marginRight: "-7px",
+            //     position: "absolute",
+            //     top: "6px",
+            //     right: "22px",
+            //     left: "initial",
+            //     zIndex: 888,
+            //     color: "#333"
+            // });
         } else if (top >= 150) {
             $(".scroll-class").css({
                 position: "fixed",
@@ -44,7 +44,7 @@ $(document).ready(function() {
             $(".scroll-class #main-menu").css({
                 padding: "0 15px"
             });
-            $(".mobile .scroll-class").css({position: "fixed", top: "-109px", left:0 , zIndex:"100", width: "100%"});
+            // $(".mobile .scroll-class").css({position: "fixed", top: "-109px", left:0 , zIndex:"100", width: "100%"});
             $(".main-menu-container").removeClass('container');
             $("#cartmenu").css({
                 marginRight: "-7px",
@@ -54,15 +54,15 @@ $(document).ready(function() {
                 zIndex: 888,
                 color: "#fff"
             });
-            $(".mobile #cartmenu").css({
-                marginRight: "-7px",
-                position: "absolute",
-                top: "61px",
-                left: "28px",
-                right: "initial",
-                zIndex: 888,
-                color: "#fff"
-            });
+            // $(".mobile #cartmenu").css({
+            //     marginRight: "-7px",
+            //     position: "absolute",
+            //     top: "61px",
+            //     left: "28px",
+            //     right: "initial",
+            //     zIndex: 888,
+            //     color: "#fff"
+            // });
         }
     });
 });

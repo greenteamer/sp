@@ -11,25 +11,32 @@
 
     <script type="text/javascript" src="{% static 'jquery-ui/jquery-ui.js' %}"></script>
 
+
+    {% if device == 'mobile' or device == 'tablet' %}
+      <script type="text/javascript" src="/static/js/MultiLevelPushMenu/js/modernizr.custom.js"></script>
+      <script type="text/javascript" src="/static/js/MultiLevelPushMenu/js/classie.js"></script>
+      <script type="text/javascript" src="/static/js/MultiLevelPushMenu/js/mlpushmenu.js"></script>
+      <script type="text/javascript">
+        new mlPushMenu( document.getElementById( 'mp-menu' ), document.getElementById( 'trigger' ) );
+      </script>
+    {% endif %}
+
+
     {# <script type="text/javascript" src="{% static 'node_modules/dropdown/jquery.dropdown.js' %}"></script>#}
-    <script type="text/javascript" src="{% static 'client/scroll_top.js' %}"></script>
+
+    {% if device != 'mobile' and device != 'tablet' %}
+      <script type="text/javascript" src="{% static 'client/scroll_top.js' %}"></script>
+    {% endif %}
 {#    <script type="text/javascript" src="{% static 'client/dev/cartmenu/bundle.js' %}"></script>#}
     <script type="text/javascript">
         $(".select").dropdown({ "autoinit" : ".select" });
         var mql = window.matchMedia("(min-width: 768px)");
         if  (mql.matches) {
             $('.navbar').addClass('desktop_menu');
-            $('body').removeClass('mobile');
             $('.big_content_wrapper').removeClass('hidden');
-        } else {
+         else {
             $('.navbar').removeClass('desktop_menu');
-            $('body').addClass('mobile');
             $('.big_content_wrapper').addClass('hidden');
-            // var toggle_menu_attrs = {
-            //     "data-target": "#",
-            //     "data-toggle": "dropdown"
-            // };
-            // $(".dropdown-toggle").attr(toggle_menu_attrs);
         }
     </script>
 

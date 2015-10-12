@@ -8,3 +8,12 @@
 .mobile .email-block .box-right {
     text-align: center;
 }
+.mobile .navbar .navbar-nav>li>ul>li>ul, .navbar ul.navbar-nav>li.dropdown:hover>ul>li>ul {
+  visibility: inherit;
+  display: block;
+  opacity: 1;
+  position: initial;
+  border: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}

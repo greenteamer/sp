@@ -1077,7 +1077,7 @@ a.category-filter.disable i {
     width: 65%;
     padding-top: 28px;
     padding-left: 50px;
-    z-index: 100;
+    z-index: 10;
     position: relative;
 }
 .email-block .box-left h5{

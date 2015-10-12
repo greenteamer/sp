@@ -164,7 +164,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
     'pybb.context_processors.processor',
-    'project.core.context_processors.settings_processor'
+    'project.core.context_processors.settings_processor',
+    'project.core.context_processors.check_device'
 )
 
 # DAJAXICE_MEDIA_PREFIX="dajaxice"

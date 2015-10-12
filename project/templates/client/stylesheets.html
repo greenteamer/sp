@@ -13,7 +13,16 @@
 {# <link rel="stylesheet" type="text/css" href="{% static 'materialize/css/materialize.min.css' %}" />#}
 {# <link rel="stylesheet" href="{% static 'node_modules/dropdown/jquery.dropdown.css' %}">#}
 
-
+{% if device == 'mobile' or device == 'tablet' %}
+  <link href="/static/js/MultiLevelPushMenu/css/normalize.css" type="text/css" rel="stylesheet" />
+  <link href="/static/js/MultiLevelPushMenu/css/component.css" type="text/css" rel="stylesheet" />
+  <link href="/static/js/MultiLevelPushMenu/css/icons.css" type="text/css" rel="stylesheet" />
+  <style media="screen">
+    .mp-menu {
+      z-index: 100;
+    }
+  </style>
+{% endif %}
 
 {% if server == 'develop' %}
   <link rel="stylesheet" type="text/css" href="{% static 'css/bundle/client-bundle.css' %}" />

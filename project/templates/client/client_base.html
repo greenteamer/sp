@@ -1,3 +1,5 @@
+
+
 {% load staticfiles %}
 {% load client_category_tags %}
 {% load client_slider %}
@@ -7,46 +9,118 @@
         <!--Let browser know website is optimized for mobile-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         {% include 'client/stylesheets.html' %}
-        {% block client_css %}            
+        {% block client_css %}
         {% endblock %}
     </head>
 
+{% if device == 'mobile' or device == 'tablet' %}
+    <body class="client_body mobile">
+{% endif %}
+{% if device != 'mobile' and device != 'tablet' %}
     <body class="client_body">
+{% endif %}
 
-        <div class="scroll-class">
-            {% block header %}
-                <!-- Dropdown Structure Menu -->
-                {% include 'client/top_menu.html' %}
-            {% endblock %}
-        
-            {% block header_info %}
-                <!-- Dropdown Structure Menu -->
-                {% include 'client/header_info.html' %}
-            {% endblock %}
 
-            {% block main_menu %}
-                <!-- Dropdown Structure Menu -->
-                {% include 'client/main_menu.html' %}
-            {% endblock %}
-        </div>
 
-        {% block slider %}
-            {% client_slider request %}
-        {% endblock %}     
+        {% if device == 'mobile' or device == 'tablet' %}
+          <div class="container" style="padding: 0;">
+            <!-- Push Wrapper -->
+            <div class="mp-pusher" id="mp-pusher">
 
-        {% block breadcrumbs %}
-            <div id="breadcrumbs"></div>            
-        {% endblock breadcrumbs %}           
+              <!-- mp-menu -->
+              <nav id="mp-menu" class="mp-menu">
+                <div class="mp-level">
+                  <h2 class="icon icon-world">Меню сайта</h2>
 
-        {% block wrapper %}
-        {% endblock %}
+                  <ul>
+                    <!-- Dropdown Structure Menu -->
+                    {% include 'client/top_menu.html' %}
 
-        {% block footer %}
-            {% include 'client/footer.html' %}
-        {% endblock %}
+                    {% include 'client/header_info.html' %}
+
+                    {% include 'client/main_menu.html' %}
+
+                  </ul>
+                </div>
+              </nav>
+              <!-- /mp-menu -->
+
+              <div class="scroller"><!-- this is for emulating position fixed of the nav -->
+                <div class="scroller-inner">
+
+
+                  <div class="content clearfix">
+                    <div class="block block-40 clearfix">
+
+                    </div>
+                    <div class="block block-60">
+                      <div class="scroller"><!-- this is for emulating position fixed of the nav -->
+                        <div class="scroller-inner">
+                          <p class="big_button_menu"><a href="#" id="trigger" class=""><i class="material-icons">&#xE5D2;</i> Открыть/Закрть Меню</a></p>
+        {% endif %}
+
+                          {# content site#}
+                          {% if device != 'mobile' and device != 'tablet' %}
+                            <div class="scroll-class">
+                                {% block header %}
+                                    <!-- Dropdown Structure Menu -->
+                                    {% include 'client/top_menu.html' %}
+                                {% endblock %}
+
+                                {% block header_info %}
+                                    <!-- Dropdown Structure Menu -->
+                                    {% include 'client/header_info.html' %}
+                                {% endblock %}
+
+                                {% block main_menu %}
+                                    <!-- Dropdown Structure Menu -->
+                                    {% include 'client/main_menu.html' %}
+                                {% endblock %}
+                            </div>
+                          {% endif %}
+
+                          {% block slider %}
+                              {% client_slider request %}
+                          {% endblock %}
+
+                          {% if device == 'mobile' or device == 'tablet' %}
+                            <div class="container-brand">
+                              <a class="navbar-brand" href="/">Brand</a>
+                            </div>
+                            <div class="container-search ">
+                              <div id="react_search"></div>
+                              <ul id="cartmenu" class="nav navbar-nav navbar-right"></ul>
+                            </div>
+                          {% endif %}
+
+                          {% block breadcrumbs %}
+                              <div id="breadcrumbs"></div>
+                          {% endblock breadcrumbs %}
+
+                          {% block wrapper %}
+                          {% endblock %}
+
+                          {% block footer %}
+                              {% include 'client/footer.html' %}
+                          {% endblock %}
+                          {# end content site#}
+
+        {% if device == 'mobile' or device == 'tablet' %}
+                    </div>
+                    <div class="info">
+
+                    </div>
+                  </div>
+                </div><!-- /scroller-inner -->
+              </div><!-- /scroller -->
+
+            </div><!-- /pusher -->
+          </div><!-- /container -->
+        {% endif %}
+
 
         <!--Import jQuery before materialize.js-->
-        {% include 'client/javascripts.html' %}        
+        {% include 'client/javascripts.html' %}
         {% block client_js %}
         {% endblock %}
     </body>

@@ -1,50 +1,78 @@
 {% load staticfiles %}
 {% load client_category_tags %}
 
-<div class="navbar navbar-default top-menu">
-    <div class="container">
-        <div class="row">
-{#            <div class="col-xs-12">#}
-                <div class="navbar-header">
-                    <button typ e="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-top-menu">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-{#                    <a class="navbar-brand" href="javascript:void(0)">Brand</a>#}
-                </div>
-                <div class="navbar-collapse collapse navbar-top-menu">
 
-                    {# добавляем категоризацию#}
-{#                    {% client_categories_tree request %}#}
-                    <ul class="nav navbar-nav">
-                        <li class="dropdown city-change">
-                            <a href="javascript:void(0)" data-target="#" class="dropdown-toggle" data-toggle="dropdown">Выбрать город <b class="caret"></b></a>
-                            {% include 'client/city.html' %}
-                        </li>
+{% if device != 'mobile' and device != 'tablet' %}
+  <div class="navbar navbar-default top-menu">
+      <div class="container">
+          <div class="row">
+            <div class="navbar-header">
+                <button typ e="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-top-menu">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="navbar-collapse collapse navbar-top-menu">
+
+
+                <ul class="nav navbar-nav">
+                    <li class="dropdown city-change">
+                        <a href="javascript:void(0)" data-target="#" class="dropdown-toggle" data-toggle="dropdown">Выбрать город <b class="caret"></b></a>
+                        {% include 'client/city.html' %}
+                    </li>
+                </ul>
+
+              <ul class="nav navbar-nav navbar-right">
+                {% if request.user.is_authenticated %}
+                  <li class="dropdown">
+                    <a href="javascript:void(0)" data-target="#" class="dropdown-toggle" data-toggle="dropdown">Личный кабинет <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                      <li><a href="/profile/">Мой профиль</a></li>
+                      <li><a href="/cart/">Смотреть корзину</a></li>
+                      <li><a href="/profile/logout/">Выйти</a></li>
                     </ul>
+                  </li>
+                {% else %}
+                  <li><a href="/profile/registration/">Регистрация</a></li>
+                  <li><a href="/profile/login/">Вход</a></li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+      </div>
+  </div>
+{% endif %}
 
-
-{#                  <form class="navbar-form navbar-left">#}
-{#                      <input type="text" class="form-control col-lg-8" placeholder="Search">#}
-{#                  </form>#}
-                  <ul class="nav navbar-nav navbar-right">                    
-                    {% if request.user.is_authenticated %}
-                      <li class="dropdown">
-                        <a href="javascript:void(0)" data-target="#" class="dropdown-toggle" data-toggle="dropdown">Личный кабинет <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                          <li><a href="/profile/">Мой профиль</a></li>
-                          <li><a href="/cart/">Смотреть корзину</a></li>
-                          <li><a href="/profile/logout/">Выйти</a></li>
-                        </ul>
-                      </li>
-                    {% else %}
-                      <li><a href="/profile/registration/">Регистрация</a></li>
-                      <li><a href="/profile/login/">Вход</a></li>  
-                    {% endif %}                    
-                  </ul>
-                </div>
-{#            </div>#}
-        </div>
+{# для мобильного меню#}
+{% if device == 'mobile' or device == 'tablet' %}
+  <li><a href="/cart/"><i class="material-icons">&#xE547;</i> <span>Корзина</span></a></li>
+  <li class="icon icon-arrow-left">
+    <a class="" href="#"><i class="material-icons">&#xE55F;</i> <span>Выбрать город</span></a>
+    <div class="mp-level">
+      <h2 class="icon icon-display">Город</h2>
+      {% include 'client/mobile_city.html' %}
     </div>
-</div>
+  </li>
+
+  <li class="icon icon-arrow-left">
+    <a class="" href="#"><i class="material-icons">&#xE853;</i> <span>Профиль</span></a>
+    <div class="mp-level">
+      <h2 class="icon icon-display">Профиль</h2>
+      <ul>
+        {% if request.user.is_authenticated %}
+
+          <li><a href="/profile/">Мой профиль</a></li>
+          <li><a href="/profile/logout/">Выйти</a></li>
+
+        {% else %}
+
+          <li><a href="/profile/registration/">Регистрация</a></li>
+          <li><a href="/profile/login/">Вход</a></li>
+
+        {% endif %}
+      </ul>
+    </div>
+  </li>
+
+{% endif %}

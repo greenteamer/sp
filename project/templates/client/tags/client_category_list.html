@@ -2,8 +2,9 @@
 {% load mptt_tags %}
 
 {% if nodes %}
-
+  {% if device != 'mobile' and device != 'tablet' %}
     <ul class="nav navbar-nav">
+
         {% recursetree nodes %}
             <li {% if not node.is_leaf_node %} class="dropdown" {% endif %}>
                 {# создание самой ссылки в меню в зависимости от того родительская она или нет#}
@@ -18,5 +19,39 @@
             </li>
         {% endrecursetree %}
     </ul>
+    {% endif %}
 
+
+  {% if device == 'mobile' or device == 'tablet' %}
+
+    <li class="icon icon-arrow-left">
+      <a class="" href="#"><i class="material-icons">&#xE8F0;</i> <span>Категории</span></a>
+      <div class="mp-level">
+        <h2 class="">Категории</h2>
+        <ul>
+          {% recursetree nodes %}
+            <li {% if not node.is_leaf_node %} class="icon icon-arrow-left" {% endif %}>
+                {# создание самой ссылки в меню в зависимости от того родительская она или нет#}
+                <a
+                  {% if node.is_leaf_node %} href="{{ node.get_absolute_url }}" {% endif %}
+                  {% if node.is_leaf_node %} href="#" class="" {% endif %}>
+                  {{ node.name }}
+                </a>
+                {% if not node.is_leaf_node %}
+                  <div class="mp-level">
+                    <h2 class="">
+                      <a href="{{ node.get_absolute_url }}">{{ node.name }}</a>
+                    </h2>
+                    <ul>
+                      {{ children }}
+                    </ul>
+                  </div>
+                {% endif %}
+            </li>
+          {% endrecursetree %}
+        </ul>
+      </div>
+    </li>
+
+  {% endif %}
 {% endif %}
