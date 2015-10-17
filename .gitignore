@@ -13,6 +13,7 @@
 .settings
 atlassian-ide-plugin.xml
 .idea/*
+.ropeproject/*
 
 # Project
 settings_local.py

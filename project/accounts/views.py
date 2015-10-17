@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#!/usr/bin/env python
+# !/usr/bin/env python
 from project.accounts.forms import OrganizerProfileForm, UserRegistrationForm,\
     purchaseForm, catalogForm, catalogProductPropertiesForm, ProductForm,\
     MemberProfileForm, UserLoginForm, ProductImagesForm
@@ -51,7 +51,6 @@ def check_organizer(func):
                 messages.info(request, "Вы не являетесь организаотором закупок")
                 return redirect('/profile/')
             elif purchase_id:  # проверка является ли профайл владельцем закупки
-            # try:
                 purchase_test = Purchase.objects.get(id=kwargs['purchase_id'])
                 purchase_set = profile.get_purchases()
                 if purchase_test in purchase_set:
@@ -59,9 +58,6 @@ def check_organizer(func):
                 else:
                     messages.info(request, "Вы не являетесь вледельцем закупки")
                     return redirect('/profile/')
-            # except:
-            #     messages.info(request, "Вы не являетесь вледельцем закупки")
-            #     return redirect('/profile/')
             else:
                 # возвращаем наконец функцию
                 return func(request, *args, **kwargs)
@@ -100,22 +96,19 @@ def populateProfileView(request, template_name):
             form = OrganizerProfileForm(request.POST, request.FILES)
 
             if form.is_valid() and getProfile(user):
-            # если профиль уже существует то только
-            # обновляем(не возвращает None)"""
-
                 profile = repopulateProfile(profile, request)
                 profile.save()
                 return HttpResponseRedirect(
                     urlresolvers.reverse('populateProfileView'))
 
-            elif form.is_valid() and terms == 'on' and is_organizer == 'on':
+            elif form.is_valid() and is_organizer == 'on':
                 form.save(request.user)
                 messages.info(request, "Спасибо, вы успешно создали профиль организатора,\
                     ожидайте его подтверждения от администратора")
                 return HttpResponseRedirect(
                     urlresolvers.reverse('populateProfileView'))
 
-            elif form.is_valid() and terms == 'on' and is_organizer == '':
+            elif form.is_valid() and is_organizer == '':
                 form = MemberProfileForm(request.POST, request.FILES)
                 form.save(request.user)
                 messages.info(request, "Спасибо, вы успешно создали профиль. Теперь вы можете участвовать в закупках.")
@@ -140,7 +133,7 @@ def populateProfileView(request, template_name):
                               context_instance=RequestContext(request))
 
 
-#регистрация пользователя
+# регистрация пользователя
 def registrationView(request, template_name):
     if request.method == 'POST':
         postdata = request.POST.copy()
@@ -166,7 +159,7 @@ def registrationView(request, template_name):
 
                 auth.login(request, new_user)
                 # Редирект на url с именем my_account
-                url = urlresolvers.reverse('profileView')
+                url = urlresolvers.reverse('populateProfileView')
                 return HttpResponseRedirect(url)
         elif terms == '':
             form = UserRegistrationForm(postdata)
@@ -187,7 +180,7 @@ def registrationView(request, template_name):
                               context_instance=RequestContext(request))
 
 
-#страница входа для зарегистрированного пользователя
+# страница входа для зарегистрированного пользователя
 def loginView(request, template_name):
     form = UserLoginForm()
     if request.method == 'POST':
@@ -200,7 +193,9 @@ def loginView(request, template_name):
         # Правильный пароль и пользователь "активен"
             auth.login(request, user)
         # Перенаправление на "правильную" страницу
-            return HttpResponseRedirect("/profile/")
+            url = urlresolvers.reverse('populateProfileView')
+            return HttpResponseRedirect(url)
+            # return HttpResponseRedirect("/profile/")
         else:
             form = UserLoginForm(postdata)
             error = 'Логин или пароль введены не верно'
@@ -217,6 +212,8 @@ def logoutView(request, template_name):
     profile = getProfile(user)
     if user.is_authenticated:
         auth.logout(request)
+        url = urlresolvers.reverse('loginView')
+        return HttpResponseRedirect(url)
     if request.method == 'POST':
         username = request.POST["username"]
         password = request.POST["password"]
@@ -306,6 +303,10 @@ def purchaseAdd(request, template_name):
 
             message = u"Новая закупка «%s» успешно\
                 добавлена" % request.POST['name']
+
+            # redirect ro adding catalog for this purchase
+            url = urlresolvers.reverse('purchases')
+            return HttpResponseRedirect(url)
 
         else:
             message = u"Ошибка при добавлении закупки"
@@ -428,7 +429,7 @@ def catalogAdd(request, purchase_id, template_name):
             cpp_purchase = Purchase.objects.get(id=purchase_id)
 
             for cpp_name in cpp_names:
-                if cpp_name != '' and cpp_name != None:
+                if cpp_name is not '' and cpp_name is not None:
                     new_catalogProductProperties = CatalogProductProperties()
                     new_catalogProductProperties.cpp_name = cpp_name
                     new_catalogProductProperties.cpp_values = cpp_values[cpp_names.index(cpp_name)]
@@ -436,12 +437,15 @@ def catalogAdd(request, purchase_id, template_name):
                     new_catalogProductProperties.cpp_purchase = cpp_purchase
                     new_catalogProductProperties.save()
 
-            message = u"Новый каталог «%s» успешно добавлен. <br/> Добавить еще: " % request.POST['catalog_name']
+            # message = u"Новый каталог «%s» успешно добавлен. \n" % request.POST['catalog_name']
+
+            url = urlresolvers.reverse('catalog', kwargs={'purchase_id': purchase_id, 'catalog_id': new_catalog.id})
+            return HttpResponseRedirect(url)
         else:
             message = u"Ошибка при добавлении каталога"
 
     catalog_form = catalogForm()
-    catalogProductProperties_form = catalogProductPropertiesForm()
+    catalogProductProperties_form = catalogProductPropertiesForm()    
 
     return render_to_response(template_name, locals(),
                               context_instance=RequestContext(request))
@@ -451,8 +455,8 @@ def catalogAdd(request, purchase_id, template_name):
 def getNewCatalogProductPropertiesFormBlock(request, template_name):
     # content = '<label>Свойство товара в каталоге:</label> \
     #     <input class="form-control" name="cpp_name" placeholder="Введите свойство для товаров в этом каталоге" type="text"> \
-	 #    <label>Возможные значения:</label> \
-	 #    <input class="form-control" name="cpp_values" placeholder="Введите возможные значения для свойства через символ &quot;;&quot;" type="text"> \
+    #    <label>Возможные значения:</label> \
+    #    <input class="form-control" name="cpp_values" placeholder="Введите возможные значения для свойства через символ &quot;;&quot;" type="text"> \
     #     <hr/>'
     catalogProductProperties_form = catalogProductPropertiesForm()
     # return HttpResponse()
@@ -707,9 +711,11 @@ def productAdd(request, purchase_id, catalog_id, template_name):
                         productimages.save()
 
                 message = u"Новый товар %s успешно добавлен." % request.POST['product_name']
+                if 'return_to_catalog' in request.POST:
+                    url = urlresolvers.reverse('catalog', kwargs={'purchase_id': purchase_id, 'catalog_id': catalog_id})
+                    return HttpResponseRedirect(url)
             else:
                 message = u"Ошибка при добавлении товара"
-
         product_form = ProductForm
         catalog_product_properties = CatalogProductProperties.objects.select_related().filter(cpp_catalog=catalog_id)
         properties = get_propeties(catalog_id, 'list')    # получим все возможные свойства для товаров этой категории

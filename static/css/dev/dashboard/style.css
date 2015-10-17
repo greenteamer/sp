@@ -1,7 +1,9 @@
 .modal-width-90{
     width: 90%;
 }
-
+#catalog_add-form label {
+    margin-top: 35px;
+}
 /* ошибочные поля формы */
 form .error{
     color: crimson;
